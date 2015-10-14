@@ -9,7 +9,7 @@ fontSize=12
 longPattern=3
 ===
 
-include(/home/robocomp/AGM/examples/makeMeCoffee/domain_basic.aggl)
+include(domain_basic.aggl)
 
 hierarchical hierarchicalFindMilkInTable : active(1)
 {
@@ -393,102 +393,6 @@ hierarchical hierarchicalFindCoffeePotInTable_noReach : active(1)
 			(when
 				(in container something)
 				(in object something)
-			)
-		)
-	}
-}
-
-hierarchical robotMovesObjectFromContainer : active(1)
-{
-	{
-		roomst:roomSt(-950,0)
-		room:object(-755,0)
-		object:object(-390,0)
-		robot:robot(-575,0)
-		c2:object(-650,100)
-		c1:object(-665,-100)
-		os:objectSt(-215,0)
-		robot->object(know)
-		robot->c2(know)
-		robot->c1(know)
-		object->c1(in)
-		object->c1(reach)
-		room->roomst(room)
-		c1->room(in)
-		c2->room(in)
-		robot->room(in)
-	}
-	=>
-	{
-		roomst:roomSt(-950,0)
-		room:object(-755,0)
-		object:object(-390,0)
-		robot:robot(-575,0)
-		c2:object(-650,100)
-		c1:object(-665,-100)
-		os:objectSt(-215,0)
-		robot->object(know)
-		robot->c2(know)
-		robot->c1(know)
-		object->c2(in)
-		object->c2(reach)
-		object->c1(reach)
-		object->os(reach)
-		room->roomst(room)
-		c1->room(in)
-		c2->room(in)
-		robot->room(in)
-	}
-}
-
-
-hierarchical robotDeliversObject : active(1)
-{
-	{
-		roomst:roomSt(-950,0)
-		room:object(-755,0)
-		object:object(-390,0)
-		robot:robot(-575,0)
-		person:person(-650,100)
-		robot->object(know)
-		room->roomst(room)
-		person->room(in)
-	}
-	=>
-	{
-		roomst:roomSt(-950,0)
-		room:object(-755,0)
-		object:object(-390,0)
-		robot:robot(-575,0)
-		person:person(-650,100)
-		robot->object(know)
-		object->person(in)
-		room->roomst(room)
-		person->room(in)
-		robot->room(in)
-	}
-	effect
-	{
-		(and
-			(forall
-				previousroom:object
-				(when
-					(and
-						(not (= previousroom room))
-						(in previousroom robot)
-					)
-					(not (in previousroom robot))
-				)
-			)
-			(forall
-				previouscontainer:object
-				(when
-					(and
-						(not (= previouscontainer person))
-						(in previouscontainer object)
-					)
-					(not (in previouscontainer object))
-				)
 			)
 		)
 	}
