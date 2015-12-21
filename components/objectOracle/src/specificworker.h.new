@@ -24,7 +24,6 @@
 
 
 
-// THIS IS AN AGENT
 
 
 
@@ -35,9 +34,32 @@
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
 
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <fstream>
+#include <string>
+
+#ifdef __cplusplus
+extern "C"{
+#endif 
+    
+#include "ccv/ccv.h"
+
+#ifdef __cplusplus
+}
+
+#endif
+
+//#include "t.hpp"
+
 class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
+private:
+    ccv_convnet_t* convnet;
+    fstream file;
+    bool first;
+
 public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();

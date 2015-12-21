@@ -53,20 +53,43 @@ extern "C"{
 //#include "t.hpp"
 
 class SpecificWorker : public GenericWorker
-{  
+{
+Q_OBJECT
+private:
     ccv_convnet_t* convnet;
     fstream file;
     bool first;
-Q_OBJECT
+
 public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
+
+	bool reloadConfigAgent();
+	bool activateAgent(const ParameterMap &prs);
+	bool setAgentParameters(const ParameterMap &prs);
+	ParameterMap getAgentParameters();
+	void killAgent();
+	int uptimeAgent();
+	bool deactivateAgent();
+	StateStruct getAgentState();
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
+	void structuralChange(const RoboCompAGMWorldModel::Event &modification);
+	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
+	void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification);
+	void symbolUpdated(const RoboCompAGMWorldModel::Node &modification);
+
 public slots:
 	void compute(); 	
 
 private:
+	std::string action;
+	ParameterMap params;
+	AGMModel::SPtr worldModel;
+	InnerModel *innerModel;
+	bool active;
+	bool setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated);
+	void sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel);
 	
 };
 
