@@ -1,0 +1,13 @@
+import "/robocomp/interfaces/IDSLs/ObjectOracle.idsl";
+
+Component objectoracle
+{
+	Communications
+	{
+		implements ObjectOracle;
+	};
+	language Cpp;
+	gui Qt(QWidget);
+	options agmagent;
+};
+
