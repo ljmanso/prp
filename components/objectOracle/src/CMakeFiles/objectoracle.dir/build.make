@@ -1911,10 +1911,6 @@ bin/objectoracle: /usr/lib/x86_64-linux-gnu/libQtOpenGL.so
 bin/objectoracle: /usr/lib/x86_64-linux-gnu/libQtGui.so
 bin/objectoracle: /usr/lib/x86_64-linux-gnu/libQtXml.so
 bin/objectoracle: /usr/lib/x86_64-linux-gnu/libQtCore.so
-bin/objectoracle: /usr/lib/x86_64-linux-gnu/libQtOpenGL.so
-bin/objectoracle: /usr/lib/x86_64-linux-gnu/libQtGui.so
-bin/objectoracle: /usr/lib/x86_64-linux-gnu/libQtXml.so
-bin/objectoracle: /usr/lib/x86_64-linux-gnu/libQtCore.so
 bin/objectoracle: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.9
 bin/objectoracle: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.9
 bin/objectoracle: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.9
