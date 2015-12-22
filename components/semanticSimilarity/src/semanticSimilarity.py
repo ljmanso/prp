@@ -127,8 +127,7 @@ if __name__ == '__main__':
 
 
 		adapter = ic.createObjectAdapter('SemanticSimilarity')
-                print(SemanticSimilarityI(worker, ic))
-		adapter.add(SemanticSimilarityI(worker, ic), ic.stringToIdentity('semanticsimilarity'))
+		adapter.add(SemanticSimilarityI(ic), ic.stringToIdentity('semanticsimilarity'))
 		adapter.activate()
 
 
