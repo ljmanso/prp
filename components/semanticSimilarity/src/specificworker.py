@@ -75,7 +75,7 @@ class SpecificWorker(GenericWorker):
 	#
 	# w2bDistance
 	#
-	def w2bDistance(self, word1, word2):
+	def w2vDistance(self, word1, word2):
                 result  = self.model.similarity('france', 'spain')
 		return result
 
