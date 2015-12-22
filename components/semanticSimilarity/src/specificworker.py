@@ -18,6 +18,7 @@
 #
 
 import sys, os, Ice, traceback, time
+from gensim.models import Word2Vec
 
 from PySide import *
 from genericworker import *
@@ -46,6 +47,9 @@ class SpecificWorker(GenericWorker):
 		self.timer.timeout.connect(self.compute)
 		self.Period = 2000
 		self.timer.start(self.Period)
+                print('Loading model...')
+                self.model = Word2Vec.load_word2vec_format('/home/robocomp/robocomp/files/dpModels/word2vec/GoogleNews-vectors-negative300.bin', binary=True)
+                print('Model loaded!')
 
 	def setParams(self, params):
 		#try:
@@ -72,10 +76,7 @@ class SpecificWorker(GenericWorker):
 	# w2bDistance
 	#
 	def w2bDistance(self, word1, word2):
-		#
-		# YOUR CODE HERE
-		#
-		result = float()
+                result  = self.model.similarity('france', 'spain')
 		return result
 
 
