@@ -1,0 +1,11 @@
+import "/robocomp/interfaces/IDSLs/SemanticSimilarity.idsl";
+
+Component semanticSimilarity
+{
+	Communications
+	{
+		implements SemanticSimilarity;
+	};
+	language python;
+};
+
