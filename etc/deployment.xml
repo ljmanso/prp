@@ -15,7 +15,7 @@
   <dependence alias="IS" />
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost objectA /home/robocomp/robocomp/components/prp/components/objectagent ./bin/objectagent /home/robocomp/robocomp/components/prp/etc/objectagent.conf" />
-  <downCommand command="killall -9 agmInnerComp" />
+  <downCommand command="killall -9 objectagent" />
   <configFile path="kate /home/robocomp/robocomp/components/prp/etc/inneragent.conf" />
   <xpos value="-33.2277892247" />
   <ypos value="-31.7934447791" />
