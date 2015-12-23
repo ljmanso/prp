@@ -2,8 +2,8 @@
 
 <!-- ROBOT -->
 	<symbol id="1" type="robot">
-		<attribute key="imName" value="robot" />
-		<attribute key="imType" value="omnirobot" />
+<!-- 		<attribute key="imName" value="robot" /> -->
+<!-- 		<attribute key="imType" value="omnirobot" /> -->
 	</symbol>
 
 <!-- WORLD -->
@@ -12,15 +12,28 @@
 		<attribute key="imType" value="transform" />
 	</symbol>
 
+	<link  src="100" dst="1" label="RT">
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="0" />
+		<linkAttribute key="rz" value="0" />
+		<linkAttribute key="tx" value="0" />
+		<linkAttribute key="ty" value="0" />
+		<linkAttribute key="tz" value="0" />
+	</link>
+
+	
 <!-- ROOM -->
-	<symbol id="3" type="room" />
+	<symbol id="3" type="room">
 	<symbol id="4" type="roomSt" />
 	<link src="3" dst="4" label="room" />
 	<link src="1" dst="3" label="in" />
 	<link src="1" dst="3" label="know" />
 
-<!-- TABLE -->
-	<symbol id="20" type="object" />
+<!-- TABLE A -->
+	<symbol id="20" type="object">
+		<attribute key="imName" value="tableA" />
+		<attribute key="imType" value="transform" />
+	</symbol>
 	<symbol id="21" type="objectSt" />
 	<link src="20" dst="3" label="in" />
 	<link src="20" dst="21" label="hasStatus" />
@@ -28,6 +41,45 @@
 	<link src="20" dst="21" label="reachable" />
 	<link src="20" dst="21" label="table" />
 	<link src="1" dst="20" label="know" />
+
+<!-- TABLE B -->
+	<symbol id="22" type="object">
+		<attribute key="imName" value="tableB" />
+		<attribute key="imType" value="transform" />
+	</symbol>
+	<symbol id="23" type="objectSt" />
+	<link src="22" dst="3" label="in" />
+	<link src="22" dst="23" label="hasStatus" />
+	<link src="22" dst="23" label="noReach" />
+	<link src="22" dst="23" label="reachable" />
+	<link src="22" dst="23" label="table" />
+	<link src="1" dst="22" label="know" />
+
+<!-- TABLE C -->
+	<symbol id="25" type="object">
+		<attribute key="imName" value="tableC" />
+		<attribute key="imType" value="transform" />
+	</symbol>
+	<symbol id="25" type="objectSt" />
+	<link src="24" dst="3" label="in" />
+	<link src="24" dst="25" label="hasStatus" />
+	<link src="24" dst="25" label="noReach" />
+	<link src="24" dst="25" label="reachable" />
+	<link src="24" dst="25" label="table" />
+	<link src="1" dst="24" label="know" />
+
+<!-- TABLE D -->
+	<symbol id="26" type="object">
+		<attribute key="imName" value="tableD" />
+		<attribute key="imType" value="transform" />
+	</symbol>
+	<symbol id="27" type="objectSt" />
+	<link src="26" dst="3" label="in" />
+	<link src="26" dst="27" label="hasStatus" />
+	<link src="26" dst="27" label="noReach" />
+	<link src="26" dst="27" label="reachable" />
+	<link src="26" dst="27" label="table" />
+	<link src="1" dst="26" label="know" />
 
 
 
