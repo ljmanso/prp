@@ -1,0 +1,12 @@
+import "/robocomp/interfaces/IDSLs/AGMWorldModel.idsl";
+
+Component objectagent
+{
+	Communications
+	{
+	};
+	language Cpp;
+	gui Qt(QWidget);
+	options agmagent;
+};
+

@@ -8,7 +8,6 @@
 -I/opt/robocomp/include
 -I/classes
 -I/home/ljmanso/robocomp/components/prp/components/objectOracle
--I/opt/intel/ipp/6.1.1.042/em64t/include
 -I/usr/include/opencv
 -I/usr/include
 -I/home/ljmanso/robocomp/components/prp/components/objectOracle/src/.
@@ -31,9 +30,6 @@
 -DQT_GUI_LIB
 -DQT_XML_LIB
 -DQT_CORE_LIB
--DCOMPILE_IPP=1
--DUSE_IPP=1
--DIPP_FOUND=1
 -DQT_DLL
 -DQT_GUI_LIB
 -DQT_CORE_LIB
