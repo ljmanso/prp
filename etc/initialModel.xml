@@ -1,7 +1,16 @@
 <AGMModel>
 
 <!-- ROBOT -->
-	<symbol id="1" type="robot" />
+	<symbol id="1" type="robot">
+		<attribute key="imName" value="robot" />
+		<attribute key="imType" value="omnirobot" />
+	</symbol>
+
+<!-- WORLD -->
+	<symbol id="100" type="world">
+		<attribute key="imName" value="world" />
+		<attribute key="imType" value="transform" />
+	</symbol>
 
 <!-- ROOM -->
 	<symbol id="3" type="room" />

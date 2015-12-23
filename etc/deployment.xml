@@ -97,7 +97,6 @@
  </node>
 
  <node alias="rgbd" endpoint="rgbd:tcp -p 10096">
-  <dependence alias="comJoint" />
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost rcis /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/autonomyLabModel.xml" />
   <downCommand command="killall -9 rcis" />
