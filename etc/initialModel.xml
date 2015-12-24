@@ -23,7 +23,7 @@
 
 	
 <!-- ROOM -->
-	<symbol id="3" type="room">
+	<symbol id="3" type="room" />
 	<symbol id="4" type="roomSt" />
 	<link src="3" dst="4" label="room" />
 	<link src="1" dst="3" label="in" />
@@ -56,7 +56,7 @@
 	<link src="1" dst="22" label="know" />
 
 <!-- TABLE C -->
-	<symbol id="25" type="object">
+	<symbol id="24" type="object">
 		<attribute key="imName" value="tableC" />
 		<attribute key="imType" value="transform" />
 	</symbol>
@@ -80,8 +80,6 @@
 	<link src="26" dst="27" label="reachable" />
 	<link src="26" dst="27" label="table" />
 	<link src="1" dst="26" label="know" />
-
-
 
 
 
