@@ -48,7 +48,7 @@ changeRoom : active(1)
 	}
 }
 
-computeMostLikelyTableContainer : active(1)
+computeMostLikelyTableContainer : active(1) success(0.7)
 {
 	{
 		room:room(-330,110)
@@ -95,7 +95,7 @@ findTable : active(1)
 	}
 }
 
-computeMostLikelyObjectContainer : active(1)
+computeMostLikelyObjectContainer : active(1) success(0.7)
 {
 	{
 		objectSt:objectSt(-330,245)

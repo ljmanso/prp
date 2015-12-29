@@ -25,9 +25,6 @@
 
 
 
-
-
-
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
@@ -90,7 +87,9 @@ private:
 	bool active;
 	bool setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated);
 	void sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel);
+
 	
+	void action_computeMostLikelyObjectContainer();
 };
 
 #endif
