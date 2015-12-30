@@ -383,6 +383,8 @@ genericmonitor.h
 /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.cpp
 specificworker.h
 /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.h
+boost/algorithm/string.hpp
+-
 
 /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.h
 genericworker.h

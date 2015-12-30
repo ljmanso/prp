@@ -39,7 +39,7 @@
   <dependence alias="IS" />
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost objectOracle /home/robocomp/robocomp/components/prp/components/objectOracle ./bin/objectoracle /home/robocomp/robocomp/components/prp/etc/objectoracle.conf" />
-  <downCommand command="killall -9 agmInnerComp" />
+  <downCommand command="killall -9 objectoracle" />
   <configFile path="kate /home/robocomp/robocomp/components/prp/etc/inneragent.conf" />
   <xpos value="41.3723230099" />
   <ypos value="-30.7489981001" />

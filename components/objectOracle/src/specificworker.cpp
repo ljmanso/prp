@@ -18,6 +18,8 @@
  */
 #include "specificworker.h"
 
+#include <boost/algorithm/string.hpp>
+
 /**
 * \brief Default constructor
 */
@@ -50,16 +52,13 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
-// 	try
-// 	{
-// 		camera_proxy->getYImage(0,img, cState, bState);
-// 		memcpy(image_gray.data, &img[0], m_width*m_height*sizeof(uchar));
-// 		searchTags(image_gray);
-// 	}
-// 	catch(const Ice::Exception &e)
-// 	{
-// 		std::cout << "Error reading from Camera" << e << std::endl;
-// 	}
+	printf("ACTION: %s\n", action.c_str());
+	
+	if (action == "computemostlikelyobjectcontainer")
+	{
+		action_computeMostLikelyObjectContainer();
+	}
+
 }
 
 
@@ -141,7 +140,7 @@ static unsigned int get_current_time(void)
 std::fstream& GotoLine(std::fstream& file, unsigned int num)
 {
     file.seekg(std::ios::beg);
-    for(int i=0; i < num - 1; ++i)
+    for(uint i=0; i < num - 1; ++i)
     {
         file.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
     }
@@ -160,7 +159,7 @@ void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &resul
     ccv_read(image.data(), &ccv_image, CCV_IO_RGB_RAW, 480, 640, 1920);
     
     assert(ccv_image != 0);
-    ccv_matrix_t *a = 0;
+//     ccv_matrix_t *a = 0;
     
     string label;
          
@@ -309,6 +308,51 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 	}
 }
 
+
+
+
+
+void SpecificWorker::action_computeMostLikelyObjectContainer()
+{
+	std::string container="", object="", objectType="";
+	uint action = 0;
+	auto plan = AGMPlan::fromString(params["plan"].value);
+
+	// Get container
+	container = plan.actions[action].parameters["container"];
+	action++;
+	if (container == "")
+		return;
+
+	// Get object
+	for ( ; action<plan.actions.size(); action++)
+	{
+		std::size_t found = plan.actions[action].name.find("lookForObjectIn");
+		if (found == 0)
+		{
+			object = plan.actions[action].parameters["object"];
+			action++;
+			break;
+		}
+	}
+	if (object == "")
+		return;
+
+	// Get type of object
+	for ( ; action<plan.actions.size(); action++)
+	{
+		std::string needle = "recognizeObj";
+		std::size_t found = plan.actions[action].name.find(needle);
+		if (found == 0)
+		{
+			objectType = plan.actions[action].name.substr(needle.size());
+			printf("FIND %s\n", objectType.c_str());
+			break;
+		}
+	}
+	if (objectType == "")
+		return;
+}
 
 
 

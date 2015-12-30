@@ -41,6 +41,13 @@
 	<link src="20" dst="21" label="reachable" />
 	<link src="20" dst="21" label="table" />
 	<link src="1" dst="20" label="know" />
+	<link src="100" dst="20" label="RT">
+		<linkAttribute key="tx" value="1400" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="tz" value="3180" />
+	</link>
+
+
 
 <!-- TABLE B -->
 	<symbol id="22" type="object">
@@ -54,7 +61,14 @@
 	<link src="22" dst="23" label="reachable" />
 	<link src="22" dst="23" label="table" />
 	<link src="1" dst="22" label="know" />
+	<link src="100" dst="22" label="RT">
+		<linkAttribute key="tx" value="3800" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="tz" value="3200" />
+	</link>
 
+ 
+ 
 <!-- TABLE C -->
 	<symbol id="24" type="object">
 		<attribute key="imName" value="tableC" />
@@ -67,6 +81,11 @@
 	<link src="24" dst="25" label="reachable" />
 	<link src="24" dst="25" label="table" />
 	<link src="1" dst="24" label="know" />
+	<link src="100" dst="24" label="RT">
+		<linkAttribute key="tx" value="6500" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="tz" value="2400" />
+	</link>
 
 <!-- TABLE D -->
 	<symbol id="26" type="object">
@@ -80,7 +99,12 @@
 	<link src="26" dst="27" label="reachable" />
 	<link src="26" dst="27" label="table" />
 	<link src="1" dst="26" label="know" />
-
+	<link src="100" dst="26" label="RT">
+		<linkAttribute key="tx" value="4500" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="tz" value="-3600" />
+		<linkAttribute key="ry" value="1.5707" />
+	</link>
 
 
 
