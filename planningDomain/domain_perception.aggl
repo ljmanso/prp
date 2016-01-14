@@ -1,0 +1,114 @@
+spacePattern=3
+lineThickness=2
+fontName=Arial
+name=domain_basic
+vertexDiameter=40
+shortPattern=1
+nodeThickness=2
+fontSize=12
+longPattern=3
+===
+
+recognizeObjMug : active(1)
+{
+	{
+		status:objectSt(65,-75)
+		object:object(-130,-75)
+		robot:robot(-290,-75)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(unclassified)
+	}
+	=>
+	{
+		status:objectSt(60,-75)
+		object:object(-130,-75)
+		robot:robot(-290,-75)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(classified)
+		object->status(mug)
+	}
+}
+
+recognizeObjGlasses : active(1)
+{
+	{
+		status:objectSt(65,-75)
+		object:object(-130,-75)
+		robot:robot(-290,-75)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(unclassified)
+	}
+	=>
+	{
+		status:objectSt(60,-75)
+		object:object(-130,-75)
+		robot:robot(-290,-75)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(classified)
+		object->status(glasses)
+	}
+}
+
+recognizeObjCoffeePot : active(1)
+{
+	{
+		status:objectSt(65,-75)
+		object:object(-130,-75)
+		robot:robot(-290,-75)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(unclassified)
+	}
+	=>
+	{
+		status:objectSt(60,-75)
+		object:object(-130,-75)
+		robot:robot(-290,-75)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(classified)
+		object->status(coffeepot)
+	}
+}
+
+recognizeObjFails : active(1)
+{
+	{
+		status:objectSt(105,-80)
+		object:object(-135,-80)
+		robot:robot(-290,-80)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(unclassified)
+	}
+	=>
+	{
+		status:objectSt(95,-75)
+		object:object(-130,-75)
+		robot:robot(-295,-75)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(classifailed)
+	}
+}
+

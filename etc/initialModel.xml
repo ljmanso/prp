@@ -22,14 +22,20 @@
 	</link>
 
 	
-<!-- ROOM -->
+<!-- ROOM2 -->
 	<symbol id="3" type="room" />
 	<symbol id="4" type="roomSt" />
 	<link src="3" dst="4" label="room" />
 	<link src="1" dst="3" label="in" />
 	<link src="1" dst="3" label="know" />
 
-<!-- TABLE A -->
+<!-- ROOM1 -->
+	<symbol id="5" type="room" />
+	<symbol id="6" type="roomSt" />
+	<link src="5" dst="6" label="room" />
+	<link src="1" dst="5" label="know" />
+
+<!-- TABLE A: escritorio -->
 	<symbol id="20" type="object">
 		<attribute key="imName" value="tableA" />
 		<attribute key="imType" value="transform" />
@@ -49,7 +55,7 @@
 
 
 
-<!-- TABLE B -->
+<!-- TABLE B: juguetes -->
 	<symbol id="22" type="object">
 		<attribute key="imName" value="tableB" />
 		<attribute key="imType" value="transform" />
@@ -69,7 +75,7 @@
 
  
  
-<!-- TABLE C -->
+<!-- TABLE C: luiky -->
 	<symbol id="24" type="object">
 		<attribute key="imName" value="tableC" />
 		<attribute key="imType" value="transform" />
@@ -87,19 +93,38 @@
 		<linkAttribute key="tz" value="2400" />
 	</link>
 
-<!-- TABLE D -->
+<!-- TABLE D: herramientas -->
 	<symbol id="26" type="object">
 		<attribute key="imName" value="tableD" />
 		<attribute key="imType" value="transform" />
 	</symbol>
 	<symbol id="27" type="objectSt" />
-	<link src="26" dst="3" label="in" />
+	<link src="26" dst="5" label="in" />
 	<link src="26" dst="27" label="hasStatus" />
 	<link src="26" dst="27" label="noReach" />
 	<link src="26" dst="27" label="reachable" />
 	<link src="26" dst="27" label="table" />
 	<link src="1" dst="26" label="know" />
 	<link src="100" dst="26" label="RT">
+		<linkAttribute key="tx" value="4500" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="tz" value="-3600" />
+		<linkAttribute key="ry" value="1.5707" />
+	</link>
+
+<!-- TABLE E: cocina -->
+	<symbol id="28" type="object">
+		<attribute key="imName" value="tableE" />
+		<attribute key="imType" value="transform" />
+	</symbol>
+	<symbol id="29" type="objectSt" />
+	<link src="28" dst="5" label="in" />
+	<link src="28" dst="29" label="hasStatus" />
+	<link src="28" dst="29" label="noReach" />
+	<link src="28" dst="29" label="reachable" />
+	<link src="28" dst="29" label="table" />
+	<link src="1" dst="28" label="know" />
+	<link src="100" dst="28" label="RT">
 		<linkAttribute key="tx" value="4500" />
 		<linkAttribute key="ty" value="800" />
 		<linkAttribute key="tz" value="-3600" />
