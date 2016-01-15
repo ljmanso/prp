@@ -8,7 +8,6 @@ nodeThickness=2
 fontSize=12
 longPattern=3
 ===
-
 include(domain_navigation.aggl)
 include(domain_basic_perception.aggl)
 include(domain_perception.aggl)
