@@ -6,10 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp
-agmInner/agmInner.h
--
-
 /home/ljmanso/robocomp/classes/agmInner/agmInner.h
 innermodel/innermodel.h
 -
@@ -30,10 +26,6 @@ string
 agm.h
 -
 
-/home/ljmanso/robocomp/classes/qlog/qlog.cpp
-qlog.h
-/home/ljmanso/robocomp/classes/qlog/qlog.h
-
 /home/ljmanso/robocomp/classes/qlog/qlog.h
 QtCore
 -
@@ -41,10 +33,6 @@ iostream
 -
 Logger.h
 -
-
-/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp
-rapplication.h
-/home/ljmanso/robocomp/classes/rapplication/rapplication.h
 
 /home/ljmanso/robocomp/classes/rapplication/rapplication.h
 Ice/Ice.h
@@ -56,7 +44,37 @@ IceUtil/IceUtil.h
 QtCore
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMAgent.cpp
+/home/robocomp/robocomp/classes/agmInner/agmInner.cpp
+agmInner/agmInner.h
+-
+
+/home/robocomp/robocomp/classes/qlog/qlog.cpp
+qlog.h
+/home/robocomp/robocomp/classes/qlog/qlog.h
+
+/home/robocomp/robocomp/classes/qlog/qlog.h
+QtCore
+-
+iostream
+-
+Logger.h
+-
+
+/home/robocomp/robocomp/classes/rapplication/rapplication.cpp
+rapplication.h
+/home/robocomp/robocomp/classes/rapplication/rapplication.h
+
+/home/robocomp/robocomp/classes/rapplication/rapplication.h
+Ice/Ice.h
+-
+Ice/Application.h
+-
+IceUtil/IceUtil.h
+-
+QtCore
+-
+
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMAgent.cpp
 AGMAgent.h
 -
 Ice/LocalException.h
@@ -70,7 +88,7 @@ Ice/Object.h
 IceUtil/Iterator.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMCommonBehavior.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMCommonBehavior.cpp
 AGMCommonBehavior.h
 -
 Ice/LocalException.h
@@ -84,7 +102,7 @@ Ice/Object.h
 IceUtil/Iterator.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMExecutive.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMExecutive.cpp
 AGMExecutive.h
 -
 Ice/LocalException.h
@@ -98,7 +116,7 @@ Ice/Object.h
 IceUtil/Iterator.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMWorldModel.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMWorldModel.cpp
 AGMWorldModel.h
 -
 Ice/BasicStream.h
@@ -108,7 +126,7 @@ Ice/Object.h
 IceUtil/Iterator.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/CommonBehavior.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/CommonBehavior.cpp
 CommonBehavior.h
 -
 Ice/LocalException.h
@@ -122,7 +140,7 @@ Ice/Object.h
 IceUtil/Iterator.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/ObjectOracle.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/ObjectOracle.cpp
 ObjectOracle.h
 -
 Ice/LocalException.h
@@ -136,7 +154,7 @@ Ice/Object.h
 IceUtil/Iterator.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/Planning.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/Planning.cpp
 Planning.h
 -
 Ice/LocalException.h
@@ -150,13 +168,13 @@ Ice/Object.h
 IceUtil/Iterator.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.cpp
 agmcommonbehaviorI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.h
 QtCore/QObject
 -
 Ice/Ice.h
@@ -166,13 +184,13 @@ AGMCommonBehavior.h
 config.h
 -
 genericworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.cpp
 agmexecutivetopicI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.h
 QtCore/QObject
 -
 Ice/Ice.h
@@ -182,9 +200,9 @@ AGMExecutive.h
 config.h
 -
 genericworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv.h
 unistd.h
 -
 stdint.h
@@ -208,11 +226,11 @@ alloca.h
 sys/param.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.cpp
 commonbehaviorI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.h
 QtCore/QObject
 -
 Ice/Ice.h
@@ -222,37 +240,37 @@ CommonBehavior.h
 config.h
 -
 genericworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 genericmonitor.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/config.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/config.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.cpp
 genericmonitor.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
 Ice/Ice.h
 -
 QtCore
 -
 genericworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 config.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/config.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/config.h
 qlog/qlog.h
 -
 CommonBehavior.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.cpp
 genericworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 config.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/config.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/config.h
 QtGui
 -
 stdint.h
@@ -280,7 +298,7 @@ agm.h
 agmInner/agmInner.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/main.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/main.cpp
 QtCore
 -
 QtGui
@@ -296,17 +314,17 @@ rapplication/rapplication.h
 qlog/qlog.h
 -
 config.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/config.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/config.h
 genericmonitor.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
 genericworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 specificworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificworker.h
 specificmonitor.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificmonitor.h
 commonbehaviorI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.h
 agmcommonbehaviorI.h
 -
 objectoracleI.h
@@ -324,43 +342,43 @@ AGMWorldModel.h
 ObjectOracle.h
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx
 agmcommonbehaviorI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx
 agmexecutivetopicI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx
 commonbehaviorI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx
 genericmonitor.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx
 genericworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx
 objectoracleI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/objectoracleI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/objectoracleI.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx
 specificmonitor.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificmonitor.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx
 specificworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificworker.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/objectoracleI.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/objectoracleI.cpp
 objectoracleI.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/objectoracleI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/objectoracleI.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/objectoracleI.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/objectoracleI.h
 QtCore/QObject
 -
 Ice/Ice.h
@@ -370,23 +388,23 @@ ObjectOracle.h
 config.h
 -
 genericworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificmonitor.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificmonitor.cpp
 specificmonitor.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificmonitor.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificmonitor.h
 genericmonitor.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.h
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.cpp
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificworker.cpp
 specificworker.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificworker.h
 boost/algorithm/string.hpp
 -
 
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/specificworker.h
 genericworker.h
 -
 innermodel/innermodel.h
@@ -400,7 +418,7 @@ fstream
 string
 -
 ccv/ccv.h
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv.h
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv.h
 
 /opt/robocomp/include/innermodel/innermodel.h
 stdexcept

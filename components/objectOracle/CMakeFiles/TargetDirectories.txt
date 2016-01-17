@@ -1,1 +1,1 @@
-/home/ljmanso/robocomp/components/prp/components/objectOracle/src/CMakeFiles/objectoracle.dir
+/home/robocomp/robocomp/components/prp/components/objectOracle/src/CMakeFiles/objectoracle.dir

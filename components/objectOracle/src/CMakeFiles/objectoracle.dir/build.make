@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ljmanso/robocomp/components/prp/components/objectOracle
+CMAKE_SOURCE_DIR = /home/robocomp/robocomp/components/prp/components/objectOracle
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ljmanso/robocomp/components/prp/components/objectOracle
+CMAKE_BINARY_DIR = /home/robocomp/robocomp/components/prp/components/objectOracle
 
 # Include any dependencies generated for this target.
 include src/CMakeFiles/objectoracle.dir/depend.make
@@ -50,133 +50,133 @@ include src/CMakeFiles/objectoracle.dir/progress.make
 include src/CMakeFiles/objectoracle.dir/flags.make
 
 src/CommonBehavior.cpp: /opt/robocomp/interfaces/CommonBehavior.ice
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating CommonBehavior.cpp and CommonBehavior.h from CommonBehavior.ice"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/CommonBehavior.ice --output-dir .
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/CommonBehavior.ice --output-dir .
 
 src/CommonBehavior.h: src/CommonBehavior.cpp
 	@$(CMAKE_COMMAND) -E touch_nocreate src/CommonBehavior.h
 
 src/AGMAgent.cpp: /opt/robocomp/interfaces/AGMAgent.ice
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_2)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating AGMAgent.cpp and AGMAgent.h from AGMAgent.ice"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/AGMAgent.ice --output-dir .
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/AGMAgent.ice --output-dir .
 
 src/AGMAgent.h: src/AGMAgent.cpp
 	@$(CMAKE_COMMAND) -E touch_nocreate src/AGMAgent.h
 
 src/AGMWorldModel.cpp: /opt/robocomp/interfaces/AGMWorldModel.ice
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_3)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating AGMWorldModel.cpp and AGMWorldModel.h from AGMWorldModel.ice"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/AGMWorldModel.ice --output-dir .
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/AGMWorldModel.ice --output-dir .
 
 src/AGMWorldModel.h: src/AGMWorldModel.cpp
 	@$(CMAKE_COMMAND) -E touch_nocreate src/AGMWorldModel.h
 
 src/AGMExecutive.cpp: /opt/robocomp/interfaces/AGMExecutive.ice
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating AGMExecutive.cpp and AGMExecutive.h from AGMExecutive.ice"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/AGMExecutive.ice --output-dir .
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/AGMExecutive.ice --output-dir .
 
 src/AGMExecutive.h: src/AGMExecutive.cpp
 	@$(CMAKE_COMMAND) -E touch_nocreate src/AGMExecutive.h
 
 src/Planning.cpp: /opt/robocomp/interfaces/Planning.ice
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Planning.cpp and Planning.h from Planning.ice"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/Planning.ice --output-dir .
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/Planning.ice --output-dir .
 
 src/Planning.h: src/Planning.cpp
 	@$(CMAKE_COMMAND) -E touch_nocreate src/Planning.h
 
 src/AGMCommonBehavior.cpp: /opt/robocomp/interfaces/AGMCommonBehavior.ice
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_6)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating AGMCommonBehavior.cpp and AGMCommonBehavior.h from AGMCommonBehavior.ice"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/AGMCommonBehavior.ice --output-dir .
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/AGMCommonBehavior.ice --output-dir .
 
 src/AGMCommonBehavior.h: src/AGMCommonBehavior.cpp
 	@$(CMAKE_COMMAND) -E touch_nocreate src/AGMCommonBehavior.h
 
 src/ObjectOracle.cpp: /opt/robocomp/interfaces/ObjectOracle.ice
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_7)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_7)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ObjectOracle.cpp and ObjectOracle.h from ObjectOracle.ice"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/ObjectOracle.ice --output-dir .
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && slice2cpp -I/home/ljmanso/robocomp//interfaces/ -I/opt/robocomp/interfaces -I. /opt/robocomp/interfaces/ObjectOracle.ice --output-dir .
 
 src/ObjectOracle.h: src/ObjectOracle.cpp
 	@$(CMAKE_COMMAND) -E touch_nocreate src/ObjectOracle.h
 
 src/moc_specificworker.cxx: src/specificworker.h
 src/moc_specificworker.cxx: src/moc_specificworker.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_8)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_8)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_specificworker.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx_parameters
 
 src/moc_specificmonitor.cxx: src/specificmonitor.h
 src/moc_specificmonitor.cxx: src/moc_specificmonitor.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_9)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_9)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_specificmonitor.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx_parameters
 
 src/moc_genericmonitor.cxx: src/genericmonitor.h
 src/moc_genericmonitor.cxx: src/moc_genericmonitor.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_10)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_10)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_genericmonitor.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx_parameters
 
 src/moc_commonbehaviorI.cxx: src/commonbehaviorI.h
 src/moc_commonbehaviorI.cxx: src/moc_commonbehaviorI.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_11)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_11)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_commonbehaviorI.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx_parameters
 
 src/moc_genericworker.cxx: src/genericworker.h
 src/moc_genericworker.cxx: src/moc_genericworker.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_12)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_12)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_genericworker.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx_parameters
 
 src/moc_agmcommonbehaviorI.cxx: src/agmcommonbehaviorI.h
 src/moc_agmcommonbehaviorI.cxx: src/moc_agmcommonbehaviorI.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_13)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_13)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_agmcommonbehaviorI.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx_parameters
 
 src/moc_objectoracleI.cxx: src/objectoracleI.h
 src/moc_objectoracleI.cxx: src/moc_objectoracleI.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_14)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_14)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_objectoracleI.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx_parameters
 
 src/moc_agmexecutivetopicI.cxx: src/agmexecutivetopicI.h
 src/moc_agmexecutivetopicI.cxx: src/moc_agmexecutivetopicI.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_15)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_15)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_agmexecutivetopicI.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx_parameters
 
-src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx: /home/ljmanso/robocomp/classes/agmInner/agmInner.h
+src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx: /home/robocomp/robocomp/classes/agmInner/agmInner.h
 src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx: src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx_parameters
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_16)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_16)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating __/__/__/__/__/classes/agmInner/moc_agmInner.cxx"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/ljmanso/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx_parameters
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner && /usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/robocomp/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx_parameters
 
 src/ui_mainUI.h: src/mainUI.ui
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_17)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_17)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ui_mainUI.h"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/uic -o /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ui_mainUI.h /home/ljmanso/robocomp/components/prp/components/objectOracle/src/mainUI.ui
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/lib/x86_64-linux-gnu/qt4/bin/uic -o /home/robocomp/robocomp/components/prp/components/objectOracle/src/ui_mainUI.h /home/robocomp/robocomp/components/prp/components/objectOracle/src/mainUI.ui
 
 src/CMakeFiles/objectoracle.dir/specificworker.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/specificworker.cpp.o: src/specificworker.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_18)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_18)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/specificworker.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/specificworker.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/specificworker.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/specificworker.cpp
 
 src/CMakeFiles/objectoracle.dir/specificworker.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/specificworker.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.cpp > CMakeFiles/objectoracle.dir/specificworker.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/specificworker.cpp > CMakeFiles/objectoracle.dir/specificworker.cpp.i
 
 src/CMakeFiles/objectoracle.dir/specificworker.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/specificworker.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificworker.cpp -o CMakeFiles/objectoracle.dir/specificworker.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/specificworker.cpp -o CMakeFiles/objectoracle.dir/specificworker.cpp.s
 
 src/CMakeFiles/objectoracle.dir/specificworker.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/specificworker.cpp.o.requires
@@ -189,17 +189,17 @@ src/CMakeFiles/objectoracle.dir/specificworker.cpp.o.provides.build: src/CMakeFi
 
 src/CMakeFiles/objectoracle.dir/specificmonitor.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/specificmonitor.cpp.o: src/specificmonitor.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_19)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_19)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/specificmonitor.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/specificmonitor.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificmonitor.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/specificmonitor.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/specificmonitor.cpp
 
 src/CMakeFiles/objectoracle.dir/specificmonitor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/specificmonitor.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificmonitor.cpp > CMakeFiles/objectoracle.dir/specificmonitor.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/specificmonitor.cpp > CMakeFiles/objectoracle.dir/specificmonitor.cpp.i
 
 src/CMakeFiles/objectoracle.dir/specificmonitor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/specificmonitor.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/specificmonitor.cpp -o CMakeFiles/objectoracle.dir/specificmonitor.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/specificmonitor.cpp -o CMakeFiles/objectoracle.dir/specificmonitor.cpp.s
 
 src/CMakeFiles/objectoracle.dir/specificmonitor.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/specificmonitor.cpp.o.requires
@@ -212,17 +212,17 @@ src/CMakeFiles/objectoracle.dir/specificmonitor.cpp.o.provides.build: src/CMakeF
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.o: src/ccv/ccv_algebra.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_20)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_20)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_algebra.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_algebra.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_algebra.c > CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_algebra.c > CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_algebra.c -o CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_algebra.c -o CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.o.requires
@@ -235,17 +235,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_algebra.c.o.provides.build: src/CMakeFil
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.o: src/ccv/ccv_basic.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_21)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_21)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_basic.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_basic.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_basic.c > CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_basic.c > CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_basic.c -o CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_basic.c -o CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.o.requires
@@ -258,17 +258,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_basic.c.o.provides.build: src/CMakeFiles
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.o: src/ccv/ccv_bbf.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_22)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_22)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_bbf.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_bbf.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_bbf.c > CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_bbf.c > CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_bbf.c -o CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_bbf.c -o CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.o.requires
@@ -281,17 +281,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_bbf.c.o.provides.build: src/CMakeFiles/o
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.o: src/ccv/ccv_cache.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_23)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_23)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_cache.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_cache.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_cache.c > CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_cache.c > CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_cache.c -o CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_cache.c -o CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.o.requires
@@ -304,17 +304,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_cache.c.o.provides.build: src/CMakeFiles
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.o: src/ccv/ccv_classic.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_24)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_24)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_classic.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_classic.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_classic.c > CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_classic.c > CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_classic.c -o CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_classic.c -o CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.o.requires
@@ -327,17 +327,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_classic.c.o.provides.build: src/CMakeFil
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.o: src/ccv/ccv_convnet.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_25)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_25)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_convnet.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_convnet.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_convnet.c > CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_convnet.c > CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_convnet.c -o CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_convnet.c -o CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.o.requires
@@ -350,17 +350,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_convnet.c.o.provides.build: src/CMakeFil
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.o: src/ccv/ccv_daisy.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_26)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_26)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_daisy.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_daisy.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_daisy.c > CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_daisy.c > CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_daisy.c -o CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_daisy.c -o CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.o.requires
@@ -373,17 +373,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_daisy.c.o.provides.build: src/CMakeFiles
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.o: src/ccv/ccv_dpm.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_27)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_27)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_dpm.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_dpm.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_dpm.c > CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_dpm.c > CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_dpm.c -o CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_dpm.c -o CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.o.requires
@@ -396,17 +396,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_dpm.c.o.provides.build: src/CMakeFiles/o
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.o: src/ccv/ccv_ferns.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_28)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_28)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_ferns.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_ferns.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_ferns.c > CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_ferns.c > CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_ferns.c -o CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_ferns.c -o CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.o.requires
@@ -419,17 +419,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_ferns.c.o.provides.build: src/CMakeFiles
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.o: src/ccv/ccv_icf.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_29)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_29)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_icf.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_icf.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_icf.c > CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_icf.c > CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_icf.c -o CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_icf.c -o CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.o.requires
@@ -442,17 +442,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_icf.c.o.provides.build: src/CMakeFiles/o
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.o: src/ccv/ccv_image_processing.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_30)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_30)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_image_processing.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_image_processing.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_image_processing.c > CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_image_processing.c > CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_image_processing.c -o CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_image_processing.c -o CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.o.requires
@@ -465,17 +465,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_image_processing.c.o.provides.build: src
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_io.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_io.c.o: src/ccv/ccv_io.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_31)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_31)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_io.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_io.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_io.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_io.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_io.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_io.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_io.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_io.c > CMakeFiles/objectoracle.dir/ccv/ccv_io.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_io.c > CMakeFiles/objectoracle.dir/ccv/ccv_io.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_io.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_io.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_io.c -o CMakeFiles/objectoracle.dir/ccv/ccv_io.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_io.c -o CMakeFiles/objectoracle.dir/ccv/ccv_io.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_io.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_io.c.o.requires
@@ -488,17 +488,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_io.c.o.provides.build: src/CMakeFiles/ob
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.o: src/ccv/ccv_memory.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_32)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_32)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_memory.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_memory.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_memory.c > CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_memory.c > CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_memory.c -o CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_memory.c -o CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.o.requires
@@ -511,17 +511,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_memory.c.o.provides.build: src/CMakeFile
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.o: src/ccv/ccv_mser.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_33)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_33)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_mser.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_mser.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_mser.c > CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_mser.c > CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_mser.c -o CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_mser.c -o CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.o.requires
@@ -534,17 +534,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_mser.c.o.provides.build: src/CMakeFiles/
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.o: src/ccv/ccv_numeric.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_34)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_34)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_numeric.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_numeric.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_numeric.c > CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_numeric.c > CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_numeric.c -o CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_numeric.c -o CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.o.requires
@@ -557,17 +557,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_numeric.c.o.provides.build: src/CMakeFil
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_output.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_output.c.o: src/ccv/ccv_output.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_35)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_35)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_output.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_output.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_output.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_output.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_output.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_output.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_output.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_output.c > CMakeFiles/objectoracle.dir/ccv/ccv_output.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_output.c > CMakeFiles/objectoracle.dir/ccv/ccv_output.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_output.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_output.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_output.c -o CMakeFiles/objectoracle.dir/ccv/ccv_output.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_output.c -o CMakeFiles/objectoracle.dir/ccv/ccv_output.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_output.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_output.c.o.requires
@@ -580,17 +580,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_output.c.o.provides.build: src/CMakeFile
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.o: src/ccv/ccv_resample.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_36)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_36)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_resample.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_resample.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_resample.c > CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_resample.c > CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_resample.c -o CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_resample.c -o CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.o.requires
@@ -603,17 +603,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_resample.c.o.provides.build: src/CMakeFi
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.o: src/ccv/ccv_scd.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_37)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_37)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_scd.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_scd.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_scd.c > CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_scd.c > CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_scd.c -o CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_scd.c -o CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.o.requires
@@ -626,17 +626,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_scd.c.o.provides.build: src/CMakeFiles/o
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.o: src/ccv/ccv_sift.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_38)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_38)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sift.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sift.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sift.c > CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sift.c > CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sift.c -o CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sift.c -o CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.o.requires
@@ -649,17 +649,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_sift.c.o.provides.build: src/CMakeFiles/
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.o: src/ccv/ccv_sparse_coding.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_39)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_39)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sparse_coding.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sparse_coding.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sparse_coding.c > CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sparse_coding.c > CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sparse_coding.c -o CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_sparse_coding.c -o CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.o.requires
@@ -672,17 +672,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_sparse_coding.c.o.provides.build: src/CM
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.o: src/ccv/ccv_swt.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_40)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_40)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_swt.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_swt.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_swt.c > CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_swt.c > CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_swt.c -o CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_swt.c -o CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.o.requires
@@ -695,17 +695,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_swt.c.o.provides.build: src/CMakeFiles/o
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.o: src/ccv/ccv_tld.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_41)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_41)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_tld.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_tld.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_tld.c > CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_tld.c > CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_tld.c -o CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_tld.c -o CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.o.requires
@@ -718,17 +718,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_tld.c.o.provides.build: src/CMakeFiles/o
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.o: src/ccv/ccv_transform.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_42)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_42)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_transform.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_transform.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_transform.c > CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_transform.c > CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_transform.c -o CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_transform.c -o CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.o.requires
@@ -741,17 +741,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_transform.c.o.provides.build: src/CMakeF
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_util.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/ccv_util.c.o: src/ccv/ccv_util.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_43)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_43)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/ccv_util.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_util.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_util.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/ccv_util.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_util.c
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_util.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/ccv_util.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_util.c > CMakeFiles/objectoracle.dir/ccv/ccv_util.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_util.c > CMakeFiles/objectoracle.dir/ccv/ccv_util.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_util.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/ccv_util.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/ccv_util.c -o CMakeFiles/objectoracle.dir/ccv/ccv_util.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/ccv_util.c -o CMakeFiles/objectoracle.dir/ccv/ccv_util.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/ccv_util.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/ccv_util.c.o.requires
@@ -764,17 +764,17 @@ src/CMakeFiles/objectoracle.dir/ccv/ccv_util.c.o.provides.build: src/CMakeFiles/
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.o: src/ccv/io/_ccv_io_libpng.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_44)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_44)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libpng.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libpng.c
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libpng.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libpng.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libpng.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libpng.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.o.requires
@@ -787,17 +787,17 @@ src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libpng.c.o.provides.build: src/CM
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.o: src/ccv/io/_ccv_io_libjpeg.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_45)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_45)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libjpeg.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libjpeg.c
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libjpeg.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libjpeg.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libjpeg.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_libjpeg.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.o.requires
@@ -810,17 +810,17 @@ src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_libjpeg.c.o.provides.build: src/C
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.o: src/ccv/io/_ccv_io_bmp.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_46)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_46)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_bmp.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_bmp.c
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_bmp.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_bmp.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_bmp.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_bmp.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.o.requires
@@ -833,17 +833,17 @@ src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_bmp.c.o.provides.build: src/CMake
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.o: src/ccv/io/_ccv_io_binary.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_47)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_47)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_binary.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_binary.c
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_binary.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_binary.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_binary.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_binary.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.o.requires
@@ -856,17 +856,17 @@ src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_binary.c.o.provides.build: src/CM
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.o: src/ccv/io/_ccv_io_raw.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_48)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_48)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_raw.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_raw.c
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_raw.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_raw.c > CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_raw.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/io/_ccv_io_raw.c -o CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.o.requires
@@ -879,17 +879,17 @@ src/CMakeFiles/objectoracle.dir/ccv/io/_ccv_io_raw.c.o.provides.build: src/CMake
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.o: src/ccv/3rdparty/sqlite3/sqlite3.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_49)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_49)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sqlite3/sqlite3.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sqlite3/sqlite3.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sqlite3/sqlite3.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sqlite3/sqlite3.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sqlite3/sqlite3.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sqlite3/sqlite3.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.o.requires
@@ -902,17 +902,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sqlite3/sqlite3.c.o.provides.build:
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.o: src/ccv/3rdparty/sha1/sha1.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_50)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_50)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sha1/sha1.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sha1/sha1.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sha1/sha1.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sha1/sha1.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sha1/sha1.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sha1/sha1.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.o.requires
@@ -925,17 +925,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sha1/sha1.c.o.provides.build: src/C
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.o: src/ccv/3rdparty/kissfft/kiss_fft.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_51)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_51)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fft.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fft.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fft.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fft.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fft.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fft.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.o.requires
@@ -948,17 +948,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fft.c.o.provides.build
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.o: src/ccv/3rdparty/kissfft/kiss_fftnd.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_52)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_52)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftnd.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftnd.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftnd.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftnd.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftnd.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftnd.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.o.requires
@@ -971,17 +971,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftnd.c.o.provides.bui
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.o: src/ccv/3rdparty/kissfft/kiss_fftr.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_53)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_53)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftr.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftr.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftr.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftr.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftr.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftr.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.o.requires
@@ -994,17 +994,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftr.c.o.provides.buil
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.o: src/ccv/3rdparty/kissfft/kiss_fftndr.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_54)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_54)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftndr.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftndr.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftndr.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftndr.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftndr.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kiss_fftndr.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.o.requires
@@ -1017,17 +1017,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kiss_fftndr.c.o.provides.bu
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.o: src/ccv/3rdparty/kissfft/kissf_fft.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_55)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_55)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fft.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fft.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fft.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fft.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fft.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fft.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.o.requires
@@ -1040,17 +1040,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft.c.o.provides.buil
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.o: src/ccv/3rdparty/kissfft/kissf_fftnd.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_56)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_56)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftnd.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftnd.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftnd.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftnd.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftnd.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftnd.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.o.requires
@@ -1063,17 +1063,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftnd.c.o.provides.bu
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.o: src/ccv/3rdparty/kissfft/kissf_fftr.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_57)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_57)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftr.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftr.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftr.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftr.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftr.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftr.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.o.requires
@@ -1086,17 +1086,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftr.c.o.provides.bui
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o: src/ccv/3rdparty/kissfft/kissf_fftndr.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_58)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_58)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftndr.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftndr.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftndr.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftndr.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftndr.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/kissfft/kissf_fftndr.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o.requires
@@ -1109,17 +1109,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o.provides.b
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o: src/ccv/3rdparty/dsfmt/dSFMT.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_59)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_59)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/dsfmt/dSFMT.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/dsfmt/dSFMT.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/dsfmt/dSFMT.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/dsfmt/dSFMT.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/dsfmt/dSFMT.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/dsfmt/dSFMT.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o.requires
@@ -1132,17 +1132,17 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o.provides.build: src
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o: src/ccv/3rdparty/sfmt/SFMT.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_60)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_60)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o   -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sfmt/SFMT.c
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o   -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sfmt/SFMT.c
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sfmt/SFMT.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sfmt/SFMT.c > CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.i
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sfmt/SFMT.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ccv/3rdparty/sfmt/SFMT.c -o CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.s
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o.requires
@@ -1153,65 +1153,65 @@ src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o.provides: src/CMakeFi
 
 src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o.provides.build: src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o: /home/ljmanso/robocomp/classes/rapplication/rapplication.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_61)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o -c /home/ljmanso/robocomp/classes/rapplication/rapplication.cpp
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o: /home/robocomp/robocomp/classes/rapplication/rapplication.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_61)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o -c /home/robocomp/robocomp/classes/rapplication/rapplication.cpp
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/classes/rapplication/rapplication.cpp > CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.i
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.i"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/classes/rapplication/rapplication.cpp > CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.i
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/classes/rapplication/rapplication.cpp -o CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.s
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.s"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/classes/rapplication/rapplication.cpp -o CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.s
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o.requires:
-.PHONY : src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o.requires
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o.requires:
+.PHONY : src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o.requires
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o.provides: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o.requires
-	$(MAKE) -f src/CMakeFiles/objectoracle.dir/build.make src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o.provides.build
-.PHONY : src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o.provides
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o.provides: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o.requires
+	$(MAKE) -f src/CMakeFiles/objectoracle.dir/build.make src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o.provides.build
+.PHONY : src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o.provides
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o.provides.build: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o.provides.build: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o: /home/ljmanso/robocomp/classes/qlog/qlog.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_62)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o -c /home/ljmanso/robocomp/classes/qlog/qlog.cpp
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o: /home/robocomp/robocomp/classes/qlog/qlog.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_62)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o -c /home/robocomp/robocomp/classes/qlog/qlog.cpp
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/classes/qlog/qlog.cpp > CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.i
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.i"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/classes/qlog/qlog.cpp > CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.i
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/classes/qlog/qlog.cpp -o CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.s
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.s"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/classes/qlog/qlog.cpp -o CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.s
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o.requires:
-.PHONY : src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o.requires
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o.requires:
+.PHONY : src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o.requires
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o.provides: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o.requires
-	$(MAKE) -f src/CMakeFiles/objectoracle.dir/build.make src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o.provides.build
-.PHONY : src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o.provides
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o.provides: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o.requires
+	$(MAKE) -f src/CMakeFiles/objectoracle.dir/build.make src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o.provides.build
+.PHONY : src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o.provides
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o.provides.build: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o.provides.build: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o
 
 src/CMakeFiles/objectoracle.dir/main.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/main.cpp.o: src/main.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_63)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_63)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/main.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/main.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/main.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/main.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/main.cpp
 
 src/CMakeFiles/objectoracle.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/main.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/main.cpp > CMakeFiles/objectoracle.dir/main.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/main.cpp > CMakeFiles/objectoracle.dir/main.cpp.i
 
 src/CMakeFiles/objectoracle.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/main.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/main.cpp -o CMakeFiles/objectoracle.dir/main.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/main.cpp -o CMakeFiles/objectoracle.dir/main.cpp.s
 
 src/CMakeFiles/objectoracle.dir/main.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/main.cpp.o.requires
@@ -1224,17 +1224,17 @@ src/CMakeFiles/objectoracle.dir/main.cpp.o.provides.build: src/CMakeFiles/object
 
 src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.o: src/genericmonitor.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_64)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_64)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/genericmonitor.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/genericmonitor.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.cpp
 
 src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/genericmonitor.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.cpp > CMakeFiles/objectoracle.dir/genericmonitor.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.cpp > CMakeFiles/objectoracle.dir/genericmonitor.cpp.i
 
 src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/genericmonitor.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericmonitor.cpp -o CMakeFiles/objectoracle.dir/genericmonitor.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/genericmonitor.cpp -o CMakeFiles/objectoracle.dir/genericmonitor.cpp.s
 
 src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.o.requires
@@ -1247,17 +1247,17 @@ src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.o.provides.build: src/CMakeFi
 
 src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o: src/commonbehaviorI.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_65)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_65)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.cpp
 
 src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.cpp > CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.cpp > CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.i
 
 src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.cpp -o CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/commonbehaviorI.cpp -o CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.s
 
 src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o.requires
@@ -1270,17 +1270,17 @@ src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o.provides.build: src/CMakeF
 
 src/CMakeFiles/objectoracle.dir/genericworker.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/genericworker.cpp.o: src/genericworker.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_66)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_66)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/genericworker.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/genericworker.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/genericworker.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.cpp
 
 src/CMakeFiles/objectoracle.dir/genericworker.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/genericworker.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.cpp > CMakeFiles/objectoracle.dir/genericworker.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.cpp > CMakeFiles/objectoracle.dir/genericworker.cpp.i
 
 src/CMakeFiles/objectoracle.dir/genericworker.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/genericworker.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/genericworker.cpp -o CMakeFiles/objectoracle.dir/genericworker.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/genericworker.cpp -o CMakeFiles/objectoracle.dir/genericworker.cpp.s
 
 src/CMakeFiles/objectoracle.dir/genericworker.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/genericworker.cpp.o.requires
@@ -1293,17 +1293,17 @@ src/CMakeFiles/objectoracle.dir/genericworker.cpp.o.provides.build: src/CMakeFil
 
 src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o: src/agmcommonbehaviorI.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_67)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_67)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.cpp
 
 src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.cpp > CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.cpp > CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.i
 
 src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.cpp -o CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/agmcommonbehaviorI.cpp -o CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.s
 
 src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o.requires
@@ -1316,17 +1316,17 @@ src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o.provides.build: src/CMa
 
 src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.o: src/objectoracleI.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_68)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_68)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/objectoracleI.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/objectoracleI.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/objectoracleI.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/objectoracleI.cpp
 
 src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/objectoracleI.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/objectoracleI.cpp > CMakeFiles/objectoracle.dir/objectoracleI.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/objectoracleI.cpp > CMakeFiles/objectoracle.dir/objectoracleI.cpp.i
 
 src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/objectoracleI.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/objectoracleI.cpp -o CMakeFiles/objectoracle.dir/objectoracleI.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/objectoracleI.cpp -o CMakeFiles/objectoracle.dir/objectoracleI.cpp.s
 
 src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.o.requires
@@ -1339,17 +1339,17 @@ src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.o.provides.build: src/CMakeFil
 
 src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o: src/agmexecutivetopicI.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_69)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_69)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.cpp
 
 src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.cpp > CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.cpp > CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.i
 
 src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.cpp -o CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/agmexecutivetopicI.cpp -o CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.s
 
 src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o.requires
@@ -1360,42 +1360,42 @@ src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o.provides: src/CMakeFile
 
 src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o.provides.build: src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o: /home/ljmanso/robocomp/classes/agmInner/agmInner.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_70)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o -c /home/ljmanso/robocomp/classes/agmInner/agmInner.cpp
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o: /home/robocomp/robocomp/classes/agmInner/agmInner.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_70)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o -c /home/robocomp/robocomp/classes/agmInner/agmInner.cpp
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/classes/agmInner/agmInner.cpp > CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.i
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.i"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/classes/agmInner/agmInner.cpp > CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.i
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/classes/agmInner/agmInner.cpp -o CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.s
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.s"
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/classes/agmInner/agmInner.cpp -o CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.s
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o.requires:
-.PHONY : src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o.requires
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o.requires:
+.PHONY : src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o.requires
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o.provides: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o.requires
-	$(MAKE) -f src/CMakeFiles/objectoracle.dir/build.make src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o.provides.build
-.PHONY : src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o.provides
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o.provides: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o.requires
+	$(MAKE) -f src/CMakeFiles/objectoracle.dir/build.make src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o.provides.build
+.PHONY : src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o.provides
 
-src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o.provides.build: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o
+src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o.provides.build: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o
 
 src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o: src/CommonBehavior.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_71)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_71)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/CommonBehavior.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/CommonBehavior.cpp
 
 src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/CommonBehavior.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/CommonBehavior.cpp > CMakeFiles/objectoracle.dir/CommonBehavior.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/CommonBehavior.cpp > CMakeFiles/objectoracle.dir/CommonBehavior.cpp.i
 
 src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/CommonBehavior.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/CommonBehavior.cpp -o CMakeFiles/objectoracle.dir/CommonBehavior.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/CommonBehavior.cpp -o CMakeFiles/objectoracle.dir/CommonBehavior.cpp.s
 
 src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o.requires
@@ -1408,17 +1408,17 @@ src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o.provides.build: src/CMakeFi
 
 src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.o: src/AGMAgent.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_72)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_72)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/AGMAgent.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMAgent.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/AGMAgent.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMAgent.cpp
 
 src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/AGMAgent.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMAgent.cpp > CMakeFiles/objectoracle.dir/AGMAgent.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMAgent.cpp > CMakeFiles/objectoracle.dir/AGMAgent.cpp.i
 
 src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/AGMAgent.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMAgent.cpp -o CMakeFiles/objectoracle.dir/AGMAgent.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMAgent.cpp -o CMakeFiles/objectoracle.dir/AGMAgent.cpp.s
 
 src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.o.requires
@@ -1431,17 +1431,17 @@ src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.o.provides.build: src/CMakeFiles/ob
 
 src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o: src/AGMWorldModel.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_73)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_73)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMWorldModel.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMWorldModel.cpp
 
 src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMWorldModel.cpp > CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMWorldModel.cpp > CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.i
 
 src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMWorldModel.cpp -o CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMWorldModel.cpp -o CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.s
 
 src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o.requires
@@ -1454,17 +1454,17 @@ src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o.provides.build: src/CMakeFil
 
 src/CMakeFiles/objectoracle.dir/AGMExecutive.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/AGMExecutive.cpp.o: src/AGMExecutive.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_74)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_74)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/AGMExecutive.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/AGMExecutive.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMExecutive.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/AGMExecutive.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMExecutive.cpp
 
 src/CMakeFiles/objectoracle.dir/AGMExecutive.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/AGMExecutive.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMExecutive.cpp > CMakeFiles/objectoracle.dir/AGMExecutive.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMExecutive.cpp > CMakeFiles/objectoracle.dir/AGMExecutive.cpp.i
 
 src/CMakeFiles/objectoracle.dir/AGMExecutive.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/AGMExecutive.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMExecutive.cpp -o CMakeFiles/objectoracle.dir/AGMExecutive.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMExecutive.cpp -o CMakeFiles/objectoracle.dir/AGMExecutive.cpp.s
 
 src/CMakeFiles/objectoracle.dir/AGMExecutive.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/AGMExecutive.cpp.o.requires
@@ -1477,17 +1477,17 @@ src/CMakeFiles/objectoracle.dir/AGMExecutive.cpp.o.provides.build: src/CMakeFile
 
 src/CMakeFiles/objectoracle.dir/Planning.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/Planning.cpp.o: src/Planning.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_75)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_75)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/Planning.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/Planning.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/Planning.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/Planning.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/Planning.cpp
 
 src/CMakeFiles/objectoracle.dir/Planning.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/Planning.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/Planning.cpp > CMakeFiles/objectoracle.dir/Planning.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/Planning.cpp > CMakeFiles/objectoracle.dir/Planning.cpp.i
 
 src/CMakeFiles/objectoracle.dir/Planning.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/Planning.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/Planning.cpp -o CMakeFiles/objectoracle.dir/Planning.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/Planning.cpp -o CMakeFiles/objectoracle.dir/Planning.cpp.s
 
 src/CMakeFiles/objectoracle.dir/Planning.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/Planning.cpp.o.requires
@@ -1500,17 +1500,17 @@ src/CMakeFiles/objectoracle.dir/Planning.cpp.o.provides.build: src/CMakeFiles/ob
 
 src/CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.o: src/AGMCommonBehavior.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_76)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_76)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMCommonBehavior.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMCommonBehavior.cpp
 
 src/CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMCommonBehavior.cpp > CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMCommonBehavior.cpp > CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.i
 
 src/CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/AGMCommonBehavior.cpp -o CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/AGMCommonBehavior.cpp -o CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.s
 
 src/CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.o.requires
@@ -1523,17 +1523,17 @@ src/CMakeFiles/objectoracle.dir/AGMCommonBehavior.cpp.o.provides.build: src/CMak
 
 src/CMakeFiles/objectoracle.dir/ObjectOracle.cpp.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/ObjectOracle.cpp.o: src/ObjectOracle.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_77)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_77)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/ObjectOracle.cpp.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/ObjectOracle.cpp.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ObjectOracle.cpp
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/ObjectOracle.cpp.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/ObjectOracle.cpp
 
 src/CMakeFiles/objectoracle.dir/ObjectOracle.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/ObjectOracle.cpp.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ObjectOracle.cpp > CMakeFiles/objectoracle.dir/ObjectOracle.cpp.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/ObjectOracle.cpp > CMakeFiles/objectoracle.dir/ObjectOracle.cpp.i
 
 src/CMakeFiles/objectoracle.dir/ObjectOracle.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/ObjectOracle.cpp.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/ObjectOracle.cpp -o CMakeFiles/objectoracle.dir/ObjectOracle.cpp.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/ObjectOracle.cpp -o CMakeFiles/objectoracle.dir/ObjectOracle.cpp.s
 
 src/CMakeFiles/objectoracle.dir/ObjectOracle.cpp.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/ObjectOracle.cpp.o.requires
@@ -1546,17 +1546,17 @@ src/CMakeFiles/objectoracle.dir/ObjectOracle.cpp.o.provides.build: src/CMakeFile
 
 src/CMakeFiles/objectoracle.dir/moc_specificworker.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/moc_specificworker.cxx.o: src/moc_specificworker.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_78)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_78)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/moc_specificworker.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_specificworker.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_specificworker.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx
 
 src/CMakeFiles/objectoracle.dir/moc_specificworker.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/moc_specificworker.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx > CMakeFiles/objectoracle.dir/moc_specificworker.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx > CMakeFiles/objectoracle.dir/moc_specificworker.cxx.i
 
 src/CMakeFiles/objectoracle.dir/moc_specificworker.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/moc_specificworker.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx -o CMakeFiles/objectoracle.dir/moc_specificworker.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificworker.cxx -o CMakeFiles/objectoracle.dir/moc_specificworker.cxx.s
 
 src/CMakeFiles/objectoracle.dir/moc_specificworker.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/moc_specificworker.cxx.o.requires
@@ -1569,17 +1569,17 @@ src/CMakeFiles/objectoracle.dir/moc_specificworker.cxx.o.provides.build: src/CMa
 
 src/CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.o: src/moc_specificmonitor.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_79)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_79)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx
 
 src/CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx > CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx > CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.i
 
 src/CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx -o CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_specificmonitor.cxx -o CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.s
 
 src/CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.o.requires
@@ -1592,17 +1592,17 @@ src/CMakeFiles/objectoracle.dir/moc_specificmonitor.cxx.o.provides.build: src/CM
 
 src/CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.o: src/moc_genericmonitor.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_80)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_80)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx
 
 src/CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx > CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx > CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.i
 
 src/CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx -o CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericmonitor.cxx -o CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.s
 
 src/CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.o.requires
@@ -1615,17 +1615,17 @@ src/CMakeFiles/objectoracle.dir/moc_genericmonitor.cxx.o.provides.build: src/CMa
 
 src/CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.o: src/moc_commonbehaviorI.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_81)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_81)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx
 
 src/CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx > CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx > CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.i
 
 src/CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx -o CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_commonbehaviorI.cxx -o CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.s
 
 src/CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.o.requires
@@ -1638,17 +1638,17 @@ src/CMakeFiles/objectoracle.dir/moc_commonbehaviorI.cxx.o.provides.build: src/CM
 
 src/CMakeFiles/objectoracle.dir/moc_genericworker.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/moc_genericworker.cxx.o: src/moc_genericworker.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_82)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_82)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/moc_genericworker.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_genericworker.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_genericworker.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx
 
 src/CMakeFiles/objectoracle.dir/moc_genericworker.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/moc_genericworker.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx > CMakeFiles/objectoracle.dir/moc_genericworker.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx > CMakeFiles/objectoracle.dir/moc_genericworker.cxx.i
 
 src/CMakeFiles/objectoracle.dir/moc_genericworker.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/moc_genericworker.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx -o CMakeFiles/objectoracle.dir/moc_genericworker.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_genericworker.cxx -o CMakeFiles/objectoracle.dir/moc_genericworker.cxx.s
 
 src/CMakeFiles/objectoracle.dir/moc_genericworker.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/moc_genericworker.cxx.o.requires
@@ -1661,17 +1661,17 @@ src/CMakeFiles/objectoracle.dir/moc_genericworker.cxx.o.provides.build: src/CMak
 
 src/CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.o: src/moc_agmcommonbehaviorI.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_83)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_83)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx
 
 src/CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx > CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx > CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.i
 
 src/CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx -o CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmcommonbehaviorI.cxx -o CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.s
 
 src/CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.o.requires
@@ -1684,17 +1684,17 @@ src/CMakeFiles/objectoracle.dir/moc_agmcommonbehaviorI.cxx.o.provides.build: src
 
 src/CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.o: src/moc_objectoracleI.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_84)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_84)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx
 
 src/CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx > CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx > CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.i
 
 src/CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx -o CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_objectoracleI.cxx -o CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.s
 
 src/CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.o.requires
@@ -1707,17 +1707,17 @@ src/CMakeFiles/objectoracle.dir/moc_objectoracleI.cxx.o.provides.build: src/CMak
 
 src/CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.o: src/moc_agmexecutivetopicI.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_85)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_85)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx
 
 src/CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx > CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx > CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.i
 
 src/CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx -o CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/moc_agmexecutivetopicI.cxx -o CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.s
 
 src/CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.o.requires
@@ -1730,17 +1730,17 @@ src/CMakeFiles/objectoracle.dir/moc_agmexecutivetopicI.cxx.o.provides.build: src
 
 src/CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.o: src/CMakeFiles/objectoracle.dir/flags.make
 src/CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.o: src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ljmanso/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_86)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/robocomp/robocomp/components/prp/components/objectOracle/CMakeFiles $(CMAKE_PROGRESS_86)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.o"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.o -c /home/ljmanso/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.o -c /home/robocomp/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx
 
 src/CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.i"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ljmanso/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx > CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.i
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/robocomp/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx > CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.i
 
 src/CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.s"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ljmanso/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx -o CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.s
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/robocomp/robocomp/components/prp/components/objectOracle/src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx -o CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.s
 
 src/CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.o.requires:
 .PHONY : src/CMakeFiles/objectoracle.dir/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx.o.requires
@@ -1796,8 +1796,8 @@ objectoracle_OBJECTS = \
 "CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o" \
 "CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o" \
 "CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o" \
-"CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o" \
-"CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o" \
+"CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o" \
+"CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o" \
 "CMakeFiles/objectoracle.dir/main.cpp.o" \
 "CMakeFiles/objectoracle.dir/genericmonitor.cpp.o" \
 "CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o" \
@@ -1805,7 +1805,7 @@ objectoracle_OBJECTS = \
 "CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o" \
 "CMakeFiles/objectoracle.dir/objectoracleI.cpp.o" \
 "CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o" \
-"CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o" \
+"CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o" \
 "CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o" \
 "CMakeFiles/objectoracle.dir/AGMAgent.cpp.o" \
 "CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o" \
@@ -1869,8 +1869,8 @@ bin/objectoracle: src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fft
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o
-bin/objectoracle: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o
-bin/objectoracle: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o
+bin/objectoracle: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o
+bin/objectoracle: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/main.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o
@@ -1878,7 +1878,7 @@ bin/objectoracle: src/CMakeFiles/objectoracle.dir/genericworker.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o
-bin/objectoracle: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o
+bin/objectoracle: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.o
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o
@@ -1924,7 +1924,7 @@ bin/objectoracle: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.9
 bin/objectoracle: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.9
 bin/objectoracle: src/CMakeFiles/objectoracle.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable ../bin/objectoracle"
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/objectoracle.dir/link.txt --verbose=$(VERBOSE)
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/objectoracle.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 src/CMakeFiles/objectoracle.dir/build: bin/objectoracle
@@ -1973,8 +1973,8 @@ src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/ccv/3r
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/ccv/3rdparty/kissfft/kissf_fftndr.c.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/ccv/3rdparty/dsfmt/dSFMT.c.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/ccv/3rdparty/sfmt/SFMT.c.o.requires
-src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/rapplication/rapplication.cpp.o.requires
-src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/qlog/qlog.cpp.o.requires
+src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o.requires
+src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/main.cpp.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/genericmonitor.cpp.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/commonbehaviorI.cpp.o.requires
@@ -1982,7 +1982,7 @@ src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/generi
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/agmcommonbehaviorI.cpp.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/objectoracleI.cpp.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/agmexecutivetopicI.cpp.o.requires
-src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/home/ljmanso/robocomp/classes/agmInner/agmInner.cpp.o.requires
+src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/home/robocomp/robocomp/classes/agmInner/agmInner.cpp.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/CommonBehavior.cpp.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/AGMAgent.cpp.o.requires
 src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/AGMWorldModel.cpp.o.requires
@@ -2002,7 +2002,7 @@ src/CMakeFiles/objectoracle.dir/requires: src/CMakeFiles/objectoracle.dir/__/__/
 .PHONY : src/CMakeFiles/objectoracle.dir/requires
 
 src/CMakeFiles/objectoracle.dir/clean:
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle/src && $(CMAKE_COMMAND) -P CMakeFiles/objectoracle.dir/cmake_clean.cmake
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle/src && $(CMAKE_COMMAND) -P CMakeFiles/objectoracle.dir/cmake_clean.cmake
 .PHONY : src/CMakeFiles/objectoracle.dir/clean
 
 src/CMakeFiles/objectoracle.dir/depend: src/CommonBehavior.cpp
@@ -2029,6 +2029,6 @@ src/CMakeFiles/objectoracle.dir/depend: src/moc_objectoracleI.cxx
 src/CMakeFiles/objectoracle.dir/depend: src/moc_agmexecutivetopicI.cxx
 src/CMakeFiles/objectoracle.dir/depend: src/__/__/__/__/__/classes/agmInner/moc_agmInner.cxx
 src/CMakeFiles/objectoracle.dir/depend: src/ui_mainUI.h
-	cd /home/ljmanso/robocomp/components/prp/components/objectOracle && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ljmanso/robocomp/components/prp/components/objectOracle /home/ljmanso/robocomp/components/prp/components/objectOracle/src /home/ljmanso/robocomp/components/prp/components/objectOracle /home/ljmanso/robocomp/components/prp/components/objectOracle/src /home/ljmanso/robocomp/components/prp/components/objectOracle/src/CMakeFiles/objectoracle.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/robocomp/robocomp/components/prp/components/objectOracle && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/robocomp/robocomp/components/prp/components/objectOracle /home/robocomp/robocomp/components/prp/components/objectOracle/src /home/robocomp/robocomp/components/prp/components/objectOracle /home/robocomp/robocomp/components/prp/components/objectOracle/src /home/robocomp/robocomp/components/prp/components/objectOracle/src/CMakeFiles/objectoracle.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : src/CMakeFiles/objectoracle.dir/depend
 

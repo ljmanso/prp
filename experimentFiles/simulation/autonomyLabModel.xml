@@ -105,7 +105,6 @@
 	</transform>
 
 
-	<mesh id="mergrreesaRbb" file="/home/robocomp/robocomp/prp/experimentFiles/simulation/tablecorner.osg" scale="100000,1000,100000" tx="2500" ty="800" tz="-2000" ry="1.5707" collide="1" />
 
 
 	<transform id="tableC" tx="6500" tz="2400" ty="800"> <!-- la de luiky -->
