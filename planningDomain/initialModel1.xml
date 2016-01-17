@@ -1,0 +1,191 @@
+<AGMModel>
+	<symbol id="24" type="object">
+		<attribute key="imType" value="transform" />
+		<attribute key="imName" value="tableC" />
+	</symbol>
+	<symbol id="25" type="objectSt">
+	</symbol>
+	<symbol id="26" type="object">
+		<attribute key="imType" value="transform" />
+		<attribute key="imName" value="tableD" />
+	</symbol>
+	<symbol id="27" type="objectSt">
+	</symbol>
+	<symbol id="20" type="object">
+		<attribute key="imType" value="transform" />
+		<attribute key="imName" value="tableA" />
+	</symbol>
+	<symbol id="21" type="objectSt">
+	</symbol>
+	<symbol id="22" type="object">
+		<attribute key="imType" value="transform" />
+		<attribute key="imName" value="tableB" />
+	</symbol>
+	<symbol id="23" type="objectSt">
+	</symbol>
+	<symbol id="28" type="object">
+		<attribute key="imType" value="transform" />
+		<attribute key="imName" value="tableE" />
+	</symbol>
+	<symbol id="29" type="objectSt">
+	</symbol>
+	<symbol id="1" type="robot">
+	</symbol>
+	<symbol id="3" type="room">
+	</symbol>
+	<symbol id="2" type="status">
+	</symbol>
+	<symbol id="5" type="room">
+	</symbol>
+	<symbol id="4" type="roomSt">
+	</symbol>
+	<symbol id="6" type="roomSt">
+	</symbol>
+	<symbol id="102" type="protoObject">
+	</symbol>
+	<symbol id="100" type="world">
+		<attribute key="imType" value="transform" />
+		<attribute key="imName" value="world" />
+	</symbol>
+	<symbol id="101" type="objectSt">
+	</symbol>
+	<link src="100" dst="1" label="RT" >
+		<linkAttribute key="tz" value="0" />
+		<linkAttribute key="tx" value="0" />
+		<linkAttribute key="ty" value="0" />
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="0" />
+		<linkAttribute key="rz" value="0" />
+	</link>
+	<link src="3" dst="4" label="room" >
+	</link>
+	<link src="1" dst="3" label="in" >
+	</link>
+	<link src="1" dst="3" label="know" >
+	</link>
+	<link src="5" dst="6" label="room" >
+	</link>
+	<link src="1" dst="5" label="know" >
+	</link>
+	<link src="20" dst="3" label="in" >
+	</link>
+	<link src="20" dst="21" label="hasStatus" >
+	</link>
+	<link src="20" dst="21" label="noReach" >
+	</link>
+	<link src="20" dst="21" label="reachable" >
+	</link>
+	<link src="20" dst="21" label="table" >
+	</link>
+	<link src="1" dst="20" label="know" >
+	</link>
+	<link src="100" dst="20" label="RT" >
+		<linkAttribute key="tz" value="3180" />
+		<linkAttribute key="tx" value="1400" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="0" />
+		<linkAttribute key="rz" value="0" />
+	</link>
+	<link src="22" dst="3" label="in" >
+	</link>
+	<link src="22" dst="23" label="hasStatus" >
+	</link>
+	<link src="22" dst="23" label="noReach" >
+	</link>
+	<link src="22" dst="23" label="reachable" >
+	</link>
+	<link src="22" dst="23" label="table" >
+	</link>
+	<link src="1" dst="22" label="know" >
+	</link>
+	<link src="100" dst="22" label="RT" >
+		<linkAttribute key="tz" value="3200" />
+		<linkAttribute key="tx" value="3800" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="0" />
+		<linkAttribute key="rz" value="0" />
+	</link>
+	<link src="24" dst="3" label="in" >
+	</link>
+	<link src="24" dst="25" label="hasStatus" >
+	</link>
+	<link src="24" dst="25" label="noReach" >
+	</link>
+	<link src="24" dst="25" label="reachable" >
+	</link>
+	<link src="24" dst="25" label="table" >
+	</link>
+	<link src="1" dst="24" label="know" >
+	</link>
+	<link src="100" dst="24" label="RT" >
+		<linkAttribute key="tz" value="2400" />
+		<linkAttribute key="tx" value="6500" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="0" />
+		<linkAttribute key="rz" value="0" />
+	</link>
+	<link src="26" dst="5" label="in" >
+	</link>
+	<link src="26" dst="27" label="hasStatus" >
+	</link>
+	<link src="26" dst="27" label="noReach" >
+	</link>
+	<link src="26" dst="27" label="reachable" >
+	</link>
+	<link src="26" dst="27" label="table" >
+	</link>
+	<link src="1" dst="26" label="know" >
+	</link>
+	<link src="100" dst="26" label="RT" >
+		<linkAttribute key="tz" value="-3600" />
+		<linkAttribute key="tx" value="4500" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="1.5707" />
+		<linkAttribute key="rz" value="0" />
+	</link>
+	<link src="28" dst="5" label="in" >
+	</link>
+	<link src="28" dst="29" label="hasStatus" >
+	</link>
+	<link src="28" dst="29" label="noReach" >
+	</link>
+	<link src="28" dst="29" label="reachable" >
+	</link>
+	<link src="28" dst="29" label="table" >
+	</link>
+	<link src="1" dst="28" label="know" >
+	</link>
+	<link src="100" dst="28" label="RT" >
+		<linkAttribute key="tz" value="-3600" />
+		<linkAttribute key="tx" value="4500" />
+		<linkAttribute key="ty" value="800" />
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="1.5707" />
+		<linkAttribute key="rz" value="0" />
+	</link>
+	<link src="3" dst="5" label="transitable" >
+	</link>
+	<link src="5" dst="3" label="transitable" >
+	</link>
+	<link src="102" dst="26" label="in" >
+	</link>
+	<link src="1" dst="2" label="usedOracle" >
+	</link>
+	<link src="102" dst="101" label="hasStatus" >
+	</link>
+	<link src="102" dst="101" label="noReach" >
+	</link>
+	<link src="102" dst="101" label="reachable" >
+	</link>
+	<link src="102" dst="3" label="in" >
+	</link>
+	<link src="102" dst="101" label="mug" >
+	</link>
+	<link src="1" dst="102" label="know" >
+	</link>
+</AGMModel>
+

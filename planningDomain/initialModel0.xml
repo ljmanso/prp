@@ -5,6 +5,7 @@
 <!-- 		<attribute key="imName" value="robot" /> -->
 <!-- 		<attribute key="imType" value="omnirobot" /> -->
 	</symbol>
+	<symbol id="2" type="status" />
 
 <!-- WORLD -->
 	<symbol id="100" type="world">
@@ -131,6 +132,7 @@
 		<linkAttribute key="ry" value="1.5707" />
 	</link>
 
-
+	<link src="3" dst="5" label="transitable" />
+	<link src="5" dst="3" label="transitable" />
 
 </AGMModel>
