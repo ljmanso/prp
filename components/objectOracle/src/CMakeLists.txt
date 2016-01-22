@@ -46,7 +46,9 @@ SET ( HEADERS
   $ENV{ROBOCOMP}/classes/agmInner/agmInner.h
 )
 
-
+find_package(Boost
+             COMPONENTS filesystem
+             REQUIRED)
 
 #ROBOCOMP
 ROBOCOMP_INITIALIZE( $ENV{ROBOCOMP}/ )

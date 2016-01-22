@@ -23,6 +23,9 @@
 /**
 * \brief Default constructor
 */
+
+typedef std::map<std::string, double>::const_iterator MapIterator;
+
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
 	active = false;
@@ -32,6 +35,14 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 
 	file.open("/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+        
+        processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
+        
+        //show map after processing
+        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+        {
+                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }
 }
 
 /**
@@ -135,8 +146,6 @@ static unsigned int get_current_time(void)
 	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
-
-
 std::fstream& GotoLine(std::fstream& file, unsigned int num)
 {
     file.seekg(std::ios::beg);
@@ -145,6 +154,108 @@ std::fstream& GotoLine(std::fstream& file, unsigned int num)
         file.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
     }
     return file;
+}
+
+void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
+{
+	//Recursively read all files and compute VFH
+	for(boost::filesystem::directory_iterator it (base_dir); it!=boost::filesystem::directory_iterator (); ++it)
+	{
+		std::stringstream ss;
+		ss << it->path();
+		//if its a directory just call back the function
+		if (boost::filesystem::is_directory (it->status()))
+		{
+			printf ("Entering directory %s.\n", ss.str().c_str());
+			//call rescursively our function
+			processDataFromDir(it->path());
+		}
+		//if not, go ahead and read and process the file
+                if (boost::filesystem::is_regular_file (it->status()))
+		{
+                        std::string path2file = it->path().string();
+                        std::string location = path2file.substr(0, path2file.find_last_of("/\\"));
+                        location = location.substr(location.find_last_of("/\\")+1);
+                        
+                        cv::Mat rgb = cv::imread( path2file );
+                        ColorSeq rgbMatrix;
+                        rgbMatrix.resize(640*480);
+                        
+                        for (int row = 0; row<480; row++)
+                        {
+                            for (int column = 0; column<640; column ++)
+                            {     
+                                
+                                rgbMatrix[(640*row)+column].blue = rgb.at<cv::Vec3b>(row,column)[0];
+                                rgbMatrix[(640*row)+column].green = rgb.at<cv::Vec3b>(row,column)[1];
+                                rgbMatrix[(640*row)+column].red = rgb.at<cv::Vec3b>(row,column)[2];
+                            }
+                        }
+                        
+                        std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
+                        std::cout<<rgbMatrix.size()<<std::endl;
+                        processImage(rgbMatrix, location);
+		}
+	}                        
+}
+
+void SpecificWorker::processImage(const ColorSeq &image, std::string location)
+{
+    ResultList result;
+    std:string label;
+    
+    getLabelsFromImage(image, result);
+    
+    for(int i=0; i<result.size(); i++)
+    {
+        if(location.compare("table1") == 0)
+        {
+            std::map<std::string,double>::iterator it = table1.find(result[i].name);
+            if (it == table1.end())
+                table1.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
+            else
+                table1[result[i].name] = (table1[result[i].name] + result[i].believe)/2; 
+        }
+        else
+        {
+            if(location.compare("table2") == 0)
+            {
+                std::map<std::string,double>::iterator it = table2.find(result[i].name);
+                if (it == table2.end())
+                    table2.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
+                else
+                    table2[result[i].name] = (table2[result[i].name] + result[i].believe)/2; 
+            }
+            else
+            {
+                if(location.compare("table3") == 0)
+                {
+                    std::map<std::string,double>::iterator it = table3.find(result[i].name);
+                    if (it == table3.end())
+                        table3.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
+                    else
+                        table3[result[i].name] = (table3[result[i].name] + result[i].believe)/2; 
+                }
+                else
+                {
+                    if(location.compare("table4") == 0)
+                    {
+                        std::map<std::string,double>::iterator it = table4.find(result[i].name);
+                        if (it == table4.end())
+                            table4.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
+                        else
+                            table4[result[i].name] = (table4[result[i].name] + result[i].believe)/2; 
+                    }
+                    else
+                    {
+                        std::cout<<"Processing Image: Location not properly specified"<<std::endl;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &result)
@@ -156,8 +267,9 @@ void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &resul
     
     ccv_dense_matrix_t* ccv_image = 0;
     
-    ccv_read(image.data(), &ccv_image, CCV_IO_RGB_RAW, 480, 640, 1920);
+    convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
     
+    ccv_read(image.data(), &ccv_image, CCV_IO_RGB_RAW, 480, 640, 1920);
     assert(ccv_image != 0);
 //     ccv_matrix_t *a = 0;
     

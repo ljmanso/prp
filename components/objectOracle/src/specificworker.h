@@ -35,6 +35,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <agmInner/agmInner.h>
+#include <boost/filesystem.hpp>
 
 #ifdef __cplusplus
 extern "C"{
@@ -70,6 +72,11 @@ public:
 	int uptimeAgent();
 	bool deactivateAgent();
 	StateStruct getAgentState();
+        
+        void processDataFromDir(const boost::filesystem::path &base_dir);
+        //given an image and its location it process its objects and save them to the corresponding location
+        void processImage(const ColorSeq &image, std::string location);
+        
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::Event &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
@@ -80,6 +87,11 @@ public slots:
 	void compute(); 	
 
 private:
+        std::map<std::string, double>  table1;
+        std::map<std::string, double>  table2;
+        std::map<std::string, double>  table3;
+        std::map<std::string, double>  table4;
+        
 	std::string action;
 	ParameterMap params;
 	AGMModel::SPtr worldModel;

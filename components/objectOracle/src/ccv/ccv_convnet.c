@@ -1668,6 +1668,7 @@ ccv_convnet_t* ccv_convnet_read(int use_cwc_accel, const char* filename)
 
 void ccv_convnet_input_formation(ccv_size_t input, ccv_dense_matrix_t* a, ccv_dense_matrix_t** b)
 {
+        printf( "ccv_size_t: %d, %d\n", input.width, input.height);
 	if (a->rows > input.height && a->cols > input.width)
 		ccv_resample(a, b, CCV_32F, ccv_max(input.height, (int)(a->rows * (float)input.height / a->cols + 0.5)), ccv_max(input.width, (int)(a->cols * (float)input.width / a->rows + 0.5)), CCV_INTER_AREA);
 	else if (a->rows < input.height || a->cols < input.width)
