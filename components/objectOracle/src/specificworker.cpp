@@ -65,9 +65,9 @@ void SpecificWorker::compute()
 {
 	printf("ACTION: %s\n", action.c_str());
 	
-	if (action == "computemostlikelyobjectcontainer")
+	if (action == "imagineMostLikelyMugInPosition")
 	{
-		action_computeMostLikelyObjectContainer();
+		action_imagineMostLikelyMugInPosition();
 	}
 
 }
@@ -449,46 +449,32 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 
 
 
-void SpecificWorker::action_computeMostLikelyObjectContainer()
+void SpecificWorker::action_imagineMostLikelyMugInPosition()
 {
-	std::string container="", object="", objectType="";
-	uint action = 0;
-	auto plan = AGMPlan::fromString(params["plan"].value);
+	AGMModel::SPtr newModel(new AGMModel(worldModel));
 
-	// Get container
-	container = plan.actions[action].parameters["container"];
-	action++;
-	if (container == "")
-		return;
+	// Create new symbols and the edges which are independent from the container
+	AGMModelSymbol::SPtr mugSt = newModel->newSymbol("objectSt");
+	AGMModelSymbol::SPtr mug   = newModel->newSymbol("protoObject");
+	newModel->addEdge(mug, mugSt, "mug");
+	newModel->addEdge(mug, mugSt, "reachable");
+	newModel->addEdge(mug, mugSt, "noReach");
+	newModel->addEdge(mug, mugSt, "hasStatus");
+	auto symbols = newModel->getSymbolsMap(params, "robot", "status", "table", "room");
+	newModel->addEdge(symbols["robot"], mug, "know");
+	newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
+	
+	// Create the edges that indicate in which table the object will be located
+	AGMModelSymbol::SPtr tableID = newModel->getSymbol(42); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
+	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(42); // ERROR WARNING TODO  depending on the table containing the object to be found.
+	newModel->addEdge(mug, tableID, "in");
+	newModel->addEdge(mug, roomID, "in");
 
-	// Get object
-	for ( ; action<plan.actions.size(); action++)
-	{
-		std::size_t found = plan.actions[action].name.find("lookForObjectIn");
-		if (found == 0)
-		{
-			object = plan.actions[action].parameters["object"];
-			action++;
-			break;
-		}
-	}
-	if (object == "")
-		return;
+	
+	// Send modification proposal
+	sendModificationProposal(worldModel, newModel);
 
-	// Get type of object
-	for ( ; action<plan.actions.size(); action++)
-	{
-		std::string needle = "recognizeObj";
-		std::size_t found = plan.actions[action].name.find(needle);
-		if (found == 0)
-		{
-			objectType = plan.actions[action].name.substr(needle.size());
-			printf("FIND %s\n", objectType.c_str());
-			break;
-		}
-	}
-	if (objectType == "")
-		return;
+	
 }
 
 

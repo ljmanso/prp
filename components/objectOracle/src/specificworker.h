@@ -60,9 +60,9 @@ class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
 private:
-    ccv_convnet_t* convnet;
-    fstream file;
-    bool first;
+	ccv_convnet_t* convnet;
+	fstream file;
+	bool first;
 
 public:
 	SpecificWorker(MapPrx& mprx);	
@@ -78,11 +78,11 @@ public:
 	bool deactivateAgent();
 	StateStruct getAgentState();
         
-        void processDataFromDir(const boost::filesystem::path &base_dir);
-        //given an image and its location it process its objects and save them to the corresponding location
-        void processImage(const ColorSeq &image, std::string location);
-        void save_tables_info();
-        void read_tables_info();
+	void processDataFromDir(const boost::filesystem::path &base_dir);
+	//given an image and its location it process its objects and save them to the corresponding location
+	void processImage(const ColorSeq &image, std::string location);
+	void save_tables_info();
+	void read_tables_info();
         
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::Event &modification);
@@ -94,11 +94,11 @@ public slots:
 	void compute(); 	
 
 private:
-        std::map<std::string, double>  table1;
-        std::map<std::string, double>  table2;
-        std::map<std::string, double>  table3;
-        std::map<std::string, double>  table4;
-        
+	std::map<std::string, double>  table1;
+	std::map<std::string, double>  table2;
+	std::map<std::string, double>  table3;
+	std::map<std::string, double>  table4;
+		
 	std::string action;
 	ParameterMap params;
 	AGMModel::SPtr worldModel;
@@ -108,7 +108,7 @@ private:
 	void sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel);
 
 	
-	void action_computeMostLikelyObjectContainer();
+	void action_imagineMostLikelyMugInPosition();
 };
 
 #endif
