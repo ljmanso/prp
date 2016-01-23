@@ -139,6 +139,31 @@ StateStruct SpecificWorker::getAgentState()
 	return s;
 }
 
+void SpecificWorker::save_tables_info()
+{
+    std::ofstream ofs("tables_info.data");
+    
+    boost::archive::text_oarchive oa(ofs);
+    
+    oa << table1;
+    oa << table2;
+    oa << table3;
+    oa << table4;
+    
+}
+
+void SpecificWorker::read_tables_info()
+{
+    std::ifstream ofs("tables_info.data");
+    
+    boost::archive::text_iarchive oa(ofs);
+    oa >> table1;
+    oa >> table2;
+    oa >> table3;
+    oa >> table4;
+    
+}
+
 static unsigned int get_current_time(void)
 {
 	struct timeval tv;

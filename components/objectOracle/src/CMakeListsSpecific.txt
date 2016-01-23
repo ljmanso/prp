@@ -51,7 +51,7 @@ SET ( SOURCES
 
 
 find_package(Boost
-             COMPONENTS filesystem
+             COMPONENTS filesystem serialization
              REQUIRED)
 
 # Headers set

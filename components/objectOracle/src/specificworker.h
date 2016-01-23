@@ -37,6 +37,11 @@
 #include <string>
 #include <agmInner/agmInner.h>
 #include <boost/filesystem.hpp>
+#include <sstream>
+
+#include <boost/serialization/map.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 #ifdef __cplusplus
 extern "C"{
@@ -76,6 +81,8 @@ public:
         void processDataFromDir(const boost::filesystem::path &base_dir);
         //given an image and its location it process its objects and save them to the corresponding location
         void processImage(const ColorSeq &image, std::string location);
+        void save_tables_info();
+        void read_tables_info();
         
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::Event &modification);
