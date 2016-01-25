@@ -33,8 +33,8 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
 
-	file.open("/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012.words", std::ifstream::in);
-	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
+	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
         
         processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
         
@@ -43,6 +43,8 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
         {
                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
+        
+        save_tables_info();
 }
 
 /**
@@ -292,7 +294,7 @@ void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &resul
     
     ccv_dense_matrix_t* ccv_image = 0;
     
-    convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+    convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
     
     ccv_read(image.data(), &ccv_image, CCV_IO_RGB_RAW, 480, 640, 1920);
     assert(ccv_image != 0);
@@ -385,7 +387,39 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
 	mutex->unlock();
 }
 
-
+std::string SpecificWorker::lookForObject(std::string label)
+{
+    std::string table;
+    double current_believe = -1;
+    
+    //Obtaining object posibility from the different tables
+    std::map<std::string,double>::iterator it = table1.find(label);
+    if (it != table1.end() && it->second > current_believe)
+    {
+        table =  "table1";
+        current_believe = it->second;
+    }
+    
+    if (it != table2.end() && it->second > current_believe)
+    {
+        table =  "table2";
+        current_believe = it->second;
+    }
+    
+    if (it != table3.end() && it->second > current_believe)
+    {
+        table =  "table3";    
+        current_believe = it->second;
+    }
+    
+    if (it != table4.end() && it->second > current_believe)
+    {
+        table =  "table4";       
+        current_believe = it->second;
+    }
+    
+    return table;
+}
 
 bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated)
 {
