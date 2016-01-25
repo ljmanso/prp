@@ -82,7 +82,7 @@ public:
 	//given an image and its location it process its objects and save them to the corresponding location
 	void processImage(const ColorSeq &image, std::string location);
 	void save_tables_info();
-	void read_tables_info();
+	void load_tables_info();
         
         std::string lookForObject(std::string label);
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);

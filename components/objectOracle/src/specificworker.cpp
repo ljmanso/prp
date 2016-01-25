@@ -45,6 +45,13 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
         }
         
         save_tables_info();
+        load_tables_info();
+        
+        //show map after processing
+        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+        {
+                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }
 }
 
 /**
@@ -65,7 +72,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
-	printf("ACTION: %s\n", action.c_str());
+// 	printf("ACTION: %s\n", action.c_str());
 	
 	if (action == "imagineMostLikelyMugInPosition")
 	{
@@ -154,7 +161,7 @@ void SpecificWorker::save_tables_info()
     
 }
 
-void SpecificWorker::read_tables_info()
+void SpecificWorker::load_tables_info()
 {
     std::ifstream ofs("tables_info.data");
     
@@ -235,43 +242,57 @@ void SpecificWorker::processImage(const ColorSeq &image, std::string location)
     
     for(int i=0; i<result.size(); i++)
     {
+        std::stringstream names(result[i].name);
         if(location.compare("table1") == 0)
         {
-            std::map<std::string,double>::iterator it = table1.find(result[i].name);
-            if (it == table1.end())
-                table1.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
-            else
-                table1[result[i].name] = (table1[result[i].name] + result[i].believe)/2; 
+            while(std::getline(names, label, ','))
+            {
+                std::map<std::string,double>::iterator it = table1.find(label);
+                if (it == table1.end())
+                    table1.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                else
+                    table1[label] = (table1[label] + result[i].believe)/2; 
+            }
         }
         else
         {
             if(location.compare("table2") == 0)
             {
-                std::map<std::string,double>::iterator it = table2.find(result[i].name);
-                if (it == table2.end())
-                    table2.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
-                else
-                    table2[result[i].name] = (table2[result[i].name] + result[i].believe)/2; 
+                
+                while(std::getline(names, label, ','))
+                {
+                    std::map<std::string,double>::iterator it = table2.find(label);
+                    if (it == table2.end())
+                        table2.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                    else
+                        table2[label] = (table2[label] + result[i].believe)/2; 
+                }
             }
             else
             {
                 if(location.compare("table3") == 0)
                 {
-                    std::map<std::string,double>::iterator it = table3.find(result[i].name);
-                    if (it == table3.end())
-                        table3.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
-                    else
-                        table3[result[i].name] = (table3[result[i].name] + result[i].believe)/2; 
+                    while(std::getline(names, label, ','))
+                    {
+                        std::map<std::string,double>::iterator it = table3.find(label);
+                        if (it == table3.end())
+                            table3.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                        else
+                            table3[label] = (table3[label] + result[i].believe)/2; 
+                    } 
                 }
                 else
                 {
                     if(location.compare("table4") == 0)
                     {
-                        std::map<std::string,double>::iterator it = table4.find(result[i].name);
-                        if (it == table4.end())
-                            table4.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
-                        else
-                            table4[result[i].name] = (table4[result[i].name] + result[i].believe)/2; 
+                        while(std::getline(names, label, ','))
+                        {
+                            std::map<std::string,double>::iterator it = table4.find(label);
+                            if (it == table4.end())
+                                table4.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                            else
+                                table4[label] = (table4[label] + result[i].believe)/2; 
+                        }
                     }
                     else
                     {
