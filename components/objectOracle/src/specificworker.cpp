@@ -33,16 +33,25 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
 
-	file.open("/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012.words", std::ifstream::in);
-	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
+	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
         
-	processDataFromDir("/home/robocomp/robocomp/components/prp/experimentFiles/images/");
-	
-	//show map after processing
-	for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
-	{
-		cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-	}
+        processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
+        
+        //show map after processing
+        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+        {
+                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }
+        
+        save_tables_info();
+        load_tables_info();
+        
+        //show map after processing
+        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+        {
+                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }
 }
 
 /**
@@ -63,9 +72,9 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
-	printf("ACTION: %s\n", action.c_str());
+// 	printf("ACTION: %s\n", action.c_str());
 	
-	if (action == "imaginemostlikelymuginposition")
+	if (action == "imagineMostLikelyMugInPosition")
 	{
 		action_imagineMostLikelyMugInPosition();
 	}
@@ -152,7 +161,7 @@ void SpecificWorker::save_tables_info()
     
 }
 
-void SpecificWorker::read_tables_info()
+void SpecificWorker::load_tables_info()
 {
     std::ifstream ofs("tables_info.data");
     
@@ -233,43 +242,57 @@ void SpecificWorker::processImage(const ColorSeq &image, std::string location)
     
     for(int i=0; i<result.size(); i++)
     {
+        std::stringstream names(result[i].name);
         if(location.compare("table1") == 0)
         {
-            std::map<std::string,double>::iterator it = table1.find(result[i].name);
-            if (it == table1.end())
-                table1.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
-            else
-                table1[result[i].name] = (table1[result[i].name] + result[i].believe)/2; 
+            while(std::getline(names, label, ','))
+            {
+                std::map<std::string,double>::iterator it = table1.find(label);
+                if (it == table1.end())
+                    table1.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                else
+                    table1[label] = (table1[label] + result[i].believe)/2; 
+            }
         }
         else
         {
             if(location.compare("table2") == 0)
             {
-                std::map<std::string,double>::iterator it = table2.find(result[i].name);
-                if (it == table2.end())
-                    table2.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
-                else
-                    table2[result[i].name] = (table2[result[i].name] + result[i].believe)/2; 
+                
+                while(std::getline(names, label, ','))
+                {
+                    std::map<std::string,double>::iterator it = table2.find(label);
+                    if (it == table2.end())
+                        table2.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                    else
+                        table2[label] = (table2[label] + result[i].believe)/2; 
+                }
             }
             else
             {
                 if(location.compare("table3") == 0)
                 {
-                    std::map<std::string,double>::iterator it = table3.find(result[i].name);
-                    if (it == table3.end())
-                        table3.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
-                    else
-                        table3[result[i].name] = (table3[result[i].name] + result[i].believe)/2; 
+                    while(std::getline(names, label, ','))
+                    {
+                        std::map<std::string,double>::iterator it = table3.find(label);
+                        if (it == table3.end())
+                            table3.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                        else
+                            table3[label] = (table3[label] + result[i].believe)/2; 
+                    } 
                 }
                 else
                 {
                     if(location.compare("table4") == 0)
                     {
-                        std::map<std::string,double>::iterator it = table4.find(result[i].name);
-                        if (it == table4.end())
-                            table4.insert ( std::pair<std::string, double>(result[i].name,result[i].believe) );
-                        else
-                            table4[result[i].name] = (table4[result[i].name] + result[i].believe)/2; 
+                        while(std::getline(names, label, ','))
+                        {
+                            std::map<std::string,double>::iterator it = table4.find(label);
+                            if (it == table4.end())
+                                table4.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                            else
+                                table4[label] = (table4[label] + result[i].believe)/2; 
+                        }
                     }
                     else
                     {
@@ -292,7 +315,7 @@ void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &resul
     
     ccv_dense_matrix_t* ccv_image = 0;
     
-    convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+    convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
     
     ccv_read(image.data(), &ccv_image, CCV_IO_RGB_RAW, 480, 640, 1920);
     assert(ccv_image != 0);
@@ -385,7 +408,39 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
 	mutex->unlock();
 }
 
-
+std::string SpecificWorker::lookForObject(std::string label)
+{
+    std::string table;
+    double current_believe = -1;
+    
+    //Obtaining object posibility from the different tables
+    std::map<std::string,double>::iterator it = table1.find(label);
+    if (it != table1.end() && it->second > current_believe)
+    {
+        table =  "table1";
+        current_believe = it->second;
+    }
+    
+    if (it != table2.end() && it->second > current_believe)
+    {
+        table =  "table2";
+        current_believe = it->second;
+    }
+    
+    if (it != table3.end() && it->second > current_believe)
+    {
+        table =  "table3";    
+        current_believe = it->second;
+    }
+    
+    if (it != table4.end() && it->second > current_believe)
+    {
+        table =  "table4";       
+        current_believe = it->second;
+    }
+    
+    return table;
+}
 
 bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated)
 {
@@ -465,8 +520,8 @@ void SpecificWorker::action_imagineMostLikelyMugInPosition()
 	newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
 	
 	// Create the edges that indicate in which table the object will be located
-	AGMModelSymbol::SPtr tableID = newModel->getSymbol(28); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
-	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(28); // ERROR WARNING TODO  depending on the table containing the object to be found.
+	AGMModelSymbol::SPtr tableID = newModel->getSymbol(42); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
+	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(42); // ERROR WARNING TODO  depending on the table containing the object to be found.
 	newModel->addEdge(mug, tableID, "in");
 	newModel->addEdge(mug, roomID, "in");
 

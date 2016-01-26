@@ -50,6 +50,15 @@ void SpecificWorker::compute()
 }
 
 
+void writePCD(std::string path, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
+{
+	printf("Writing: %s  width:%d height:%d points:%d\n", path.c_str(), (int)cloud->width, (int)cloud->height, (int)cloud->points.size());
+	cloud->width = 1;
+	cloud->height = cloud->points.size();
+	static pcl::PCDWriter writer;
+	if (not cloud->empty()) writer.writeASCII(path, *cloud);
+}
+
 
 void SpecificWorker::store()
 {
@@ -63,6 +72,7 @@ void SpecificWorker::store()
 // 	{
 // 		std::cout << "Error reading from Camera" << e << std::endl;
 // 	}
+		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>); // PCL
 }
 
 

@@ -33,7 +33,6 @@
 
 
 void writePCD(std::string path, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
-void writePCD_Y0(std::string path);
 
 class SpecificWorker : public GenericWorker
 {
@@ -48,7 +47,7 @@ public slots:
 	void compute(); 	
 	void store();
 private:
-	
+	int frame;
 };
 
 #endif
