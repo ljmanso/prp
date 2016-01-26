@@ -73,8 +73,8 @@
         <!-- Tables come here -->
         
 	<transform id="tableA" tx="5935.0" tz="2790.0" ty="800" ry="1.5707">
-                <mesh id="monitor2" tx="-600" ty="800" file="/home/robocomp/robocomp/files/osgModels/objects/gadgets/monitorLCD.ive" scale="1000,1000,1000" rx="1.5707" rz="-1.5707" collide="1" />
-                <mesh id="cpu2" tx="0" ty="0" tz="600" file="/home/robocomp/robocomp/files/osgModels/objects/gadgets/cpu.ive" scale="3,3,3" rx="1.5707" rz="3.78" collide="1" />
+<!--                <mesh id="monitor2" tx="-600" ty="800" file="/home/robocomp/robocomp/files/osgModels/objects/gadgets/monitorLCD.ive" scale="1000,1000,1000" rx="1.5707" rz="-1.5707" collide="1" />
+                <mesh id="cpu2" tx="0" ty="0" tz="600" file="/home/robocomp/robocomp/files/osgModels/objects/gadgets/cpu.ive" scale="3,3,3" rx="1.5707" rz="3.78" collide="1" />-->
 		<plane id="tableAC" ny="1" size="1000,1750"  texture="#cccccc" />
 	</transform> 
         
@@ -91,27 +91,27 @@
 	</transform>
         
         <transform id="tableF" tx="1200" tz="500.0" ty="800" ry="1.5707">
-                <mesh id="yardstick" tz="700" file="/home/robocomp/robocomp/files/osgModels/objects/tools/yardstick.ive" scale="50,50,50" rx="1.5707" collide="1" />
-                <mesh id="screwdriver" tz="-600" file="/home/robocomp/robocomp/files/osgModels/objects/tools/screwdriver2.ive" scale="0.05,0.05,0.05" rx="1.5707" rz="-0.7" collide="1" />                
-                 <mesh id="hammer" tz="-300" file="/home/robocomp/robocomp/files/osgModels/objects/tools/hammer.ive" scale="10,10,10" rx="1.5707" collide="1" />
-                 <mesh id="pliers" tx="300"  file="/home/robocomp/robocomp/files/osgModels/objects/tools/pliers.ive" scale="10,10,10" rx="1.5707" collide="1" />
-                 <mesh id="wrench" tx="-300"  file="/home/robocomp/robocomp/files/osgModels/objects/tools/wrench.ive" scale="1,1,1" rx="1.5707" collide="1" />
-                <mesh id="caliper" tz="200" file="/home/robocomp/robocomp/files/osgModels/objects/tools/caliper.ive" scale="50,50,50" rx="1.5707" rz="-0.7"  collide="1" />
+<!--                 <mesh id="yardstick" tz="700" file="/home/robocomp/robocomp/files/osgModels/objects/tools/yardstick.ive" scale="50,50,50" rx="1.5707" collide="1" /> -->
+<!--                 <mesh id="screwdriver" tz="-600" file="/home/robocomp/robocomp/files/osgModels/objects/tools/screwdriver2.ive" scale="0.05,0.05,0.05" rx="1.5707" rz="-0.7" collide="1" />                 -->
+<!--                  <mesh id="hammer" tz="-300" file="/home/robocomp/robocomp/files/osgModels/objects/tools/hammer.ive" scale="10,10,10" rx="1.5707" collide="1" /> -->
+<!--                  <mesh id="pliers" tx="300"  file="/home/robocomp/robocomp/files/osgModels/objects/tools/pliers.ive" scale="10,10,10" rx="1.5707" collide="1" /> -->
+<!--                  <mesh id="wrench" tx="-300"  file="/home/robocomp/robocomp/files/osgModels/objects/tools/wrench.ive" scale="1,1,1" rx="1.5707" collide="1" /> -->
+<!--                 <mesh id="caliper" tz="200" file="/home/robocomp/robocomp/files/osgModels/objects/tools/caliper.ive" scale="50,50,50" rx="1.5707" rz="-0.7"  collide="1" /> -->
 		<plane id="tableFF" ny="1" size="1000,1750"  texture="#cccccc" />
 	</transform> 
         
         <transform id="tableE" tx="6500.0" tz="-2900.0" ty="800">
-                <mesh id="calculator" tz="700" file="/home/robocomp/robocomp/files/osgModels/objects/office/calculator.ive" scale="6,6,6" rx="1.5707" rz="-1.5707" collide="1" />
-                <mesh id="rack"  tz="-500" tx="500" file="/home/robocomp/robocomp/files/osgModels/objects/office/rack.ive" scale="1,1,1" rx="1.5707" collide="1" />
-                <mesh id="pencil"  tz="-500" tx="-300" file="/home/robocomp/robocomp/files/osgModels/objects/office/pencil.ive" scale="80,40,80" rx="1.5707" collide="1" />
-                <mesh id="rack_pencils"  tz="-200" tx="300" file="/home/robocomp/robocomp/files/osgModels/objects/office/rack_pencils.ive" scale="15,15,15" rx="1.5707" collide="1" />
-                 <mesh id="book_java"  tz="0" tx="0" file="/home/robocomp/robocomp/files/osgModels/objects/office/java_book.ive" scale="15,15,15" rx="1.5707" rz="-1.5707" collide="1" />
+<!--                 <mesh id="calculator" tz="700" file="/home/robocomp/robocomp/files/osgModels/objects/office/calculator.ive" scale="6,6,6" rx="1.5707" rz="-1.5707" collide="1" /> -->
+<!--                 <mesh id="rack"  tz="-500" tx="500" file="/home/robocomp/robocomp/files/osgModels/objects/office/rack.ive" scale="1,1,1" rx="1.5707" collide="1" /> -->
+<!--                 <mesh id="pencil"  tz="-500" tx="-300" file="/home/robocomp/robocomp/files/osgModels/objects/office/pencil.ive" scale="80,40,80" rx="1.5707" collide="1" /> -->
+<!--                 <mesh id="rack_pencils"  tz="-200" tx="300" file="/home/robocomp/robocomp/files/osgModels/objects/office/rack_pencils.ive" scale="15,15,15" rx="1.5707" collide="1" /> -->
+<!--                  <mesh id="book_java"  tz="0" tx="0" file="/home/robocomp/robocomp/files/osgModels/objects/office/java_book.ive" scale="15,15,15" rx="1.5707" rz="-1.5707" collide="1" /> -->
 		<plane id="tableEE" ny="1" size="1000,1750"  texture="#cccccc" />
 	</transform>
 
 	<transform id="tableC" tx="1335.0" tz="-3150.0" ty="800">
-                <mesh id="monitor" tx="-600" ty="800" file="/home/robocomp/robocomp/files/osgModels/objects/gadgets/monitorLCD.ive" scale="1000,1000,1000" rx="1.5707" rz="-1.5707" collide="1" />
-                <mesh id="cpu" tx="0" ty="0" tz="600" file="/home/robocomp/robocomp/files/osgModels/objects/gadgets/cpu.ive" scale="3,3,3" rx="1.5707" rz="3.78" collide="1" />
+<!--                 <mesh id="monitor" tx="-600" ty="800" file="/home/robocomp/robocomp/files/osgModels/objects/gadgets/monitorLCD.ive" scale="1000,1000,1000" rx="1.5707" rz="-1.5707" collide="1" /> -->
+<!--                 <mesh id="cpu" tx="0" ty="0" tz="600" file="/home/robocomp/robocomp/files/osgModels/objects/gadgets/cpu.ive" scale="3,3,3" rx="1.5707" rz="3.78" collide="1" /> -->
 		<plane id="tableCC" ny="1" size="1000,1750"  texture="#cccccc" />
 	</transform>
 

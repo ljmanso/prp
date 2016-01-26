@@ -36,13 +36,13 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	file.open("/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/files/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
         
-        processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
-        
-        //show map after processing
-        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
-        {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-        }
+	processDataFromDir("/home/robocomp/robocomp/components/prp/experimentFiles/images/");
+	
+	//show map after processing
+	for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+	{
+		cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+	}
 }
 
 /**
@@ -65,7 +65,7 @@ void SpecificWorker::compute()
 {
 	printf("ACTION: %s\n", action.c_str());
 	
-	if (action == "imagineMostLikelyMugInPosition")
+	if (action == "imaginemostlikelymuginposition")
 	{
 		action_imagineMostLikelyMugInPosition();
 	}
@@ -465,8 +465,8 @@ void SpecificWorker::action_imagineMostLikelyMugInPosition()
 	newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
 	
 	// Create the edges that indicate in which table the object will be located
-	AGMModelSymbol::SPtr tableID = newModel->getSymbol(42); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
-	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(42); // ERROR WARNING TODO  depending on the table containing the object to be found.
+	AGMModelSymbol::SPtr tableID = newModel->getSymbol(28); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
+	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(28); // ERROR WARNING TODO  depending on the table containing the object to be found.
 	newModel->addEdge(mug, tableID, "in");
 	newModel->addEdge(mug, roomID, "in");
 
