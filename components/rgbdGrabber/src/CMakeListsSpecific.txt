@@ -11,7 +11,7 @@ SET ( HEADERS
   specificmonitor.h
 )
 
-INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
+INCLUDE($ENV{ROBOCOMP}/cmake/modules/pcl.cmake)
 
 ADD_DEFINITIONS( -std=c++11 )
 

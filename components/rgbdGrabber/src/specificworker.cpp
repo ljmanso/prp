@@ -23,6 +23,7 @@
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
+	frame = 0;
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(store()));
 }
 
@@ -62,17 +63,39 @@ void writePCD(std::string path, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
 
 void SpecificWorker::store()
 {
-// 	try
-// 	{
-// 		camera_proxy->getYImage(0,img, cState, bState);
-// 		memcpy(image_gray.data, &img[0], m_width*m_height*sizeof(uchar));
-// 		searchTags(image_gray);
-// 	}
-// 	catch(const Ice::Exception &e)
-// 	{
-// 		std::cout << "Error reading from Camera" << e << std::endl;
-// 	}
-		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>); // PCL
+	RoboCompRGBD::ColorSeq color;
+	RoboCompRGBD::DepthSeq depth;
+	RoboCompRGBD::PointSeq points;
+	RoboCompJointMotor::MotorStateMap hState;
+	RoboCompDifferentialRobot::TBaseState bState;
+	
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+
+	rgbd_proxy->getImage(color, depth, points, hState, bState);
+
+	int32_t goodPoints = 0;
+	cloud->width = goodPoints;
+	cloud->height = 1;
+	for (uint32_t ioi=0; ioi<points.size(); ioi++)
+	{
+		if ((not isnan(points[ioi].z)) and points[ioi].z > 10)
+			goodPoints += 1;
+	}	
+	cloud->points.resize(goodPoints);
+	
+	int32_t goodPoint = 0;
+	for (uint32_t ioi=0; ioi<points.size(); ioi++)
+	{
+		if ((not isnan(points[ioi].z)) and points[ioi].z > 10)
+		{
+			cloud->points[goodPoint].x =  points[ioi].x;
+			cloud->points[goodPoint].y =  points[ioi].y;
+			cloud->points[goodPoint].z = -points[ioi].z;
+			goodPoint += 1;
+		}
+	}
+	
+	writePCD(QString("%1").arg(frame++, 5, 10, QChar('0')).toStdString()+".pcd", cloud);
 }
 
 
