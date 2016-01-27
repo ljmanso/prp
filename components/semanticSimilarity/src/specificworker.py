@@ -48,7 +48,7 @@ class SpecificWorker(GenericWorker):
 		self.Period = 2000
 		self.timer.start(self.Period)
                 print('Loading model...')
-                self.model = Word2Vec.load_word2vec_format('/home/robocomp/robocomp/files/dpModels/word2vec/GoogleNews-vectors-negative300.bin', binary=True)
+                self.model = Word2Vec.load_word2vec_format('/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/GoogleNews-vectors-negative300.bin', binary=True)
                 print('Model loaded!')
 
 	def setParams(self, params):
