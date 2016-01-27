@@ -410,7 +410,7 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
 
 std::string SpecificWorker::lookForObject(std::string label)
 {
-    std::string table;
+    std::string table = "none";
     double current_believe = -1;
     
     //Obtaining object posibility from the different tables
@@ -438,6 +438,8 @@ std::string SpecificWorker::lookForObject(std::string label)
         table =  "table4";       
         current_believe = it->second;
     }
+    
+    //if no object try to use semantics
     
     return table;
 }
