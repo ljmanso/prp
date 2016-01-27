@@ -32,7 +32,7 @@
 #include <pcl/point_types.h>
 
 
-void writePCD(std::string path, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+void writePCD(std::string path, pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud);
 
 class SpecificWorker : public GenericWorker
 {

@@ -51,7 +51,7 @@ void SpecificWorker::compute()
 }
 
 
-void writePCD(std::string path, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
+void writePCD(std::string path, pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud)
 {
 	printf("Writing: %s  width:%d height:%d points:%d\n", path.c_str(), (int)cloud->width, (int)cloud->height, (int)cloud->points.size());
 	cloud->width = 1;
@@ -69,30 +69,20 @@ void SpecificWorker::store()
 	RoboCompJointMotor::MotorStateMap hState;
 	RoboCompDifferentialRobot::TBaseState bState;
 	
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
 
 	rgbd_proxy->getImage(color, depth, points, hState, bState);
 
-	int32_t goodPoints = 0;
-	cloud->width = goodPoints;
 	cloud->height = 1;
+	cloud->width = points.size();
+	cloud->points.resize(points.size());
 	for (uint32_t ioi=0; ioi<points.size(); ioi++)
 	{
-		if ((not isnan(points[ioi].z)) and points[ioi].z > 10)
-			goodPoints += 1;
-	}	
-	cloud->points.resize(goodPoints);
-	
-	int32_t goodPoint = 0;
-	for (uint32_t ioi=0; ioi<points.size(); ioi++)
-	{
-		if ((not isnan(points[ioi].z)) and points[ioi].z > 10)
-		{
-			cloud->points[goodPoint].x =  points[ioi].x;
-			cloud->points[goodPoint].y =  points[ioi].y;
-			cloud->points[goodPoint].z = -points[ioi].z;
-			goodPoint += 1;
-		}
+		cloud->points[ioi].x =  points[ioi].x;
+		cloud->points[ioi].y =  points[ioi].y;
+		cloud->points[ioi].z = -points[ioi].z;
+		uint32_t rgb = ((uint32_t)color[ioi].red << 16 | (uint32_t)color[ioi].green << 8 | (uint32_t)color[ioi].blue);
+		cloud->points[ioi].rgb = *reinterpret_cast<float*>(&rgb);
 	}
 	
 	writePCD(QString("%1").arg(frame++, 5, 10, QChar('0')).toStdString()+".pcd", cloud);
