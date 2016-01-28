@@ -85,7 +85,11 @@ void SpecificWorker::store()
 		cloud->points[ioi].rgb = *reinterpret_cast<float*>(&rgb);
 	}
 	
-	writePCD(QString("%1").arg(frame++, 5, 10, QChar('0')).toStdString()+".pcd", cloud);
+	
+	QString numberToStr = QString("%1").arg(frame++, 5, 10, QChar('0'));
+	writePCD(numberToStr.toStdString()+".pcd", cloud);
+	QImage((uchar *)&(color[0]), 640, 480, QImage::Format_RGB888).save(numberToStr+".png");
+		
 }
 
 
