@@ -36,22 +36,38 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
         
-        processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
-        
-        //show map after processing
-        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
-        {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-        }
-        
-        save_tables_info();
-        load_tables_info();
-        
-        //show map after processing
-        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
-        {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-        }
+//         processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
+//         
+//         //show map after processing
+//         for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+//         {
+//                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+//         }
+//         
+//         save_tables_info();
+//         load_tables_info();
+//         
+//         //show map after processing
+//         for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+//         {
+//                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+//         }
+	
+	pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
+	
+	if (pcl::io::loadPCDFile<PointT> ("/home/marcog/robocomp/components/prp/experimentFiles/capturas/00032.pcd", *cloud) == -1) //* load the file
+	{
+		PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+	}
+	cv::Mat rgb = cv::imread("/home/marcog/robocomp/components/prp/experimentFiles/capturas/00032.png");
+	
+	std::cout << "Number of points before: " << cloud->points.size() << std::endl;
+
+	segmentObjects3D( cloud, rgb);
+
+	std::cout << "Number of points after: " << cloud->points.size() << std::endl;
+	
+	pcl::io::savePCDFileASCII ("test_pcd.pcd", *cloud);
 }
 
 /**
@@ -406,6 +422,181 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
 	mutex->unlock();
+}
+
+void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image)
+{
+	
+	//downsample
+	pcl::VoxelGrid<PointT> voxel_grid;
+	voxel_grid.setInputCloud (cloud);
+	voxel_grid.setLeafSize (10, 10, 10);
+	voxel_grid.filter(*cloud);
+	
+	//Use Ransac to find a plane
+	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+	// Create the segmentation object
+	pcl::SACSegmentation<PointT> seg;
+	// Optional
+	seg.setOptimizeCoefficients (true);
+	// Mandatory
+	seg.setModelType (pcl::SACMODEL_PLANE);
+	seg.setMethodType (pcl::SAC_RANSAC);
+	seg.setDistanceThreshold (15);
+	seg.setInputCloud (cloud);
+	seg.segment (*inliers, *coefficients);
+	std::cout<<"Ransac inliers size: "<<inliers->indices.size()<<std::endl;
+	//save inlisers to coud
+// 	pcl::copyPointCloud<PointT>(*cloud, *inliers, *cloud);
+	
+	//project points to plane
+	pcl::PointCloud<PointT>::Ptr plane_projected (new pcl::PointCloud<PointT>);
+	pcl::ProjectInliers<PointT> proj;
+	proj.setModelType (pcl::SACMODEL_PLANE);
+	proj.setIndices (inliers);
+	proj.setInputCloud (cloud);
+	proj.setModelCoefficients (coefficients);
+	proj.filter (*plane_projected);
+	std::cout<<"Plane plane_projected size: "<<plane_projected->points.size()<<std::endl;
+	
+// 	*cloud = *plane_projected;
+	
+	//cloud_hull
+	pcl::PointCloud<PointT>::Ptr cloud_hull (new pcl::PointCloud<PointT>);
+ 	pcl::ConvexHull<PointT> chull;
+ 	chull.setInputCloud(plane_projected);
+ 	chull.reconstruct(*cloud_hull);
+	std::cout<<"Cloud hull size: "<<cloud_hull->points.size()<<std::endl;
+	
+// 	*cloud = *cloud_hull;
+	
+	pcl::ExtractPolygonalPrismData<PointT> prism_extract;
+ 	pcl::PointCloud<PointT>::Ptr polygon_cloud(new pcl::PointCloud<PointT>);
+	pcl::PointIndices::Ptr prism_indices (new pcl::PointIndices);
+	
+ 	prism_extract.setHeightLimits(25, 1500);
+	prism_extract.setViewPoint(0, 0, 1);
+ 	prism_extract.setInputCloud(cloud);
+ 	prism_extract.setInputPlanarHull(cloud_hull);
+ 	prism_extract.segment(*prism_indices);
+ 	
+	//let's extract the result
+ 	pcl::ExtractIndices<PointT> extract_prism_indices;
+ 	extract_prism_indices.setInputCloud(cloud);
+ 	extract_prism_indices.setIndices(prism_indices);
+ 	extract_prism_indices.filter(*(polygon_cloud));
+	std::cout<<"Polygon cloud size: "<<polygon_cloud->points.size()<<std::endl;
+	
+	*cloud = *polygon_cloud;
+	
+	//euclidean extraction
+	
+	pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT>);
+	pcl::EuclideanClusterExtraction<PointT> ec;
+	std::vector<pcl::PointIndices> cluster_indices;
+		
+	tree->setInputCloud (polygon_cloud);
+	cluster_indices.clear();
+	
+	ec.setClusterTolerance (70); // 2cm
+	ec.setMinClusterSize (100);
+	ec.setMaxClusterSize (25000);
+	ec.setSearchMethod (tree);
+	
+	ec.setInputCloud (polygon_cloud);
+	ec.extract (cluster_indices);
+	std::cout<<"Cluster Indices: "<< cluster_indices.size()<<std::endl;
+	
+	//cut the image
+// 	cv::Mat rgbd_image(480,640, CV_8UC3, cv::Scalar::all(0));
+// 	
+// 	int j = 0;
+// 	pcl::PointCloud<PointT>::Ptr cloud_cluster (new pcl::PointCloud<PointT>);
+// 	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
+// 	{
+// 		
+// 		cloud_cluster->clear();
+// 		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
+// 		{
+// 			cloud_cluster->points.push_back (this->cloud->points[*pit]); //*
+// 		}
+// 		cloud_cluster->width = cloud_cluster->points.size ();
+// 		cloud_cluster->height = 1;
+// 		cloud_cluster->is_dense = true;
+// 		
+// 		//save the cloud at 
+// // 		cluster_clouds.push_back(cloud_cluster);
+// 		
+// 		std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
+// 		std::stringstream ss;
+// 		ss <<"capture_"<<saved_counter<< "_object_" << j;
+// 		
+// 		/////save rgbd 
+// 		
+// 		cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
+// 		for (unsigned int i = 0; i<cloud_cluster->points.size(); i++)
+// 		{
+// 			QVec xy = innermodel->project("robot", QVec::vec3(cloud_cluster->points[i].x, cloud_cluster->points[i].y, cloud_cluster->points[i].z), "rgbd"); 
+// 
+// 			if (xy(0)>=0 and xy(0) < 640 and xy(1)>=0 and xy(1) < 480 )
+// 			{
+// 				M.at<uchar> ((int)xy(1), (int)xy(0)) = 255;
+// 			}
+// 			else if (not (isinf(xy(1)) or isinf(xy(0))))
+// 			{
+// 				std::cout<<"Accediendo a -noinf: "<<xy(1)<<" "<<xy(0)<<std::endl;
+// 			}
+//  		}
+//  		
+//  		//dilate
+//  		cv::Mat dilated_M, z;
+//  		cv::dilate( M, dilated_M, cv::Mat(), cv::Point(-1, -1), 2, 1, 1 );
+// 		
+//  		//find contour
+// 		vector<vector<cv::Point> > contours;
+// 		vector<cv::Vec4i> hierarchy;
+// 		
+// 		cv::findContours( dilated_M, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+// 		
+// 		  /// Draw contours
+// 		cv::Mat mask = cv::Mat::zeros( dilated_M.size(), CV_8UC3 );
+// // 		int contour_index = 1;
+// 
+// // 		cv::Scalar color = cv::Scalar( 0, 255, 0 );
+// // 		cv::drawContours( drawing, contours, contour_index, color, 2, 8, hierarchy, 0, cv::Point() );
+// 		
+// 		cv::drawContours(mask, contours, -1, cv::Scalar(255, 255, 255), CV_FILLED);
+// 		
+// 		
+//     // let's create a new image now
+//     cv::Mat crop(rgbd_image.rows, rgbd_image.cols, CV_8UC3);
+// 
+//     // set background to green
+//     crop.setTo(cv::Scalar(255,255,255));
+// 		
+// 		rgbd_image.copyTo(crop, mask);
+// 		
+// 		normalize(mask.clone(), mask, 0.0, 255.0, CV_MINMAX, CV_8UC1);
+// 		
+// 		cout<<"about to display"<<endl;
+// 		
+// 		cv::namedWindow( "Display window2", cv::WINDOW_AUTOSIZE );// Create a window for display.
+//     cv::imshow( "Display window2", rgbd_image );
+// 		cv::imwrite( "scene.png", rgbd_image );
+// 		
+// 		cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+//     cv::imshow( "Display window", crop );
+// 
+// 		cv::imwrite( ss.str() + ".png", crop );
+// 
+// 		/////save rgbd end
+// 		
+// 		
+//     writer.write<PointT> (ss.str () + ".pcd", *cloud_cluster, false); //*
+//     j++;
+//   }
+	
 }
 
 std::string SpecificWorker::lookForObject(std::string label)

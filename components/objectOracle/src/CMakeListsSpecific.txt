@@ -64,6 +64,9 @@ INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
 # opencv2
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
 
-SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl -lblas ${Boost_LIBRARIES})
+find_package(PCL 1.2 REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+
+SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl -lblas ${PCL_LIBRARIES} ${Boost_LIBRARIES} )
 
 ADD_DEFINITIONS( -std=c++11 -fpermissive -D DEBUG -D HAVE_LIBPNG -D HAVE_LIBJPEG -D HAVE_AVCODEC -D HAVE_AVFORMAT -D HAVE_SWSCALE -D HAVE_SSE2 -D HAVE_GSL -D HAVE_CBLAS )
