@@ -53,7 +53,7 @@
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/surface/convex_hull.h>
 #include <pcl/segmentation/extract_polygonal_prism_data.h>
-
+#include <pcl/range_image/range_image.h>
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
 

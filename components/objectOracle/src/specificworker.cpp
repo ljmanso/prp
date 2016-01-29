@@ -508,32 +508,36 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 	ec.extract (cluster_indices);
 	std::cout<<"Cluster Indices: "<< cluster_indices.size()<<std::endl;
 	
+	
 	//cut the image
 // 	cv::Mat rgbd_image(480,640, CV_8UC3, cv::Scalar::all(0));
 // 	
-// 	int j = 0;
-// 	pcl::PointCloud<PointT>::Ptr cloud_cluster (new pcl::PointCloud<PointT>);
-// 	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
-// 	{
+	int j = 0;
+	int saved_counter = 0;
+	pcl::PointCloud<PointT>::Ptr cloud_cluster (new pcl::PointCloud<PointT>);
+	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
+	{
 // 		
-// 		cloud_cluster->clear();
-// 		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
-// 		{
-// 			cloud_cluster->points.push_back (this->cloud->points[*pit]); //*
-// 		}
-// 		cloud_cluster->width = cloud_cluster->points.size ();
-// 		cloud_cluster->height = 1;
-// 		cloud_cluster->is_dense = true;
+		cloud_cluster->clear();
+		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
+		{
+			cloud_cluster->points.push_back (cloud->points[*pit]); //*
+		}
+		cloud_cluster->width = cloud_cluster->points.size ();
+		cloud_cluster->height = 1;
+		cloud_cluster->is_dense = true;
 // 		
 // 		//save the cloud at 
 // // 		cluster_clouds.push_back(cloud_cluster);
 // 		
-// 		std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
-// 		std::stringstream ss;
-// 		ss <<"capture_"<<saved_counter<< "_object_" << j;
+		std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
+		std::stringstream ss;
+		ss <<"capture_"<<saved_counter<< "_object_" << j;
 // 		
 // 		/////save rgbd 
 // 		
+	
+	
 // 		cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
 // 		for (unsigned int i = 0; i<cloud_cluster->points.size(); i++)
 // 		{
@@ -593,9 +597,9 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 // 		/////save rgbd end
 // 		
 // 		
-//     writer.write<PointT> (ss.str () + ".pcd", *cloud_cluster, false); //*
-//     j++;
-//   }
+		pcl::io::savePCDFileASCII (ss.str () + ".pcd", *cloud_cluster);
+		j++;
+	}
 	
 }
 
