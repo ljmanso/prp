@@ -26,7 +26,8 @@
 
 typedef std::map<std::string, double>::const_iterator MapIterator;
 
-SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
+SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx),
+first(true)
 {
 	active = false;
 	worldModel = AGMModel::SPtr(new AGMModel());
@@ -53,21 +54,6 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 //                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
 //         }
 	
-	pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
-	
-	if (pcl::io::loadPCDFile<PointT> ("/home/marcog/robocomp/components/prp/experimentFiles/capturas/00032.pcd", *cloud) == -1) //* load the file
-	{
-		PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
-	}
-	cv::Mat rgb = cv::imread("/home/marcog/robocomp/components/prp/experimentFiles/capturas/00032.png");
-	
-	std::cout << "Number of points before: " << cloud->points.size() << std::endl;
-
-	segmentObjects3D( cloud, rgb);
-
-	std::cout << "Number of points after: " << cloud->points.size() << std::endl;
-	
-	pcl::io::savePCDFileASCII ("test_pcd.pcd", *cloud);
 }
 
 /**
@@ -94,7 +80,27 @@ void SpecificWorker::compute()
 	{
 		action_imagineMostLikelyMugInPosition();
 	}
+	
+	if(first)
+	{
+		first=false;
+		
+		pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
+	
+		if (pcl::io::loadPCDFile<PointT> ("/home/marcog/robocomp/components/prp/experimentFiles/capturas/00032.pcd", *cloud) == -1) //* load the file
+		{
+			PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+		}
+		cv::Mat rgb = cv::imread("/home/marcog/robocomp/components/prp/experimentFiles/capturas/00032.png");
+		
+		std::cout << "Number of points before: " << cloud->points.size() << std::endl;
 
+		segmentObjects3D( cloud, rgb);
+
+		std::cout << "Number of points after: " << cloud->points.size() << std::endl;
+		
+		pcl::io::savePCDFileASCII ("test_pcd.pcd", *cloud);
+	}
 }
 
 
@@ -221,30 +227,30 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 			processDataFromDir(it->path());
 		}
 		//if not, go ahead and read and process the file
-                if (boost::filesystem::is_regular_file (it->status()))
+        if (boost::filesystem::is_regular_file (it->status()))
 		{
-                        std::string path2file = it->path().string();
-                        std::string location = path2file.substr(0, path2file.find_last_of("/\\"));
-                        location = location.substr(location.find_last_of("/\\")+1);
-                        
-                        cv::Mat rgb = cv::imread( path2file );
-                        ColorSeq rgbMatrix;
-                        rgbMatrix.resize(640*480);
-                        
-                        for (int row = 0; row<480; row++)
-                        {
-                            for (int column = 0; column<640; column ++)
-                            {     
-                                
-                                rgbMatrix[(640*row)+column].blue = rgb.at<cv::Vec3b>(row,column)[0];
-                                rgbMatrix[(640*row)+column].green = rgb.at<cv::Vec3b>(row,column)[1];
-                                rgbMatrix[(640*row)+column].red = rgb.at<cv::Vec3b>(row,column)[2];
-                            }
-                        }
-                        
-                        std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
-                        std::cout<<rgbMatrix.size()<<std::endl;
-                        processImage(rgbMatrix, location);
+			std::string path2file = it->path().string();
+			std::string location = path2file.substr(0, path2file.find_last_of("/\\"));
+			location = location.substr(location.find_last_of("/\\")+1);
+			
+			cv::Mat rgb = cv::imread( path2file );
+			ColorSeq rgbMatrix;
+			rgbMatrix.resize(640*480);
+			
+			for (int row = 0; row<480; row++)
+			{
+				for (int column = 0; column<640; column ++)
+				{     
+					
+					rgbMatrix[(640*row)+column].blue = rgb.at<cv::Vec3b>(row,column)[0];
+					rgbMatrix[(640*row)+column].green = rgb.at<cv::Vec3b>(row,column)[1];
+					rgbMatrix[(640*row)+column].red = rgb.at<cv::Vec3b>(row,column)[2];
+				}
+			}
+			
+			std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
+			std::cout<<rgbMatrix.size()<<std::endl;
+			processImage(rgbMatrix, location);
 		}
 	}                        
 }
@@ -424,8 +430,9 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
 	mutex->unlock();
 }
 
-void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image)
+std::vector<cv::Mat> SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image)
 {
+	std::vector<cv::Mat> result;
 	
 	//downsample
 	pcl::VoxelGrid<PointT> voxel_grid;
@@ -500,7 +507,7 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 	cluster_indices.clear();
 	
 	ec.setClusterTolerance (70); // 2cm
-	ec.setMinClusterSize (100);
+	ec.setMinClusterSize (40);
 	ec.setMaxClusterSize (25000);
 	ec.setSearchMethod (tree);
 	
@@ -538,69 +545,62 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 // 		
 	
 	
-// 		cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
+		cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
+		
+		float maxAngleWidth = (float) (57.0f * (M_PI / 180.0f));
+		float maxAngleHeight = (float) (43.0f * (M_PI / 180.0f));
+		float angularResolution = (float)(57.0f / 640.0f * (M_PI/180.0f));
+		Eigen::Affine3f sensorPose = Eigen::Affine3f::Identity();
+		pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
+		float noiseLevel=0.00;
+		float minRange = 0.0f;
+		int borderSize = 1;
+		std::vector<cv::Point> points;
+		
 // 		for (unsigned int i = 0; i<cloud_cluster->points.size(); i++)
-// 		{
-// 			QVec xy = innermodel->project("robot", QVec::vec3(cloud_cluster->points[i].x, cloud_cluster->points[i].y, cloud_cluster->points[i].z), "rgbd"); 
-// 
-// 			if (xy(0)>=0 and xy(0) < 640 and xy(1)>=0 and xy(1) < 480 )
-// 			{
-// 				M.at<uchar> ((int)xy(1), (int)xy(0)) = 255;
-// 			}
-// 			else if (not (isinf(xy(1)) or isinf(xy(0))))
-// 			{
-// 				std::cout<<"Accediendo a -noinf: "<<xy(1)<<" "<<xy(0)<<std::endl;
-// 			}
-//  		}
-//  		
-//  		//dilate
-//  		cv::Mat dilated_M, z;
-//  		cv::dilate( M, dilated_M, cv::Mat(), cv::Point(-1, -1), 2, 1, 1 );
+		for(pcl::PointCloud<PointT>::const_iterator cloud_it = cloud_cluster->begin(); cloud_it != cloud_cluster->end(); cloud_it++ )
+		{
+			int f = 525;
+			int x = f*-cloud_it->x/cloud_it->z + 320;
+			int y = f*cloud_it->y/cloud_it->z + 240;
+			points.push_back(cv::Point(x,y));
+
+// 			M.at<uchar> (y, x) = 255;
+
+ 		}
+ 		
+ 		cv::RotatedRect rect = cv::minAreaRect(cv::Mat(points));
+// 		cv::Point2f vertices[4];
+// 		box.points(vertices);
+		cv::Mat M_, rotated, cropped;
+		// get angle and size from the bounding box
+        float angle = rect.angle;
+        cv::Size rect_size = rect.size;
+		rect_size.width += 30;
+		rect_size.height += 30;
+        // thanks to http://felix.abecassis.me/2011/10/opencv-rotation-deskewing/
+        if (rect.angle < -45.) {
+            angle += 90.0;
+            swap(rect_size.width, rect_size.height);
+        }
+        // get the rotation matrix
+        M_ = getRotationMatrix2D(rect.center, angle, 1.0);
+        // perform the affine transformation
+        warpAffine(image, rotated, M_, image.size(), cv::INTER_CUBIC);
+        // crop the resulting image
+        getRectSubPix(rotated, rect_size, rect.center, cropped);
+		
+// 		cv::imshow("Result", cropped);
+// 		cv::waitKey(0);
+		std::cout<<"About to write: "<<ss.str() + ".png"<<std::endl;
+ 		cv::imwrite( ss.str() + ".png", cropped );
 // 		
-//  		//find contour
-// 		vector<vector<cv::Point> > contours;
-// 		vector<cv::Vec4i> hierarchy;
-// 		
-// 		cv::findContours( dilated_M, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
-// 		
-// 		  /// Draw contours
-// 		cv::Mat mask = cv::Mat::zeros( dilated_M.size(), CV_8UC3 );
-// // 		int contour_index = 1;
-// 
-// // 		cv::Scalar color = cv::Scalar( 0, 255, 0 );
-// // 		cv::drawContours( drawing, contours, contour_index, color, 2, 8, hierarchy, 0, cv::Point() );
-// 		
-// 		cv::drawContours(mask, contours, -1, cv::Scalar(255, 255, 255), CV_FILLED);
-// 		
-// 		
-//     // let's create a new image now
-//     cv::Mat crop(rgbd_image.rows, rgbd_image.cols, CV_8UC3);
-// 
-//     // set background to green
-//     crop.setTo(cv::Scalar(255,255,255));
-// 		
-// 		rgbd_image.copyTo(crop, mask);
-// 		
-// 		normalize(mask.clone(), mask, 0.0, 255.0, CV_MINMAX, CV_8UC1);
-// 		
-// 		cout<<"about to display"<<endl;
-// 		
-// 		cv::namedWindow( "Display window2", cv::WINDOW_AUTOSIZE );// Create a window for display.
-//     cv::imshow( "Display window2", rgbd_image );
-// 		cv::imwrite( "scene.png", rgbd_image );
-// 		
-// 		cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
-//     cv::imshow( "Display window", crop );
-// 
-// 		cv::imwrite( ss.str() + ".png", crop );
-// 
-// 		/////save rgbd end
-// 		
-// 		
-		pcl::io::savePCDFileASCII (ss.str () + ".pcd", *cloud_cluster);
-		j++;
+// 		pcl::io::savePCDFileASCII (ss.str () + ".pcd", *cloud_cluster);
+ 		j++;
+		result.push_back(cropped);
 	}
 	
+	return result;
 }
 
 std::string SpecificWorker::lookForObject(std::string label)

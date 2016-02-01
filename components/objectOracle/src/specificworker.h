@@ -112,7 +112,7 @@ public:
 	void save_tables_info();
 	void load_tables_info();
 	   
-	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image);
+	std::vector<cv::Mat> segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image);
 	std::string lookForObject(std::string label);
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::Event &modification);
