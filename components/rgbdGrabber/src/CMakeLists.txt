@@ -1,6 +1,6 @@
 
 cmake_minimum_required(VERSION 2.6)
-PROJECT(  objectoracle )
+PROJECT(  rgbdGrabber )
 
  
 IF ( "$ENV{ROBOCOMP}" STREQUAL "")
@@ -26,10 +26,6 @@ SET ( SOURCES
   commonbehaviorI.cpp
   genericworker.cpp
   specificworker.cpp
-  agmcommonbehaviorI.cpp
-  objectoracleI.cpp
-  agmexecutivetopicI.cpp
-  $ENV{ROBOCOMP}/classes/agmInner/agmInner.cpp
 )
 
 # Headers set
@@ -40,19 +36,13 @@ SET ( HEADERS
   commonbehaviorI.h
   genericworker.h
   specificworker.h
-  agmcommonbehaviorI.h
-  objectoracleI.h
-  agmexecutivetopicI.h
-  $ENV{ROBOCOMP}/classes/agmInner/agmInner.h
 )
 
-find_package(Boost
-             COMPONENTS filesystem
-             REQUIRED)
+
 
 #ROBOCOMP
 ROBOCOMP_INITIALIZE( $ENV{ROBOCOMP}/ )
-ROBOCOMP_WRAP_ICE( CommonBehavior AGMAgent AGMWorldModel AGMExecutive AGMWorldModel Planning AGMCommonBehavior AGMWorldModel ObjectOracle )
+ROBOCOMP_WRAP_ICE( CommonBehavior RGBD JointMotor DifferentialRobot )
 SET (EXECUTABLE_OUTPUT_PATH ${RC_COMPONENT_DEVEL_PATH}/bin)
 
 # Qt4
@@ -70,7 +60,6 @@ QT4_WRAP_CPP( MOC_SOURCES ${HEADERS} )
 
 
 # Specify construction and link process
-SET(LIBS ${LIBS} -lagm)
-ADD_EXECUTABLE( objectoracle ${SOURCES} ${MOC_SOURCES} ${RC_SOURCES} ${UI_HEADERS} )
-TARGET_LINK_LIBRARIES( objectoracle ${QT_LIBRARIES} ${LIBS} ${STATIC_LIBS} ${SPECIFIC_LIBS})
-INSTALL(FILES ${EXECUTABLE_OUTPUT_PATH}/objectoracle DESTINATION ${RC_COMPONENT_INSTALL_PATH}/bin/ PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+ADD_EXECUTABLE( rgbdGrabber ${SOURCES} ${MOC_SOURCES} ${RC_SOURCES} ${UI_HEADERS} )
+TARGET_LINK_LIBRARIES( rgbdGrabber ${QT_LIBRARIES} ${LIBS} ${STATIC_LIBS} ${SPECIFIC_LIBS})
+INSTALL(FILES ${EXECUTABLE_OUTPUT_PATH}/rgbdGrabber DESTINATION ${RC_COMPONENT_INSTALL_PATH}/bin/ PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )

@@ -28,6 +28,32 @@
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
+#include <pcl/point_cloud.h>
+#include <pcl/pcl_base.h>
+#include <pcl/point_types.h>
+#include <pcl/filters/passthrough.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/ModelCoefficients.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
+#include <pcl/sample_consensus/method_types.h>
+#include <pcl/sample_consensus/model_types.h>
+#include <pcl/segmentation/sac_segmentation.h>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/filters/project_inliers.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/segmentation/extract_clusters.h>
+#include <pcl/features/don.h>
+#include <pcl/common/time.h>
+#include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/features/fpfh_omp.h>
+#include <pcl/registration/sample_consensus_prerejective.h>
+#include <pcl/filters/passthrough.h>
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/surface/convex_hull.h>
+#include <pcl/segmentation/extract_polygonal_prism_data.h>
+#include <pcl/range_image/range_image.h>
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
 
@@ -35,6 +61,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <agmInner/agmInner.h>
+#include <boost/filesystem.hpp>
+#include <sstream>
+
+#include <boost/serialization/map.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 #ifdef __cplusplus
 extern "C"{
@@ -49,13 +82,15 @@ extern "C"{
 
 //#include "t.hpp"
 
+typedef pcl::PointXYZRGB PointT;
+
 class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
 private:
-    ccv_convnet_t* convnet;
-    fstream file;
-    bool first;
+	ccv_convnet_t* convnet;
+	fstream file;
+	bool first;
 
 public:
 	SpecificWorker(MapPrx& mprx);	
@@ -70,6 +105,15 @@ public:
 	int uptimeAgent();
 	bool deactivateAgent();
 	StateStruct getAgentState();
+        
+	void processDataFromDir(const boost::filesystem::path &base_dir);
+	//given an image and its location it process its objects and save them to the corresponding location
+	void processImage(const ColorSeq &image, std::string location);
+	void save_tables_info();
+	void load_tables_info();
+	   
+	std::vector<cv::Mat> segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image);
+	std::string lookForObject(std::string label);
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::Event &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
@@ -80,6 +124,11 @@ public slots:
 	void compute(); 	
 
 private:
+	std::map<std::string, double>  table1;
+	std::map<std::string, double>  table2;
+	std::map<std::string, double>  table3;
+	std::map<std::string, double>  table4;
+	
 	std::string action;
 	ParameterMap params;
 	AGMModel::SPtr worldModel;
@@ -89,7 +138,7 @@ private:
 	void sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel);
 
 	
-	void action_computeMostLikelyObjectContainer();
+	void action_imagineMostLikelyMugInPosition();
 };
 
 #endif
