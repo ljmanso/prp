@@ -1,7 +1,7 @@
 spacePattern=3
 lineThickness=2
 fontName=Arial
-name=domain_basic
+name=domain_basic_perception
 vertexDiameter=40
 shortPattern=1
 nodeThickness=2
@@ -182,6 +182,31 @@ setObjectNotPosition : passive(1)
 		object:object(80,-40)
 		object->status(hasStatus)
 		object->status(noPosition)
+	}
+}
+
+recognizeObjFails : active(1)
+{
+	{
+		status:objectSt(105,-80)
+		object:object(-135,-80)
+		robot:robot(-290,-80)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(unclassified)
+	}
+	=>
+	{
+		status:objectSt(95,-75)
+		object:object(-130,-75)
+		robot:robot(-295,-75)
+		robot->object(know)
+		object->status(hasStatus)
+		object->status(see)
+		object->status(position)
+		object->status(classifailed)
 	}
 }
 
