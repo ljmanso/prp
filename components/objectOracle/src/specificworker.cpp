@@ -84,7 +84,7 @@ void SpecificWorker::compute()
 {
 	printf("ACTION: %s\n", action.c_str());
 	
-	if (action == "imagineMostLikelyMugInPosition")
+	if (action == "imaginemostlikelymuginposition")
 	{
 		action_imagineMostLikelyMugInPosition();
 	}
