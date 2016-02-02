@@ -176,7 +176,7 @@ StateStruct SpecificWorker::getAgentState()
 
 void SpecificWorker::save_tables_info()
 {
-    std::ofstream ofs("tables_info.data");
+    std::ofstream ofs("/home/robocomp/robocomp/components/prp/experimentFiles/tables_info.data");
     
     boost::archive::text_oarchive oa(ofs);
     
@@ -189,7 +189,7 @@ void SpecificWorker::save_tables_info()
 
 void SpecificWorker::load_tables_info()
 {
-    std::ifstream ofs("tables_info.data");
+    std::ifstream ofs("/home/robocomp/robocomp/components/prp/experimentFiles/tables_info.data");
     
     boost::archive::text_iarchive oa(ofs);
     oa >> table1;
@@ -762,6 +762,8 @@ void SpecificWorker::action_imagineMostLikelyMugInPosition()
 	newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
 	
 	//Locate mug
+	std::string table = lookForObject("mug");
+	//ERROR WARNING TODO assign the table to correspondent id and correspondent room id
 	
 	// Create the edges that indicate in which table the object will be located
 	AGMModelSymbol::SPtr tableID = newModel->getSymbol(42); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
