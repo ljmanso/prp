@@ -118,6 +118,7 @@ public:
 
 void ::objectoracle::initialize()
 {
+printf("%s: %d\n", __FILE__, __LINE__);
 	// Config file properties read example
 	// configGetString( PROPERTY_NAME_1, property1_holder, PROPERTY_1_DEFAULT_VALUE );
 	// configGetInt( PROPERTY_NAME_2, property1_holder, PROPERTY_2_DEFAULT_VALUE );
@@ -125,6 +126,7 @@ void ::objectoracle::initialize()
 
 int ::objectoracle::run(int argc, char* argv[])
 {
+printf("%s: %d\n", __FILE__, __LINE__);
 #ifdef USE_QTGUI
 	QApplication a(argc, argv);  // GUI application
 #else
@@ -272,13 +274,14 @@ int ::objectoracle::run(int argc, char* argv[])
 		a.quit();
 #endif
 		monitor->exit(0);
-}
+	}
 
 	return status;
 }
 
 int main(int argc, char* argv[])
 {
+printf("%s: %d\n", __FILE__, __LINE__);
 	string arg;
 
 	// Set config file

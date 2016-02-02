@@ -29,15 +29,20 @@ typedef std::map<std::string, double>::const_iterator MapIterator;
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx),
 first(true)
 {
+printf("%s: %d\n", __FILE__, __LINE__);
 	image_segmented_counter = 0;
 	active = false;
 	worldModel = AGMModel::SPtr(new AGMModel());
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
 
+printf("%s: %d\n", __FILE__, __LINE__);
+
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
         
+printf("%s: %d\n", __FILE__, __LINE__);
+
 //         processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
 //         
 //         //show map after processing
@@ -54,7 +59,9 @@ first(true)
 //         {
 //                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
 //         }
+printf("%s: %d\n", __FILE__, __LINE__);
 	load_tables_info();
+printf("%s: %d\n", __FILE__, __LINE__);
 }
 
 /**
@@ -189,13 +196,20 @@ void SpecificWorker::save_tables_info()
 
 void SpecificWorker::load_tables_info()
 {
+printf("%s: %d\n", __FILE__, __LINE__);
     std::ifstream ofs("/home/robocomp/robocomp/components/prp/experimentFiles/tables_info.data");
     
+printf("%s: %d\n", __FILE__, __LINE__);
     boost::archive::text_iarchive oa(ofs);
+printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table1;
+printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table2;
+printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table3;
+printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table4;
+printf("%s: %d\n", __FILE__, __LINE__);
     
 }
 
