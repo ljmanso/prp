@@ -112,13 +112,14 @@ public:
 	void save_tables_info();
 	void load_tables_info();
 	   
-	std::vector<cv::Mat> segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image);
+	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
 	std::string lookForObject(std::string label);
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::Event &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
 	void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification);
 	void symbolUpdated(const RoboCompAGMWorldModel::Node &modification);
+	ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 public slots:
 	void compute(); 	
@@ -129,6 +130,7 @@ private:
 	std::map<std::string, double>  table3;
 	std::map<std::string, double>  table4;
 	
+	int image_segmented_counter;
 	std::string action;
 	ParameterMap params;
 	AGMModel::SPtr worldModel;
