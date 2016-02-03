@@ -84,7 +84,9 @@ void SpecificWorker::compute()
 {
 	printf("ACTION: %s\n", action.c_str());
 	
-	if (boost::algorithm::to_lower(action) == boost::algorithm::to_lower("imagineMostLielyMugInPosition"))
+	boost::algorithm::to_lower(action);
+	
+	if ( action == "imaginemostlielymuginposition")
 	{
 		action_imagineMostLikelyMugInPosition();
 	}
