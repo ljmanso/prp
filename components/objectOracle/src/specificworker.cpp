@@ -84,7 +84,7 @@ void SpecificWorker::compute()
 {
 	printf("ACTION: %s\n", action.c_str());
 	
-	if (boost::algorithm::to_lower(action) == boost::algorithm::to_lower(std::string("imagineMostLielyMugInPosition"))
+	if (boost::algorithm::to_lower(action) == boost::algorithm::to_lower("imagineMostLielyMugInPosition"))
 	{
 		action_imagineMostLikelyMugInPosition();
 	}
@@ -777,11 +777,38 @@ void SpecificWorker::action_imagineMostLikelyMugInPosition()
 	
 	//Locate mug
 	std::string table = lookForObject("mug");
-	//ERROR WARNING TODO assign the table to correspondent id and correspondent room id
+	int id = -1;
+	int room_id = -1;
+	if( table == "table1" )
+	{
+		id = 28;
+		room_id = 0;
+	}
+	if( table == "table2" )
+	{
+		id = 26;
+		room_id = 0;
+	}
+	if( table == "table3" )
+	{
+		id = 24;
+		room_id = 0;
+	}
+	if( table == "table4" )
+	{
+		id = 22;
+		room_id = 1;
+	}
+	if( table == "table5" )
+	{
+		id = 20;
+		room_id = 1;
+	}
+
 	
 	// Create the edges that indicate in which table the object will be located
-	AGMModelSymbol::SPtr tableID = newModel->getSymbol(42); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
-	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(42); // ERROR WARNING TODO  depending on the table containing the object to be found.
+	AGMModelSymbol::SPtr tableID = newModel->getSymbol(id); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
+	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(room_id); // ERROR WARNING TODO  depending on the table containing the object to be found.
 	newModel->addEdge(mug, tableID, "in");
 	newModel->addEdge(mug, roomID, "in");
 
