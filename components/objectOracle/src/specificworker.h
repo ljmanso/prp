@@ -140,7 +140,10 @@ private:
 	void sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel);
 
 	
+	void imagineMostLikelyOBJECTPosition(string objectType);
 	void action_imagineMostLikelyMugInPosition();
+	void action_imagineMostLikelyCoffeePotInPosition();
+	void action_imagineMostLikelyMilkInPosition();
 };
 
 #endif
