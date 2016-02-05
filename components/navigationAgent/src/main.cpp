@@ -18,11 +18,11 @@
  */
 
 
-/** \mainpage RoboComp::objectoracle
+/** \mainpage RoboComp::navigationAgent
  *
  * \section intro_sec Introduction
  *
- * The objectoracle component...
+ * The navigationAgent component...
  *
  * \section interface_sec Interface
  *
@@ -34,7 +34,7 @@
  * ...
  *
  * \subsection install2_ssec Compile and install
- * cd objectoracle
+ * cd navigationAgent
  * <br>
  * cmake . && make
  * <br>
@@ -52,7 +52,7 @@
  *
  * \subsection execution_ssec Execution
  *
- * Just: "${PATH_TO_BINARY}/objectoracle --Ice.Config=${PATH_TO_CONFIG_FILE}"
+ * Just: "${PATH_TO_BINARY}/navigationAgent --Ice.Config=${PATH_TO_CONFIG_FILE}"
  *
  * \subsection running_ssec Once running
  *
@@ -79,13 +79,13 @@
 #include "commonbehaviorI.h"
 
 #include <agmcommonbehaviorI.h>
-#include <objectoracleI.h>
 #include <agmexecutivetopicI.h>
 
 #include <AGMExecutive.h>
 #include <AGMCommonBehavior.h>
 #include <AGMWorldModel.h>
-#include <ObjectOracle.h>
+#include <TrajectoryRobot2D.h>
+#include <OmniRobot.h>
 
 
 // User includes here
@@ -97,14 +97,15 @@ using namespace RoboCompCommonBehavior;
 using namespace RoboCompAGMExecutive;
 using namespace RoboCompAGMCommonBehavior;
 using namespace RoboCompAGMWorldModel;
-using namespace RoboCompObjectOracle;
+using namespace RoboCompTrajectoryRobot2D;
+using namespace RoboCompOmniRobot;
 
 
 
-class objectoracle : public RoboComp::Application
+class navigationAgent : public RoboComp::Application
 {
 public:
-	objectoracle (QString prfx) { prefix = prfx.toStdString(); }
+	navigationAgent (QString prfx) { prefix = prfx.toStdString(); }
 private:
 	void initialize();
 	std::string prefix;
@@ -114,14 +115,14 @@ public:
 	virtual int run(int, char*[]);
 };
 
-void ::objectoracle::initialize()
+void ::navigationAgent::initialize()
 {
 	// Config file properties read example
 	// configGetString( PROPERTY_NAME_1, property1_holder, PROPERTY_1_DEFAULT_VALUE );
 	// configGetInt( PROPERTY_NAME_2, property1_holder, PROPERTY_2_DEFAULT_VALUE );
 }
 
-int ::objectoracle::run(int argc, char* argv[])
+int ::navigationAgent::run(int argc, char* argv[])
 {
 #ifdef USE_QTGUI
 	QApplication a(argc, argv);  // GUI application
@@ -131,6 +132,8 @@ int ::objectoracle::run(int argc, char* argv[])
 	int status=EXIT_SUCCESS;
 
 	AGMExecutivePrx agmexecutive_proxy;
+	OmniRobotPrx omnirobot_proxy;
+	TrajectoryRobot2DPrx trajectoryrobot2d_proxy;
 
 	string proxy, tmp;
 	initialize();
@@ -151,6 +154,40 @@ int ::objectoracle::run(int argc, char* argv[])
 	}
 	rInfo("AGMExecutiveProxy initialized Ok!");
 	mprx["AGMExecutiveProxy"] = (::IceProxy::Ice::Object*)(&agmexecutive_proxy);//Remote server proxy creation example
+
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "OmniRobotProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy OmniRobotProxy\n";
+		}
+		omnirobot_proxy = OmniRobotPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("OmniRobotProxy initialized Ok!");
+	mprx["OmniRobotProxy"] = (::IceProxy::Ice::Object*)(&omnirobot_proxy);//Remote server proxy creation example
+
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "TrajectoryRobot2DProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy TrajectoryRobot2DProxy\n";
+		}
+		trajectoryrobot2d_proxy = TrajectoryRobot2DPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("TrajectoryRobot2DProxy initialized Ok!");
+	mprx["TrajectoryRobot2DProxy"] = (::IceProxy::Ice::Object*)(&trajectoryrobot2d_proxy);//Remote server proxy creation example
 
 	IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(communicator()->propertyToProxy("TopicManager.Proxy"));
 
@@ -195,18 +232,6 @@ int ::objectoracle::run(int argc, char* argv[])
 		adapterAGMCommonBehavior->add(agmcommonbehavior, communicator()->stringToIdentity("agmcommonbehavior"));
 		adapterAGMCommonBehavior->activate();
 		cout << "[" << PROGRAM_NAME << "]: AGMCommonBehavior adapter created in port " << tmp << endl;
-
-
-		// Server adapter creation and publication
-		if (not GenericMonitor::configGetString(communicator(), prefix, "ObjectOracle.Endpoints", tmp, ""))
-		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy ObjectOracle";
-		}
-		Ice::ObjectAdapterPtr adapterObjectOracle = communicator()->createObjectAdapterWithEndpoints("ObjectOracle", tmp);
-		ObjectOracleI *objectoracle = new ObjectOracleI(worker);
-		adapterObjectOracle->add(objectoracle, communicator()->stringToIdentity("objectoracle"));
-		adapterObjectOracle->activate();
-		cout << "[" << PROGRAM_NAME << "]: ObjectOracle adapter created in port " << tmp << endl;
 
 
 
@@ -303,7 +328,7 @@ int main(int argc, char* argv[])
 			printf("Configuration prefix: <%s>\n", prefix.toStdString().c_str());
 		}
 	}
-	::objectoracle app(prefix);
+	::navigationAgent app(prefix);
 
 	return app.main(argc, argv, configFile.c_str());
 }

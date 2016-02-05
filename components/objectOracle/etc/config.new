@@ -11,9 +11,7 @@ AGMExecutiveTopicTopic.Endpoints=tcp -p 0
 
 
 # Proxies for required interfaces
-AGMCommonBehaviorProxy = agmcommonbehavior:tcp -h localhost -p 0
 AGMExecutiveProxy = agmexecutive:tcp -h localhost -p 0
-ObjectOracleProxy = objectoracle:tcp -h localhost -p 0
 
 
 # This property is used by the clients to connect to IceStorm.

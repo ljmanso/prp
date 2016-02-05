@@ -28,9 +28,7 @@ QObject()
 #endif
 
 {
-	agmcommonbehavior_proxy = (*(AGMCommonBehaviorPrx*)mprx["AGMCommonBehaviorProxy"]);
 	agmexecutive_proxy = (*(AGMExecutivePrx*)mprx["AGMExecutiveProxy"]);
-	objectoracle_proxy = (*(ObjectOraclePrx*)mprx["ObjectOracleProxy"]);
 
 
 	mutex = new QMutex(QMutex::Recursive);
