@@ -295,7 +295,7 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 			cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
 			
 // 			for(std::vector<cv::Mat>::iterator it = sgemented_objects.begin(); it != sgemented_objects.end(); ++it)
-			for(int i = 0 ; i < segmented_objects.size() ; i++)
+			for(uint i = 0 ; i < segmented_objects.size() ; i++)
 			{	
 				rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
 				processImage(rgbMatrix, location);
@@ -308,11 +308,11 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 void SpecificWorker::processImage(const ColorSeq &image, std::string location)
 {
     ResultList result;
-    std:string label;
+    std::string label;
     
     getLabelsFromImage(image, result);
     
-    for(int i=0; i<result.size(); i++)
+    for(uint i=0; i<result.size(); i++)
     {
         std::stringstream names(result[i].name);
         if(location.compare("table1") == 0)
@@ -462,10 +462,10 @@ void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &resul
     
 }
 
-void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::Event &modification)
+void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modification)
 {
 	mutex->lock();
- 	AGMModelConverter::fromIceToInternal(modification.newModel, worldModel);
+ 	AGMModelConverter::fromIceToInternal(modification, worldModel);
  
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
@@ -474,7 +474,13 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::Event &modifi
 
 void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications)
 {
-
+	mutex->lock();
+	for (auto m : modifications)
+		AGMModelConverter::includeIceModificationInInternalModel(m, worldModel);
+ 
+	delete innerModel;
+	innerModel = agmInner.extractInnerModel(worldModel);
+	mutex->unlock();
 }
 
 void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge &modification)
@@ -491,6 +497,17 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
 {
 	mutex->lock();
  	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+ 
+	delete innerModel;
+	innerModel = agmInner.extractInnerModel(worldModel);
+	mutex->unlock();
+}
+
+void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications)
+{
+	mutex->lock();
+	for (auto m : modifications)
+		AGMModelConverter::includeIceModificationInInternalModel(m, worldModel);
  
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
@@ -608,14 +625,14 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 
 		cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
 		
-		float maxAngleWidth = (float) (57.0f * (M_PI / 180.0f));
-		float maxAngleHeight = (float) (43.0f * (M_PI / 180.0f));
-		float angularResolution = (float)(57.0f / 640.0f * (M_PI/180.0f));
-		Eigen::Affine3f sensorPose = Eigen::Affine3f::Identity();
-		pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
-		float noiseLevel=0.00;
-		float minRange = 0.0f;
-		int borderSize = 1;
+// 		float maxAngleWidth = (float) (57.0f * (M_PI / 180.0f));
+// 		float maxAngleHeight = (float) (43.0f * (M_PI / 180.0f));
+// 		float angularResolution = (float)(57.0f / 640.0f * (M_PI/180.0f));
+// 		Eigen::Affine3f sensorPose = Eigen::Affine3f::Identity();
+// 		pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
+// 		float noiseLevel=0.00;
+// 		float minRange = 0.0f;
+// 		int borderSize = 1;
 		std::vector<cv::Point> points;
 		
 // 		for (unsigned int i = 0; i<cloud_cluster->points.size(); i++)
@@ -661,7 +678,7 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 		result.push_back(cropped);
 	}
 	
-	return result;
+// 	return result;
 }
 
 std::string SpecificWorker::lookForObject(std::string label)
@@ -750,7 +767,7 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 	try
 	{
 		AGMModelPrinter::printWorld(newModel);
-		AGMMisc::publishModification(newModel, agmagenttopic_proxy, worldModel,"objectoracleAgent");
+		AGMMisc::publishModification(newModel, agmexecutive_proxy, "objectoracleAgent");
 	}
 	catch(...)
 	{
@@ -821,5 +838,9 @@ void SpecificWorker::action_imagineMostLikelyMugInPosition()
 	
 }
 
+void SpecificWorker::semanticDistance(const string &word1, const string &word2, float &result)
+{
+
+}
 
 

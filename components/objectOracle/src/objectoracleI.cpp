@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2015 by YOUR NAME HERE
+ *    Copyright (C) 2016 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -27,6 +27,11 @@ ObjectOracleI::ObjectOracleI(GenericWorker *_worker, QObject *parent) : QObject(
 
 ObjectOracleI::~ObjectOracleI()
 {
+}
+
+void ObjectOracleI::semanticDistance(const string  &word1, const string  &word2,  float  &result, const Ice::Current&)
+{
+	worker->semanticDistance(word1, word2, result);
 }
 
 void ObjectOracleI::getLabelsFromImage(const ColorSeq  &image,  ResultList  &result, const Ice::Current&)

@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2015 by YOUR NAME HERE
+ *    Copyright (C) 2016 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -82,7 +82,6 @@
 #include <objectoracleI.h>
 #include <agmexecutivetopicI.h>
 
-#include <AGMAgent.h>
 #include <AGMExecutive.h>
 #include <AGMCommonBehavior.h>
 #include <AGMWorldModel.h>
@@ -95,7 +94,6 @@
 using namespace std;
 using namespace RoboCompCommonBehavior;
 
-using namespace RoboCompAGMAgent;
 using namespace RoboCompAGMExecutive;
 using namespace RoboCompAGMCommonBehavior;
 using namespace RoboCompAGMWorldModel;
@@ -118,7 +116,6 @@ public:
 
 void ::objectoracle::initialize()
 {
-printf("%s: %d\n", __FILE__, __LINE__);
 	// Config file properties read example
 	// configGetString( PROPERTY_NAME_1, property1_holder, PROPERTY_1_DEFAULT_VALUE );
 	// configGetInt( PROPERTY_NAME_2, property1_holder, PROPERTY_2_DEFAULT_VALUE );
@@ -126,7 +123,6 @@ printf("%s: %d\n", __FILE__, __LINE__);
 
 int ::objectoracle::run(int argc, char* argv[])
 {
-printf("%s: %d\n", __FILE__, __LINE__);
 #ifdef USE_QTGUI
 	QApplication a(argc, argv);  // GUI application
 #else
@@ -134,35 +130,65 @@ printf("%s: %d\n", __FILE__, __LINE__);
 #endif
 	int status=EXIT_SUCCESS;
 
-	AGMAgentTopicPrx agmagenttopic_proxy;
+	AGMCommonBehaviorPrx agmcommonbehavior_proxy;
+	AGMExecutivePrx agmexecutive_proxy;
+	ObjectOraclePrx objectoracle_proxy;
 
 	string proxy, tmp;
 	initialize();
 
-	IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(communicator()->propertyToProxy("TopicManager.Proxy"));
 
-	IceStorm::TopicPrx agmagenttopic_topic;
-	while (!agmagenttopic_topic)
+	try
 	{
-		try
+		if (not GenericMonitor::configGetString(communicator(), prefix, "AGMCommonBehaviorProxy", proxy, ""))
 		{
-			agmagenttopic_topic = topicManager->retrieve("AGMAgentTopic");
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AGMCommonBehaviorProxy\n";
 		}
-		catch (const IceStorm::NoSuchTopic&)
-		{
-			try
-			{
-				agmagenttopic_topic = topicManager->create("AGMAgentTopic");
-			}
-			catch (const IceStorm::TopicExists&){
-				// Another client created the topic.
-			}
-		}
+		agmcommonbehavior_proxy = AGMCommonBehaviorPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
 	}
-	Ice::ObjectPrx agmagenttopic_pub = agmagenttopic_topic->getPublisher()->ice_oneway();
-	AGMAgentTopicPrx agmagenttopic = AGMAgentTopicPrx::uncheckedCast(agmagenttopic_pub);
-	mprx["AGMAgentTopicPub"] = (::IceProxy::Ice::Object*)(&agmagenttopic);
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("AGMCommonBehaviorProxy initialized Ok!");
+	mprx["AGMCommonBehaviorProxy"] = (::IceProxy::Ice::Object*)(&agmcommonbehavior_proxy);//Remote server proxy creation example
 
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "AGMExecutiveProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AGMExecutiveProxy\n";
+		}
+		agmexecutive_proxy = AGMExecutivePrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("AGMExecutiveProxy initialized Ok!");
+	mprx["AGMExecutiveProxy"] = (::IceProxy::Ice::Object*)(&agmexecutive_proxy);//Remote server proxy creation example
+
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "ObjectOracleProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy ObjectOracleProxy\n";
+		}
+		objectoracle_proxy = ObjectOraclePrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("ObjectOracleProxy initialized Ok!");
+	mprx["ObjectOracleProxy"] = (::IceProxy::Ice::Object*)(&objectoracle_proxy);//Remote server proxy creation example
+
+	IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(communicator()->propertyToProxy("TopicManager.Proxy"));
 
 
 	SpecificWorker *worker = new SpecificWorker(mprx);
@@ -274,14 +300,13 @@ printf("%s: %d\n", __FILE__, __LINE__);
 		a.quit();
 #endif
 		monitor->exit(0);
-	}
+}
 
 	return status;
 }
 
 int main(int argc, char* argv[])
 {
-printf("%s: %d\n", __FILE__, __LINE__);
 	string arg;
 
 	// Set config file

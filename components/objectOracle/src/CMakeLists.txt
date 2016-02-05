@@ -43,16 +43,13 @@ SET ( HEADERS
   agmcommonbehaviorI.h
   objectoracleI.h
   agmexecutivetopicI.h
-  $ENV{ROBOCOMP}/classes/agmInner/agmInner.h
 )
 
-find_package(Boost
-             COMPONENTS filesystem
-             REQUIRED)
+
 
 #ROBOCOMP
 ROBOCOMP_INITIALIZE( $ENV{ROBOCOMP}/ )
-ROBOCOMP_WRAP_ICE( CommonBehavior AGMAgent AGMWorldModel AGMExecutive AGMWorldModel Planning AGMCommonBehavior AGMWorldModel ObjectOracle )
+ROBOCOMP_WRAP_ICE( CommonBehavior AGMExecutive AGMWorldModel Planning AGMCommonBehavior AGMWorldModel ObjectOracle )
 SET (EXECUTABLE_OUTPUT_PATH ${RC_COMPONENT_DEVEL_PATH}/bin)
 
 # Qt4
