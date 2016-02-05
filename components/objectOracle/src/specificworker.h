@@ -131,6 +131,7 @@ private:
 	std::map<std::string, double>  table2;
 	std::map<std::string, double>  table3;
 	std::map<std::string, double>  table4;
+	std::map<std::string, double>  table5;
 	
 	int image_segmented_counter;
 	std::string action;
@@ -142,7 +143,10 @@ private:
 	void sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel);
 
 	
+	void imagineMostLikelyOBJECTPosition(string objectType);
 	void action_imagineMostLikelyMugInPosition();
+	void action_imagineMostLikelyCoffeePotInPosition();
+	void action_imagineMostLikelyMilkInPosition();
 };
 
 #endif
