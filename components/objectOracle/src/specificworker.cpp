@@ -96,11 +96,7 @@ void SpecificWorker::compute()
 		for (MapIterator iter = table5.begin(); iter != table5.end(); iter++)
         {
                 cout << "5.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-        }    
-//         cout<<lookForObject("mug")<<endl;
-// 		load_tables_info();
-// 		table1.insert ( std::pair<std::string, double>("mug", 7.94675594568252563 ));
-// 		save_tables_info();
+        }
 	}
 }
 
