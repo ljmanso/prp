@@ -29,39 +29,18 @@ typedef std::map<std::string, double>::const_iterator MapIterator;
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx),
 first(true)
 {
-printf("%s: %d\n", __FILE__, __LINE__);
 	image_segmented_counter = 0;
 	active = false;
 	worldModel = AGMModel::SPtr(new AGMModel());
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
 
-printf("%s: %d\n", __FILE__, __LINE__);
-
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
-        
-printf("%s: %d\n", __FILE__, __LINE__);
 
-//         processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
-//         
-//         //show map after processing
-//         for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
-//         {
-//                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-//         }
-//         
-//         save_tables_info();
-//         load_tables_info();
-//         
-//         //show map after processing
-//         for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
-//         {
-//                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-//         }
-printf("%s: %d\n", __FILE__, __LINE__);
-	load_tables_info();
-printf("%s: %d\n", __FILE__, __LINE__);
+
+
+// 	load_tables_info();
 }
 
 /**
@@ -94,25 +73,34 @@ void SpecificWorker::compute()
 	if(first)
 	{
 		first=false;
-		
-// 		processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
+		load_tables_info();
+//   		processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
 		//show map after processing
-/*        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+		
+        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "1. Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table2.begin(); iter != table2.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "2.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table3.begin(); iter != table3.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "3.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table4.begin(); iter != table4.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-        }  */     
+                cout << "4.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }       
+		for (MapIterator iter = table5.begin(); iter != table5.end(); iter++)
+        {
+                cout << "5.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }    
+//         cout<<lookForObject("mug")<<endl;
+// 		load_tables_info();
+// 		table1.insert ( std::pair<std::string, double>("mug", 7.94675594568252563 ));
+// 		save_tables_info();
 	}
 }
 
@@ -193,25 +181,22 @@ void SpecificWorker::save_tables_info()
     oa << table2;
     oa << table3;
     oa << table4;
+	oa << table5;
     
 }
 
 void SpecificWorker::load_tables_info()
 {
-printf("%s: %d\n", __FILE__, __LINE__);
+
     std::ifstream ofs("/home/robocomp/robocomp/components/prp/experimentFiles/tables_info.data");
     
-printf("%s: %d\n", __FILE__, __LINE__);
     boost::archive::text_iarchive oa(ofs);
-printf("%s: %d\n", __FILE__, __LINE__);
+
     oa >> table1;
-printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table2;
-printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table3;
-printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table4;
-printf("%s: %d\n", __FILE__, __LINE__);
+// 	oa >> table5;
     
 }
 
@@ -272,33 +257,36 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 			std::string location = path2file.substr(0, path2file.find_last_of("/\\"));
 			location = location.substr(location.find_last_of("/\\")+1);
 			
-			//firs processing of entire image
-			cv::Mat rgb = cv::imread( path2file );
-			
-			ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
-			
-			std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
-			std::cout<<rgbMatrix.size()<<std::endl;
-			processImage(rgbMatrix, location);
-			
-			//3D based segment and process all segmented objects
-			std::string pcd_path2file = path2file.substr(0, path2file.find_last_of(".")) + ".pcd";
-
-			pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
-			if (pcl::io::loadPCDFile<PointT> (pcd_path2file, *cloud) == -1) //* load the file
+			if(location == "table5")
 			{
-				PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
-			}
- 			std::vector<cv::Mat> segmented_objects;
-			segmentObjects3D(cloud, rgb, segmented_objects);
-			
-			cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
-			
-// 			for(std::vector<cv::Mat>::iterator it = sgemented_objects.begin(); it != sgemented_objects.end(); ++it)
-			for(int i = 0 ; i < segmented_objects.size() ; i++)
-			{	
-				rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
+				//first processing of entire image
+				cv::Mat rgb = cv::imread( path2file );
+				
+				ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
+				
+				std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
+				std::cout<<rgbMatrix.size()<<std::endl;
 				processImage(rgbMatrix, location);
+				
+				//3D based segment and process all segmented objects
+				std::string pcd_path2file = path2file.substr(0, path2file.find_last_of(".")) + ".pcd";
+
+				pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
+				if (pcl::io::loadPCDFile<PointT> (pcd_path2file, *cloud) == -1) //* load the file
+				{
+					PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+				}
+				std::vector<cv::Mat> segmented_objects;
+				segmentObjects3D(cloud, rgb, segmented_objects);
+				
+				cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
+				
+	// 			for(std::vector<cv::Mat>::iterator it = sgemented_objects.begin(); it != sgemented_objects.end(); ++it)
+				for(int i = 0 ; i < segmented_objects.size() ; i++)
+				{	
+					rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
+					processImage(rgbMatrix, location);
+				}
 			}
 			
 		}
@@ -385,8 +373,23 @@ void SpecificWorker::processImage(const ColorSeq &image, std::string location)
                     }
                     else
                     {
-                        std::cout<<"Processing Image: Location not properly specified"<<std::endl;
-                        return;
+						if(location.compare("table5") == 0)
+						{
+							std::map<std::string,double>::iterator it = table5.find(label);
+                            if (it == table5.end())
+                                table5.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                            else
+							{
+// 								std::cout<<" ------------ Max: "<<table5[label]<<" "<<(double)result[i].believe;
+                                table5[label] = std::max(table5[label], (double)result[i].believe);
+// 								std::cout<<"Result: "<<table5[label]<<std::endl;
+							}
+						}
+						else
+						{
+							std::cout<<"Processing Image: Location not properly specified"<<std::endl;
+							return;
+						}
                     }
                 }
             }
@@ -694,7 +697,11 @@ std::string SpecificWorker::lookForObject(std::string label)
         table =  "table4";       
         current_believe = it->second;
     }
-    
+	if (it != table5.end() && it->second > current_believe)
+    {
+        table =  "table5";       
+        current_believe = it->second;
+    }
     //if no object try to use semantics
     
     return table;
@@ -784,27 +791,27 @@ void SpecificWorker::action_imagineMostLikelyMugInPosition()
 	if( table == "table1" )
 	{
 		id = 28;
-		room_id = 0;
+		room_id = 3;
 	}
 	if( table == "table2" )
 	{
 		id = 26;
-		room_id = 0;
+		room_id = 3;
 	}
 	if( table == "table3" )
 	{
 		id = 24;
-		room_id = 0;
+		room_id = 5;
 	}
 	if( table == "table4" )
 	{
 		id = 22;
-		room_id = 1;
+		room_id = 5;
 	}
 	if( table == "table5" )
 	{
 		id = 20;
-		room_id = 1;
+		room_id = 5;
 	}
 
 	
