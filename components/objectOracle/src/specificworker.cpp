@@ -29,19 +29,17 @@ typedef std::map<std::string, double>::const_iterator MapIterator;
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx),
 first(true)
 {
-printf("%s: %d\n", __FILE__, __LINE__);
 	image_segmented_counter = 0;
 	active = false;
 	worldModel = AGMModel::SPtr(new AGMModel());
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
 
-printf("%s: %d\n", __FILE__, __LINE__);
-
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+
+// 	load_tables_info();
         
-printf("%s: %d\n", __FILE__, __LINE__);
 
 //         processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
 //         
@@ -59,9 +57,7 @@ printf("%s: %d\n", __FILE__, __LINE__);
 //         {
 //                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
 //         }
-printf("%s: %d\n", __FILE__, __LINE__);
-	load_tables_info();
-printf("%s: %d\n", __FILE__, __LINE__);
+
 }
 
 /**
@@ -74,6 +70,7 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
+	QMutexLocker locker(mutex);
 	
 	timer.start(Period);
 
@@ -82,35 +79,43 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
+	QMutexLocker locker(mutex);
 	printf("ACTION: %s\n", action.c_str());
 	
-	if (boost::algorithm::to_lower(action) == boost::algorithm::to_lower(std::string("imagineMostLielyMugInPosition"))
+	boost::algorithm::to_lower(action);
+	
+	if (action == "imaginemostlikelymuginposition")
 	{
 		action_imagineMostLikelyMugInPosition();
 	}
 	
-	if(first)
+	if (first)
 	{
 		first=false;
-		
-// 		processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
+		load_tables_info();
+//   		processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
 		//show map after processing
-/*        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+		
+        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "1. Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table2.begin(); iter != table2.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "2.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table3.begin(); iter != table3.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "3.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table4.begin(); iter != table4.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-        }  */     
+                cout << "4.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }       
+		for (MapIterator iter = table5.begin(); iter != table5.end(); iter++)
+        {
+                cout << "5.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }
 	}
 }
 
@@ -123,6 +128,7 @@ bool SpecificWorker::reloadConfigAgent()
 
 bool SpecificWorker::activateAgent(const ParameterMap &prs)
 {
+	QMutexLocker locker(mutex);
 	bool activated = false;
 	if (setParametersAndPossibleActivation(prs, activated))
 	{
@@ -140,6 +146,7 @@ bool SpecificWorker::activateAgent(const ParameterMap &prs)
 
 bool SpecificWorker::setAgentParameters(const ParameterMap &prs)
 {
+	QMutexLocker locker(mutex);
 	bool activated = false;
 	return setParametersAndPossibleActivation(prs, activated);
 }
@@ -168,6 +175,7 @@ bool SpecificWorker::deactivateAgent()
 
 StateStruct SpecificWorker::getAgentState()
 {
+	QMutexLocker locker(mutex);
 	StateStruct s;
 	if (isActive())
 	{
@@ -191,26 +199,20 @@ void SpecificWorker::save_tables_info()
     oa << table2;
     oa << table3;
     oa << table4;
+	oa << table5;
     
 }
 
 void SpecificWorker::load_tables_info()
 {
-printf("%s: %d\n", __FILE__, __LINE__);
     std::ifstream ofs("/home/robocomp/robocomp/components/prp/experimentFiles/tables_info.data");
     
-printf("%s: %d\n", __FILE__, __LINE__);
     boost::archive::text_iarchive oa(ofs);
-printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table1;
-printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table2;
-printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table3;
-printf("%s: %d\n", __FILE__, __LINE__);
     oa >> table4;
-printf("%s: %d\n", __FILE__, __LINE__);
-    
+ 	oa >> table5;
 }
 
 static unsigned int get_current_time(void)
@@ -270,33 +272,36 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 			std::string location = path2file.substr(0, path2file.find_last_of("/\\"));
 			location = location.substr(location.find_last_of("/\\")+1);
 			
-			//firs processing of entire image
-			cv::Mat rgb = cv::imread( path2file );
-			
-			ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
-			
-			std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
-			std::cout<<rgbMatrix.size()<<std::endl;
-			processImage(rgbMatrix, location);
-			
-			//3D based segment and process all segmented objects
-			std::string pcd_path2file = path2file.substr(0, path2file.find_last_of(".")) + ".pcd";
-
-			pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
-			if (pcl::io::loadPCDFile<PointT> (pcd_path2file, *cloud) == -1) //* load the file
+			if(location == "table5")
 			{
-				PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
-			}
- 			std::vector<cv::Mat> segmented_objects;
-			segmentObjects3D(cloud, rgb, segmented_objects);
-			
-			cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
-			
-// 			for(std::vector<cv::Mat>::iterator it = sgemented_objects.begin(); it != sgemented_objects.end(); ++it)
-			for(int i = 0 ; i < segmented_objects.size() ; i++)
-			{	
-				rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
+				//first processing of entire image
+				cv::Mat rgb = cv::imread( path2file );
+				
+				ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
+				
+				std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
+				std::cout<<rgbMatrix.size()<<std::endl;
 				processImage(rgbMatrix, location);
+				
+				//3D based segment and process all segmented objects
+				std::string pcd_path2file = path2file.substr(0, path2file.find_last_of(".")) + ".pcd";
+
+				pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
+				if (pcl::io::loadPCDFile<PointT> (pcd_path2file, *cloud) == -1) //* load the file
+				{
+					PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+				}
+				std::vector<cv::Mat> segmented_objects;
+				segmentObjects3D(cloud, rgb, segmented_objects);
+				
+				cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
+				
+	// 			for(std::vector<cv::Mat>::iterator it = sgemented_objects.begin(); it != sgemented_objects.end(); ++it)
+				for(uint i = 0 ; i < segmented_objects.size() ; i++)
+				{	
+					rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
+					processImage(rgbMatrix, location);
+				}
 			}
 			
 		}
@@ -306,11 +311,11 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 void SpecificWorker::processImage(const ColorSeq &image, std::string location)
 {
     ResultList result;
-    std:string label;
+    std::string label;
     
     getLabelsFromImage(image, result);
     
-    for(int i=0; i<result.size(); i++)
+    for(uint i=0; i<result.size(); i++)
     {
         std::stringstream names(result[i].name);
         if(location.compare("table1") == 0)
@@ -383,8 +388,23 @@ void SpecificWorker::processImage(const ColorSeq &image, std::string location)
                     }
                     else
                     {
-                        std::cout<<"Processing Image: Location not properly specified"<<std::endl;
-                        return;
+						if(location.compare("table5") == 0)
+						{
+							std::map<std::string,double>::iterator it = table5.find(label);
+                            if (it == table5.end())
+                                table5.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                            else
+							{
+// 								std::cout<<" ------------ Max: "<<table5[label]<<" "<<(double)result[i].believe;
+                                table5[label] = std::max(table5[label], (double)result[i].believe);
+// 								std::cout<<"Result: "<<table5[label]<<std::endl;
+							}
+						}
+						else
+						{
+							std::cout<<"Processing Image: Location not properly specified"<<std::endl;
+							return;
+						}
                     }
                 }
             }
@@ -460,39 +480,51 @@ void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &resul
     
 }
 
-void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::Event &modification)
+void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modification)
 {
-	mutex->lock();
- 	AGMModelConverter::fromIceToInternal(modification.newModel, worldModel);
+	QMutexLocker locker(mutex);
+ 	AGMModelConverter::fromIceToInternal(modification, worldModel);
  
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
-	mutex->unlock();
 }
 
 void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications)
 {
-
+	QMutexLocker locker(mutex);
+	for (auto modification : modifications)
+		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+ 
+	delete innerModel;
+	innerModel = agmInner.extractInnerModel(worldModel);
 }
 
 void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge &modification)
 {
-	mutex->lock();
+	QMutexLocker locker(mutex);
  	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
  
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
-	mutex->unlock();
 }
 
 void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modification)
 {
-	mutex->lock();
+	QMutexLocker locker(mutex);
  	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
  
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
-	mutex->unlock();
+}
+
+void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications)
+{
+	QMutexLocker locker(mutex);
+	for (auto modification : modifications)
+		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+ 
+	delete innerModel;
+	innerModel = agmInner.extractInnerModel(worldModel);
 }
 
 void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result)
@@ -606,14 +638,14 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 
 		cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
 		
-		float maxAngleWidth = (float) (57.0f * (M_PI / 180.0f));
-		float maxAngleHeight = (float) (43.0f * (M_PI / 180.0f));
-		float angularResolution = (float)(57.0f / 640.0f * (M_PI/180.0f));
-		Eigen::Affine3f sensorPose = Eigen::Affine3f::Identity();
-		pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
-		float noiseLevel=0.00;
-		float minRange = 0.0f;
-		int borderSize = 1;
+// 		float maxAngleWidth = (float) (57.0f * (M_PI / 180.0f));
+// 		float maxAngleHeight = (float) (43.0f * (M_PI / 180.0f));
+// 		float angularResolution = (float)(57.0f / 640.0f * (M_PI/180.0f));
+// 		Eigen::Affine3f sensorPose = Eigen::Affine3f::Identity();
+// 		pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
+// 		float noiseLevel=0.00;
+// 		float minRange = 0.0f;
+// 		int borderSize = 1;
 		std::vector<cv::Point> points;
 		
 // 		for (unsigned int i = 0; i<cloud_cluster->points.size(); i++)
@@ -659,7 +691,7 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 		result.push_back(cropped);
 	}
 	
-	return result;
+// 	return result;
 }
 
 std::string SpecificWorker::lookForObject(std::string label)
@@ -692,7 +724,11 @@ std::string SpecificWorker::lookForObject(std::string label)
         table =  "table4";       
         current_believe = it->second;
     }
-    
+	if (it != table5.end() && it->second > current_believe)
+    {
+        table =  "table5";       
+        current_believe = it->second;
+    }
     //if no object try to use semantics
     
     return table;
@@ -700,6 +736,7 @@ std::string SpecificWorker::lookForObject(std::string label)
 
 bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated)
 {
+	QMutexLocker locker(mutex);
 	printf("<<< setParametersAndPossibleActivation\n");
 	// We didn't reactivate the component
 	reactivated = false;
@@ -747,8 +784,7 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 {
 	try
 	{
-		AGMModelPrinter::printWorld(newModel);
-		AGMMisc::publishModification(newModel, agmagenttopic_proxy, worldModel,"objectoracleAgent");
+		AGMMisc::publishModification(newModel, agmexecutive_proxy, "objectoracleAgent");
 	}
 	catch(...)
 	{
@@ -757,40 +793,86 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 }
 
 
+void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
+{
+	AGMModel::SPtr newModel(new AGMModel(worldModel));
+
+	// Create new symbols and the edges which are independent from the container
+	AGMModelSymbol::SPtr objSSt = newModel->newSymbol("objectSt");
+	AGMModelSymbol::SPtr objS   = newModel->newSymbol("protoObject");
+	newModel->addEdge(objS, objSSt, objectType);
+	newModel->addEdge(objS, objSSt, "reachable");
+	newModel->addEdge(objS, objSSt, "noReach");
+	newModel->addEdge(objS, objSSt, "hasStatus");
+	auto symbols = newModel->getSymbolsMap(params, "robot", "status", "table", "room");
+	newModel->addEdge(symbols["robot"], objS, "know");
+	newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
+	
+	//Locate objS
+	std::string table = lookForObject(objectType);
+	int id = -1;
+	int room_id = -1;
+	if( table == "table1" )
+	{
+		id = 28;
+		room_id = 5;
+	}
+	if( table == "table2" )
+	{
+		id = 26;
+		room_id = 5;
+	}
+	if( table == "table3" )
+	{
+		id = 24;
+		room_id = 3;
+	}
+	if( table == "table4" )
+	{
+		id = 22;
+		room_id = 3;
+	}
+	if( table == "table5" )
+	{
+		id = 20;
+		room_id = 3;
+	}
+
+	
+	// Create the edges that indicate in which table the object will be located
+	AGMModelSymbol::SPtr tableID = newModel->getSymbol(id);
+	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(room_id);
+	newModel->addEdge(objS, tableID, "in");
+	newModel->addEdge(objS, roomID, "in");
+
+	
+	// Send modification proposal
+	sendModificationProposal(worldModel, newModel);
+}
 
 
 
 void SpecificWorker::action_imagineMostLikelyMugInPosition()
 {
-	AGMModel::SPtr newModel(new AGMModel(worldModel));
-
-	// Create new symbols and the edges which are independent from the container
-	AGMModelSymbol::SPtr mugSt = newModel->newSymbol("objectSt");
-	AGMModelSymbol::SPtr mug   = newModel->newSymbol("protoObject");
-	newModel->addEdge(mug, mugSt, "mug");
-	newModel->addEdge(mug, mugSt, "reachable");
-	newModel->addEdge(mug, mugSt, "noReach");
-	newModel->addEdge(mug, mugSt, "hasStatus");
-	auto symbols = newModel->getSymbolsMap(params, "robot", "status", "table", "room");
-	newModel->addEdge(symbols["robot"], mug, "know");
-	newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
-	
-	//Locate mug
-	std::string table = lookForObject("mug");
-	//ERROR WARNING TODO assign the table to correspondent id and correspondent room id
-	
-	// Create the edges that indicate in which table the object will be located
-	AGMModelSymbol::SPtr tableID = newModel->getSymbol(42); // ERROR WARNING TODO  This lines should be changed to the corresponding identifiers 
-	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(42); // ERROR WARNING TODO  depending on the table containing the object to be found.
-	newModel->addEdge(mug, tableID, "in");
-	newModel->addEdge(mug, roomID, "in");
-
-	
-	// Send modification proposal
-	sendModificationProposal(worldModel, newModel);
-
-	
+	QMutexLocker locker(mutex);
+	imagineMostLikelyOBJECTPosition("mug");
+}
+void SpecificWorker::action_imagineMostLikelyCoffeePotInPosition()
+{
+	QMutexLocker locker(mutex);
+	imagineMostLikelyOBJECTPosition("coffeepot");
+}
+void SpecificWorker::action_imagineMostLikelyMilkInPosition()
+{
+	QMutexLocker locker(mutex);
+	imagineMostLikelyOBJECTPosition("milk");
 }
 
+
+
+void SpecificWorker::semanticDistance(const string &word1, const string &word2, float &result)
+{
+
+}
 
 

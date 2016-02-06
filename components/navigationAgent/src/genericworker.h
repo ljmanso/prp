@@ -27,11 +27,12 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
-#include <Planning.h>
-#include <ObjectOracle.h>
-#include <AGMExecutive.h>
-#include <AGMCommonBehavior.h>
+#include <TrajectoryRobot2D.h>
 #include <AGMWorldModel.h>
+#include <OmniRobot.h>
+#include <AGMExecutive.h>
+#include <Planning.h>
+#include <AGMCommonBehavior.h>
 
 #include <agm.h>
 #include <agmInner/agmInner.h>
@@ -44,11 +45,12 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
-using namespace RoboCompPlanning;
-using namespace RoboCompObjectOracle;
-using namespace RoboCompAGMExecutive;
-using namespace RoboCompAGMCommonBehavior;
+using namespace RoboCompTrajectoryRobot2D;
 using namespace RoboCompAGMWorldModel;
+using namespace RoboCompOmniRobot;
+using namespace RoboCompAGMExecutive;
+using namespace RoboCompPlanning;
+using namespace RoboCompAGMCommonBehavior;
 
 
 struct BehaviorParameters 
@@ -81,6 +83,8 @@ public:
 	
 
 	AGMExecutivePrx agmexecutive_proxy;
+	OmniRobotPrx omnirobot_proxy;
+	TrajectoryRobot2DPrx trajectoryrobot2d_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
 	virtual bool activateAgent(const ParameterMap &prs) = 0;
@@ -90,8 +94,6 @@ public:
 	virtual int uptimeAgent() = 0;
 	virtual bool deactivateAgent() = 0;
 	virtual StateStruct getAgentState() = 0;
-	virtual void semanticDistance(const string &word1, const string &word2, float &result) = 0;
-	virtual void getLabelsFromImage(const ColorSeq &image, ResultList &result) = 0;
 	virtual void structuralChange(const RoboCompAGMWorldModel::World &w) = 0;
 	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &es) = 0;
 	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &e) = 0;

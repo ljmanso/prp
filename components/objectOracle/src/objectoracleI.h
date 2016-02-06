@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2015 by YOUR NAME HERE
+ *    Copyright (C) 2016 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -38,6 +38,7 @@ public:
 	ObjectOracleI( GenericWorker *_worker, QObject *parent = 0 );
 	~ObjectOracleI();
 	
+	void semanticDistance(const string  &word1, const string  &word2,  float  &result, const Ice::Current&);
 	void getLabelsFromImage(const ColorSeq  &image,  ResultList  &result, const Ice::Current&);
 
 	QMutex *mutex;

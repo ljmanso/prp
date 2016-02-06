@@ -354,43 +354,45 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-	for (auto i : params)
-		printf("%s\n", i.first.c_str());
+// 	for (auto i : params)
+// 		printf("%s\n", i.first.c_str());
 
 	
 	
-printf("%s: %d\n", __FILE__, __LINE__);
+// printf("%s: %d\n", __FILE__, __LINE__);
 	
 	RoboCompCommonBehavior::Parameter par;
 	try
 	{
-printf("%s: %d\n", __FILE__, __LINE__);
+// printf("%s: %d\n", __FILE__, __LINE__);
 		 par = params.at("AGMInnerAgent.InnerModels");
-printf("%s: %d\n", __FILE__, __LINE__);
+// printf("%s: %d\n", __FILE__, __LINE__);
 	}
 	catch(std::exception e)
 	{
 		qFatal("Error reading config params: %s\n", e.what());
 	}
 
-printf("%s: %d\n", __FILE__, __LINE__);
+// printf("%s: %d\n", __FILE__, __LINE__);
 	for (auto s : QString::fromStdString(par.value).split(";"))
 	{
-printf("%s: %d\n", __FILE__, __LINE__);	
+// printf("%s: %d\n", __FILE__, __LINE__);	
 		auto v = s.split(",");
 		if( QFile(v[0]).exists() == true)
 		{
-printf("%s\n%s: %d\n", par.value.c_str(), __FILE__, __LINE__);
+// printf("%s\n%s: %d\n", par.value.c_str(), __FILE__, __LINE__);
 			InnerModel *innerModel = new InnerModel(v[0].toStdString());
-printf("%s: %d\n", __FILE__, __LINE__);
+// printf("%s: %d\n", __FILE__, __LINE__);
 			innerModelInfoVector.push_back(std::pair<InnerModel *, QString>(innerModel, v[1]));
-printf("%s: %d\n", __FILE__, __LINE__);
+// printf("%s: %d\n", __FILE__, __LINE__);
 		}
 		else
 		{
 			qFatal("File %s specifed in config file not found: Exiting now.", v[0].toStdString().c_str());
 		}
 	}
+	
+	sleep(1);
 	
 
 	return true;
@@ -462,11 +464,11 @@ StateStruct SpecificWorker::getAgentState()
 	return s;
 }
 
-void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::Event &modification)
+void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modification)
 {
 	mutex->lock();
 	printf("structural change\n");
- 	AGMModelConverter::fromIceToInternal(modification.newModel, worldModel);
+ 	AGMModelConverter::fromIceToInternal(modification, worldModel);
  	mutex->unlock();
 }
 
@@ -492,6 +494,12 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
 	mutex->lock();
  	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
  	mutex->unlock();
+}
+void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modification)
+{
+// 	mutex->lock();
+//  	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+//  	mutex->unlock();
 }
 
 
@@ -546,7 +554,7 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 {
 	try
 	{
-		AGMMisc::publishModification(newModel, agmagenttopic_proxy, worldModel, "agmInnerCompAgent");
+		AGMMisc::publishModification(newModel, agmexecutive_proxy, "agmInnerCompAgent");
 	}
 	catch(...)
 	{

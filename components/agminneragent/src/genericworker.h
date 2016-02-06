@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2015 by YOUR NAME HERE
+ *    Copyright (C) 2016 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -27,7 +27,6 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
-#include <AGMAgent.h>
 #include <Planning.h>
 #include <AGMExecutive.h>
 #include <AGMCommonBehavior.h>
@@ -44,7 +43,6 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
-using namespace RoboCompAGMAgent;
 using namespace RoboCompPlanning;
 using namespace RoboCompAGMExecutive;
 using namespace RoboCompAGMCommonBehavior;
@@ -78,10 +76,9 @@ public:
 	bool activate(const BehaviorParameters& parameters);
 	bool deactivate();
 	bool isActive() { return active; }
-	RoboCompAGMWorldModel::BehaviorResultType status();
 	
 
-	AGMAgentTopicPrx agmagenttopic_proxy;
+	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
 	virtual bool activateAgent(const ParameterMap &prs) = 0;
@@ -91,10 +88,11 @@ public:
 	virtual int uptimeAgent() = 0;
 	virtual bool deactivateAgent() = 0;
 	virtual StateStruct getAgentState() = 0;
-	virtual void structuralChange(const RoboCompAGMWorldModel::Event &modification) = 0;
-	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications) = 0;
-	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification) = 0;
-	virtual void symbolUpdated(const RoboCompAGMWorldModel::Node &modification) = 0;
+	virtual void structuralChange(const RoboCompAGMWorldModel::World &w) = 0;
+	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &es) = 0;
+	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &e) = 0;
+	virtual void symbolUpdated(const RoboCompAGMWorldModel::Node &n) = 0;
+	virtual void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &ns) = 0;
 
 
 protected:

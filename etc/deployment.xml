@@ -60,7 +60,7 @@
   <dependence alias="IS" />
   <dependence alias="gtrajectory" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost navigationA /home/robocomp/robocomp/components/robocomp-ursus-rockin/components/navigationAgent ./bin/navigationComp /home/robocomp/robocomp/components/prp/etc/navigation.conf" />
+  <upCommand command="rcremote localhost navigationA /home/robocomp/robocomp/components/prp/components/navigationAgent ./bin/navigationAgent /home/robocomp/robocomp/components/prp/etc/navigation.conf" />
   <downCommand command="killall -9 navigationComp" />
   <configFile path="/home/robocomp/robocomp/components/robocomp-ursus-rockin/etc/navigation.conf" />
   <xpos value="-84.2318751231" />
@@ -70,7 +70,7 @@
  </node>
 
  <node alias="executive" endpoint="agmexecutive:tcp -p 10198">
-  <dependence alias="innerA" />
+<!--   <dependence alias="innerA" /> -->
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost AGMExecutive /home/robocomp/AGM/tools/AGMExecutive_robocomp python AGMExecutive_robocomp.py --Ice.Config=/home/robocomp/robocomp/components/prp/etc/executive.conf" />
   <downCommand command="pkill -9 -f AGMExecutive_robocomp.py" />

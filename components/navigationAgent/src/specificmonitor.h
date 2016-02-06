@@ -1,5 +1,6 @@
+
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2010 by RoboLab - University of Extremadura
  *
  *    This file is part of RoboComp
  *
@@ -16,31 +17,31 @@
  *    You should have received a copy of the GNU General Public License
  *    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "objectoracleI.h"
+#ifndef SPECIFICMONITOR_H
+#define SPECIFICMONITOR_H
 
-ObjectOracleI::ObjectOracleI(GenericWorker *_worker, QObject *parent) : QObject(parent)
+#include "genericmonitor.h"
+
+/**
+       \brief
+       @author authorname
+*/
+class SpecificMonitor : public GenericMonitor
 {
-	worker = _worker;
-	mutex = worker->mutex;       // Shared worker mutex
-}
+  Q_OBJECT
+  
+  public:
+	SpecificMonitor(GenericWorker *_worker, Ice::CommunicatorPtr _communicator);
+	~SpecificMonitor();
+	
+	void readConfig(RoboCompCommonBehavior::ParameterList &params );
+	void run();
+	void initialize();
+    
+	bool sendParamsToWorker(RoboCompCommonBehavior::ParameterList params);
+	bool checkParams(RoboCompCommonBehavior::ParameterList l);
 
+bool ready;
+};
 
-ObjectOracleI::~ObjectOracleI()
-{
-}
-
-void ObjectOracleI::semanticDistance(const string  &word1, const string  &word2,  float  &result, const Ice::Current&)
-{
-	worker->semanticDistance(word1, word2, result);
-}
-
-void ObjectOracleI::getLabelsFromImage(const ColorSeq  &image,  ResultList  &result, const Ice::Current&)
-{
-	worker->getLabelsFromImage(image, result);
-}
-
-
-
-
-
-
+#endif // GENERICMONITOR_H
