@@ -30,6 +30,8 @@
 	<symbol id="29" type="objectSt">
 	</symbol>
 	<symbol id="1" type="robot">
+		<attribute key="imType" value="omnirobot" />
+		<attribute key="imName" value="robot" />
 	</symbol>
 	<symbol id="3" type="room">
 	</symbol>
