@@ -116,6 +116,7 @@ void SpecificWorker::compute()
         {
                 cout << "5.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
+//         save_tables_info();
 	}
 }
 
@@ -212,7 +213,7 @@ void SpecificWorker::load_tables_info()
     oa >> table2;
     oa >> table3;
     oa >> table4;
- 	oa >> table5;
+  	oa >> table5;
 }
 
 static unsigned int get_current_time(void)
