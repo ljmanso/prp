@@ -93,7 +93,7 @@ void SpecificWorker::compute()
 	{
 		first=false;
 		load_tables_info();
-//   		processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
+  		//processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
 		//show map after processing
 		
         for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
@@ -116,7 +116,7 @@ void SpecificWorker::compute()
         {
                 cout << "5.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
-//         save_tables_info();
+        //save_tables_info();
 	}
 }
 
