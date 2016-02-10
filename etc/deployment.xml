@@ -61,7 +61,7 @@
   <dependence alias="gtrajectory" />
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost navigationA /home/robocomp/robocomp/components/prp/components/navigationAgent ./bin/navigationAgent /home/robocomp/robocomp/components/prp/etc/navigation.conf" />
-  <downCommand command="killall -9 navigationComp" />
+  <downCommand command="killall -9 navigationAgent" />
   <configFile path="/home/robocomp/robocomp/components/prp/etc/navigation.conf" />
   <xpos value="-84.2318751231" />
   <ypos value="-37.0067821381" />

@@ -23,8 +23,6 @@
 */
 
 
-
-
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
@@ -124,7 +122,7 @@ public:
 	ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 public slots:
-	void compute(); 	
+	void compute();
 
 private:
 	std::map<std::string, double>  table1;
@@ -135,14 +133,16 @@ private:
 	
 	int image_segmented_counter;
 	std::string action;
+	QTime actionTime;
 	ParameterMap params;
 	AGMModel::SPtr worldModel;
+	QTime worldModelTime;
 	InnerModel *innerModel;
 	bool active;
 	bool setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated);
 	void sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel);
 
-	
+	int32_t modifiedWorld;
 	void imagineMostLikelyOBJECTPosition(string objectType);
 	void action_imagineMostLikelyMugInPosition();
 	void action_imagineMostLikelyCoffeePotInPosition();

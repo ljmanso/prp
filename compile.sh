@@ -71,40 +71,6 @@ fi
 
 
 
-# inversekinematics
-echo "make ik"
-cd /home/robocomp/robocomp/components/robocomp-ursus/components/inversekinematics
-cmake .
-make -j$N
-if [ $? -ne 0 ]; then
-	echo "error compiling IK"
-#	exit
-fi
-
-
-
-# gik visual
-echo "make gik"
-cd /home/robocomp/robocomp/components/robocomp-ursus/components/ikGraphGenerator/
-cmake .
-make -j$N
-if [ $? -ne 0 ]; then
-	echo "error compiling gik"
-#	exit
-fi
-
-
-
-# ik visual
-echo "make ik visual"
-cd /home/robocomp/robocomp/components/robocomp-ursus/components/visualik/
-cmake .
-make -j$N
-if [ $? -ne 0 ]; then
-	echo "error compiling visualik"
-	exit
-fi
-
 # ursuscommonjoint
 echo "make ursuscommonjoint"
 cd /home/robocomp/robocomp/components/robocomp-ursus/components/ursusCommonJoint/
@@ -126,12 +92,12 @@ if [ $? -ne 0 ]; then
 fi
 
 # laserRGBD
-echo "make laserRGBD"
-cd /home/robocomp/robocomp/components/robocomp-robolab/experimental/laserRGBDComp/
+echo "make laserRGBD2"
+cd /home/robocomp/robocomp/components/robocomp-robolab/experimental/laserRGBDComp2/
 cmake .
 make -j$N
 if [ $? -ne 0 ]; then
-	echo "error compiling laserrgbd"
+	echo "error compiling laserrgbd2"
 	exit
 fi
 

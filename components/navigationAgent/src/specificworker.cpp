@@ -452,24 +452,31 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 	try
 	{
 		AGMModelEdge edge  = worldModel->getEdgeByIdentifiers(roomId, robotId, "RT");
-		//printf("a %d\n", __LINE__);
-
-		float bStatex =str2float(edge->getAttribute("tx"));
-		float bStatez = str2float(edge->getAttribute("tz"));
-		float bStatealpha = str2float(edge->getAttribute("ry"));
-		
-		//to reduces the publication frequency
-		if (fabs(bStatex - bState.correctedX)>5 or fabs(bStatez - bState.correctedZ)>5 or fabs(bStatealpha - bState.correctedAlpha)>0.02 or force)
+		printf("a %d\n", __LINE__);
+		try
 		{
-			//Publish update edge
-			printf("\nUpdate odometry...\n");
-			qDebug()<<"bState local --> "<<bStatex<<bStatez<<bStatealpha;
-			qDebug()<<"bState corrected --> "<<bState.correctedX<<bState.correctedZ<<bState.correctedAlpha;
+			float bStatex =str2float(edge->getAttribute("tx"));
+			float bStatez = str2float(edge->getAttribute("tz"));
+			float bStatealpha = str2float(edge->getAttribute("ry"));
+			
+			//to reduces the publication frequency
+			if (fabs(bStatex - bState.correctedX)>5 or fabs(bStatez - bState.correctedZ)>5 or fabs(bStatealpha - bState.correctedAlpha)>0.02 or force)
+			{
+				//Publish update edge
+				printf("\nUpdate odometry...\n");
+				qDebug()<<"bState local --> "<<bStatex<<bStatez<<bStatealpha;
+				qDebug()<<"bState corrected --> "<<bState.correctedX<<bState.correctedZ<<bState.correctedAlpha;
 
-			edge->setAttribute("tx", float2str(bState.correctedX));
-			edge->setAttribute("tz", float2str(bState.correctedZ));
-			edge->setAttribute("ry", float2str(bState.correctedAlpha));
-			AGMMisc::publishEdgeUpdate(edge, agmexecutive_proxy);
+				edge->setAttribute("tx", float2str(bState.correctedX));
+				edge->setAttribute("tz", float2str(bState.correctedZ));
+				edge->setAttribute("ry", float2str(bState.correctedAlpha));
+				AGMMisc::publishEdgeUpdate(edge, agmexecutive_proxy);
+			}
+		}
+		catch (...)
+		{
+			printf("Can't update odometry in RT, edge exists but we encountered other problem!!\n");
+			return false;
 		}
 	}
 	catch (...)

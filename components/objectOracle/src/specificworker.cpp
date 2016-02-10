@@ -29,11 +29,13 @@ typedef std::map<std::string, double>::const_iterator MapIterator;
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx),
 first(true)
 {
+	modifiedWorld = -1;
 	image_segmented_counter = 0;
 	active = false;
 	worldModel = AGMModel::SPtr(new AGMModel());
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
+	worldModelTime = actionTime = QTime::currentTime();
 
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
@@ -485,6 +487,7 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modifi
 {
 	QMutexLocker locker(mutex);
  	AGMModelConverter::fromIceToInternal(modification, worldModel);
+	worldModelTime = QTime::currentTime();
  
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
@@ -752,6 +755,7 @@ bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs,
 	try
 	{
 		action = params["action"].value;
+		actionTime = QTime::currentTime();
 		std::transform(action.begin(), action.end(), action.begin(), ::tolower);
 		//TYPE YOUR ACTION NAME
 		if (action == "actionname")
@@ -796,6 +800,10 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 
 void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 {
+	printf("%d %d\n", modifiedWorld, worldModel->version);
+	if (modifiedWorld > worldModel->version or actionTime < worldModelTime)
+		return;
+
 	AGMModel::SPtr newModel(new AGMModel(worldModel));
 
 	// Create new symbols and the edges which are independent from the container
@@ -848,6 +856,7 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 
 	
 	// Send modification proposal
+	modifiedWorld = worldModel->version + 1;
 	sendModificationProposal(worldModel, newModel);
 }
 

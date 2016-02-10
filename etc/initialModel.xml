@@ -47,8 +47,15 @@
 		<attribute key="imType" value="transform" />
 		<attribute key="imName" value="world" />
 	</symbol>
-	<link src="1" dst="100" label="in" />
-	<link src="100" dst="1" label="RT" >
+	<link src="100" dst="5" label="RT" >
+		<linkAttribute key="tz" value="0" />
+		<linkAttribute key="tx" value="0" />
+		<linkAttribute key="ty" value="0" />
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="0" />
+		<linkAttribute key="rz" value="0" />
+	</link>
+	<link src="100" dst="3" label="RT" >
 		<linkAttribute key="tz" value="0" />
 		<linkAttribute key="tx" value="0" />
 		<linkAttribute key="ty" value="0" />
@@ -59,6 +66,14 @@
 	<link src="3" dst="4" label="room" >
 	</link>
 	<link src="1" dst="3" label="in" >
+	</link>
+	<link src="3" dst="1" label="RT" >
+		<linkAttribute key="tz" value="0" />
+		<linkAttribute key="tx" value="0" />
+		<linkAttribute key="ty" value="0" />
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="0" />
+		<linkAttribute key="rz" value="0" />
 	</link>
 	<link src="1" dst="3" label="know" >
 	</link>
@@ -78,7 +93,7 @@
 	</link>
 	<link src="1" dst="20" label="know" >
 	</link>
-	<link src="100" dst="20" label="RT" >
+	<link src="3" dst="20" label="RT" >
 		<linkAttribute key="tz" value="3180" />
 		<linkAttribute key="tx" value="1400" />
 		<linkAttribute key="ty" value="800" />
@@ -98,7 +113,7 @@
 	</link>
 	<link src="1" dst="22" label="know" >
 	</link>
-	<link src="100" dst="22" label="RT" >
+	<link src="3" dst="22" label="RT" >
 		<linkAttribute key="tz" value="3200" />
 		<linkAttribute key="tx" value="3800" />
 		<linkAttribute key="ty" value="800" />
@@ -118,7 +133,7 @@
 	</link>
 	<link src="1" dst="24" label="know" >
 	</link>
-	<link src="100" dst="24" label="RT" >
+	<link src="3" dst="24" label="RT" >
 		<linkAttribute key="tz" value="2400" />
 		<linkAttribute key="tx" value="6500" />
 		<linkAttribute key="ty" value="800" />
@@ -138,7 +153,7 @@
 	</link>
 	<link src="1" dst="26" label="know" >
 	</link>
-	<link src="100" dst="26" label="RT" >
+	<link src="5" dst="26" label="RT" >
 		<linkAttribute key="tz" value="-3600" />
 		<linkAttribute key="tx" value="4500" />
 		<linkAttribute key="ty" value="800" />
@@ -158,7 +173,7 @@
 	</link>
 	<link src="1" dst="28" label="know" >
 	</link>
-	<link src="100" dst="28" label="RT" >
+	<link src="5" dst="28" label="RT" >
 		<linkAttribute key="tz" value="-3600" />
 		<linkAttribute key="tx" value="4500" />
 		<linkAttribute key="ty" value="800" />
