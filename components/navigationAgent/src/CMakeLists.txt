@@ -1,6 +1,6 @@
 
 cmake_minimum_required(VERSION 2.6)
-PROJECT(  objectoracle )
+PROJECT(  navigationAgent )
 
  
 IF ( "$ENV{ROBOCOMP}" STREQUAL "")
@@ -27,7 +27,6 @@ SET ( SOURCES
   genericworker.cpp
   specificworker.cpp
   agmcommonbehaviorI.cpp
-  objectoracleI.cpp
   agmexecutivetopicI.cpp
   $ENV{ROBOCOMP}/classes/agmInner/agmInner.cpp
 )
@@ -41,7 +40,6 @@ SET ( HEADERS
   genericworker.h
   specificworker.h
   agmcommonbehaviorI.h
-  objectoracleI.h
   agmexecutivetopicI.h
 )
 
@@ -49,7 +47,7 @@ SET ( HEADERS
 
 #ROBOCOMP
 ROBOCOMP_INITIALIZE( $ENV{ROBOCOMP}/ )
-ROBOCOMP_WRAP_ICE( CommonBehavior AGMExecutive AGMWorldModel Planning AGMCommonBehavior AGMWorldModel ObjectOracle )
+ROBOCOMP_WRAP_ICE( CommonBehavior AGMExecutive AGMWorldModel Planning AGMCommonBehavior AGMWorldModel TrajectoryRobot2D OmniRobot )
 SET (EXECUTABLE_OUTPUT_PATH ${RC_COMPONENT_DEVEL_PATH}/bin)
 
 # Qt4
@@ -68,6 +66,6 @@ QT4_WRAP_CPP( MOC_SOURCES ${HEADERS} )
 
 # Specify construction and link process
 SET(LIBS ${LIBS} -lagm)
-ADD_EXECUTABLE( objectoracle ${SOURCES} ${MOC_SOURCES} ${RC_SOURCES} ${UI_HEADERS} )
-TARGET_LINK_LIBRARIES( objectoracle ${QT_LIBRARIES} ${LIBS} ${STATIC_LIBS} ${SPECIFIC_LIBS})
-INSTALL(FILES ${EXECUTABLE_OUTPUT_PATH}/objectoracle DESTINATION ${RC_COMPONENT_INSTALL_PATH}/bin/ PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+ADD_EXECUTABLE( navigationAgent ${SOURCES} ${MOC_SOURCES} ${RC_SOURCES} ${UI_HEADERS} )
+TARGET_LINK_LIBRARIES( navigationAgent ${QT_LIBRARIES} ${LIBS} ${STATIC_LIBS} ${SPECIFIC_LIBS})
+INSTALL(FILES ${EXECUTABLE_OUTPUT_PATH}/navigationAgent DESTINATION ${RC_COMPONENT_INSTALL_PATH}/bin/ PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )

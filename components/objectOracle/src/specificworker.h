@@ -105,6 +105,7 @@ public:
 	int uptimeAgent();
 	bool deactivateAgent();
 	StateStruct getAgentState();
+	void semanticDistance(const string &word1, const string &word2, float &result);
         
 	void processDataFromDir(const boost::filesystem::path &base_dir);
 	//given an image and its location it process its objects and save them to the corresponding location
@@ -115,10 +116,11 @@ public:
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
 	std::string lookForObject(std::string label);
 	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
-	void structuralChange(const RoboCompAGMWorldModel::Event &modification);
+	void structuralChange(const RoboCompAGMWorldModel::World &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
 	void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification);
 	void symbolUpdated(const RoboCompAGMWorldModel::Node &modification);
+	void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications);
 	ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 public slots:
@@ -129,6 +131,7 @@ private:
 	std::map<std::string, double>  table2;
 	std::map<std::string, double>  table3;
 	std::map<std::string, double>  table4;
+	std::map<std::string, double>  table5;
 	
 	int image_segmented_counter;
 	std::string action;

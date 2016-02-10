@@ -37,6 +37,8 @@ first(true)
 
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+
+// 	load_tables_info();
         
 
 //         processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
@@ -55,7 +57,7 @@ first(true)
 //         {
 //                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
 //         }
-	load_tables_info();
+
 }
 
 /**
@@ -90,25 +92,31 @@ void SpecificWorker::compute()
 	if (first)
 	{
 		first=false;
-		
-// 		processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
+		load_tables_info();
+  		//processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
 		//show map after processing
-/*        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+		
+        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "1. Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table2.begin(); iter != table2.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "2.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table3.begin(); iter != table3.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+                cout << "3.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
         for (MapIterator iter = table4.begin(); iter != table4.end(); iter++)
         {
-                cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-        }  */     
+                cout << "4.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }       
+		for (MapIterator iter = table5.begin(); iter != table5.end(); iter++)
+        {
+                cout << "5.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
+        }
+        //save_tables_info();
 	}
 }
 
@@ -192,6 +200,7 @@ void SpecificWorker::save_tables_info()
     oa << table2;
     oa << table3;
     oa << table4;
+	oa << table5;
     
 }
 
@@ -204,6 +213,7 @@ void SpecificWorker::load_tables_info()
     oa >> table2;
     oa >> table3;
     oa >> table4;
+  	oa >> table5;
 }
 
 static unsigned int get_current_time(void)
@@ -263,33 +273,36 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 			std::string location = path2file.substr(0, path2file.find_last_of("/\\"));
 			location = location.substr(location.find_last_of("/\\")+1);
 			
-			//firs processing of entire image
-			cv::Mat rgb = cv::imread( path2file );
-			
-			ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
-			
-			std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
-			std::cout<<rgbMatrix.size()<<std::endl;
-			processImage(rgbMatrix, location);
-			
-			//3D based segment and process all segmented objects
-			std::string pcd_path2file = path2file.substr(0, path2file.find_last_of(".")) + ".pcd";
-
-			pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
-			if (pcl::io::loadPCDFile<PointT> (pcd_path2file, *cloud) == -1) //* load the file
+			if(location == "table5")
 			{
-				PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
-			}
- 			std::vector<cv::Mat> segmented_objects;
-			segmentObjects3D(cloud, rgb, segmented_objects);
-			
-			cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
-			
-// 			for(std::vector<cv::Mat>::iterator it = sgemented_objects.begin(); it != sgemented_objects.end(); ++it)
-			for(int i = 0 ; i < segmented_objects.size() ; i++)
-			{	
-				rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
+				//first processing of entire image
+				cv::Mat rgb = cv::imread( path2file );
+				
+				ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
+				
+				std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
+				std::cout<<rgbMatrix.size()<<std::endl;
 				processImage(rgbMatrix, location);
+				
+				//3D based segment and process all segmented objects
+				std::string pcd_path2file = path2file.substr(0, path2file.find_last_of(".")) + ".pcd";
+
+				pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
+				if (pcl::io::loadPCDFile<PointT> (pcd_path2file, *cloud) == -1) //* load the file
+				{
+					PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+				}
+				std::vector<cv::Mat> segmented_objects;
+				segmentObjects3D(cloud, rgb, segmented_objects);
+				
+				cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
+				
+	// 			for(std::vector<cv::Mat>::iterator it = sgemented_objects.begin(); it != sgemented_objects.end(); ++it)
+				for(uint i = 0 ; i < segmented_objects.size() ; i++)
+				{	
+					rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
+					processImage(rgbMatrix, location);
+				}
 			}
 			
 		}
@@ -299,11 +312,11 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 void SpecificWorker::processImage(const ColorSeq &image, std::string location)
 {
     ResultList result;
-    std:string label;
+    std::string label;
     
     getLabelsFromImage(image, result);
     
-    for(int i=0; i<result.size(); i++)
+    for(uint i=0; i<result.size(); i++)
     {
         std::stringstream names(result[i].name);
         if(location.compare("table1") == 0)
@@ -376,8 +389,23 @@ void SpecificWorker::processImage(const ColorSeq &image, std::string location)
                     }
                     else
                     {
-                        std::cout<<"Processing Image: Location not properly specified"<<std::endl;
-                        return;
+						if(location.compare("table5") == 0)
+						{
+							std::map<std::string,double>::iterator it = table5.find(label);
+                            if (it == table5.end())
+                                table5.insert ( std::pair<std::string, double>(label,result[i].believe) );
+                            else
+							{
+// 								std::cout<<" ------------ Max: "<<table5[label]<<" "<<(double)result[i].believe;
+                                table5[label] = std::max(table5[label], (double)result[i].believe);
+// 								std::cout<<"Result: "<<table5[label]<<std::endl;
+							}
+						}
+						else
+						{
+							std::cout<<"Processing Image: Location not properly specified"<<std::endl;
+							return;
+						}
                     }
                 }
             }
@@ -453,10 +481,10 @@ void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &resul
     
 }
 
-void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::Event &modification)
+void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modification)
 {
 	QMutexLocker locker(mutex);
- 	AGMModelConverter::fromIceToInternal(modification.newModel, worldModel);
+ 	AGMModelConverter::fromIceToInternal(modification, worldModel);
  
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
@@ -464,7 +492,12 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::Event &modifi
 
 void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications)
 {
-
+	QMutexLocker locker(mutex);
+	for (auto modification : modifications)
+		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+ 
+	delete innerModel;
+	innerModel = agmInner.extractInnerModel(worldModel);
 }
 
 void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge &modification)
@@ -480,6 +513,16 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
 {
 	QMutexLocker locker(mutex);
  	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+ 
+	delete innerModel;
+	innerModel = agmInner.extractInnerModel(worldModel);
+}
+
+void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications)
+{
+	QMutexLocker locker(mutex);
+	for (auto modification : modifications)
+		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
  
 	delete innerModel;
 	innerModel = agmInner.extractInnerModel(worldModel);
@@ -596,14 +639,14 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 
 		cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
 		
-		float maxAngleWidth = (float) (57.0f * (M_PI / 180.0f));
-		float maxAngleHeight = (float) (43.0f * (M_PI / 180.0f));
-		float angularResolution = (float)(57.0f / 640.0f * (M_PI/180.0f));
-		Eigen::Affine3f sensorPose = Eigen::Affine3f::Identity();
-		pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
-		float noiseLevel=0.00;
-		float minRange = 0.0f;
-		int borderSize = 1;
+// 		float maxAngleWidth = (float) (57.0f * (M_PI / 180.0f));
+// 		float maxAngleHeight = (float) (43.0f * (M_PI / 180.0f));
+// 		float angularResolution = (float)(57.0f / 640.0f * (M_PI/180.0f));
+// 		Eigen::Affine3f sensorPose = Eigen::Affine3f::Identity();
+// 		pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
+// 		float noiseLevel=0.00;
+// 		float minRange = 0.0f;
+// 		int borderSize = 1;
 		std::vector<cv::Point> points;
 		
 // 		for (unsigned int i = 0; i<cloud_cluster->points.size(); i++)
@@ -649,7 +692,7 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 		result.push_back(cropped);
 	}
 	
-	return result;
+// 	return result;
 }
 
 std::string SpecificWorker::lookForObject(std::string label)
@@ -682,7 +725,11 @@ std::string SpecificWorker::lookForObject(std::string label)
         table =  "table4";       
         current_believe = it->second;
     }
-    
+	if (it != table5.end() && it->second > current_believe)
+    {
+        table =  "table5";       
+        current_believe = it->second;
+    }
     //if no object try to use semantics
     
     return table;
@@ -738,7 +785,7 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 {
 	try
 	{
-		AGMMisc::publishModification(newModel, agmagenttopic_proxy, worldModel,"objectoracleAgent");
+		AGMMisc::publishModification(newModel, agmexecutive_proxy, "objectoracleAgent");
 	}
 	catch(...)
 	{
@@ -822,5 +869,11 @@ void SpecificWorker::action_imagineMostLikelyMilkInPosition()
 	imagineMostLikelyOBJECTPosition("milk");
 }
 
+
+
+void SpecificWorker::semanticDistance(const string &word1, const string &word2, float &result)
+{
+
+}
 
 
