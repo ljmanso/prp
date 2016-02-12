@@ -11,12 +11,25 @@
   <simulation hookes="0.07" springlength="0.5" friction="0.4" step="0.5" fieldforce="20000.0" />
  </generalInformation>
 
+ <node alias="joystick" endpoint="joystick:tcp -h localhost -p 10002">
+  <dependence alias="base" />
+  <workingDir path="/home/robocomp/" />
+  <upCommand command="rcremote localhost jstck /home/robocomp/robocomp/components/robocomp-robolab/components/joystickOmniComp/ ./bin/joystickOmniComp --Ice.Config=config" />
+  <downCommand command="rcremote localhost X / pkill -9 -f joystickOmniComp" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
+  <xpos value="15" />
+  <ypos value="90" />
+  <radius value="10.0" />
+  <color value="#4422FF" />
+ </node>
+
+
  <node alias="base" endpoint="omnirobot:tcp -p 12238">
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost base /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/autonomyLabModel.xml" />
+  <upCommand command="rcremote localhost base /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/simulation.xml" />
   <downCommand command="killall -9 rcis" />
   <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
-  <xpos value="15.7681248769" />
+  <xpos value="15" />
   <ypos value="152.993217862" />
   <radius value="10.0" />
   <color value="#4422FF" />
@@ -27,7 +40,7 @@
   <upCommand command="rcremote localhost IS / rcnode" />
   <downCommand command="killall -9 icebox" />
   <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
-  <xpos value="15.7681248769" />
+  <xpos value="15" />
   <ypos value="22.9932178619" />
   <radius value="10.0" />
   <color value="#FF3333" />
@@ -35,7 +48,7 @@
 
  <node alias="rgbd" endpoint="rgbd:tcp -p 10096">
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost rcis /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/autonomyLabModel.xml" />
+  <upCommand command="rcremote localhost rgbd /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/simulation.xml" />
   <downCommand command="killall -9 rcis" />
   <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/primesense.conf" />
   <xpos value="115.768124877" />

@@ -1,9 +1,4 @@
 <innermodel>
-<transform id="world">
-	<transform id="robotInitPose" tx="1500" tz="1500">
-		<include path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.xml"/>
-	</transform>
-
 	<axes id="ax" length="200" width="30"/>
 <!-- 	<plane id="floor_plane" ny="1" size="15000,10000,1" py="-10" texture="/home/robocomp/robocomp/files/osgModels/textures/wood.jpg" /> -->
 	<transform id="floor" tx="3500" tz="0">
@@ -127,6 +122,5 @@
 		<plane id="tableDC" ny="1" size="900,1800"  texture="#cccccc" />
 	</transform>
 
-</transform>
 </innermodel>
 

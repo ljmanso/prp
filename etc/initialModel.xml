@@ -34,10 +34,14 @@
 		<attribute key="imName" value="robot" />
 	</symbol>
 	<symbol id="3" type="room">
+		<attribute key="imType" value="transform" />
+		<attribute key="imName" value="room_5" />
 	</symbol>
 	<symbol id="2" type="status">
 	</symbol>
 	<symbol id="5" type="room">
+		<attribute key="imType" value="transform" />
+		<attribute key="imName" value="room_3" />
 	</symbol>
 	<symbol id="4" type="roomSt">
 	</symbol>

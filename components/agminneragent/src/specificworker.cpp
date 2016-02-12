@@ -20,8 +20,7 @@
 
 void SpecificWorker::compute()
 {
-	qDebug()<<"numberOfSymbols "<<worldModel->numberOfSymbols();
-
+//	qDebug()<<"numberOfSymbols "<<worldModel->numberOfSymbols();
 
 	if (worldModel->numberOfSymbols()>0)
 	{
@@ -49,17 +48,15 @@ void SpecificWorker::compute()
 int SpecificWorker::findName(QString n)
 {
 	for (uint32_t i=0; i<worldModel->symbols.size(); ++i)
-	{	
+	{
 		if (worldModel->symbols[i]->attributes.find("imName") != worldModel->symbols[i]->attributes.end() )
 		{
 			if (worldModel->symbols[i]->attributes["imName"] == n.toStdString() )
 			{
-// 				qDebug()<<"findName: FOUND"<<n<<worldModel->symbols[i]->identifier;
 				return worldModel->symbols[i]->identifier;
 			}
 		}
-	}	
-// 	qDebug()<<"findName: NO ENCONTRADO"<<n<<-1;
+	}
 	return -1;
 }
 
@@ -73,15 +70,15 @@ void SpecificWorker::innerToAGM(InnerModelNode* node, int &symbolID, QList<QStri
 	for (i=node->children.begin(); i!=node->children.end(); i++)
 	{
 		if ( !lNode.contains((*i)->id) )
-		{	
+		{
 			//Search name (key) of the innerModel node in AGM
 			int existingID = findName ( (*i)->id ) ;
 			if ( existingID == -1 )
-			{	
+			{
 				qDebug()<<node->id<<"link"<<(*i)->id;
 				//symbol
 				AGMModelSymbol::SPtr newSym = ImNodeToSymbol((*i));
-								
+
 				//edge 
 				std::map<std::string, std::string> linkAttrs;
 
@@ -96,7 +93,9 @@ void SpecificWorker::innerToAGM(InnerModelNode* node, int &symbolID, QList<QStri
 				innerToAGM((*i),id,lNode);
 			}
 			else
+			{
 				innerToAGM((*i),existingID,lNode);
+			}
 		}
 	}	
 }
@@ -104,7 +103,7 @@ void SpecificWorker::innerToAGM(InnerModelNode* node, int &symbolID, QList<QStri
 AGMModelSymbol::SPtr SpecificWorker::ImNodeToSymbol(InnerModelNode* node)
 {
 	std::map<std::string, std::string> attrs;
-	attrs.insert ( std::pair<std::string,std::string>("imName",node->id.toStdString()) );
+	attrs.insert ( std::pair<std::string,std::string>("imName", node->id.toStdString()) );
 	
 	AGMModelSymbol::SPtr newSym;
 	
@@ -354,37 +353,24 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-// 	for (auto i : params)
-// 		printf("%s\n", i.first.c_str());
-
-	
-	
-// printf("%s: %d\n", __FILE__, __LINE__);
-	
 	RoboCompCommonBehavior::Parameter par;
 	try
 	{
-// printf("%s: %d\n", __FILE__, __LINE__);
-		 par = params.at("AGMInnerAgent.InnerModels");
-// printf("%s: %d\n", __FILE__, __LINE__);
+		par = params.at("AGMInnerAgent.InnerModels");
 	}
 	catch(std::exception e)
 	{
 		qFatal("Error reading config params: %s\n", e.what());
 	}
 
-// printf("%s: %d\n", __FILE__, __LINE__);
 	for (auto s : QString::fromStdString(par.value).split(";"))
 	{
-// printf("%s: %d\n", __FILE__, __LINE__);	
 		auto v = s.split(",");
 		if( QFile(v[0]).exists() == true)
 		{
-// printf("%s\n%s: %d\n", par.value.c_str(), __FILE__, __LINE__);
 			InnerModel *innerModel = new InnerModel(v[0].toStdString());
-// printf("%s: %d\n", __FILE__, __LINE__);
+			printf("%s ---> %s\n", v[0].toStdString().c_str(), v[1].toStdString().c_str());
 			innerModelInfoVector.push_back(std::pair<InnerModel *, QString>(innerModel, v[1]));
-// printf("%s: %d\n", __FILE__, __LINE__);
 		}
 		else
 		{

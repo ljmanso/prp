@@ -426,13 +426,13 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 	{
 		omnirobot_proxy->getBaseState(bState);
 	}
-	catch(...)
+	catch (...)
 	{
 		printf("Can't connect to the robot!!\n");
 		return false;
 	}
 
-	int32_t robotId, roomId;
+	int32_t robotId=-1, roomId=-1;
 
 	robotId = worldModel->getIdentifierByType("robot");
 	if (robotId < 0)
@@ -441,8 +441,20 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 		return false;
 	}
 
-	//
-	roomId = 7;//worldModel->getIdentifierByName("object_7");
+	AGMModelSymbol::SPtr robot = worldModel->getSymbol(robotId);
+	for (auto edge = robot->edgesBegin(worldModel); edge != robot->edgesEnd(worldModel); edge++)
+	{
+		if (edge->getLabel() == "RT")
+		{
+			const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
+			const string secondType = worldModel->getSymbol(symbolPair.first)->symbolType;
+			if (symbolPair.second == robotId and secondType == "room")
+			{
+				roomId = symbolPair.first;
+			}
+		}
+	}
+
 	if (roomId < 0)
 	{
 		printf("roomId not found, Waiting for Insert innerModel...\n");
@@ -452,14 +464,15 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 	try
 	{
 		AGMModelEdge edge  = worldModel->getEdgeByIdentifiers(roomId, robotId, "RT");
-		printf("a %d\n", __LINE__);
+		printf("%d ---[rt]---> %d  (%d\n", roomId, robotId, __LINE__);
 		try
 		{
-			float bStatex =str2float(edge->getAttribute("tx"));
+			float bStatex = str2float(edge->getAttribute("tx"));
 			float bStatez = str2float(edge->getAttribute("tz"));
 			float bStatealpha = str2float(edge->getAttribute("ry"));
 			
-			//to reduces the publication frequency
+			// to reduce the publication frequency
+			printf("xModel=%f xBase=%f\n", bStatex, bState.correctedX);
 			if (fabs(bStatex - bState.correctedX)>5 or fabs(bStatez - bState.correctedZ)>5 or fabs(bStatealpha - bState.correctedAlpha)>0.02 or force)
 			{
 				//Publish update edge
@@ -471,7 +484,11 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 				edge->setAttribute("tz", float2str(bState.correctedZ));
 				edge->setAttribute("ry", float2str(bState.correctedAlpha));
 				AGMMisc::publishEdgeUpdate(edge, agmexecutive_proxy);
+				printf("done\n");
 			}
+			printf(".");
+			fflush(stdout);
+
 		}
 		catch (...)
 		{
@@ -792,7 +809,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 // 		}
 // 		else
 // 		{
-// 			qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "Innermodel file " << QString::fromStdString(par.value) << " does not exists";
+// 			qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "Innermodel file " << QString::fromStdString(par.value) << " does not exist";
 // 			qFatal("Exiting now.");
 // 		}
 // 	}
