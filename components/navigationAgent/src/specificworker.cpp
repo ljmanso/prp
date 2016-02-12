@@ -242,12 +242,12 @@ void SpecificWorker::action_HandObject(bool newAction)
 		string state;
 		try
 		{
-				state = trajectoryrobot2d_proxy->getState().state;
+			state = trajectoryrobot2d_proxy->getState().state;
 		}
 		catch(const Ice::Exception &ex)
 		{
-				std::cout <<"navigationAgent, action_HandObject: trajectoryrobot2d->getState().state "<< ex << std::endl;
-				throw ex;
+			std::cout <<"navigationAgent, action_HandObject: trajectoryrobot2d->getState().state "<< ex << std::endl;
+			throw ex;
 		}
 
 		//state="IDLE";
@@ -793,7 +793,10 @@ void SpecificWorker::action_NoAction(bool newAction)
 {
 	std::string state = trajectoryrobot2d_proxy->getState().state;
 	if (state != "IDLE")
+	{
+		printf("trajectoryrobot2d state : %s\n", state.c_str());
 		stop();
+	}
 }
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
