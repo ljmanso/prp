@@ -673,9 +673,23 @@ void SpecificWorker::action_ChangeRoom(bool newAction)
 	static float lastX = std::numeric_limits<float>::quiet_NaN();
 	static float lastZ = std::numeric_limits<float>::quiet_NaN();
 
-	AGMModelSymbol::SPtr goalRoom = worldModel->getSymbol(str2int(params["r2"].value));
-	const float x = str2float(goalRoom->getAttribute("tx"));
-	const float z = str2float(goalRoom->getAttribute("tz"));
+	auto symbols = worldModel->getSymbolsMap(params, "r2");
+	
+	int32_t roomId = symbols["r2"]->identifier;
+	printf("room symbol: %d\n",  roomId);
+	std::string imName = symbols["r2"]->getAttribute("imName");
+	printf("imName: <%s>\n", imName.c_str());
+
+	const float refX = str2float(symbols["r2"]->getAttribute("x"));
+	const float refZ = str2float(symbols["r2"]->getAttribute("z"));
+	
+	QVec roomPose = innerModel->transformS("world", QVec::vec3(refX, 0, refZ), imName);
+	roomPose.print("goal pose");
+// 	AGMModelSymbol::SPtr goalRoom = worldModel->getSymbol(str2int(params["r2"].value));
+// 	const float x = str2float(goalRoom->getAttribute("tx"));
+// 	const float z = str2float(goalRoom->getAttribute("tz"));
+	const float x = roomPose(0);
+	const float z = roomPose(2);
 
 	bool proceed = true;
 	if ( (planningState.state=="PLANNING" or planningState.state=="EXECUTING") )
@@ -694,7 +708,7 @@ void SpecificWorker::action_ChangeRoom(bool newAction)
 	{
 		lastX = x;
 		lastZ = z;
-		printf("changeroom from %s to %s\n", params["r1"].value.c_str(), params["r2"].value.c_str());
+		printf("changeroom to %d\n", symbols["r2"]->identifier);
 		go(x, z);
 	}
 	else
@@ -801,26 +815,6 @@ void SpecificWorker::action_NoAction(bool newAction)
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-// 	try
-// 	{
-// 		RoboCompCommonBehavior::Parameter par = params.at("NavigationAgent.InnerModel") ;
-// 		if( QFile(QString::fromStdString(par.value)).exists() == true)
-// 		{
-// 			qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "Reading Innermodel file " << QString::fromStdString(par.value);
-// 			innerModel = new InnerModel(par.value);
-// 			qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "Innermodel file read OK!" ;
-// 		}
-// 		else
-// 		{
-// 			qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "Innermodel file " << QString::fromStdString(par.value) << " does not exist";
-// 			qFatal("Exiting now.");
-// 		}
-// 	}
-// 	catch(std::exception e)
-// 	{
-// 		qFatal("Error reading config params");
-// 	}
-
 	timer.start(20);
 	return true;
 }
@@ -904,7 +898,7 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World& modifi
 
 // 	agmInner.setWorld(worldModel);
 	if (innerModel) delete innerModel;
-	innerModel = agmInner.extractInnerModel(worldModel, "room", true);
+	innerModel = agmInner.extractInnerModel(worldModel, "world", true);
 	printf("structuralChange>>\n");
 }
 
@@ -915,7 +909,7 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node& modificati
 	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
 
 	if (innerModel) delete innerModel;
-	innerModel = agmInner.extractInnerModel(worldModel, "room", true);
+	innerModel = agmInner.extractInnerModel(worldModel, "world", true);
 }
 
 void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications)
@@ -926,7 +920,7 @@ void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &m
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
 
 	if (innerModel) delete innerModel;
-	innerModel = agmInner.extractInnerModel(worldModel, "room", true);
+	innerModel = agmInner.extractInnerModel(worldModel, "world", true);
 }
 
 

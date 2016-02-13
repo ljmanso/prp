@@ -35,13 +35,17 @@
 	</symbol>
 	<symbol id="3" type="room">
 		<attribute key="imType" value="transform" />
-		<attribute key="imName" value="room_5" />
+		<attribute key="imName" value="room_3" />
+		<attribute key="x" value="3300" />
+		<attribute key="z" value="1000" />
 	</symbol>
 	<symbol id="2" type="status">
 	</symbol>
 	<symbol id="5" type="room">
 		<attribute key="imType" value="transform" />
-		<attribute key="imName" value="room_3" />
+		<attribute key="imName" value="room_5" />
+		<attribute key="x" value="3300" />
+		<attribute key="z" value="-1000" />
 	</symbol>
 	<symbol id="4" type="roomSt">
 	</symbol>
@@ -52,17 +56,17 @@
 		<attribute key="imName" value="world" />
 	</symbol>
 	<link src="100" dst="5" label="RT" >
-		<linkAttribute key="tz" value="0" />
 		<linkAttribute key="tx" value="0" />
 		<linkAttribute key="ty" value="0" />
+		<linkAttribute key="tz" value="0" />
 		<linkAttribute key="rx" value="0" />
 		<linkAttribute key="ry" value="0" />
 		<linkAttribute key="rz" value="0" />
 	</link>
 	<link src="100" dst="3" label="RT" >
-		<linkAttribute key="tz" value="0" />
 		<linkAttribute key="tx" value="0" />
 		<linkAttribute key="ty" value="0" />
+		<linkAttribute key="tz" value="0" />
 		<linkAttribute key="rx" value="0" />
 		<linkAttribute key="ry" value="0" />
 		<linkAttribute key="rz" value="0" />
