@@ -129,9 +129,12 @@ int ::agmInnerComp::run(int argc, char* argv[])
 
 	AGMExecutivePrx agmexecutive_proxy;
 
+printf("%s: %d\n", __FILE__, __LINE__);
+
 	string proxy, tmp;
 	initialize();
 
+printf("%s: %d\n", __FILE__, __LINE__);
 
 	try
 	{
@@ -151,6 +154,7 @@ int ::agmInnerComp::run(int argc, char* argv[])
 
 	IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(communicator()->propertyToProxy("TopicManager.Proxy"));
 
+printf("%s: %d\n", __FILE__, __LINE__);
 
 	SpecificWorker *worker = new SpecificWorker(mprx);
 	//Monitor thread
@@ -164,8 +168,11 @@ int ::agmInnerComp::run(int argc, char* argv[])
 	
 	while (!monitor->ready)
 	{
+printf("%s: %d\n", __FILE__, __LINE__);
 		usleep(10000);
 	}
+	
+printf("%s: %d\n", __FILE__, __LINE__);
 	
 	try
 	{
@@ -180,6 +187,7 @@ int ::agmInnerComp::run(int argc, char* argv[])
 		adapterCommonBehavior->activate();
 
 
+printf("%s: %d\n", __FILE__, __LINE__);
 
 
 		// Server adapter creation and publication
@@ -195,6 +203,7 @@ int ::agmInnerComp::run(int argc, char* argv[])
 
 
 
+printf("%s: %d\n", __FILE__, __LINE__);
 
 
 		// Server adapter creation and publication
@@ -206,6 +215,7 @@ int ::agmInnerComp::run(int argc, char* argv[])
 		AGMExecutiveTopicPtr agmexecutivetopicI_ = new AGMExecutiveTopicI(worker);
 		Ice::ObjectPrx agmexecutivetopic = AGMExecutiveTopic_adapter->addWithUUID(agmexecutivetopicI_)->ice_oneway();
 		IceStorm::TopicPrx agmexecutivetopic_topic;
+printf("%s: %d\n", __FILE__, __LINE__);
 		if(!agmexecutivetopic_topic){
 		try {
 			agmexecutivetopic_topic = topicManager->create("AGMExecutiveTopic");
@@ -221,6 +231,7 @@ int ::agmInnerComp::run(int argc, char* argv[])
 			}
 		}
 		IceStorm::QoS qos;
+printf("%s: %d\n", __FILE__, __LINE__);
 		agmexecutivetopic_topic->subscribeAndGetPublisher(qos, agmexecutivetopic);
 		}
 		AGMExecutiveTopic_adapter->activate();
@@ -230,12 +241,15 @@ int ::agmInnerComp::run(int argc, char* argv[])
 
 		// User defined QtGui elements ( main window, dialogs, etc )
 
+printf("%s: %d\n", __FILE__, __LINE__);
 #ifdef USE_QTGUI
 		//ignoreInterrupt(); // Uncomment if you want the component to ignore console SIGINT signal (ctrl+c).
 		a.setQuitOnLastWindowClosed( true );
 #endif
 		// Run QT Application Event Loop
+printf("%s: %d\n", __FILE__, __LINE__);
 		a.exec();
+printf("%s: %d\n", __FILE__, __LINE__);
 		status = EXIT_SUCCESS;
 	}
 	catch(const Ice::Exception& ex)
@@ -250,6 +264,7 @@ int ::agmInnerComp::run(int argc, char* argv[])
 #endif
 		monitor->exit(0);
 }
+printf("%s: %d\n", __FILE__, __LINE__);
 
 	return status;
 }

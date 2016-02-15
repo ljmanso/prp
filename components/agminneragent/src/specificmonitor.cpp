@@ -22,7 +22,7 @@
 */
 SpecificMonitor::SpecificMonitor(GenericWorker *_worker,Ice::CommunicatorPtr _communicator):GenericMonitor(_worker, _communicator)
 {
-
+	ready = false;
 }
 /**
 * \brief Default destructor
@@ -68,7 +68,7 @@ void SpecificMonitor::initialize()
 
 bool SpecificMonitor::sendParamsToWorker(RoboCompCommonBehavior::ParameterList params)
 {
-	if(checkParams(params))
+	if (checkParams(params))
 	{
 		//Set params to worker
 		if(worker->setParams(params)) 
@@ -95,6 +95,7 @@ void SpecificMonitor::readConfig(RoboCompCommonBehavior::ParameterList &params )
 	configGetString("AGMInnerAgent","InnerModels", aux.value, "");
 	params["AGMInnerAgent.InnerModels"] = aux;
 	
+	ready = true;
 	//todo better if necessary
 	
 }
