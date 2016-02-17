@@ -50,6 +50,7 @@ void SpecificWorker::compute( )
 		return;
 // 	innerModel->treePrint();
 
+	
 	actionExecution();
 
 // 	printf("ae>\n");
@@ -461,46 +462,113 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 		return false;
 	}
 
-	try
+	
+	int32_t robotIsActuallyInRoom;
+	if (bState.z<0)
+		robotIsActuallyInRoom = 5;
+	else
+		robotIsActuallyInRoom = 3;
+
+// 	for (const AGMModelEdge &edge : worldModel->edges)
+// 	{
+// 		if (edge->getSymbolPair().first == robotId and edge->getLabel() == "in")
+// 		{
+// 		}
+// 	}
+
+	if (roomId != robotIsActuallyInRoom)
 	{
-		AGMModelEdge edge  = worldModel->getEdgeByIdentifiers(roomId, robotId, "RT");
-		printf("%d ---[rt]---> %d  (%d\n", roomId, robotId, __LINE__);
 		try
 		{
-			float bStatex = str2float(edge->getAttribute("tx"));
-			float bStatez = str2float(edge->getAttribute("tz"));
-			float bStatealpha = str2float(edge->getAttribute("ry"));
-			
-			// to reduce the publication frequency
-			printf("xModel=%f xBase=%f\n", bStatex, bState.correctedX);
-			if (fabs(bStatex - bState.correctedX)>5 or fabs(bStatez - bState.correctedZ)>5 or fabs(bStatealpha - bState.correctedAlpha)>0.02 or force)
+			AGMModel::SPtr newModel(new AGMModel(worldModel));
+
+			// Modify IN edge
+			newModel->removeEdgeByIdentifiers(robotId, roomId, "in");
+			newModel->addEdgeByIdentifiers(robotId, robotIsActuallyInRoom, "in");
+
+			// Modify RT edge
+			AGMModelEdge edgeRT = newModel->getEdgeByIdentifiers(roomId, robotId, "RT");
+			newModel->removeEdgeByIdentifiers(roomId, robotId, "RT");
+			printf("(was %d now %d) ---[rt]---> %d\n", roomId, robotIsActuallyInRoom, robotId);
+			try
 			{
-				//Publish update edge
-				printf("\nUpdate odometry...\n");
-				qDebug()<<"bState local --> "<<bStatex<<bStatez<<bStatealpha;
-				qDebug()<<"bState corrected --> "<<bState.correctedX<<bState.correctedZ<<bState.correctedAlpha;
+				float bStatex = str2float(edgeRT->getAttribute("tx"));
+				float bStatez = str2float(edgeRT->getAttribute("tz"));
+				float bStatealpha = str2float(edgeRT->getAttribute("ry"));
+				
+				// to reduce the publication frequency
+				printf("xModel=%f xBase=%f\n", bStatex, bState.correctedX);
+				if (fabs(bStatex - bState.correctedX)>5 or fabs(bStatez - bState.correctedZ)>5 or fabs(bStatealpha - bState.correctedAlpha)>0.02 or force)
+				{
+					//Publish update edge
+					printf("\nUpdate odometry...\n");
+					qDebug()<<"bState local --> "<<bStatex<<bStatez<<bStatealpha;
+					qDebug()<<"bState corrected --> "<<bState.correctedX<<bState.correctedZ<<bState.correctedAlpha;
 
-				edge->setAttribute("tx", float2str(bState.correctedX));
-				edge->setAttribute("tz", float2str(bState.correctedZ));
-				edge->setAttribute("ry", float2str(bState.correctedAlpha));
-				AGMMisc::publishEdgeUpdate(edge, agmexecutive_proxy);
-				printf("done\n");
+					edgeRT->setAttribute("tx", float2str(bState.correctedX));
+					edgeRT->setAttribute("tz", float2str(bState.correctedZ));
+					edgeRT->setAttribute("ry", float2str(bState.correctedAlpha));
+				}
+				printf(".");
+				fflush(stdout);
+				newModel->addEdgeByIdentifiers(robotIsActuallyInRoom, robotId, "RT", edgeRT->attributes);
+				AGMMisc::publishModification(newModel, agmexecutive_proxy, "navigationAgent");
 			}
-			printf(".");
-			fflush(stdout);
-
+			catch (...)
+			{
+				printf("Can't update odometry in RT, edge exists but we encountered other problem!!\n");
+				return false;
+			}
 		}
 		catch (...)
 		{
-			printf("Can't update odometry in RT, edge exists but we encountered other problem!!\n");
+			printf("Can't update room... do edges exist? !!!\n");
+			return false;
+		}	}
+	else
+	{
+		try
+		{
+			AGMModelEdge edge  = worldModel->getEdgeByIdentifiers(roomId, robotId, "RT");
+			printf("%d ---[rt]---> %d  (%d\n", roomId, robotId, __LINE__);
+			try
+			{
+				float bStatex = str2float(edge->getAttribute("tx"));
+				float bStatez = str2float(edge->getAttribute("tz"));
+				float bStatealpha = str2float(edge->getAttribute("ry"));
+				
+				// to reduce the publication frequency
+				printf("xModel=%f xBase=%f\n", bStatex, bState.correctedX);
+				if (fabs(bStatex - bState.correctedX)>5 or fabs(bStatez - bState.correctedZ)>5 or fabs(bStatealpha - bState.correctedAlpha)>0.02 or force)
+				{
+					//Publish update edge
+					printf("\nUpdate odometry...\n");
+					qDebug()<<"bState local --> "<<bStatex<<bStatez<<bStatealpha;
+					qDebug()<<"bState corrected --> "<<bState.correctedX<<bState.correctedZ<<bState.correctedAlpha;
+
+					edge->setAttribute("tx", float2str(bState.correctedX));
+					edge->setAttribute("tz", float2str(bState.correctedZ));
+					edge->setAttribute("ry", float2str(bState.correctedAlpha));
+					AGMMisc::publishEdgeUpdate(edge, agmexecutive_proxy);
+					printf("done\n");
+				}
+				printf(".");
+				fflush(stdout);
+
+			}
+			catch (...)
+			{
+				printf("Can't update odometry in RT, edge exists but we encountered other problem!!\n");
+				return false;
+			}
+		}
+		catch (...)
+		{
+			printf("Can't update odometry in RT, edge does not exist? !!!\n");
 			return false;
 		}
 	}
-	catch (...)
-	{
-		printf("Can't update odometry in RT, edge does not exist? !!!\n");
-		return false;
-	}
+
 
 	return true;
 }
