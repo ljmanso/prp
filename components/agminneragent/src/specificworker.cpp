@@ -30,8 +30,11 @@ void SpecificWorker::compute()
 			AgmInner::includeInnerModel(newModel, p.second.toInt(), p.first);
 		}
 		newModel->save("agmModel.xml");
+		printf("%s: %d\n", __FILE__, __LINE__);
 		AgmInner::extractInnerModel(newModel, "world")->save("extractInnerModel.xml");
+		printf("%s: %d\n", __FILE__, __LINE__);
 		sendModificationProposal(worldModel, newModel);
+		printf("%s: %d\n", __FILE__, __LINE__);
 		qFatal("The job was done. Exiting...");
 	}
 	
@@ -455,6 +458,7 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modifi
 	mutex->lock();
 	printf("structural change\n");
  	AGMModelConverter::fromIceToInternal(modification, worldModel);
+	printf("end structural change\n");
  	mutex->unlock();
 }
 
@@ -540,7 +544,9 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 {
 	try
 	{
+		printf("%s: %d\n", __FILE__, __LINE__);
 		AGMMisc::publishModification(newModel, agmexecutive_proxy, "agmInnerCompAgent");
+		printf("%s: %d\n", __FILE__, __LINE__);
 	}
 	catch(...)
 	{

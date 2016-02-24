@@ -49,7 +49,7 @@ void SpecificWorker::compute( )
 	if (odometryAndLocationIssues() == false)
 		return;
 // 	innerModel->treePrint();
-
+	printf("ACTIOOOON: %s\n", action.c_str());
 	
 	actionExecution();
 
@@ -228,6 +228,7 @@ void SpecificWorker::action_HandObject(bool newAction)
 		{
 			try
 			{
+				innerModel->save("inner_before_shoulder.xml");
 				QVec graspRef = innerModel->transform("robot", "right_shoulder_grasp_pose");
 				float th=20;
 				trajectoryrobot2d_proxy->goReferenced(currentTarget, graspRef.x(), graspRef.z(), th);
@@ -367,6 +368,7 @@ void SpecificWorker::action_SetObjectReach(bool newAction)
 		{
 			try
 			{
+				innerModel->save("inner_before_shoulder.xml");
 				QVec O = innerModel->transform("right_shoulder_grasp_pose", objectIMID);
 				O.print("pose relativa");
 				printf("__%f__\n", O.norm2());
