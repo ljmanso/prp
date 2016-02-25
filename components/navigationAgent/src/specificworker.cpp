@@ -423,6 +423,7 @@ void SpecificWorker::action_SetObjectReach(bool newAction)
 
 bool SpecificWorker::odometryAndLocationIssues(bool force)
 {
+	printf("odometryAndLocationIssues\n");
 	//
 	// Get ODOMETRY and update it in the graph. If there's a problem talking to the robot's platform, abort
 	try
@@ -465,33 +466,35 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 	}
 
 	
-	int32_t robotIsActuallyInRoom;
+	int32_t actualRoom;
 	if (bState.z<0)
-		robotIsActuallyInRoom = 5;
+		actualRoom = 5;
 	else
-		robotIsActuallyInRoom = 3;
+		actualRoom = 3;
 
+	
+	printf("current room: %d\n", actualRoom);
 // 	for (const AGMModelEdge &edge : worldModel->edges)
 // 	{
 // 		if (edge->getSymbolPair().first == robotId and edge->getLabel() == "in")
 // 		{
 // 		}
 // 	}
-
-	if (roomId != robotIsActuallyInRoom)
+	if (roomId != actualRoom)
 	{
+		printf("I have to change the room\n");
 		try
 		{
 			AGMModel::SPtr newModel(new AGMModel(worldModel));
 
 			// Modify IN edge
 			newModel->removeEdgeByIdentifiers(robotId, roomId, "in");
-			newModel->addEdgeByIdentifiers(robotId, robotIsActuallyInRoom, "in");
+			newModel->addEdgeByIdentifiers(robotId, actualRoom, "in");
 
 			// Modify RT edge
 			AGMModelEdge edgeRT = newModel->getEdgeByIdentifiers(roomId, robotId, "RT");
 			newModel->removeEdgeByIdentifiers(roomId, robotId, "RT");
-			printf("(was %d now %d) ---[rt]---> %d\n", roomId, robotIsActuallyInRoom, robotId);
+			printf("(was %d now %d) ---[rt]---> %d\n", roomId, actualRoom, robotId);
 			try
 			{
 				float bStatex = str2float(edgeRT->getAttribute("tx"));
@@ -513,7 +516,7 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 				}
 				printf(".");
 				fflush(stdout);
-				newModel->addEdgeByIdentifiers(robotIsActuallyInRoom, robotId, "RT", edgeRT->attributes);
+				newModel->addEdgeByIdentifiers(actualRoom, robotId, "RT", edgeRT->attributes);
 				AGMMisc::publishModification(newModel, agmexecutive_proxy, "navigationAgent");
 			}
 			catch (...)
@@ -529,6 +532,7 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 		}	}
 	else
 	{
+		printf("The room is the current one, ok\n");
 		try
 		{
 			AGMModelEdge edge  = worldModel->getEdgeByIdentifiers(roomId, robotId, "RT");

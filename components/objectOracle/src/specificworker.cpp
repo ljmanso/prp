@@ -90,7 +90,7 @@ void SpecificWorker::compute()
 	{
 		action_imagineMostLikelyMugInPosition();
 	}
-	
+
 	if (first)
 	{
 		first=false;
@@ -800,7 +800,7 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 
 void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 {
-	printf("%d %d\n", modifiedWorld, worldModel->version);
+	printf("inside imagineMostLikelyOBJECTPosition-%s  %d %d\n", objectType.c_str(), modifiedWorld, worldModel->version);
 	if (modifiedWorld > worldModel->version or actionTime < worldModelTime)
 		return;
 

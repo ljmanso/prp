@@ -39,7 +39,7 @@
   <dependence alias="IS" />
   <dependence alias="vik" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost  /home/robocomp/robocomp/components/robocomp-ursus-rockin/components/graspingAgent ./bin/graspingComp /home/robocomp/robocomp/components/prp/etc/graspingAgent.conf" />
+  <upCommand command="rcremote localhost graspingAgent /home/robocomp/robocomp/components/robocomp-ursus-rockin/components/graspingAgent ./bin/graspingComp /home/robocomp/robocomp/components/prp/etc/graspingAgent.conf" />
   <downCommand command="killall -9 graspingComp" />
   <configFile path="kate /home/robocomp/robocomp/components/prp/etc/graspingAgent.conf" />
   <xpos value="70.2676161212" />
