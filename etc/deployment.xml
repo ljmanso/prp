@@ -180,7 +180,7 @@
  <node alias="ik" endpoint="inversekinematics:tcp -h localhost -p 10240">
   <dependence alias="joint" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost ik /home/robocomp/robocomp/components/robocomp-ursus/components/inversekinematics/ ./bin/inversekinematics --Ice.Config=/home/robocomp/robocomp/components/robocomp-ursus/etc/inversekinematics.conf" />
+  <upCommand command="rcremote localhost ik /home/robocomp/robocomp/components/robocomp-ursus/components/inversekinematics/ ./bin/inversekinematics --Ice.Config=/home/robocomp/robocomp/components/prp/etc/inversekinematics.conf" />
   <downCommand command="ssh robolab@localhost killall -9 inversekinematics" />
   <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/inversekinematics.conf" />
   <xpos value="65.7712625126" />
@@ -193,7 +193,7 @@
   <dependence alias="joint" />
   <dependence alias="ik" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost GIK /home/robocomp/robocomp/components/robocomp-ursus/components/ikGraphGenerator/ ./bin/ikGraphGenerator /home/robocomp/robocomp/components/robocomp-ursus/etc/ikg.conf" />
+  <upCommand command="rcremote localhost GIK /home/robocomp/robocomp/components/robocomp-ursus/components/ikGraphGenerator/ ./bin/ikGraphGenerator /home/robocomp/robocomp/components/prp/etc/ikg.conf" />
   <downCommand command="ssh robolab@localhost killall -9 ikGraphGenerator" />
   <configFile path="xxx" />
   <xpos value="94.146426242" />
@@ -206,7 +206,7 @@
   <dependence alias="gik" />
   <dependence alias="april" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost VIK /home/robocomp/robocomp/components/robocomp-ursus/components/visualik/ ./bin/VisualBIK /home/robocomp/robocomp/components/robocomp-ursus/etc/vik.conf" />
+  <upCommand command="rcremote localhost VIK /home/robocomp/robocomp/components/robocomp-ursus/components/visualik/ ./bin/VisualBIK /home/robocomp/robocomp/components/prp/etc/vik.conf" />
   <downCommand command="ssh robolab@localhost killall -9 VisualBIK" />
   <configFile path="xxx" />
   <xpos value="119.299778668" />
@@ -219,7 +219,7 @@
   <dependence alias="rgbd" />
   <dependence alias="IS" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost april /home/robocomp/robocomp/components/robocomp-robolab/components/apriltagsComp ./bin/apriltagscomp --Ice.Config=/home/robocomp/robocomp/components/robocomp-ursus/etc/apriltags.conf" />
+  <upCommand command="rcremote localhost april /home/robocomp/robocomp/components/robocomp-robolab/components/apriltagsComp ./bin/apriltagscomp --Ice.Config=/home/robocomp/robocomp/components/prp/etc/apriltags.conf" />
   <downCommand command="killall -9 apriltagscomp" />
   <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/apriltags.conf" />
   <xpos value="168.052856404" />
