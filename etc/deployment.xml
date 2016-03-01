@@ -26,7 +26,7 @@
  <node alias="innerA" endpoint="agmcommonbehavior:tcp -p 10329">
   <dependence alias="IS" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost agmInner /home/robocomp/robocomp/components/prp/components/agminneragent ./bin/agmInnerComp /home/robocomp/robocomp/components/prp/etc/agminneragent.conf" />
+  <upCommand command="rcremote localhost agmInner /home/robocomp agmInnerComp /home/robocomp/robocomp/components/prp/etc/agminneragent.conf" />
   <downCommand command="killall -9 agmInnerComp" />
   <configFile path="kate /home/robocomp/robocomp/components/prp/etc/inneragent.conf" />
   <xpos value="-16.8453023394" />
