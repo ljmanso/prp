@@ -80,6 +80,9 @@ void SpecificWorker::compute()
 // 	{
 // 		std::cout << "Error reading from Camera" << e << std::endl;
 // 	}
+	
+	printf("ACTION: %s\n", action.c_str());
+	
 }
 
 
