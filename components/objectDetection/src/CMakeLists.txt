@@ -26,6 +26,7 @@ SET ( SOURCES
   commonbehaviorI.cpp
   genericworker.cpp
   specificworker.cpp
+  objectdetectionI.cpp
   apriltagsI.cpp
 )
 
@@ -37,6 +38,7 @@ SET ( HEADERS
   commonbehaviorI.h
   genericworker.h
   specificworker.h
+  objectdetectionI.h
   apriltagsI.h
 )
 
