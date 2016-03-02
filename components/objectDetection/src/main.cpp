@@ -18,11 +18,11 @@
  */
 
 
-/** \mainpage RoboComp::navigationAgent
+/** \mainpage RoboComp::objectDetectionComp
  *
  * \section intro_sec Introduction
  *
- * The navigationAgent component...
+ * The objectDetectionComp component...
  *
  * \section interface_sec Interface
  *
@@ -34,7 +34,7 @@
  * ...
  *
  * \subsection install2_ssec Compile and install
- * cd navigationAgent
+ * cd objectDetectionComp
  * <br>
  * cmake . && make
  * <br>
@@ -52,7 +52,7 @@
  *
  * \subsection execution_ssec Execution
  *
- * Just: "${PATH_TO_BINARY}/navigationAgent --Ice.Config=${PATH_TO_CONFIG_FILE}"
+ * Just: "${PATH_TO_BINARY}/objectDetectionComp --Ice.Config=${PATH_TO_CONFIG_FILE}"
  *
  * \subsection running_ssec Once running
  *
@@ -78,14 +78,11 @@
 #include "specificmonitor.h"
 #include "commonbehaviorI.h"
 
-#include <agmcommonbehaviorI.h>
-#include <agmexecutivetopicI.h>
+#include <apriltagsI.h>
 
-#include <AGMExecutive.h>
-#include <AGMCommonBehavior.h>
-#include <AGMWorldModel.h>
-#include <TrajectoryRobot2D.h>
-#include <OmniRobot.h>
+#include <objectDetection.h>
+#include <AprilTags.h>
+#include <RGBD.h>
 
 
 // User includes here
@@ -94,18 +91,16 @@
 using namespace std;
 using namespace RoboCompCommonBehavior;
 
-using namespace RoboCompAGMExecutive;
-using namespace RoboCompAGMCommonBehavior;
-using namespace RoboCompAGMWorldModel;
-using namespace RoboCompTrajectoryRobot2D;
-using namespace RoboCompOmniRobot;
+using namespace RoboCompobjectDetection;
+using namespace RoboCompAprilTags;
+using namespace RoboCompRGBD;
 
 
 
-class navigationAgent : public RoboComp::Application
+class objectDetectionComp : public RoboComp::Application
 {
 public:
-	navigationAgent (QString prfx) { prefix = prfx.toStdString(); }
+	objectDetectionComp (QString prfx) { prefix = prfx.toStdString(); }
 private:
 	void initialize();
 	std::string prefix;
@@ -115,14 +110,14 @@ public:
 	virtual int run(int, char*[]);
 };
 
-void ::navigationAgent::initialize()
+void ::objectDetectionComp::initialize()
 {
 	// Config file properties read example
 	// configGetString( PROPERTY_NAME_1, property1_holder, PROPERTY_1_DEFAULT_VALUE );
 	// configGetInt( PROPERTY_NAME_2, property1_holder, PROPERTY_2_DEFAULT_VALUE );
 }
 
-int ::navigationAgent::run(int argc, char* argv[])
+int ::objectDetectionComp::run(int argc, char* argv[])
 {
 #ifdef USE_QTGUI
 	QApplication a(argc, argv);  // GUI application
@@ -131,9 +126,7 @@ int ::navigationAgent::run(int argc, char* argv[])
 #endif
 	int status=EXIT_SUCCESS;
 
-	OmniRobotPrx omnirobot_proxy;
-	TrajectoryRobot2DPrx trajectoryrobot2d_proxy;
-	AGMExecutivePrx agmexecutive_proxy;
+	RGBDPrx rgbd_proxy;
 
 	string proxy, tmp;
 	initialize();
@@ -141,53 +134,19 @@ int ::navigationAgent::run(int argc, char* argv[])
 
 	try
 	{
-		if (not GenericMonitor::configGetString(communicator(), prefix, "OmniRobotProxy", proxy, ""))
+		if (not GenericMonitor::configGetString(communicator(), prefix, "RGBDProxy", proxy, ""))
 		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy OmniRobotProxy\n";
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy RGBDProxy\n";
 		}
-		omnirobot_proxy = OmniRobotPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+		rgbd_proxy = RGBDPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
 	}
 	catch(const Ice::Exception& ex)
 	{
 		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
 		return EXIT_FAILURE;
 	}
-	rInfo("OmniRobotProxy initialized Ok!");
-	mprx["OmniRobotProxy"] = (::IceProxy::Ice::Object*)(&omnirobot_proxy);//Remote server proxy creation example
-
-
-	try
-	{
-		if (not GenericMonitor::configGetString(communicator(), prefix, "TrajectoryRobot2DProxy", proxy, ""))
-		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy TrajectoryRobot2DProxy\n";
-		}
-		trajectoryrobot2d_proxy = TrajectoryRobot2DPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
-	}
-	catch(const Ice::Exception& ex)
-	{
-		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
-		return EXIT_FAILURE;
-	}
-	rInfo("TrajectoryRobot2DProxy initialized Ok!");
-	mprx["TrajectoryRobot2DProxy"] = (::IceProxy::Ice::Object*)(&trajectoryrobot2d_proxy);//Remote server proxy creation example
-
-
-	try
-	{
-		if (not GenericMonitor::configGetString(communicator(), prefix, "AGMExecutiveProxy", proxy, ""))
-		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AGMExecutiveProxy\n";
-		}
-		agmexecutive_proxy = AGMExecutivePrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
-	}
-	catch(const Ice::Exception& ex)
-	{
-		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
-		return EXIT_FAILURE;
-	}
-	rInfo("AGMExecutiveProxy initialized Ok!");
-	mprx["AGMExecutiveProxy"] = (::IceProxy::Ice::Object*)(&agmexecutive_proxy);//Remote server proxy creation example
+	rInfo("RGBDProxy initialized Ok!");
+	mprx["RGBDProxy"] = (::IceProxy::Ice::Object*)(&rgbd_proxy);//Remote server proxy creation example
 
 	IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(communicator()->propertyToProxy("TopicManager.Proxy"));
 
@@ -222,38 +181,26 @@ int ::navigationAgent::run(int argc, char* argv[])
 
 
 
-		// Server adapter creation and publication
-		if (not GenericMonitor::configGetString(communicator(), prefix, "AGMCommonBehavior.Endpoints", tmp, ""))
-		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AGMCommonBehavior";
-		}
-		Ice::ObjectAdapterPtr adapterAGMCommonBehavior = communicator()->createObjectAdapterWithEndpoints("AGMCommonBehavior", tmp);
-		AGMCommonBehaviorI *agmcommonbehavior = new AGMCommonBehaviorI(worker);
-		adapterAGMCommonBehavior->add(agmcommonbehavior, communicator()->stringToIdentity("agmcommonbehavior"));
-		adapterAGMCommonBehavior->activate();
-		cout << "[" << PROGRAM_NAME << "]: AGMCommonBehavior adapter created in port " << tmp << endl;
-
-
 
 
 
 		// Server adapter creation and publication
-		if (not GenericMonitor::configGetString(communicator(), prefix, "AGMExecutiveTopicTopic.Endpoints", tmp, ""))
+		if (not GenericMonitor::configGetString(communicator(), prefix, "AprilTagsTopic.Endpoints", tmp, ""))
 		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AGMExecutiveTopicProxy";
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AprilTagsProxy";
 		}
-		Ice::ObjectAdapterPtr AGMExecutiveTopic_adapter = communicator()->createObjectAdapterWithEndpoints("agmexecutivetopic", tmp);
-		AGMExecutiveTopicPtr agmexecutivetopicI_ = new AGMExecutiveTopicI(worker);
-		Ice::ObjectPrx agmexecutivetopic = AGMExecutiveTopic_adapter->addWithUUID(agmexecutivetopicI_)->ice_oneway();
-		IceStorm::TopicPrx agmexecutivetopic_topic;
-		if(!agmexecutivetopic_topic){
+		Ice::ObjectAdapterPtr AprilTags_adapter = communicator()->createObjectAdapterWithEndpoints("apriltags", tmp);
+		AprilTagsPtr apriltagsI_ = new AprilTagsI(worker);
+		Ice::ObjectPrx apriltags = AprilTags_adapter->addWithUUID(apriltagsI_)->ice_oneway();
+		IceStorm::TopicPrx apriltags_topic;
+		if(!apriltags_topic){
 		try {
-			agmexecutivetopic_topic = topicManager->create("AGMExecutiveTopic");
+			apriltags_topic = topicManager->create("AprilTags");
 		}
 		catch (const IceStorm::TopicExists&) {
 		//Another client created the topic
 		try{
-			agmexecutivetopic_topic = topicManager->retrieve("AGMExecutiveTopic");
+			apriltags_topic = topicManager->retrieve("AprilTags");
 		}
 		catch(const IceStorm::NoSuchTopic&)
 		{
@@ -261,9 +208,9 @@ int ::navigationAgent::run(int argc, char* argv[])
 			}
 		}
 		IceStorm::QoS qos;
-		agmexecutivetopic_topic->subscribeAndGetPublisher(qos, agmexecutivetopic);
+		apriltags_topic->subscribeAndGetPublisher(qos, apriltags);
 		}
-		AGMExecutiveTopic_adapter->activate();
+		AprilTags_adapter->activate();
 
 		// Server adapter creation and publication
 		cout << SERVER_FULL_NAME " started" << endl;
@@ -328,7 +275,7 @@ int main(int argc, char* argv[])
 			printf("Configuration prefix: <%s>\n", prefix.toStdString().c_str());
 		}
 	}
-	::navigationAgent app(prefix);
+	::objectDetectionComp app(prefix);
 
 	return app.main(argc, argv, configFile.c_str());
 }

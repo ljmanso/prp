@@ -1,9 +1,11 @@
 import "/robocomp/interfaces/IDSLs/AGMWorldModel.idsl";
+import "/robocomp/interfaces/IDSLs/objectDetection.idsl";
 
 Component objectagent
 {
 	Communications
 	{
+		requires objectDetection;
 	};
 	language Cpp;
 	gui Qt(QWidget);

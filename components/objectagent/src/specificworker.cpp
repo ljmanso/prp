@@ -83,8 +83,29 @@ void SpecificWorker::compute()
 	
 	printf("ACTION: %s\n", action.c_str());
 	
+	if (action == "verify")
+	{
+		if (detectAndLocateObject("mug"))
+			printf("Found it!");
+		else
+			printf("It's not here!");
+	}
 }
 
+bool SpecificWorker::detectAndLocateObject(std::string objectToDetect)
+{
+	//Pipelining!!
+	objectdetection_proxy->grabThePointCloud("mug.pcd", "mug.png");
+	objectdetection_proxy->ransac("plane");
+	objectdetection_proxy->projectInliers("plane");
+	objectdetection_proxy->convexHull("plane");
+	objectdetection_proxy->extractPolygon("plane");
+	int numclusters = 0;
+	objectdetection_proxy->euclideanClustering(numclusters);
+	objectdetection_proxy->reloadVFH("/home/robocomp/robocomp/prp/experimentFiles/vfhSignatures/")
+	//do the shit
+	return true;
+}
 
 bool SpecificWorker::reloadConfigAgent()
 {

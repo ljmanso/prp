@@ -28,6 +28,7 @@ QObject()
 #endif
 
 {
+	objectdetection_proxy = (*(objectDetectionPrx*)mprx["objectDetectionProxy"]);
 	agmexecutive_proxy = (*(AGMExecutivePrx*)mprx["AGMExecutiveProxy"]);
 
 

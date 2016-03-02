@@ -1,0 +1,15 @@
+import "/robocomp/interfaces/IDSLs/objectDetection.idsl";
+import "/robocomp/interfaces/IDSLs/AprilTags.idsl";
+import "/robocomp/interfaces/IDSLs/RGBD.idsl";
+
+Component objectDetectionComp
+{
+	Communications
+	{
+		implements objectDetection;
+		requires RGBD;
+		subscribesTo AprilTags;
+	};
+	language Cpp;
+	gui Qt(QWidget);
+};

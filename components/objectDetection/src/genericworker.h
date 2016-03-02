@@ -27,14 +27,12 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
+#include <RGBD.h>
+#include <DifferentialRobot.h>
 #include <objectDetection.h>
-#include <Planning.h>
-#include <AGMExecutive.h>
-#include <AGMCommonBehavior.h>
-#include <AGMWorldModel.h>
+#include <AprilTags.h>
+#include <JointMotor.h>
 
-#include <agm.h>
-#include <agmInner/agmInner.h>
 
 
 #define CHECK_PERIOD 5000
@@ -44,18 +42,12 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
+using namespace RoboCompRGBD;
+using namespace RoboCompDifferentialRobot;
 using namespace RoboCompobjectDetection;
-using namespace RoboCompPlanning;
-using namespace RoboCompAGMExecutive;
-using namespace RoboCompAGMCommonBehavior;
-using namespace RoboCompAGMWorldModel;
+using namespace RoboCompAprilTags;
+using namespace RoboCompJointMotor;
 
-
-struct BehaviorParameters 
-{
-	RoboCompPlanning::Action action;
-	std::vector< std::vector <std::string> > plan;
-};
 
 
 
@@ -75,40 +67,16 @@ public:
 	
 	virtual bool setParams(RoboCompCommonBehavior::ParameterList params) = 0;
 	QMutex *mutex;
-	bool activate(const BehaviorParameters& parameters);
-	bool deactivate();
-	bool isActive() { return active; }
 	
 
-	objectDetectionPrx objectdetection_proxy;
-	AGMExecutivePrx agmexecutive_proxy;
+	RGBDPrx rgbd_proxy;
 
-	virtual bool reloadConfigAgent() = 0;
-	virtual bool activateAgent(const ParameterMap &prs) = 0;
-	virtual bool setAgentParameters(const ParameterMap &prs) = 0;
-	virtual ParameterMap getAgentParameters() = 0;
-	virtual void killAgent() = 0;
-	virtual int uptimeAgent() = 0;
-	virtual bool deactivateAgent() = 0;
-	virtual StateStruct getAgentState() = 0;
-	virtual void structuralChange(const RoboCompAGMWorldModel::World &w) = 0;
-	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &es) = 0;
-	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &e) = 0;
-	virtual void symbolUpdated(const RoboCompAGMWorldModel::Node &n) = 0;
-	virtual void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &ns) = 0;
+	virtual void newAprilTag(const tagsList &tags) = 0;
 
 
 protected:
 	QTimer timer;
 	int Period;
-	bool active;
-	AGMModel::SPtr worldModel;
-	BehaviorParameters p;
-	ParameterMap params;
-	AgmInner agmInner;
-	int iter;
-	bool setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated);
-	RoboCompPlanning::Action createAction(std::string s);
 
 public slots:
 	virtual void compute() = 0;
