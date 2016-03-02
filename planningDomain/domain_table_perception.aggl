@@ -9,7 +9,7 @@ fontSize=12
 longPattern=3
 ===
 
-dormant imagineMostLikelyTableInPosition : active(1)
+dormant imagineMostLikelyTableInPosition : active(2)
 {
 	{
 		status:status(-5,-305)
@@ -67,7 +67,7 @@ dormant verifyImaginaryTable : active(1)
 }
 
 
-dormant hierarchical hierarchical_verifyImaginaryTable : active(1)  activates(verifyImaginaryTable)
+dormant hierarchical hierarchical_verifyImaginaryTable : active(2)  activates(verifyImaginaryTable)
 {
 	{
 		status:status(-90,-240)

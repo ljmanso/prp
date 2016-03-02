@@ -9,7 +9,7 @@ fontSize=12
 longPattern=3
 ===
 
-imagineMostLikelyMilkInPosition : active(1)
+imagineMostLikelyMilkInPosition : active(2)
 {
 	{
 		status:status(-5,-305)
@@ -83,7 +83,7 @@ dormant verifyImaginaryMilk : active(1)
 	}
 }
 
-hierarchical hierarchical_verifyImaginaryMilk : active(1)  activates(verifyImaginaryMilk)
+hierarchical hierarchical_verifyImaginaryMilk : active(2)  activates(verifyImaginaryMilk)
 {
 	{
 		status:status(-90,-240)
