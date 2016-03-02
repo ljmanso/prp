@@ -26,6 +26,8 @@
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
+#ifndef Q_MOC_RUN
+
 #include <pcl/point_cloud.h>
 #include <pcl/pcl_base.h>
 #include <pcl/point_types.h>
@@ -66,6 +68,8 @@
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+
+#endif
 
 #ifdef __cplusplus
 extern "C"{
