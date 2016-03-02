@@ -9,7 +9,7 @@ fontSize=12
 longPattern=3
 ===
 
-imagineMostLikelyMugInPosition : active(1)
+imagineMostLikelyMugInPosition : active(2)
 {
 	{
 		status:status(-5,-305)
@@ -83,7 +83,7 @@ verifyImaginaryMug : active(1)
 	}
 }
 
-hierarchical hierarchical_verifyImaginaryMug : active(1) activates(verifyImaginaryMug)
+hierarchical hierarchical_verifyImaginaryMug : active(2) activates(verifyImaginaryMug)
 {
 	{
 		status:status(-90,-240)

@@ -84,6 +84,7 @@
 #include <AGMExecutive.h>
 #include <AGMCommonBehavior.h>
 #include <AGMWorldModel.h>
+#include <objectDetection.h>
 
 
 // User includes here
@@ -95,6 +96,7 @@ using namespace RoboCompCommonBehavior;
 using namespace RoboCompAGMExecutive;
 using namespace RoboCompAGMCommonBehavior;
 using namespace RoboCompAGMWorldModel;
+using namespace RoboCompobjectDetection;
 
 
 
@@ -127,10 +129,28 @@ int ::objectagent::run(int argc, char* argv[])
 #endif
 	int status=EXIT_SUCCESS;
 
+	objectDetectionPrx objectdetection_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	string proxy, tmp;
 	initialize();
+
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "objectDetectionProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy objectDetectionProxy\n";
+		}
+		objectdetection_proxy = objectDetectionPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("objectDetectionProxy initialized Ok!");
+	mprx["objectDetectionProxy"] = (::IceProxy::Ice::Object*)(&objectdetection_proxy);//Remote server proxy creation example
 
 
 	try

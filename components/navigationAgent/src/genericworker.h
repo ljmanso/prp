@@ -82,9 +82,9 @@ public:
 	bool isActive() { return active; }
 	
 
-	AGMExecutivePrx agmexecutive_proxy;
-	OmniRobotPrx omnirobot_proxy;
 	TrajectoryRobot2DPrx trajectoryrobot2d_proxy;
+	OmniRobotPrx omnirobot_proxy;
+	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
 	virtual bool activateAgent(const ParameterMap &prs) = 0;

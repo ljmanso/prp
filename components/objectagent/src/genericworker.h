@@ -27,6 +27,7 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
+#include <objectDetection.h>
 #include <Planning.h>
 #include <AGMExecutive.h>
 #include <AGMCommonBehavior.h>
@@ -43,6 +44,7 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
+using namespace RoboCompobjectDetection;
 using namespace RoboCompPlanning;
 using namespace RoboCompAGMExecutive;
 using namespace RoboCompAGMCommonBehavior;
@@ -78,6 +80,7 @@ public:
 	bool isActive() { return active; }
 	
 
+	objectDetectionPrx objectdetection_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
