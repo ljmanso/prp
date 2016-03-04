@@ -332,7 +332,21 @@ void SpecificWorker::action_SetObjectReach(bool newAction)
 		robotIMID = QString::fromStdString(worldModel->getSymbol(robotID)->getAttribute("imName"));
 		roomIMID = QString::fromStdString(worldModel->getSymbol(roomID)->getAttribute("imName"));
 		objectIMID = QString::fromStdString(worldModel->getSymbol(objectID)->getAttribute("imName"));
-	}
+
+                // check if object has reachPosition
+                AGMModelSymbol::SPtr object = worldModel->getSymbol(objectID);
+                for (auto edge = object->edgesBegin(worldModel); edge != object->edgesEnd(worldModel); edge++)
+                {
+                        if (edge->getLabel() == "reachPosition")
+                        {
+                                const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
+                                objectID = symbolPair.second;
+                                objectIMID = QString::fromStdString(worldModel->getSymbol(objectID)->getAttribute("imName"));
+                                qDebug()<<symbolPair.first<<"->"<<symbolPair.second<<" object "<<objectIMID;
+                        }
+                }
+                
+        }
 	catch(...)
 	{
 		printf("ERROR IN GET THE INNERMODEL NAMES\n");
