@@ -31,26 +31,31 @@
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
-#include <pcl/point_cloud.h>
-#include <pcl/pcl_base.h>
-#include <pcl/point_types.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/filters/passthrough.h>
-#include <pcl/segmentation/extract_clusters.h>
-#include <pcl/filters/statistical_outlier_removal.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/conversions.h>
-#include <pcl/point_types_conversion.h>
-
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#ifndef Q_MOC_RUN
+ #include <pcl/point_cloud.h>
+ #include <pcl/pcl_base.h>
+ #include <pcl/point_types.h>
+ #include <pcl/io/pcd_io.h>
+ #include <pcl/filters/passthrough.h>
+ #include <pcl/segmentation/extract_clusters.h>
+ #include <pcl/filters/statistical_outlier_removal.h>
+ #include <pcl/io/pcd_io.h>
+ #include <pcl/conversions.h>
+ #include <pcl/point_types_conversion.h>
+ #include <opencv2/core/core.hpp>
+ #include <opencv2/highgui/highgui.hpp>
+ #include <opencv2/imgproc/imgproc.hpp>
+#endif
 
 #include <genericworker.h>
-#include <innermodel/innermodel.h>
-#include "color_segmentation/Segmentator.h"
-#include "shapes/table.h"
-#include "vfh/vfh.h"
+
+
+#ifndef Q_MOC_RUN
+	#include <innermodel/innermodel.h>
+	#include "color_segmentation/Segmentator.h"
+	#include "shapes/table.h"
+	#include "vfh/vfh.h"
+#endif
 
 #define DEBUG 1
 typedef pcl::PointXYZRGB PointT;
