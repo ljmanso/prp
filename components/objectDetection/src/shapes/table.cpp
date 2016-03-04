@@ -189,18 +189,57 @@ void Table::fit_board_with_RANSAC(pcl::PointCloud<PointT>::Ptr cloud, pcl::Point
 // 	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
 
 	// Create the segmentation object
-	pcl::SACSegmentation<PointT> seg;
-	// Optional
-	seg.setOptimizeCoefficients (true);
-	// Mandatory
-	seg.setModelType (pcl::SACMODEL_PLANE);
-	seg.setMethodType (pcl::SAC_RANSAC);
+// 	pcl::SACSegmentation<PointT> seg;
+// 	// Optional
+// 	seg.setOptimizeCoefficients (true);
+// 	// Mandatory
+// 	seg.setModelType (pcl::SACMODEL_PLANE);
+// 	seg.setMethodType (pcl::SAC_RANSAC);
+// 	seg.setDistanceThreshold (threshold);
+// 	
+// // 	seg.setAxis(Eigen::Vector3f (0, 1, 0)); //perpendicular to y axis
+// 	
+// 	seg.setInputCloud (cloud);
+// 	seg.segment (*inliers, *coefficients);
+	
+	/////ZZ
+	pcl::ModelCoefficients::Ptr table_coefficients (new pcl::ModelCoefficients ());
+	pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal> ());
+	pcl::SACSegmentationFromNormals<PointT, pcl::Normal> seg;
+// 	pcl::SampleConsensusModelPlane<PointT>::Ptr model_p (new pcl::SampleConsensusModelPlane<PointT> (cloud));
+// 	pcl::RandomSampleConsensus<PointT> ransac (model_p);
+//     ransac.setDistanceThreshold (threshold);
+//     ransac.computeModel();
+//     ransac.getInliers(inliers);
+	
+	pcl::search::KdTree<PointT>::Ptr normals_tree (new pcl::search::KdTree<PointT>);
+	pcl::NormalEstimation<PointT, pcl::Normal> n3d;
+	
+	// Normal estimation parameters
+	n3d.setKSearch (50);
+	n3d.setSearchMethod (normals_tree);
+	
 	seg.setDistanceThreshold (threshold);
-	
-// 	seg.setAxis(Eigen::Vector3f (0, 1, 0)); //perpendicular to y axis
-	
+	seg.setMaxIterations (2000);
+	seg.setNormalDistanceWeight (0.1);
+	seg.setOptimizeCoefficients (true);
+    seg.setModelType (pcl::SACMODEL_NORMAL_PLANE);
+    seg.setMethodType (pcl::SAC_RANSAC);
+    seg.setProbability (0.99);
+
+	// ---[ Estimate the point normals
+	n3d.setInputCloud (cloud);
+	n3d.compute (*cloud_normals);
+
+	// ---[ Perform segmentation
+
 	seg.setInputCloud (cloud);
+	seg.setInputNormals (cloud_normals);
 	seg.segment (*inliers, *coefficients);
+
+	
+	///////
+	
 	plane_coeff = QVec::vec4(coefficients->values[0], coefficients->values[1], coefficients->values[2], coefficients->values[3]);
 	QVec qcoef = QVec::vec3(coefficients->values[0], coefficients->values[1], coefficients->values[2]) * (-1);
 	QVec qcoef_d = QVec::vec4(coefficients->values[0], coefficients->values[1], coefficients->values[2], coefficients->values[3]);

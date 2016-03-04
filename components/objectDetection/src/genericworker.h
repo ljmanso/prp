@@ -71,6 +71,31 @@ public:
 
 	RGBDPrx rgbd_proxy;
 
+	virtual void grabTheAR() = 0;
+	virtual void aprilFitModel(const string &model) = 0;
+	virtual void segmentImage() = 0;
+	virtual void mindTheGapPC() = 0;
+	virtual void centroidBasedPose(float &x, float &y, float &theta) = 0;
+	virtual void reloadVFH(const string &pathToSet) = 0;
+	virtual void ransac(const string &model) = 0;
+	virtual void euclideanClustering(int &numCluseters) = 0;
+	virtual void passThrough() = 0;
+	virtual void surfHomography(listType &guesses) = 0;
+	virtual void fitTheViewVFH() = 0;
+	virtual void showObject(const int numObject) = 0;
+	virtual void convexHull(const string &model) = 0;
+	virtual void mirrorPC() = 0;
+	virtual void statisticalOutliersRemoval() = 0;
+	virtual void loadTrainedVFH() = 0;
+	virtual void reset() = 0;
+	virtual void normalSegmentation(const string &model) = 0;
+	virtual void getInliers(const string &model) = 0;
+	virtual void getPose(float &x, float &y, float &z, float &rx, float &ry, float &rz) = 0;
+	virtual void vfh(listType &guesses) = 0;
+	virtual void grabThePointCloud(const string &image, const string &pcd) = 0;
+	virtual void fitModel(const string &model, const string &method) = 0;
+	virtual void projectInliers(const string &model) = 0;
+	virtual void extractPolygon(const string &model) = 0;
 	virtual void newAprilTag(const tagsList &tags) = 0;
 
 

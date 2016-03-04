@@ -31,14 +31,12 @@ INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
 # opencv2
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
 
-SET ( LIBS ${LIBS} -lhdf5 )
+SET ( LIBS ${LIBS} -lhdf5_cpp )
 
-include_directories( /usr/include/hdf5/serial/ )
-
-find_package(catkin REQUIRED)
+include_directories( /usr/include/hdf5/serial/ /usr/local/include/pcl-1.8/ )
 
 include_directories(  ${catkin_INCLUDE_DIRS} )
-SET ( LIBS ${LIBS} ${catkin_LIBRARIES} -L/opt/ros/jade/lib -lroscpp -lrosconsole -lroscpp_serialization -lcv_bridge )
+SET ( LIBS ${LIBS} ${catkin_LIBRARIES} -L/opt/ros/jade/lib )
 
-#ADD_DEFINITIONS( -std=c++11 )
+ADD_DEFINITIONS( -std=c++11 )
 

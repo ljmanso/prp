@@ -78,6 +78,7 @@
 #include "specificmonitor.h"
 #include "commonbehaviorI.h"
 
+#include <objectdetectionI.h>
 #include <apriltagsI.h>
 
 #include <objectDetection.h>
@@ -179,6 +180,18 @@ int ::objectDetectionComp::run(int argc, char* argv[])
 		adapterCommonBehavior->activate();
 
 
+
+
+		// Server adapter creation and publication
+		if (not GenericMonitor::configGetString(communicator(), prefix, "objectDetection.Endpoints", tmp, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy objectDetection";
+		}
+		Ice::ObjectAdapterPtr adapterobjectDetection = communicator()->createObjectAdapterWithEndpoints("objectDetection", tmp);
+		objectDetectionI *objectdetection = new objectDetectionI(worker);
+		adapterobjectDetection->add(objectdetection, communicator()->stringToIdentity("objectdetection"));
+		adapterobjectDetection->activate();
+		cout << "[" << PROGRAM_NAME << "]: objectDetection adapter created in port " << tmp << endl;
 
 
 

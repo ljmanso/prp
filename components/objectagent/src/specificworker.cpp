@@ -102,7 +102,7 @@ bool SpecificWorker::detectAndLocateObject(std::string objectToDetect)
 	objectdetection_proxy->extractPolygon("plane");
 	int numclusters = 0;
 	objectdetection_proxy->euclideanClustering(numclusters);
-	objectdetection_proxy->reloadVFH("/home/robocomp/robocomp/prp/experimentFiles/vfhSignatures/")
+	objectdetection_proxy->reloadVFH("/home/robocomp/robocomp/prp/experimentFiles/vfhSignatures/");
 	//do the shit
 	return true;
 }

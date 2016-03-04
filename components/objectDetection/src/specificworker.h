@@ -39,22 +39,15 @@
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/ros/conversions.h>
-#include <pcl_conversions/pcl_conversions.h>
+#include <pcl/conversions.h>
+#include <pcl/point_types_conversion.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include <cv_bridge/cv_bridge.h>
-
-#include <ros/ros.h>
-#include <sensor_msgs/PointCloud2.h>
-
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
-#include <sensor_msgs/Image.h>
-#include <sensor_msgs/image_encodings.h>
 #include "color_segmentation/Segmentator.h"
 #include "shapes/table.h"
 #include "vfh/vfh.h"
@@ -65,10 +58,6 @@ typedef pcl::PointXYZRGB PointT;
 
 class SpecificWorker : public GenericWorker
 {
-    
-        ros::NodeHandle nh;
-        ros::Publisher image_pub;
-	ros::Publisher pcd_pub;
 	
 	InnerModel *innermodel;
 	
@@ -116,16 +105,16 @@ public:
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
 	void grabThePointCloud(const string &image, const string &pcd);
-        void readThePointCloud(const string &image, const string &pcd);
-	void segmentImage();
+	void readThePointCloud(const string &image, const string &pcd);
 	
 	
 	void grabTheAR();
 	void aprilFitModel(const string &model);
+	void segmentImage();
 	void mindTheGapPC();
-	void getResult(const string &image, const string &pcd, detectionResult &detection);
+	void getPose(float &x, float &y, float &z, float &rx, float &ry, float &rz);
 	void centroidBasedPose(float &x, float &y, float &theta);
-	void reloadVFH(const string pathToSet);
+	void reloadVFH(const string &pathToSet);
 	void ransac(const string &model);
 	void euclideanClustering(int &numCluseters);
 	void passThrough();

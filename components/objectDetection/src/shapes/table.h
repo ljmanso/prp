@@ -5,7 +5,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <qmat/QMatAll>
-#include <pcl/sample_consensus/model_types.h>
+#include <pcl/sample_consensus/ransac.h>
+#include <pcl/sample_consensus/sac_model_plane.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/project_inliers.h>
 #include <pcl/surface/convex_hull.h>
@@ -13,7 +14,7 @@
 #include <pcl/filters/extract_indices.h>
 #include <pcl/features/normal_3d_omp.h>
 #include <geometry/plane.h>
-
+ 
 typedef pcl::PointXYZRGB PointT;
 
 using namespace std;

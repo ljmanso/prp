@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2015 by YOUR NAME HERE
+ *    Copyright (C) 2016 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -42,15 +42,13 @@ public:
 	void aprilFitModel(const string  &model, const Ice::Current&);
 	void segmentImage(const Ice::Current&);
 	void mindTheGapPC(const Ice::Current&);
-	void getResult(const string  &image, const string  &pcd,  detectionResult  &detection, const Ice::Current&);
 	void centroidBasedPose( float  &x,  float  &y,  float  &theta, const Ice::Current&);
-	void reloadVFH(const Ice::Current&);
+	void reloadVFH(const string  &pathToSet, const Ice::Current&);
 	void ransac(const string  &model, const Ice::Current&);
 	void euclideanClustering( int  &numCluseters, const Ice::Current&);
 	void passThrough(const Ice::Current&);
 	void surfHomography( listType  &guesses, const Ice::Current&);
 	void fitTheViewVFH(const Ice::Current&);
-	void readThePointCloud(const string  &image, const string  &pcd, const Ice::Current&);
 	void showObject(const int  numObject, const Ice::Current&);
 	void convexHull(const string  &model, const Ice::Current&);
 	void mirrorPC(const Ice::Current&);
@@ -59,6 +57,7 @@ public:
 	void reset(const Ice::Current&);
 	void normalSegmentation(const string  &model, const Ice::Current&);
 	void getInliers(const string  &model, const Ice::Current&);
+	void getPose( float  &x,  float  &y,  float  &z,  float  &rx,  float  &ry,  float  &rz, const Ice::Current&);
 	void vfh( listType  &guesses, const Ice::Current&);
 	void grabThePointCloud(const string  &image, const string  &pcd, const Ice::Current&);
 	void fitModel(const string  &model, const string  &method, const Ice::Current&);
