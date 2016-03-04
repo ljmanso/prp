@@ -1,8 +1,8 @@
-CommonBehavior.Endpoints=tcp -p 1
+CommonBehavior.Endpoints=tcp -p 12332
 
 
 # Endpoints for implemented interfaces
-objectDetection.Endpoints=tcp -p 0
+objectDetection.Endpoints=tcp -p 12333
 
 
 # Endpoints for subscriptions
@@ -10,8 +10,9 @@ AprilTagsTopic.Endpoints=tcp -p 0
 
 
 # Proxies for required interfaces
-InnerModelManagerProxy = innermodelmanager:tcp -h localhost -p 0
-RGBDProxy = rgbd:tcp -h localhost -p 0
+RGBDProxy = rgbd:tcp -h localhost -p 10096
+
+Ice.MessageSizeMax=2000480
 
 
 # This property is used by the clients to connect to IceStorm.

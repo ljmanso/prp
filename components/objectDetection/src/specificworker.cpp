@@ -423,11 +423,11 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 {
 	try
 	{
-	rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
+		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
 	}
 	catch(Ice::Exception e)
 	{
-	qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
+		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
 	}
 
 	#ifdef DEBUG
@@ -459,11 +459,11 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 	
 	timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
-	string pcdname =  "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
+	string pcdname =  "/home/robocomp/robocomp/components/prp/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
 	printf("<%s>\n", pcdname.c_str());
 	writer.write<PointT> ( pcdname, *cloud, false);
         
-        string imagename = "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + ".png";
+        string imagename = "/home/robocomp/robocomp/components/prp/" + QString::number(ts.tv_sec).toStdString() + ".png";
         cv::imwrite( imagename ,rgb_image);
   
 }
