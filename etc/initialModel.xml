@@ -194,8 +194,8 @@
 		<linkAttribute key="rz" value="0" />
 	</link>
         <link src="28" dst="30" label="reachPosition" >
-        	<linkAttribute key="tz" value="-500" />
-		<linkAttribute key="tx" value="-500" />
+        	<linkAttribute key="tz" value="0" />
+		<linkAttribute key="tx" value="0" />
 		<linkAttribute key="ty" value="0" />
 		<linkAttribute key="rx" value="0" />
 		<linkAttribute key="ry" value="0" />
