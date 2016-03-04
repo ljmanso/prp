@@ -37,7 +37,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	table->set_board_size(500,30,500);
         cout<<"starting the specific worker me cago en todo"<<endl;
         
-        innermodel = new InnerModel("/home/robocomp/robocomp/components/perception/etc/genericPointCloud.xml");
+        innermodel = new InnerModel("/home/robocomp/robocomp/components/prp/etc/genericPointCloud.xml");
         
         viewpoint_transform = innermodel->getTransformationMatrix("robot", "rgbd_t");
         
