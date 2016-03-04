@@ -49,19 +49,14 @@ void objectDetectionI::mindTheGapPC(const Ice::Current&)
 	worker->mindTheGapPC();
 }
 
-string objectDetectionI::getResult(const string  &image, const string  &pcd, const Ice::Current&)
-{
-	return worker->getResult(image, pcd);
-}
-
 void objectDetectionI::centroidBasedPose( float  &x,  float  &y,  float  &theta, const Ice::Current&)
 {
 	worker->centroidBasedPose(x, y, theta);
 }
 
-void objectDetectionI::reloadVFH(const Ice::Current&)
+void objectDetectionI::reloadVFH(const string  &pathToSet, const Ice::Current&)
 {
-	worker->reloadVFH();
+	worker->reloadVFH(pathToSet);
 }
 
 void objectDetectionI::ransac(const string  &model, const Ice::Current&)
@@ -127,6 +122,11 @@ void objectDetectionI::normalSegmentation(const string  &model, const Ice::Curre
 void objectDetectionI::getInliers(const string  &model, const Ice::Current&)
 {
 	worker->getInliers(model);
+}
+
+void objectDetectionI::getPose( float  &x,  float  &y,  float  &z,  float  &rx,  float  &ry,  float  &rz, const Ice::Current&)
+{
+	worker->getPose(x, y, z, rx, ry, rz);
 }
 
 void objectDetectionI::vfh( listType  &guesses, const Ice::Current&)

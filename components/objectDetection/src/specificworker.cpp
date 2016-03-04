@@ -42,9 +42,6 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
         viewpoint_transform = innermodel->getTransformationMatrix("robot", "rgbd_t");
         
         marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
-        
-        image_pub = nh.advertise<sensor_msgs::Image> ("/rockin/ursusteam/rgb/image", 1, true);
-	pcd_pub = nh.advertise<sensor_msgs::PointCloud2> ("/rockin/ursusteam/depth_0/pointcloud", 1, true);
 }
 
 /**
@@ -140,9 +137,8 @@ void SpecificWorker::mindTheGapPC()
 
 }
 
-void SpecificWorker::getResult(const string &image, const string &pcd, detectionResult &detection )
+void SpecificWorker::getPose(float &x, float &y, float &z, float &rx, float &ry, float &rz)
 {
-    grabThePointCloud(image, pcd);
     
     //publish imageen
 //     cv_bridge::CvImage out_msg;
@@ -154,13 +150,13 @@ void SpecificWorker::getResult(const string &image, const string &pcd, detection
 //     sensor_msgs::PointCloud2 cloud2;
 //     pcl::toROSMsg(*cloud, cloud2);
 //     pcd_pub.publish(cloud2);
-    
-    detection.classDetected = "a";
-    detection.instance = "a1";
-    detection.x = 1.5;
-    detection.y = 2.5;
-    detection.theta = 3.5;
-    
+
+    x = 1.5;
+    y = 2.5;
+    z = 3.5;
+	rx = 1.5;
+    ry = 2.5;
+    rz = 3.5;
     
     
     
@@ -171,7 +167,7 @@ void SpecificWorker::centroidBasedPose(float &x, float &y, float &theta)
 
 }
 
-void SpecificWorker::reloadVFH(string pathToSet)
+void SpecificWorker::reloadVFH(const string &pathToSet)
 {
     vfh_matcher->reloadVFH(pathToSet);
 }
@@ -397,7 +393,7 @@ void SpecificWorker::statisticalOutliersRemoval()
 
 void SpecificWorker::loadTrainedVFH()
 {
-    	vfh_matcher->loadTrainingData();
+	vfh_matcher->loadTrainingData();
 	std::cout<<"Training data loaded"<<std::endl;
 }
 
@@ -427,11 +423,11 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 {
 	try
 	{
-	rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
+		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
 	}
 	catch(Ice::Exception e)
 	{
-	qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
+		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
 	}
 
 	#ifdef DEBUG
@@ -463,11 +459,11 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 	
 	timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
-	string pcdname =  "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
+	string pcdname =  "/home/robocomp/robocomp/components/prp/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
 	printf("<%s>\n", pcdname.c_str());
 	writer.write<PointT> ( pcdname, *cloud, false);
         
-        string imagename = "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + ".png";
+        string imagename = "/home/robocomp/robocomp/components/prp/" + QString::number(ts.tv_sec).toStdString() + ".png";
         cv::imwrite( imagename ,rgb_image);
   
 }
