@@ -9,7 +9,7 @@ fontSize=12
 longPattern=3
 ===
 
-imagineMostLikelyCoffeePotInPosition : active(1)
+imagineMostLikelyCoffeePotInPosition : active(2)
 {
 	{
 		status:status(-5,-305)
@@ -83,7 +83,7 @@ verifyImaginaryCoffeePot : active(1)
 	}
 }
 
-hierarchical hierarchical_verifyImaginaryCoffeePot : active(1)  activates(verifyImaginaryCoffeePot)
+hierarchical hierarchical_verifyImaginaryCoffeePot : active(2)  activates(verifyImaginaryCoffeePot)
 {
 	{
 		status:status(-90,-240)
