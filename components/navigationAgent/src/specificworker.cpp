@@ -366,7 +366,7 @@ void SpecificWorker::action_SetObjectReach(bool newAction)
 		currentTarget.y = 0;
 		currentTarget.z = poseInRoom.z();
 		currentTarget.rx = 0;
-		currentTarget.ry = 0;
+		currentTarget.ry = poseInRoom.ry();
 		currentTarget.rz = 0;
 		currentTarget.doRotation = true;
 	}
