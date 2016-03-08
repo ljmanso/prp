@@ -261,5 +261,33 @@
 	<link src="1" dst="2" label="hasStatus" />
 
         
+	<symbol id="11" type="object" >
+		<attribute key="imName" value="mugRP" />
+		<attribute key="imType" value="transform" />
+		<attribute key="tag" value="31" />
+	</symbol>
+	<link  src="1"  dst="11"      label="know" />
+	<symbol id="12" type="objectSt" />
+	<link  src="11"  dst="12"     label="hasStatus" />
+	<link  src="11"  dst="12"     label="mug" />
+	<link  src="11"  dst="12"     label="classified" />
+	<link  src="11"  dst="12"     label="noReach" />
+	<link  src="11"  dst="12"     label="reachable" />
+	<link  src="11"  dst="12"     label="notSee" />
+	<link  src="11"  dst="12"     label="position" />
+
+	<link  src="11"  dst="3"     label="in" />
+	<link  src="11"  dst="22"     label="in" />
+
+	<link  src="22"  dst="11"     label="RT">
+		<linkAttribute key="rx" value="0" />
+		<linkAttribute key="ry" value="0" />
+		<linkAttribute key="rz" value="0" />
+		<linkAttribute key="tx" value="0" />
+		<linkAttribute key="ty" value="110" />
+		<linkAttribute key="tz" value="-500" />
+	</link>
+
+
 </AGMModel>
 
