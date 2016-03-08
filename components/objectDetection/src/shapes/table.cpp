@@ -144,7 +144,7 @@ void Table::project_board_inliers(const pcl::PointCloud<PointT>::Ptr cloud, cons
 	
 // 	this->cloud=model_inliers_cloud;
   
-//   cout<<"Model inliers!!: "<<inliers_indices->indices.size()<<endl;
+//    cout<<"Model inliers!!: "<<inliers_indices->indices.size()<<endl;
 
 	//Let's project inliers
 	pcl::ProjectInliers<PointT> proj;
@@ -186,7 +186,7 @@ void Table::extract_table_polygon(const pcl::PointCloud<PointT>::Ptr cloud, cons
 //optimize board using ransac
 void Table::fit_board_with_RANSAC(pcl::PointCloud<PointT>::Ptr cloud, pcl::PointIndices::Ptr inliers, const float threshold)
 {  
-	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+	//pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
 
 	//Create the segmentation object
 	pcl::SACSegmentation<PointT> seg;

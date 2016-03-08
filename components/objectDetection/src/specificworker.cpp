@@ -35,13 +35,12 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
 	//let's set the sizes
 	table->set_board_size(500,30,500);
-        cout<<"starting the specific worker me cago en todo"<<endl;
         
-        innermodel = new InnerModel("/home/robocomp/robocomp/components/prp/etc/genericPointCloud.xml");
+	innermodel = new InnerModel("/home/robocomp/robocomp/components/prp/experimentFiles/simulation/ursus_tilted.xml");
         
-        viewpoint_transform = innermodel->getTransformationMatrix("robot", "rgbd_t");
+	viewpoint_transform = innermodel->getTransformationMatrix("robot", "rgbd_transform");
         
-        marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
+	marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
 }
 
 /**
@@ -175,6 +174,7 @@ void SpecificWorker::reloadVFH(const string &pathToSet)
 void SpecificWorker::ransac(const string &model)
 {
 	table->fit_board_with_RANSAC( cloud, ransac_inliers, 15);
+	cout<<"RANSAC INLIERS: "<<ransac_inliers->indices.size()<<endl;
 }
 
 void SpecificWorker::euclideanClustering(int &numCluseters)
@@ -193,13 +193,13 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 	cluster_clouds.clear();
 	pcl::EuclideanClusterExtraction<PointT> ec;
 	
-	ec.setClusterTolerance (70); // 2cm
-	ec.setMinClusterSize (200);
+	ec.setClusterTolerance (40); // 2cm
+	ec.setMinClusterSize (100);
 	ec.setMaxClusterSize (25000);
 	ec.setSearchMethod (tree);
 	
 	ec.setInputCloud (this->cloud);
-        ec.extract (cluster_indices);
+	ec.extract (cluster_indices);
 	 
 // 	cv::Mat rgb_image(480,640, CV_8UC3, cv::Scalar::all(0));
 	
@@ -216,27 +216,27 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 	
 	 
 	int j = 0;
-        for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
-        {
-            pcl::PointCloud<PointT>::Ptr cloud_cluster (new pcl::PointCloud<PointT>);
-            for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
-            {
-                cloud_cluster->points.push_back (this->cloud->points[*pit]); //*
-            }
-            cloud_cluster->width = cloud_cluster->points.size ();
-            cloud_cluster->height = 1;
-            cloud_cluster->is_dense = true;
+	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
+	{
+		pcl::PointCloud<PointT>::Ptr cloud_cluster (new pcl::PointCloud<PointT>);
+		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
+		{
+			cloud_cluster->points.push_back (this->cloud->points[*pit]); //*
+		}
+		cloud_cluster->width = cloud_cluster->points.size ();
+		cloud_cluster->height = 1;
+		cloud_cluster->is_dense = true;
 		
 			
 		//save the cloud at 
 		cluster_clouds.push_back(cloud_cluster);
-                std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
-                #ifdef SAVE_DATA	
+        std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
+		#ifdef SAVE_DATA	
  
                 std::stringstream ss;
                 ss <<"capture_object_" << j;
 		
-                /////save rgbd 
+                /////save /*rgbd*/ 
 
                 cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
 		for (int i = 0; i<cloud_cluster->points.size(); i++)
@@ -253,24 +253,24 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 			}
 		}
 			
-			//dilate
-			cv::Mat dilated_M, z;
-			cv::dilate( M, dilated_M, cv::Mat(), cv::Point(-1, -1), 2, 1, 1 );
-			
-			//find contour
-			vector<vector<cv::Point> > contours;
-			vector<cv::Vec4i> hierarchy;
-			
-			cv::findContours( dilated_M, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
-			
-			/// Draw contours
-			cv::Mat mask = cv::Mat::zeros( dilated_M.size(), CV_8UC3 );
-	// 		int contour_index = 1;
+		//dilate
+		cv::Mat dilated_M, z;
+		cv::dilate( M, dilated_M, cv::Mat(), cv::Point(-1, -1), 2, 1, 1 );
+		
+		//find contour
+		vector<vector<cv::Point> > contours;
+		vector<cv::Vec4i> hierarchy;
+		
+		cv::findContours( dilated_M, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+		
+		/// Draw contours
+		cv::Mat mask = cv::Mat::zeros( dilated_M.size(), CV_8UC3 );
+// 		int contour_index = 1;
 
-	// 		cv::Scalar color = cv::Scalar( 0, 255, 0 );
-	// 		cv::drawContours( drawing, contours, contour_index, color, 2, 8, hierarchy, 0, cv::Point() );
-			
-			cv::drawContours(mask, contours, -1, cv::Scalar(255, 255, 255), CV_FILLED);
+// 		cv::Scalar color = cv::Scalar( 0, 255, 0 );
+// 		cv::drawContours( drawing, contours, contour_index, color, 2, 8, hierarchy, 0, cv::Point() );
+		
+		cv::drawContours(mask, contours, -1, cv::Scalar(255, 255, 255), CV_FILLED);
 			
 			
 		// let's create a new image now
@@ -279,18 +279,18 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 		// set background to green
 		crop.setTo(cv::Scalar(255,255,255));
 			
-			rgb_image.copyTo(crop, mask);
+		rgb_image.copyTo(crop, mask);
 			
-			normalize(mask.clone(), mask, 0.0, 255.0, CV_MINMAX, CV_8UC1);
+		normalize(mask.clone(), mask, 0.0, 255.0, CV_MINMAX, CV_8UC1);
 			
-			cv::namedWindow( "Display window2", cv::WINDOW_AUTOSIZE );// Create a window for display.
+		cv::namedWindow( "Display window2", cv::WINDOW_AUTOSIZE );// Create a window for display.
 		cv::imshow( "Display window2", rgb_image );
-			cv::imwrite( "scene.png", rgb_image );
+		cv::imwrite( "scene.png", rgb_image );
 			
-			cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+		cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
 		cv::imshow( "Display window", crop );
 
-			cv::imwrite( ss.str() + ".png", crop );
+		cv::imwrite( ss.str() + ".png", crop );
 
 			/////save rgbd end
 			
@@ -298,7 +298,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 		
 	#endif
 
-// 		InnerModelNode *parent = innermodel->getNode(QString::fromStdString("rgbd"));
+//		InnerModelNode *parent = innermodel->getNode(QString::fromStdString("rgbd"));
 // 		innermodel->newTransform(QString::fromStdString("marca"), QString::fromStdString("static") ,parent, 356.152, -289.623, 756.853, 0.32, 0, 0);
 // 
 // 		QMat PP = innermodel->getTransformationMatrix("marca", "robot");
@@ -317,9 +317,9 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 // 			cloud_cluster->points[i].b=cloud_cluster->points[i].b;
 // 		}	
 // 
-// #ifdef SAVE_DATA	
-// 		writer.write<PointT> (ss.str () + ".pcd", *cloud_cluster, false); 
-// #endif
+#ifdef SAVE_DATA	
+		writer.write<PointT> (ss.str () + ".pcd", *cloud_cluster, false); 
+#endif
 		j++;
         }
 
@@ -371,10 +371,47 @@ void SpecificWorker::showObject(const int numObject)
 
 void SpecificWorker::convexHull(const string &model)
 {
-    table->board_convex_hull(projected_plane, cloud_hull);
-    #ifdef DEBUG
-    std::cout<<"Cloud hull size: "<<cloud_hull->size()<<std::endl;
-    #endif
+	
+	#ifdef DEBUG
+		timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+		string pcdname =  "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + "laositafira.pcd";
+		printf("<%s>\n", pcdname.c_str());
+		writer.write<PointT> ( pcdname, *projected_plane, false);
+	#endif
+		
+	table->board_convex_hull(projected_plane, cloud_hull);
+// 		  // Load in the point cloud
+// 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in (new pcl::PointCloud<pcl::PointXYZ> ());
+// 	if (pcl::io::loadPCDFile (pcdname, *cloud_in) != 0)
+// 	{
+// 		cout<<"putaaaaaaaaa"<<endl;
+// 	}
+// 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_out (new pcl::PointCloud<pcl::PointXYZ> ());
+// 	pcl::ConcaveHull<pcl::PointXYZ> chull;
+// // 	cout<<"Mecagoentodolavirgen!!: "<<cloud_in->points.size()<<endl;
+// // 	pcl::PolygonMesh mesh_out;
+// //     chull.setInputCloud (cloud_in);
+// //     chull.reconstruct (mesh_out);
+// 
+// 	printf ("This is line %d of file \"%s\".\n",
+//             __LINE__, __FILE__);
+// // 	pcl::ConcaveHull<PointT> chull;
+// 	printf ("This is line %d of file \"%s\".\n",
+//             __LINE__, __FILE__);
+// 	chull.setInputCloud (cloud_in);
+// 	printf ("This is line %d of file \"%s\".\n",
+//             __LINE__, __FILE__);
+// 	chull.setAlpha (0.1);
+// 	printf ("This is line %d of file \"%s\".\n",
+//             __LINE__, __FILE__);
+// 	chull.reconstruct (*cloud_out);
+// 	printf ("This is line %d of file \"%s\".\n",
+//             __LINE__, __FILE__);
+// //     table->board_convex_hull(projected_plane, cloud_hull);
+// //     #ifdef DEBUG
+    std::cout<<"Cloud hull size joder: "<<cloud_hull->points.size()<<std::endl;
+// //     #endif
 }
 
 void SpecificWorker::mirrorPC()
@@ -442,11 +479,19 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 		rgb_image.at<cv::Vec3b>(row,column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
 	}
 	
-		
+	QMat PP = innermodel->getTransformationMatrix("robot", "rgbd_transform");
+	
 	cloud->points.resize(points_kinect.size());
 	for (unsigned int i=0; i<points_kinect.size(); i++)
 	{
-		memcpy(&cloud->points[i], &points_kinect[i],3*sizeof(float));
+// 		memcpy(&cloud->points[i], &points_kinect[i],3*sizeof(float));
+		
+		QVec p1 = QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1);
+ 		QVec p2 = PP * p1;
+ 		QVec p22 = p2.fromHomogeneousCoordinates();
+		
+		memcpy(&cloud->points[i],p22.data(),3*sizeof(float));
+		
 		cloud->points[i].r=rgbMatrix[i].red;
 		cloud->points[i].g=rgbMatrix[i].green;
 		cloud->points[i].b=rgbMatrix[i].blue;
@@ -486,7 +531,7 @@ void SpecificWorker::projectInliers(const string &model)
 		clock_gettime(CLOCK_REALTIME, &ts);
 		string pcdname =  "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + "_projectInliers.pcd";
 		printf("<%s>\n", pcdname.c_str());
-		writer.write<PointT> ( pcdname, *cloud, false);
+		writer.write<PointT> ( pcdname, *projected_plane, false);
         #endif
 }
 
@@ -495,10 +540,10 @@ void SpecificWorker::extractPolygon(const string &model)
 	cout<<"CloudHull size: "<<cloud_hull->points.size()<<endl;
         cout<<"Cloud size: "<<cloud->points.size()<<endl;
 
-	//table->extract_table_polygon(this->cloud, cloud_hull, QVec::vec3(viewpoint_transform(0,3), viewpoint_transform(1,3), viewpoint_transform(2,3)) , 20, 1500, prism_indices, this->cloud);
-        QVec::vec3(viewpoint_transform(0,3), viewpoint_transform(1,3), viewpoint_transform(2,3)).print("Viewpoint: ");
-        table->extract_table_polygon(this->cloud, cloud_hull, QVec::vec3(0,0,1320) , 20, 1500, prism_indices, this->cloud);        
-        
+	table->extract_table_polygon(this->cloud, cloud_hull, QVec::vec3(viewpoint_transform(0,3), viewpoint_transform(1,3), viewpoint_transform(2,3)) , 20, 1500, prism_indices, this->cloud);
+	QVec::vec3(viewpoint_transform(0,3), viewpoint_transform(1,3), viewpoint_transform(2,3)).print("Viewpoint: ");
+//         table->extract_table_polygon(this->cloud, cloud_hull, QVec::vec3(0,0,1320) , 20, 1500, prism_indices, this->cloud);        
+		
         cout<<"Prism size: "<<prism_indices->indices.size()<<endl;
 		cout<<"Point Cloud size: "<<this->cloud->points.size()<<endl;
         #ifdef DEBUG

@@ -45,6 +45,8 @@
  #include <opencv2/core/core.hpp>
  #include <opencv2/highgui/highgui.hpp>
  #include <opencv2/imgproc/imgproc.hpp>
+ #include <pcl/surface/convex_hull.h>
+ #include <pcl/surface/concave_hull.h>
 #endif
 
 #include <genericworker.h>
@@ -58,6 +60,7 @@
 #endif
 
 #define DEBUG 1
+#define SAVE_DATA 1
 typedef pcl::PointXYZRGB PointT;
 
 

@@ -35,8 +35,7 @@ SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial )
 
 include_directories( /usr/include/hdf5/serial/ /usr/local/include/pcl-1.8/ )
 
-include_directories(  ${catkin_INCLUDE_DIRS} )
-SET ( LIBS ${LIBS} ${catkin_LIBRARIES} -L/opt/ros/jade/lib )
+SET ( LIBS ${LIBS} )
 
 ADD_DEFINITIONS( -std=c++11 )
 
