@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rcmanager>
+
+ <generalInformation>
+  <editor path="kate" dock="false" />
+  <timeouts fixed="1000.0" blink="300.0" />
+  <clicks switch="2.0" interval="400.0" />
+  <graph alpha="80.0" active="true" scale="200.0" />
+  <graphTiming idletime="1000.0" focustime="500.0" fasttime="10.0" fastperiod="2000.0" />
+  <simulation hookes="0.07" springlength="0.5" friction="0.4" step="0.5" fieldforce="20000.0" />
+ </generalInformation>
+
+ <node alias="april" endpoint="commonbehavior:tcp -h localhost -p 14358">
+  <dependence alias="rgbd" />
+  <dependence alias="IS" />
+  <workingDir path="/home/robocomp/" />
+  <upCommand command="rcremote localhost april /home/robocomp/robocomp/components/robocomp-robolab/components/apriltagsComp ./bin/apriltagscomp --Ice.Config=/home/robocomp/robocomp/components/prp/etc/apriltags.conf" />
+  <downCommand command="killall -9 apriltagscomp" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/apriltags.conf" />
+  <xpos value="167.582202568" />
+  <ypos value="70.127992666" />
+  <radius value="10.0" />
+  <color value="#3333FF" />
+ </node>
+
+ <node alias="IS" endpoint="IceStorm/TopicManager:default -p 9999">
+  <workingDir path="/" />
+  <upCommand command="rcremote localhost IS / rcnode" />
+  <downCommand command="killall -9 icebox" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
+  <xpos value="-12.5959212859" />
+  <ypos value="71.4484533889" />
+  <radius value="10.0" />
+  <color value="#FF3333" />
+ </node>
+
+ <node alias="rgbd" endpoint="rgbd:tcp -p 10096">
+  <workingDir path="/home/robocomp/" />
+  <upCommand command="rcremote localhost rgbd /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/tabletop.xml" />
+  <downCommand command="killall -9 rcis" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/primesense.conf" />
+  <xpos value="-8.16102666394" />
+  <ypos value="200.481463202" />
+  <radius value="10.0" />
+  <color value="#4422FF" />
+ </node>
+
+ <node alias="objectD" endpoint="commonbehavior:tcp -p 12332 ">
+  <dependence alias="IS" />
+  <dependence alias="rgbd" />
+  <workingDir path="/home/robocomp/" />
+  <upCommand command="rcremote localhost objectD /home/robocomp/robocomp/components/prp/components/objectDetection ./bin/objectDetectionComp /home/robocomp/robocomp/components/prp/etc/objectDetection.conf" />
+  <downCommand command="killall -9 objectDetectionComp" />
+  <configFile path="kate /home/robocomp/robocomp/components/prp/etc/objectDetection.conf" />
+  <xpos value="-112.46787229" />
+  <ypos value="-31.8065474829" />
+  <radius value="10.0" />
+  <color value="#33FF33" />
+ </node>
+
+ <node alias="testObjectDetection" endpoint="commonbehavior:tcp -p 1234">
+  <dependence alias="IS" />
+  <dependence alias="objectD" />
+  <workingDir path="/home/robocomp/" />
+  <upCommand command="rcremote localhost objectA /home/robocomp/robocomp/components/prp/components/testObjectDetection ./bin/testObjectDetectionComp /home/robocomp/robocomp/components/prp/etc/testObjectDetection.conf" />
+  <downCommand command="killall -9 testObjectDetectionComp" />
+  <configFile path="kate /home/robocomp/robocomp/components/prp/etc/testObjectDetection.conf" />
+  <xpos value="-53.935383258" />
+  <ypos value="-112.027247824" />
+  <radius value="10.0" />
+  <color value="#33FF33" />
+ </node>
+
+</rcmanager>
