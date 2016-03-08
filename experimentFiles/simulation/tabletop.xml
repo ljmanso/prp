@@ -1,0 +1,7 @@
+<innermodel>
+	<transform id="moverobot" tx="1600" tz="3000.0" ty="0" ry="-1.57">
+		<include path="/home/robocomp/robocomp/components/prp/experimentFiles/simulation/ursus_tilted.xml"/>
+	</transform>
+	<include path="/home/robocomp/robocomp/components/prp/experimentFiles/simulation/autonomyLabModel.xml"/>
+</innermodel>
+
