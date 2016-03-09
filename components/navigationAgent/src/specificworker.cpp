@@ -50,7 +50,7 @@ void SpecificWorker::compute( )
 		return;
 // 	innerModel->treePrint();
 	printf("ACTIOOOON: %s\n", action.c_str());
-	
+
 	actionExecution();
 
 // 	printf("ae>\n");
@@ -58,11 +58,11 @@ void SpecificWorker::compute( )
 
 /**
  * \brief ESTE ES EL VERDADERO COMPUTE
- */ 
+ */
 void SpecificWorker::actionExecution()
 {
 // 	return;
-	
+
 	QMutexLocker locker(mutex);
 	qDebug()<<"ACTION: "<<QString::fromStdString(action);
 
@@ -179,7 +179,7 @@ void SpecificWorker::action_HandObject(bool newAction)
 		printf("navigationAgent, action_HandObject ERROR: SYMBOL DOESN'T EXIST \n");
 		exit(2);
 	}
-	
+
 	// GET THE INNERMODEL NAMES OF TH SYMBOLS
 	QString robotIMID;
 	QString roomIMID;
@@ -198,12 +198,12 @@ void SpecificWorker::action_HandObject(bool newAction)
 		qDebug()<<"[robotIMID"<<robotIMID<<"roomIMID"<<roomIMID<<"personIMID"<<personIMID<<"]";
 		exit(2);
 	}
-	
-	// GET THE TARGET POSE: 
+
+	// GET THE TARGET POSE:
 	try
 	{
 		if (not (innerModel->getNode(roomIMID) and innerModel->getNode(personIMID)))    return;
-		
+
 		QVec poseInRoom = innerModel->transform6D(roomIMID, personIMID); // FROM OBJECT TO ROOM
 		qDebug()<<"[robotIMID"<<robotIMID<<"roomIMID"<<roomIMID<<"personIMID"<<personIMID<<"]";
 		qDebug()<<" TARGET POSE: "<< poseInRoom;
@@ -217,8 +217,8 @@ void SpecificWorker::action_HandObject(bool newAction)
 		currentTarget.rz = 0;
 		currentTarget.doRotation = false;
 	}
-	catch (...) 
-	{ 
+	catch (...)
+	{
 		qDebug()<<"navigationAgent, action_HandObject: innerModel exception";
 	}
 
@@ -275,14 +275,14 @@ void SpecificWorker::action_HandObject(bool newAction)
 	{
 		std::cout << ex << std::endl;
 	}
-	
+
 
 }
 
 
 /**
  * \brief elmeollo dl asunto
- */ 
+ */
 void SpecificWorker::action_SetObjectReach(bool newAction)
 {
 	// Get symbols' map
@@ -321,7 +321,7 @@ void SpecificWorker::action_SetObjectReach(bool newAction)
 		printf("ERROR: SYMBOL DOESN'T EXIST \n");
 		exit(2);
 	}
-	
+
 
 	// GET THE INNERMODEL NAMES OF TH SYMBOLS
 	QString robotIMID;
@@ -345,16 +345,16 @@ void SpecificWorker::action_SetObjectReach(bool newAction)
                                 qDebug()<<symbolPair.first<<"->"<<symbolPair.second<<" object "<<objectIMID;
                         }
                 }
-                
+
         }
 	catch(...)
 	{
 		printf("ERROR IN GET THE INNERMODEL NAMES\n");
 		exit(2);
 	}
-	
 
-	// GET THE TARGET POSE: 
+
+	// GET THE TARGET POSE:
 	try
 	{
 		if (not (innerModel->getNode(roomIMID) and innerModel->getNode(objectIMID)))    return;
@@ -370,8 +370,8 @@ void SpecificWorker::action_SetObjectReach(bool newAction)
 		currentTarget.rz = 0;
 		currentTarget.doRotation = true;
 	}
-	catch (...) 
-	{ 
+	catch (...)
+	{
 		qDebug()<<"innerModel exception";
 	}
 
@@ -450,7 +450,7 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 		return false;
 	}
 
-	int32_t robotId=-1, roomId=-1;
+	int32_t robotId=-1, roomIdInGraph=-1;
 
 	robotId = worldModel->getIdentifierByType("robot");
 	if (robotId < 0)
@@ -462,39 +462,39 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 	AGMModelSymbol::SPtr robot = worldModel->getSymbol(robotId);
 	for (auto edge = robot->edgesBegin(worldModel); edge != robot->edgesEnd(worldModel); edge++)
 	{
-		if (edge->getLabel() == "RT")
+		if (edge->getLabel() == "in")
 		{
 			const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
-			const string secondType = worldModel->getSymbol(symbolPair.first)->symbolType;
-			if (symbolPair.second == robotId and secondType == "room")
+			const string secondType = worldModel->getSymbol(symbolPair.second)->symbolType;
+			if (symbolPair.first == robotId and secondType == "room")
 			{
-				roomId = symbolPair.first;
+				roomIdInGraph = symbolPair.second;
 			}
 		}
 	}
 
-	if (roomId < 0)
+	if (roomIdInGraph < 0)
 	{
-		printf("roomId not found, Waiting for Insert innerModel...\n");
+		printf("room id in graph not found!!!\n");
 		return false;
 	}
 
-	
+
 	int32_t actualRoom;
-	if (bState.z<0)
+	if (bState.correctedZ<0)
 		actualRoom = 5;
 	else
 		actualRoom = 3;
 
-	
-	printf("current room: %d\n", actualRoom);
+	printf("current room (physical): %d\n", actualRoom);
+	printf("current room (in agm) %d\n", roomIdInGraph);
 // 	for (const AGMModelEdge &edge : worldModel->edges)
 // 	{
 // 		if (edge->getSymbolPair().first == robotId and edge->getLabel() == "in")
 // 		{
 // 		}
 // 	}
-	if (roomId != actualRoom)
+	if (roomIdInGraph != actualRoom)
 	{
 		printf("I have to change the room\n");
 		try
@@ -502,19 +502,19 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 			AGMModel::SPtr newModel(new AGMModel(worldModel));
 
 			// Modify IN edge
-			newModel->removeEdgeByIdentifiers(robotId, roomId, "in");
+			newModel->removeEdgeByIdentifiers(robotId, roomIdInGraph, "in");
 			newModel->addEdgeByIdentifiers(robotId, actualRoom, "in");
 
 			// Modify RT edge
-			AGMModelEdge edgeRT = newModel->getEdgeByIdentifiers(roomId, robotId, "RT");
-			newModel->removeEdgeByIdentifiers(roomId, robotId, "RT");
-			printf("(was %d now %d) ---[rt]---> %d\n", roomId, actualRoom, robotId);
+			AGMModelEdge edgeRT = newModel->getEdgeByIdentifiers(roomIdInGraph, robotId, "RT");
+			newModel->removeEdgeByIdentifiers(roomIdInGraph, robotId, "RT");
+			printf("(was %d now %d) ---[rt]---> %d\n", roomIdInGraph, actualRoom, robotId);
 			try
 			{
 				float bStatex = str2float(edgeRT->getAttribute("tx"));
 				float bStatez = str2float(edgeRT->getAttribute("tz"));
 				float bStatealpha = str2float(edgeRT->getAttribute("ry"));
-				
+
 				// to reduce the publication frequency
 				printf("xModel=%f xBase=%f\n", bStatex, bState.correctedX);
 				if (fabs(bStatex - bState.correctedX)>5 or fabs(bStatez - bState.correctedZ)>5 or fabs(bStatealpha - bState.correctedAlpha)>0.02 or force)
@@ -549,14 +549,14 @@ bool SpecificWorker::odometryAndLocationIssues(bool force)
 		printf("The room is the current one, ok\n");
 		try
 		{
-			AGMModelEdge edge  = worldModel->getEdgeByIdentifiers(roomId, robotId, "RT");
-			printf("%d ---[rt]---> %d  (%d\n", roomId, robotId, __LINE__);
+			AGMModelEdge edge  = worldModel->getEdgeByIdentifiers(roomIdInGraph, robotId, "RT");
+			printf("%d ---[rt]---> %d  (%d\n", roomIdInGraph, robotId, __LINE__);
 			try
 			{
 				float bStatex = str2float(edge->getAttribute("tx"));
 				float bStatez = str2float(edge->getAttribute("tz"));
 				float bStatealpha = str2float(edge->getAttribute("ry"));
-				
+
 				// to reduce the publication frequency
 				printf("xModel=%f xBase=%f\n", bStatex, bState.correctedX);
 				if (fabs(bStatex - bState.correctedX)>5 or fabs(bStatez - bState.correctedZ)>5 or fabs(bStatealpha - bState.correctedAlpha)>0.02 or force)
@@ -762,15 +762,15 @@ void SpecificWorker::action_ChangeRoom(bool newAction)
 	static float lastZ = std::numeric_limits<float>::quiet_NaN();
 
 	auto symbols = worldModel->getSymbolsMap(params, "r2");
-	
-	int32_t roomId = symbols["r2"]->identifier;
-	printf("room symbol: %d\n",  roomId);
+
+	int32_t roomIdInGraph = symbols["r2"]->identifier;
+	printf("room symbol: %d\n",  roomIdInGraph);
 	std::string imName = symbols["r2"]->getAttribute("imName");
 	printf("imName: <%s>\n", imName.c_str());
 
 	const float refX = str2float(symbols["r2"]->getAttribute("x"));
 	const float refZ = str2float(symbols["r2"]->getAttribute("z"));
-	
+
 	QVec roomPose = innerModel->transformS("world", QVec::vec3(refX, 0, refZ), imName);
 	roomPose.print("goal pose");
 // 	AGMModelSymbol::SPtr goalRoom = worldModel->getSymbol(str2int(params["r2"].value));
@@ -1028,7 +1028,7 @@ void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &mod
 
 /**
  * \brief ACTUALIZACION DEL ENLACE EN INNERMODEL
- */ 
+ */
 void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge& modification)
 {
 	QMutexLocker lockIM(mutex);
