@@ -181,7 +181,7 @@
 	</link>
 	<link src="3" dst="24" label="RT" >
 		<linkAttribute key="tz" value="2400" />
-		<linkAttribute key="tx" value="6500" />
+		<linkAttribute key="tx" value="5800" />
 		<linkAttribute key="ty" value="800" />
 		<linkAttribute key="rx" value="0" />
 		<linkAttribute key="ry" value="0" />
@@ -238,11 +238,11 @@
 	<link src="1" dst="28" label="know" >
 	</link>
 	<link src="5" dst="28" label="RT" >
-		<linkAttribute key="tz" value="-3600" />
-		<linkAttribute key="tx" value="4500" />
+		<linkAttribute key="tz" value="-2900" />
+		<linkAttribute key="tx" value="6500" />
 		<linkAttribute key="ty" value="800" />
 		<linkAttribute key="rx" value="0" />
-		<linkAttribute key="ry" value="1.5707" />
+		<linkAttribute key="ry" value="0" />
 		<linkAttribute key="rz" value="0" />
 	</link>
         <link src="28" dst="34" label="reachPosition" />
