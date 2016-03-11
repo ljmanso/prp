@@ -17,7 +17,7 @@
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost april /home/robocomp/robocomp/components/robocomp-robolab/components/apriltagsComp ./bin/apriltagscomp --Ice.Config=/home/robocomp/robocomp/components/prp/etc/apriltags.conf" />
   <downCommand command="killall -9 apriltagscomp" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/apriltags.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/apriltags.conf" />
   <xpos value="167.582202568" />
   <ypos value="70.127992666" />
   <radius value="10.0" />
@@ -28,7 +28,7 @@
   <workingDir path="/" />
   <upCommand command="rcremote localhost IS / rcnode" />
   <downCommand command="killall -9 icebox" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/ursus.conf" />
   <xpos value="-12.5959212859" />
   <ypos value="71.4484533889" />
   <radius value="10.0" />
@@ -39,7 +39,7 @@
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost rgbd /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/tabletop.xml" />
   <downCommand command="killall -9 rcis" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/primesense.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/primesense.conf" />
   <xpos value="-8.16102666394" />
   <ypos value="200.481463202" />
   <radius value="10.0" />
