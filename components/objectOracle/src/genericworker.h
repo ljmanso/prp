@@ -93,10 +93,10 @@ public:
 	virtual void semanticDistance(const string &word1, const string &word2, float &result) = 0;
 	virtual void getLabelsFromImage(const ColorSeq &image, ResultList &result) = 0;
 	virtual void structuralChange(const RoboCompAGMWorldModel::World &w) = 0;
-	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &es) = 0;
-	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &e) = 0;
-	virtual void symbolUpdated(const RoboCompAGMWorldModel::Node &n) = 0;
-	virtual void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &ns) = 0;
+	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modification) = 0;
+	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification) = 0;
+	virtual void symbolUpdated(const RoboCompAGMWorldModel::Node &modification) = 0;
+	virtual void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modification) = 0;
 
 
 protected:
