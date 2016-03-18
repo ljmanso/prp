@@ -74,8 +74,10 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
 	QMutexLocker locker(mutex);
 	
-	timer.start(Period);
+	RoboCompAGMWorldModel::World w = agmexecutive_proxy->getModel();
+	structuralChange(w);
 
+	timer.start(Period);
 	return true;
 }
 

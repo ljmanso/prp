@@ -36,13 +36,7 @@ bool AGMCommonBehaviorI::reloadConfigAgent(const Ice::Current&)
 
 bool AGMCommonBehaviorI::activateAgent(const ParameterMap  &prs, const Ice::Current&)
 {
-	
-	bool returned = worker->activateAgent(prs);
-	if(returned)
-		cout<<"Agent ORACLE activated properly"<<endl;
-	else
-		cout<<"Agent ORACLE FAILED ACTIVATION"<<endl;
-	return returned;
+	return worker->activateAgent(prs);
 }
 
 bool AGMCommonBehaviorI::setAgentParameters(const ParameterMap  &prs, const Ice::Current&)
