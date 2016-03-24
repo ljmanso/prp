@@ -29,7 +29,6 @@ SET ( SOURCES
   agmcommonbehaviorI.cpp
   objectoracleI.cpp
   agmexecutivetopicI.cpp
-  $ENV{ROBOCOMP}/classes/agmInner/agmInner.cpp
 )
 
 
