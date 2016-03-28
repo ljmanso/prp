@@ -61,7 +61,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <agmInner/agmInner.h>
 #include <boost/filesystem.hpp>
 #include <sstream>
 

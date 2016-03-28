@@ -500,7 +500,7 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modifi
 	worldModelTime = QTime::currentTime();
  
 	delete innerModel;
-	innerModel = agmInner.extractInnerModel(worldModel);
+	innerModel = AGMInner::extractInnerModel(worldModel);
 }
 
 void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications)
@@ -510,7 +510,7 @@ void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &mod
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
  
 	delete innerModel;
-	innerModel = agmInner.extractInnerModel(worldModel);
+	innerModel = AGMInner::extractInnerModel(worldModel);
 }
 
 void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge &modification)
@@ -519,7 +519,7 @@ void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge &modification
  	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
  
 	delete innerModel;
-	innerModel = agmInner.extractInnerModel(worldModel);
+	innerModel = AGMInner::extractInnerModel(worldModel);
 }
 
 void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modification)
@@ -528,7 +528,7 @@ void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modificati
  	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
  
 	delete innerModel;
-	innerModel = agmInner.extractInnerModel(worldModel);
+	innerModel = AGMInner::extractInnerModel(worldModel);
 }
 
 void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications)
@@ -538,7 +538,7 @@ void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &m
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
  
 	delete innerModel;
-	innerModel = agmInner.extractInnerModel(worldModel);
+	innerModel = AGMInner::extractInnerModel(worldModel);
 }
 
 void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result)
