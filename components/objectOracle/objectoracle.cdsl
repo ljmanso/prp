@@ -1,10 +1,12 @@
 import "/robocomp/interfaces/IDSLs/ObjectOracle.idsl";
+import "/robocomp/interfaces/IDSLs/Logger.idsl";
 
 Component objectoracle
 {
 	Communications
 	{
 		implements ObjectOracle;
+		publishes Logger;
 	};
 	language Cpp;
 	gui Qt(QWidget);

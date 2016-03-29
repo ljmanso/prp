@@ -27,11 +27,12 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
-#include <Planning.h>
+#include <AGMWorldModel.h>
 #include <ObjectOracle.h>
 #include <AGMExecutive.h>
+#include <Planning.h>
+#include <Logger.h>
 #include <AGMCommonBehavior.h>
-#include <AGMWorldModel.h>
 
 #include <agm.h>
 
@@ -43,11 +44,12 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
-using namespace RoboCompPlanning;
+using namespace RoboCompAGMWorldModel;
 using namespace RoboCompObjectOracle;
 using namespace RoboCompAGMExecutive;
+using namespace RoboCompPlanning;
+using namespace RoboCompLogger;
 using namespace RoboCompAGMCommonBehavior;
-using namespace RoboCompAGMWorldModel;
 
 
 struct BehaviorParameters 
@@ -79,6 +81,7 @@ public:
 	bool isActive() { return active; }
 	
 
+	LoggerPrx logger_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;

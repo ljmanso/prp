@@ -86,6 +86,7 @@
 #include <AGMCommonBehavior.h>
 #include <AGMWorldModel.h>
 #include <ObjectOracle.h>
+#include <Logger.h>
 
 
 // User includes here
@@ -98,6 +99,7 @@ using namespace RoboCompAGMExecutive;
 using namespace RoboCompAGMCommonBehavior;
 using namespace RoboCompAGMWorldModel;
 using namespace RoboCompObjectOracle;
+using namespace RoboCompLogger;
 
 
 
@@ -130,6 +132,7 @@ int ::objectoracle::run(int argc, char* argv[])
 #endif
 	int status=EXIT_SUCCESS;
 
+	LoggerPrx logger_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	string proxy, tmp;
@@ -153,6 +156,29 @@ int ::objectoracle::run(int argc, char* argv[])
 	mprx["AGMExecutiveProxy"] = (::IceProxy::Ice::Object*)(&agmexecutive_proxy);//Remote server proxy creation example
 
 	IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(communicator()->propertyToProxy("TopicManager.Proxy"));
+
+	IceStorm::TopicPrx logger_topic;
+	while (!logger_topic)
+	{
+		try
+		{
+			logger_topic = topicManager->retrieve("Logger");
+		}
+		catch (const IceStorm::NoSuchTopic&)
+		{
+			try
+			{
+				logger_topic = topicManager->create("Logger");
+			}
+			catch (const IceStorm::TopicExists&){
+				// Another client created the topic.
+			}
+		}
+	}
+	Ice::ObjectPrx logger_pub = logger_topic->getPublisher()->ice_oneway();
+	LoggerPrx logger = LoggerPrx::uncheckedCast(logger_pub);
+	mprx["LoggerPub"] = (::IceProxy::Ice::Object*)(&logger);
+
 
 
 	SpecificWorker *worker = new SpecificWorker(mprx);

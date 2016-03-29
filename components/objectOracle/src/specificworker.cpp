@@ -91,6 +91,14 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
+	static bool first=true;
+	if (first)
+	{
+		qLog::getInstance()->setProxy("both", logger_proxy);
+		rDebug2(("oracleAgent started\n"));
+		first = false;
+	}
+
 	QMutexLocker locker(mutex);
 	printf("ACTION: %s\n", action.c_str());
 	

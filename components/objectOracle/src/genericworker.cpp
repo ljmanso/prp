@@ -30,6 +30,7 @@ QObject()
 {
 	agmexecutive_proxy = (*(AGMExecutivePrx*)mprx["AGMExecutiveProxy"]);
 
+	logger_proxy = (*(LoggerPrx*)mprx["LoggerPub"]);
 
 	mutex = new QMutex(QMutex::Recursive);
 
