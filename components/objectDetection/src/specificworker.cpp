@@ -612,11 +612,85 @@ void SpecificWorker::getPose(float &x, float &y, float &z)
 //todo again
 void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 {
+	// Point clouds
+	pcl::PointCloud<PointT>::Ptr object (new pcl::PointCloud<PointT>);
+	//change vfh extension to pcd
+	std::string view_to_load = vfh_guesses[num_object_found].substr(0, vfh_guesses[num_object_found].find_last_of("."));
+	view_to_load += ".pcd";
 	
-	rx = 0;
-	ry = 0;
-	rz = 0;
+	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) //* load the file
+	{
+		printf ("Couldn't read file test_pcd.pcd \n");
+	}
 	
+	pcl::PointCloud<PointT>::Ptr scene = cluster_clouds[num_object_found];
+	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
+
+	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
+	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
+	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+	pcl::PointCloud<pcl::FPFHSignature33>::Ptr scene_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+	
+	std::cout<<object->size()<<std::endl;
+	std::cout<<scene->size()<<std::endl;
+	// Downsample
+	pcl::console::print_highlight ("Downsampling...\n");
+	pcl::VoxelGrid<PointT> grid;
+	const float leaf = 5;
+	grid.setLeafSize (leaf, leaf, leaf);
+	grid.setInputCloud (object);
+	grid.filter (*object);
+	grid.setInputCloud (scene);
+	grid.filter (*scene);
+	
+	// Estimate normals for scene
+	pcl::console::print_highlight ("Estimating scene normals...\n");
+	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
+	nest.setRadiusSearch (10);
+	nest.setInputCloud (object);
+	nest.compute (*object_normals);
+	nest.setInputCloud (scene);
+	nest.compute (*scene_normals);
+	
+	// Estimate features
+	pcl::console::print_highlight ("Estimating features...\n");
+	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
+	fest.setRadiusSearch (25);
+	fest.setInputCloud (object);
+	fest.setInputNormals (object_normals);
+	fest.compute (*object_features);
+	fest.setInputCloud (scene);
+	fest.setInputNormals (scene_normals);
+	fest.compute (*scene_features);
+	
+	// Perform alignment
+	pcl::console::print_highlight ("Starting alignment...\n");
+	pcl::SampleConsensusPrerejective<PointT, PointT, pcl::FPFHSignature33> align;
+	align.setInputSource (object);
+	align.setSourceFeatures (object_features);
+	align.setInputTarget (scene);
+	align.setTargetFeatures (scene_features);
+	align.setMaximumIterations (50000); // Number of RANSAC iterations
+	align.setNumberOfSamples (3); // Number of points to sample for generating/prerejecting a pose
+	align.setCorrespondenceRandomness (5); // Number of nearest features to use
+	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
+	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
+	align.setInlierFraction (0.25f); // Required inlier fraction for accepting a pose hypothesis
+	{	
+		pcl::ScopeTime t("Alignment");
+		align.align (*object_aligned);
+	}
+	
+	Eigen::Matrix4f transformation = align.getFinalTransformation ();
+	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
+	
+	rx = ea(0);
+	ry = ea(1);
+	rz = ea(2);
+	
+#ifdef DEBUG
+	std::cout<<"Rotation: "<<rx<<" "<<ry<<" "<<rz<<std::endl;
+#endif
 	
 }
 

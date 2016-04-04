@@ -99,12 +99,14 @@ void SpecificWorker::findTheObject()
 
 void SpecificWorker::getPose()
 {
-	
+	float x, y, z;
+	objectdetection_proxy->getPose(x, y, z);
 }
 
 void SpecificWorker::getRotation()
 {
-	
+	float rx, ry, rz;
+	objectdetection_proxy->getRotation(rx, ry, rz);
 }
 
 void SpecificWorker::compute()

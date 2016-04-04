@@ -48,6 +48,9 @@
  #include <pcl/surface/convex_hull.h>
  #include <pcl/surface/concave_hull.h>
  #include <pcl/filters/voxel_grid.h>
+ #include <pcl/registration/sample_consensus_prerejective.h>
+ #include <pcl/features/fpfh_omp.h>
+ #include <pcl/common/time.h>
 #endif
 
 #include <genericworker.h>
