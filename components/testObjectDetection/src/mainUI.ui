@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>121</width>
-    <height>253</height>
+    <height>512</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -89,6 +89,68 @@
    </property>
    <property name="text">
     <string>euclidean</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="findObject">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>290</y>
+     <width>83</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>find the</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="text_object">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>330</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pose">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>380</y>
+     <width>83</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>pose</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="rotation">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>430</y>
+     <width>83</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>rotation</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="reload">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>250</y>
+     <width>83</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>realoadVFH</string>
    </property>
   </widget>
  </widget>

@@ -47,6 +47,7 @@
  #include <opencv2/imgproc/imgproc.hpp>
  #include <pcl/surface/convex_hull.h>
  #include <pcl/surface/concave_hull.h>
+ #include <pcl/filters/voxel_grid.h>
 #endif
 
 #include <genericworker.h>
@@ -69,22 +70,24 @@ class SpecificWorker : public GenericWorker
 	
 	InnerModel *innermodel;
 	
+	int num_object_found;
+	
 	pcl::PCDWriter writer;
 	
-        float marca_tx, marca_ty, marca_tz, marca_rx, marca_ry, marca_rz;
+	float marca_tx, marca_ty, marca_tz, marca_rx, marca_ry, marca_rz;
         
 	//Cloud of the current points for pcl
 	pcl::PointCloud<PointT>::Ptr cloud;
 	pcl::PointIndices::Ptr ransac_inliers;
 	pcl::PointCloud<PointT>::Ptr projected_plane;
 	pcl::PointCloud<PointT>::Ptr cloud_hull;
-        pcl::PointIndices::Ptr prism_indices;
+	pcl::PointIndices::Ptr prism_indices;
 	
 	//Image of the current view for opencv
 	cv::Mat rgb_image;
 	cv::Mat color_segmented;
         
-        RTMat viewpoint_transform;
+	RTMat viewpoint_transform;
 	
 	//Point cloud grabing
 	RoboCompRGBD::ColorSeq rgbMatrix;	
@@ -97,7 +100,7 @@ class SpecificWorker : public GenericWorker
  	Segmentator segmentator;
 	
         //euclidean clustering
-        std::vector<pcl::PointIndices> cluster_indices;
+	std::vector<pcl::PointIndices> cluster_indices;
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
         
         
@@ -142,6 +145,9 @@ public:
 	void projectInliers(const string &model);
 	void extractPolygon(const string &model);
 	void newAprilTag(const tagsList &tags);
+	void findTheObject(const string &objectTofind);
+	void getRotation(float &rx, float &ry, float &rz);
+	void getPose(float &x, float &y, float &z);
 
 public slots:
 	void compute(); 	

@@ -29,7 +29,8 @@ INCLUDE( $ENV{ROBOCOMP}/cmake/modules/artoolkit.cmake )
 # pcl
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
 # opencv2
-INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
+
 
 SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial )
 

@@ -174,10 +174,10 @@ void VFH::reloadVFH(std::string path_to_dir)
   std::ofstream fs;
   fs.open (training_data_list_file_name.c_str ());
   for (size_t i = 0; i < models.size (); ++i)
-	{
+  {
 		std::cout<<models[i].first<<std::endl;
-    fs << models[i].first << "\n";
-	}
+		fs << models[i].first << "\n";
+  }
   fs.close ();
  
   // Build the tree index and save it to disk

@@ -42,6 +42,7 @@ public:
 	void aprilFitModel(const string  &model, const Ice::Current&);
 	void segmentImage(const Ice::Current&);
 	void mindTheGapPC(const Ice::Current&);
+	void getRotation( float  &rx,  float  &ry,  float  &rz, const Ice::Current&);
 	void centroidBasedPose( float  &x,  float  &y,  float  &theta, const Ice::Current&);
 	void reloadVFH(const string  &pathToSet, const Ice::Current&);
 	void ransac(const string  &model, const Ice::Current&);
@@ -52,12 +53,13 @@ public:
 	void showObject(const int  numObject, const Ice::Current&);
 	void convexHull(const string  &model, const Ice::Current&);
 	void mirrorPC(const Ice::Current&);
+	void findTheObject(const string  &objectTofind, const Ice::Current&);
 	void statisticalOutliersRemoval(const Ice::Current&);
 	void loadTrainedVFH(const Ice::Current&);
 	void reset(const Ice::Current&);
 	void normalSegmentation(const string  &model, const Ice::Current&);
 	void getInliers(const string  &model, const Ice::Current&);
-	void getPose( float  &x,  float  &y,  float  &z,  float  &rx,  float  &ry,  float  &rz, const Ice::Current&);
+	void getPose( float  &x,  float  &y,  float  &z, const Ice::Current&);
 	void vfh( listType  &guesses, const Ice::Current&);
 	void grabThePointCloud(const string  &image, const string  &pcd, const Ice::Current&);
 	void fitModel(const string  &model, const string  &method, const Ice::Current&);

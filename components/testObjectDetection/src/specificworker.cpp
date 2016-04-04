@@ -29,6 +29,10 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	connect(convex, SIGNAL(clicked()), this, SLOT(convexHull()));
 	connect(extract, SIGNAL(clicked()), this, SLOT(extractPolygon()));
 	connect(euclidean, SIGNAL(clicked()), this, SLOT(euclideanExtract()));
+	connect(findObject, SIGNAL(clicked()), this, SLOT(findTheObject()));
+	connect(pose, SIGNAL(clicked()), this, SLOT(getPose()));
+	connect(rotation, SIGNAL(clicked()), this, SLOT(getRotation()));
+	connect(reload, SIGNAL(clicked()), this, SLOT(reloadVFH()));
 }
 
 /**
@@ -81,6 +85,28 @@ void SpecificWorker::euclideanExtract()
 	int numOfClusters = 0;
 	objectdetection_proxy->euclideanClustering(numOfClusters);
 }
+
+void SpecificWorker::reloadVFH()
+{
+	objectdetection_proxy->reloadVFH("/home/robocomp/robocomp/components/prp/experimentFiles/vfhSignatures/");
+}
+
+void SpecificWorker::findTheObject()
+{
+	std::string object = text_object->toPlainText().toStdString();
+	objectdetection_proxy->findTheObject(object);
+}
+
+void SpecificWorker::getPose()
+{
+	
+}
+
+void SpecificWorker::getRotation()
+{
+	
+}
+
 void SpecificWorker::compute()
 {
 // 	try

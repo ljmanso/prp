@@ -49,6 +49,11 @@ void objectDetectionI::mindTheGapPC(const Ice::Current&)
 	worker->mindTheGapPC();
 }
 
+void objectDetectionI::getRotation( float  &rx,  float  &ry,  float  &rz, const Ice::Current&)
+{
+	worker->getRotation(rx, ry, rz);
+}
+
 void objectDetectionI::centroidBasedPose( float  &x,  float  &y,  float  &theta, const Ice::Current&)
 {
 	worker->centroidBasedPose(x, y, theta);
@@ -99,6 +104,11 @@ void objectDetectionI::mirrorPC(const Ice::Current&)
 	worker->mirrorPC();
 }
 
+void objectDetectionI::findTheObject(const string  &objectTofind, const Ice::Current&)
+{
+	worker->findTheObject(objectTofind);
+}
+
 void objectDetectionI::statisticalOutliersRemoval(const Ice::Current&)
 {
 	worker->statisticalOutliersRemoval();
@@ -124,9 +134,9 @@ void objectDetectionI::getInliers(const string  &model, const Ice::Current&)
 	worker->getInliers(model);
 }
 
-void objectDetectionI::getPose( float  &x,  float  &y,  float  &z,  float  &rx,  float  &ry,  float  &rz, const Ice::Current&)
+void objectDetectionI::getPose( float  &x,  float  &y,  float  &z, const Ice::Current&)
 {
-	worker->getPose(x, y, z, rx, ry, rz);
+	worker->getPose(x, y, z);
 }
 
 void objectDetectionI::vfh( listType  &guesses, const Ice::Current&)

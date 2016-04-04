@@ -51,6 +51,10 @@ public slots:
 	void convexHull();
 	void extractPolygon();
 	void euclideanExtract();
+	void findTheObject();
+	void getPose();
+	void getRotation();
+	void reloadVFH();
 private:
 	
 };

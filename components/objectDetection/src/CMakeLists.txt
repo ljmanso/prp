@@ -30,18 +30,6 @@ SET ( SOURCES
   apriltagsI.cpp
 )
 
-# Headers set
-SET ( HEADERS
-  ${HEADERS}
-  genericmonitor.h
-  specificmonitor.h
-  commonbehaviorI.h
-  genericworker.h
-  specificworker.h
-  objectdetectionI.h
-  apriltagsI.h
-)
-
 
 
 #ROBOCOMP

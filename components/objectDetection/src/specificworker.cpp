@@ -41,6 +41,8 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	viewpoint_transform = innermodel->getTransformationMatrix("robot", "rgbd_transform");
         
 	marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
+	
+	num_object_found = 0;
 }
 
 /**
@@ -168,7 +170,9 @@ void SpecificWorker::centroidBasedPose(float &x, float &y, float &theta)
 
 void SpecificWorker::reloadVFH(const string &pathToSet)
 {
+	
     vfh_matcher->reloadVFH(pathToSet);
+	vfh_matcher->loadTrainingData();
 }
 
 void SpecificWorker::ransac(const string &model)
@@ -193,9 +197,9 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 	cluster_clouds.clear();
 	pcl::EuclideanClusterExtraction<PointT> ec;
 	
-	ec.setClusterTolerance (40); // 2cm
+	ec.setClusterTolerance (40); 
 	ec.setMinClusterSize (100);
-	ec.setMaxClusterSize (25000);
+	ec.setMaxClusterSize (50000);
 	ec.setSearchMethod (tree);
 	
 	ec.setInputCloud (this->cloud);
@@ -233,8 +237,8 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
         std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
 		#ifdef SAVE_DATA	
  
-                std::stringstream ss;
-                ss <<"capture_object_" << j;
+			std::stringstream ss;
+			ss <<"capture_object_" << j;
 		
                 /////save /*rgbd*/ 
 
@@ -283,14 +287,14 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 			
 		normalize(mask.clone(), mask, 0.0, 255.0, CV_MINMAX, CV_8UC1);
 			
-		cv::namedWindow( "Display window2", cv::WINDOW_AUTOSIZE );// Create a window for display.
-		cv::imshow( "Display window2", rgb_image );
-		cv::imwrite( "scene.png", rgb_image );
+// 		cv::namedWindow( "Display window2", cv::WINDOW_AUTOSIZE );// Create a window for display.
+// 		cv::imshow( "Display window2", rgb_image );
+// 		cv::imwrite( "scene.png", rgb_image );
 			
-		cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
-		cv::imshow( "Display window", crop );
+// 		cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+// 		cv::imshow( "Display window", crop );
 
-		cv::imwrite( ss.str() + ".png", crop );
+// 		cv::imwrite( ss.str() + ".png", crop );
 
 			/////save rgbd end
 			
@@ -554,6 +558,69 @@ void SpecificWorker::extractPolygon(const string &model)
 			writer.write<PointT> ( pcdname, *cloud, false);
         #endif
 }
+
+void SpecificWorker::findTheObject(const string &objectTofind)
+{
+	bool found = false;
+	for(int i=0; i<cluster_clouds.size();i++)
+	{
+		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
+		
+		std:string guess0, guess1, guess2;
+		
+		std::cout<<vfh_guesses[0]<<std::endl;
+		
+		guess0 = vfh_guesses[0].substr(0, vfh_guesses[0].find_last_of("/"));
+		guess0 = guess0.substr(guess0.find_last_of("/")+1);
+		
+		std::cout<<guess0<<std::endl;
+		
+		guess1 = vfh_guesses[1].substr(0, vfh_guesses[1].find_last_of("/"));
+		guess1 = guess1.substr(guess1.find_last_of("/")+1);
+		
+		std::cout<<guess1<<std::endl;
+		
+		guess2 = vfh_guesses[2].substr(0, vfh_guesses[2].find_last_of("/"));
+		guess2 = guess2.substr(guess2.find_last_of("/")+1);
+		
+		std::cout<<guess2<<std::endl;
+		
+		if(objectTofind == guess0 || objectTofind == guess1 || objectTofind == guess2)
+		{
+			found = true;
+			num_object_found = i;
+#ifdef DEBUG
+			std::cout<<"Founded on item: "<<i<<std::endl;
+#endif
+			break;
+		}
+	}
+}
+
+//todo again
+void SpecificWorker::getPose(float &x, float &y, float &z)
+{
+	
+	Eigen::Vector4f centroid;
+	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
+	x = centroid[0];
+	y = centroid[1];
+	z = centroid[2];
+	
+}
+
+//todo again
+void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
+{
+	
+	rx = 0;
+	ry = 0;
+	rz = 0;
+	
+	
+}
+
+
 
 void SpecificWorker::newAprilTag(const tagsList &tags)
 {
