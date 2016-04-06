@@ -148,7 +148,7 @@ public:
 	void projectInliers(const string &model);
 	void extractPolygon(const string &model);
 	void newAprilTag(const tagsList &tags);
-	void findTheObject(const string &objectTofind);
+	bool findTheObject(const string &objectTofind);
 	void getRotation(float &rx, float &ry, float &rz);
 	void getPose(float &x, float &y, float &z);
 

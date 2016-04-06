@@ -559,9 +559,8 @@ void SpecificWorker::extractPolygon(const string &model)
         #endif
 }
 
-void SpecificWorker::findTheObject(const string &objectTofind)
+bool SpecificWorker::findTheObject(const string &objectTofind)
 {
-	bool found = false;
 	for(int i=0; i<cluster_clouds.size();i++)
 	{
 		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
@@ -587,14 +586,15 @@ void SpecificWorker::findTheObject(const string &objectTofind)
 		
 		if(objectTofind == guess0 || objectTofind == guess1 || objectTofind == guess2)
 		{
-			found = true;
 			num_object_found = i;
+			
 #ifdef DEBUG
 			std::cout<<"Founded on item: "<<i<<std::endl;
 #endif
-			break;
+			return true;
 		}
 	}
+	return false;
 }
 
 //todo again

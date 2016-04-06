@@ -104,9 +104,9 @@ void objectDetectionI::mirrorPC(const Ice::Current&)
 	worker->mirrorPC();
 }
 
-void objectDetectionI::findTheObject(const string  &objectTofind, const Ice::Current&)
+bool objectDetectionI::findTheObject(const string  &objectTofind, const Ice::Current&)
 {
-	worker->findTheObject(objectTofind);
+	return worker->findTheObject(objectTofind);
 }
 
 void objectDetectionI::statisticalOutliersRemoval(const Ice::Current&)

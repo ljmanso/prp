@@ -53,7 +53,7 @@ public:
 	void showObject(const int  numObject, const Ice::Current&);
 	void convexHull(const string  &model, const Ice::Current&);
 	void mirrorPC(const Ice::Current&);
-	void findTheObject(const string  &objectTofind, const Ice::Current&);
+	bool findTheObject(const string  &objectTofind, const Ice::Current&);
 	void statisticalOutliersRemoval(const Ice::Current&);
 	void loadTrainedVFH(const Ice::Current&);
 	void reset(const Ice::Current&);

@@ -86,7 +86,7 @@ public:
 	virtual void showObject(const int numObject) = 0;
 	virtual void convexHull(const string &model) = 0;
 	virtual void mirrorPC() = 0;
-	virtual void findTheObject(const string &objectTofind) = 0;
+	virtual bool findTheObject(const string &objectTofind) = 0;
 	virtual void statisticalOutliersRemoval() = 0;
 	virtual void loadTrainedVFH() = 0;
 	virtual void reset() = 0;

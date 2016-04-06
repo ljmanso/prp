@@ -722,36 +722,53 @@ std::string SpecificWorker::lookForObject(std::string label)
     double current_believe = -1;
     
     //Obtaining object posibility from the different tables
-    std::map<std::string,double>::iterator it = table1.find(label);
-    if (it != table1.end() && it->second > current_believe)
+    std::map<std::string,double>::iterator it1 = table1.find(label);
+    if (it1 != table1.end() && it1->second > current_believe)
     {
         table =  "table1";
-        current_believe = it->second;
+        current_believe = it1->second;
+		
     }
     
-    if (it != table2.end() && it->second > current_believe)
+    std::map<std::string,double>::iterator it2 = table2.find(label);
+    if (it2 != table2.end() && it2->second > current_believe)
     {
         table =  "table2";
-        current_believe = it->second;
+        current_believe = it2->second;
     }
     
-    if (it != table3.end() && it->second > current_believe)
+    std::map<std::string,double>::iterator it3 = table3.find(label);
+    if (it3 != table3.end() && it3->second > current_believe)
     {
         table =  "table3";    
-        current_believe = it->second;
+        current_believe = it3->second;
     }
     
-    if (it != table4.end() && it->second > current_believe)
+    std::map<std::string,double>::iterator it4 = table4.find(label);
+    if (it4 != table4.end() && it4->second > current_believe)
     {
         table =  "table4";       
-        current_believe = it->second;
+        current_believe = it4->second;
     }
-	if (it != table5.end() && it->second > current_believe)
+    
+    std::map<std::string,double>::iterator it5 = table5.find(label);
+	if (it5 != table5.end() && it5->second > current_believe)
     {
         table =  "table5";       
-        current_believe = it->second;
+        current_believe = it5->second;
     }
-    //if no object try to use semantics
+   
+	//delete result from the table
+	if( table == "table1" )
+		table1.erase(it1);
+	if( table == "table2" )
+		table2.erase(it2);
+	if( table == "table3" )
+		table3.erase(it3);
+	if( table == "table3" )
+		table4.erase(it3);
+	if( table == "table5" )
+		table5.erase(it5);	
     
     return table;
 }

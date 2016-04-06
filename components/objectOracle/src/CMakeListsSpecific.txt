@@ -61,8 +61,8 @@ SET ( HEADERS
 )
 
 INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
-# opencv2
-INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+# opencv3
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 
 find_package(PCL 1.2 REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
