@@ -17,7 +17,7 @@
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost april /home/robocomp/robocomp/components/robocomp-robolab/components/apriltagsComp ./bin/apriltagscomp --Ice.Config=/home/robocomp/robocomp/components/prp/etc/apriltags.conf" />
   <downCommand command="killall -9 apriltagscomp" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/apriltags.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/apriltags.conf" />
   <xpos value="167.582202568" />
   <ypos value="70.127992666" />
   <radius value="10.0" />
@@ -28,7 +28,7 @@
   <dependence alias="gik" />
   <dependence alias="april" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost VIK /home/robocomp/robocomp/components/robocomp-ursus/components/visualik/ ./bin/VisualBIK /home/robocomp/robocomp/components/prp/etc/vik.conf" />
+  <upCommand command="rcremote localhost VIK /home/robocomp/robocomp/components/robocomp-shelly/components/visualik/ ./bin/VisualBIK /home/robocomp/robocomp/components/prp/etc/vik.conf" />
   <downCommand command="killall -9 VisualBIK" />
   <configFile path="xxx" />
   <xpos value="118.829124832" />
@@ -41,7 +41,7 @@
   <dependence alias="joint" />
   <dependence alias="ik" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost GIK /home/robocomp/robocomp/components/robocomp-ursus/components/ikGraphGenerator/ ./bin/ikGraphGenerator /home/robocomp/robocomp/components/prp/etc/ikg.conf" />
+  <upCommand command="rcremote localhost GIK /home/robocomp/robocomp/components/robocomp-shelly/components/ikGraphGenerator/ ./bin/ikGraphGenerator /home/robocomp/robocomp/components/prp/etc/ikg.conf" />
   <downCommand command="killall -9 ikGraphGenerator" />
   <configFile path="xxx" />
   <xpos value="93.6757724056" />
@@ -53,9 +53,9 @@
  <node alias="ik" endpoint="inversekinematics:tcp -h localhost -p 10240">
   <dependence alias="joint" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost ik /home/robocomp/robocomp/components/robocomp-ursus/components/inversekinematics/ ./bin/inversekinematics --Ice.Config=/home/robocomp/robocomp/components/prp/etc/inversekinematics.conf" />
+  <upCommand command="rcremote localhost ik /home/robocomp/robocomp/components/robocomp-shelly/components/inversekinematics/ ./bin/inversekinematics --Ice.Config=/home/robocomp/robocomp/components/prp/etc/inversekinematics.conf" />
   <downCommand command="killall -9 inversekinematics" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/inversekinematics.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/inversekinematics.conf" />
   <xpos value="65.3006086762" />
   <ypos value="13.81769804" />
   <radius value="10.0" />
@@ -67,7 +67,7 @@
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost jstck /home/robocomp/robocomp/components/robocomp-robolab/components/joystickOmniComp/ ./bin/joystickOmniComp --Ice.Config=config" />
   <downCommand command="rcremote localhost X / pkill -9 -f joystickOmniComp" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/ursus.conf" />
   <xpos value="-12.5959212859" />
   <ypos value="138.455235528" />
   <radius value="10.0" />
@@ -78,7 +78,7 @@
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost base /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/simulation.xml" />
   <downCommand command="killall -9 rcis" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/ursus.conf" />
   <xpos value="55.6154659649" />
   <ypos value="202.272531848" />
   <radius value="10.0" />
@@ -89,7 +89,7 @@
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost base /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/simulation.xml" />
   <downCommand command="killall -9 rcis" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/ursus.conf" />
   <xpos value="-77.810326002" />
   <ypos value="202.69010187" />
   <radius value="10.0" />
@@ -100,7 +100,7 @@
   <workingDir path="/" />
   <upCommand command="rcremote localhost IS / rcnode" />
   <downCommand command="killall -9 icebox" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/ursus.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/ursus.conf" />
   <xpos value="-12.5959212859" />
   <ypos value="71.4484533889" />
   <radius value="10.0" />
@@ -111,7 +111,7 @@
   <workingDir path="/home/robocomp/" />
   <upCommand command="rcremote localhost rgbd /home/robocomp rcis /home/robocomp/robocomp/components/prp/experimentFiles/simulation/simulation.xml" />
   <downCommand command="killall -9 rcis" />
-  <configFile path="/home/robocomp/robocomp/components/robocomp-ursus/etc/primesense.conf" />
+  <configFile path="/home/robocomp/robocomp/components/robocomp-shelly/etc/primesense.conf" />
   <xpos value="-8.16102666394" />
   <ypos value="200.481463202" />
   <radius value="10.0" />
@@ -157,7 +157,7 @@
  <node alias="ltrajectory" endpoint="trajectoryrobot2d:tcp -p 12214">
   <dependence alias="base" />
   <workingDir path="/home/robocomp/" />
-  <upCommand command="rcremote localhost ltrjt /home/robocomp/robocomp/components/robocomp-ursus-rockin/components/dumbtrajectoryrobot2d/ python src/dumbTrajectoryRobot2DComp.py /home/robocomp/robocomp/components/prp/etc/trajectoryrobot2d.conf" />
+  <upCommand command="rcremote localhost ltrjt /home/robocomp/robocomp/components/robocomp-shelly/components/dumbtrajectoryrobot2d/ python src/dumbTrajectoryRobot2DComp.py /home/robocomp/robocomp/components/prp/etc/trajectoryrobot2d.conf" />
   <downCommand command="pkill -9 -f dumbTrajectoryRobot2DComp" />
   <configFile path="/home/robocomp/robocomp/components/prp/etc/trajectoryrobot2d.conf" />
   <xpos value="-127.355144263" />

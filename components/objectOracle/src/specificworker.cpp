@@ -92,12 +92,12 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 void SpecificWorker::compute()
 {
 	static bool first=true;
-	if (first)
+/*	if (first)
 	{
 		qLog::getInstance()->setProxy("both", logger_proxy);
 		rDebug2(("oracleAgent started\n"));
 		first = false;
-	}
+	}*/
 
 	QMutexLocker locker(mutex);
 	printf("ACTION: %s\n", action.c_str());
@@ -111,6 +111,8 @@ void SpecificWorker::compute()
 
 	if (first)
 	{
+		qLog::getInstance()->setProxy("both", logger_proxy);
+		rDebug2(("oracleAgent started\n"));
 		first=false;
 		load_tables_info();
   		//processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
@@ -882,17 +884,22 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 		room_id = 3;
 	}
 
-	
-	// Create the edges that indicate in which table the object will be located
-	AGMModelSymbol::SPtr tableID = newModel->getSymbol(id);
-	AGMModelSymbol::SPtr roomID  = newModel->getSymbol(room_id);
-	newModel->addEdge(objS, tableID, "in");
-	newModel->addEdge(objS, roomID, "in");
+	if (id != -1 and room_id != -1){
+		// Create the edges that indicate in which table the object will be located
+		AGMModelSymbol::SPtr tableID = newModel->getSymbol(id);
+		AGMModelSymbol::SPtr roomID  = newModel->getSymbol(room_id);
+		newModel->addEdge(objS, tableID, "in");
+		newModel->addEdge(objS, roomID, "in");
 
-	
-	// Send modification proposal
-	modifiedWorld = worldModel->version + 1;
-	sendModificationProposal(worldModel, newModel);
+		
+		// Send modification proposal
+		modifiedWorld = worldModel->version + 1;
+		sendModificationProposal(worldModel, newModel);
+	}
+	else
+	{
+		printf("Object: %s not found", objectType.c_str()); 
+	}
 }
 
 
