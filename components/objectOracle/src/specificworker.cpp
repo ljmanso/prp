@@ -884,14 +884,15 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 		room_id = 3;
 	}
 
-	if (id != -1 and room_id != -1){
+	if (id != -1 and room_id != -1)
+	{
 		// Create the edges that indicate in which table the object will be located
 		AGMModelSymbol::SPtr tableID = newModel->getSymbol(id);
 		AGMModelSymbol::SPtr roomID  = newModel->getSymbol(room_id);
 		newModel->addEdge(objS, tableID, "in");
+		newModel->addEdge(tableID, objS, "RT");
 		newModel->addEdge(objS, roomID, "in");
 
-		
 		// Send modification proposal
 		modifiedWorld = worldModel->version + 1;
 		sendModificationProposal(worldModel, newModel);
