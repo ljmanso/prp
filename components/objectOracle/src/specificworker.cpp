@@ -860,22 +860,22 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	int room_id = -1;
 	if( table == "table1" )
 	{
-		id = 28;
+		id = 38;
 		room_id = 5;
 	}
 	if( table == "table2" )
 	{
-		id = 26;
+		id = 35;
 		room_id = 5;
 	}
 	if( table == "table3" )
 	{
-		id = 24;
+		id = 26;
 		room_id = 3;
 	}
 	if( table == "table4" )
 	{
-		id = 22;
+		id = 23;
 		room_id = 3;
 	}
 	if( table == "table5" )
