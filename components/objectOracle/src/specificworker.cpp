@@ -515,40 +515,33 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modifi
 
 void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications)
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker lockIM(mutex);
 	for (auto modification : modifications)
+	{
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
- 
-	delete innerModel;
-	innerModel = AGMInner::extractInnerModel(worldModel);
+		AGMInner::updateImNodeFromEdge(worldModel, modification, innerModel);
+	}
 }
 
 void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge &modification)
 {
 	QMutexLocker locker(mutex);
- 	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
- 
-	delete innerModel;
-	innerModel = AGMInner::extractInnerModel(worldModel);
+	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+	AGMInner::updateImNodeFromEdge(worldModel, modification, innerModel);
 }
 
 void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modification)
 {
 	QMutexLocker locker(mutex);
- 	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
- 
-	delete innerModel;
-	innerModel = AGMInner::extractInnerModel(worldModel);
+	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
 }
 
 void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications)
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker l(mutex);
+
 	for (auto modification : modifications)
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
- 
-	delete innerModel;
-	innerModel = AGMInner::extractInnerModel(worldModel);
 }
 
 void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result)
@@ -910,11 +903,15 @@ void SpecificWorker::action_imagineMostLikelyMugInPosition()
 	QMutexLocker locker(mutex);
 	imagineMostLikelyOBJECTPosition("mug");
 }
+
+
 void SpecificWorker::action_imagineMostLikelyCoffeePotInPosition()
 {
 	QMutexLocker locker(mutex);
 	imagineMostLikelyOBJECTPosition("coffeepot");
 }
+
+
 void SpecificWorker::action_imagineMostLikelyMilkInPosition()
 {
 	QMutexLocker locker(mutex);
