@@ -80,7 +80,7 @@
 			<plane id="tableCC" ny="1" size="800,1750"  texture="#cccccc" />
 		</transform>
 		
-		<transform id="tableD" tx="4300.0" tz="-2400.0" ty="800">
+		<transform id="tableD" tx="3470.0" tz="-1940.0" ty="800">
 			<mesh id="tableDC" file="/home/robocomp/robocomp/files/osgModels/basics/cylinder.3ds" scale="600,600,12" rx="1.5707" collide="1" />
 			<mesh id="mesaRd" file="/home/robocomp/robocomp/files/osgModels/basics/cylinder.3ds" scale="30,30,400" rx="1.5707" ty="-400" collide="1" />
 			<mesh id="mesaRdb" file="/home/robocomp/robocomp/files/osgModels/basics/cylinder.3ds" scale="325,325,9" rx="1.5707" ty="-800" collide="1" />
