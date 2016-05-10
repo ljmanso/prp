@@ -1,5 +1,6 @@
 import "/robocomp/interfaces/IDSLs/ObjectOracle.idsl";
 import "/robocomp/interfaces/IDSLs/Logger.idsl";
+import "/robocomp/interfaces/IDSLs/RGBD.idsl";
 
 Component objectoracle
 {
@@ -7,6 +8,7 @@ Component objectoracle
 	{
 		implements ObjectOracle;
 		publishes Logger;
+		requires RGBD;
 	};
 	language Cpp;
 	gui Qt(QWidget);

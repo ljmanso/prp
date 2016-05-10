@@ -28,6 +28,7 @@ QObject()
 #endif
 
 {
+	rgbd_proxy = (*(RGBDPrx*)mprx["RGBDProxy"]);
 	agmexecutive_proxy = (*(AGMExecutivePrx*)mprx["AGMExecutiveProxy"]);
 
 	logger_proxy = (*(LoggerPrx*)mprx["LoggerPub"]);

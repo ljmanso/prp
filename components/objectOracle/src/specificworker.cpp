@@ -38,8 +38,12 @@ first(true)
 	worldModelTime = actionTime = QTime::currentTime();
 
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
-	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+	//convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
 
+	oracleImage.resize(640*480*3);
+	rgbImage.resize(640*480*3);
+	points.resize(640*480);
+	
 // 	load_tables_info();
         
 
@@ -92,13 +96,6 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 void SpecificWorker::compute()
 {
 	static bool first=true;
-/*	if (first)
-	{
-		qLog::getInstance()->setProxy("both", logger_proxy);
-		rDebug2(("oracleAgent started\n"));
-		first = false;
-	}*/
-
 	QMutexLocker locker(mutex);
 	printf("ACTION: %s\n", action.c_str());
 	
@@ -118,7 +115,7 @@ void SpecificWorker::compute()
   		//processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
 		//show map after processing
 		
-        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
+/*        for (MapIterator iter = table1.begin(); iter != table1.end(); iter++)
         {
                 cout << "1. Key: " << iter->first << endl << "Value: " << iter->second<< endl;
         }
@@ -137,11 +134,88 @@ void SpecificWorker::compute()
 		for (MapIterator iter = table5.begin(); iter != table5.end(); iter++)
         {
                 cout << "5.Key: " << iter->first << endl << "Value: " << iter->second<< endl;
-        }
+        }*/
         //save_tables_info();
 	}
-}
+	//read image from kinect
+	try
+    {
+        qDebug() << "read frame";
+        rgbd_proxy->getRGB(rgbImage, hState, bState);
+		rgbd_proxy->getXYZ(points, hState, bState);
+		//Convert image to RoboCompObjectOracle
+		memcpy(&oracleImage[0], &rgbImage[0], 640*480*3);
 
+// remove when not needed
+cv::Mat frame(480, 640, CV_8UC3,  &(oracleImage)[0]);
+cv::imshow("3D viewer",frame);
+        
+		std::string location = checkTable(oracleImage);
+		//if robot is close to any table
+		if (location != "invalid" )
+		{
+			proceessDataFromKinect(oracleImage, points, location);
+		}
+		
+    }
+    catch(const Ice::Exception &ex)
+    {
+        std::cout << ex << std::endl;
+    }
+	
+	
+}
+std::string SpecificWorker::checkTable(const RoboCompObjectOracle::ColorSeq &rgbMatrix)
+{
+	std::string table = "invalid";
+	for (AGMModel::iterator symbol_it=worldModel->begin(); symbol_it!=worldModel->end(); symbol_it++)
+	{
+		const AGMModelSymbol::SPtr &symbol = *symbol_it;
+		if (symbol->symbolType == "object")
+		{
+			for (auto edge = symbol->edgesBegin(worldModel); edge != symbol->edgesEnd(worldModel); edge++)
+			{
+				QString edgeLabel = QString::fromStdString(edge->getLabel());
+				const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
+if(symbol->getAttribute("imName") == "tableA")
+{
+				if (worldModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
+				{
+					const float tableWidth  = str2float(symbol->getAttribute("width"));
+					const float tableHeight = str2float(symbol->getAttribute("height"));
+					const float tableDepth  = str2float(symbol->getAttribute("depth"));
+
+					QString imName = QString::fromStdString(symbol->getAttribute("imName"));
+					qDebug()<<"table"<<imName<<"dimensions"<< tableWidth << tableHeight << tableDepth;
+					
+					innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose");
+					QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), imName);
+					QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), imName);
+					QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), imName);
+					QVec d1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, +tableDepth/2), imName);
+
+					a1.print("leftdown 1");
+					b1.print("leftup 1");
+					c1.print("rightdown 1");
+					d1.print("rightup 1");
+					
+					QVec a2 = innerModel->project("rgbd", a1, "rgbd");
+					QVec b2 = innerModel->project("rgbd", b1, "rgbd");
+					QVec c2 = innerModel->project("rgbd", c1, "rgbd");
+					QVec d2 = innerModel->project("rgbd", d1, "rgbd");
+					
+					// check if valid table
+					a2.print("leftdown 2");
+					b2.print("leftup 2");
+					c2.print("rightdown 2");
+					d2.print("rightup 2");
+				}				
+}
+			}
+		}
+	}
+	return table;
+}
 
 bool SpecificWorker::reloadConfigAgent()
 {
@@ -255,9 +329,9 @@ std::fstream& GotoLine(std::fstream& file, unsigned int num)
     return file;
 }
 
-ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
+RoboCompObjectOracle::ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
 {
-	ColorSeq rgbMatrix;
+	RoboCompObjectOracle::ColorSeq rgbMatrix;
 	rgbMatrix.resize(rgb.cols*rgb.rows);
 	
 	for (int row = 0; row<rgb.rows; row++)
@@ -272,6 +346,36 @@ ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
 	}
 	
 	return rgbMatrix;
+}
+
+void SpecificWorker::proceessDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points_kinect, std::string location)
+{
+	//process whole image
+//	processImage(rgbMatrix, location);
+	
+	//segment image and process again
+	pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
+	for (unsigned int i=0; i<points_kinect.size(); i++)
+	{
+		QVec p1 = QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1);
+
+		memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
+		cloud->points[i].r=rgbMatrix[i].red;
+		cloud->points[i].g=rgbMatrix[i].green;
+		cloud->points[i].b=rgbMatrix[i].blue;
+    }
+	std::vector<cv::Mat> segmented_objects;
+	cv::Mat rgbMat(480, 640, CV_8UC3,  &(rgbMatrix)[0]);
+	segmentObjects3D(cloud, rgbMat, segmented_objects);
+	
+	cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
+	
+	for(uint i = 0 ; i < segmented_objects.size() ; i++)
+	{	
+		RoboCompObjectOracle::ColorSeq auxMatrix = convertMat2ColorSeq (segmented_objects[i]);
+		processImage(auxMatrix, location);
+	}
+	
 }
 
 void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
@@ -300,7 +404,7 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 				//first processing of entire image
 				cv::Mat rgb = cv::imread( path2file );
 				
-				ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
+				RoboCompObjectOracle::ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
 				
 				std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
 				std::cout<<rgbMatrix.size()<<std::endl;
@@ -331,7 +435,7 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 	}                        
 }
 
-void SpecificWorker::processImage(const ColorSeq &image, std::string location)
+void SpecificWorker::processImage(const RoboCompObjectOracle::ColorSeq &image, std::string location)
 {
     ResultList result;
     std::string label;
@@ -351,9 +455,9 @@ void SpecificWorker::processImage(const ColorSeq &image, std::string location)
                     table1.insert ( std::pair<std::string, double>(label,result[i].believe) );
                 else
 				{
-// 					std::cout<<" ------------ Max: "<<table1[label]<<" "<<(double)result[i].believe;
+ 					std::cout<<" ------------ Max: "<<table1[label]<<" "<<(double)result[i].believe;
                     table1[label] = std::max(table1[label], (double)result[i].believe);
-// 					std::cout<<"Result: "<<table1[label]<<std::endl;
+ 					std::cout<<"Result: "<<table1[label]<<std::endl;
 				}
             }
         }
@@ -436,7 +540,7 @@ void SpecificWorker::processImage(const ColorSeq &image, std::string location)
     
 }
 
-void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &result)
+void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
 {
 
 #ifdef DEBUG
@@ -444,23 +548,24 @@ void SpecificWorker::getLabelsFromImage(const ColorSeq &image, ResultList &resul
 #endif
     
     ccv_dense_matrix_t* ccv_image = 0;
-    
+
     convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
-    
     ccv_read(image.data(), &ccv_image, CCV_IO_RGB_RAW, 480, 640, 1920);
     assert(ccv_image != 0);
 //     ccv_matrix_t *a = 0;
-    
+
     string label;
-         
     ccv_dense_matrix_t* input = 0;
     ccv_convnet_input_formation(convnet->input, ccv_image, &input);
+printf("patata1\n");		
     ccv_matrix_free(ccv_image);
     unsigned int elapsed_time = get_current_time();
     ccv_array_t* rank = 0;
     ccv_convnet_classify(convnet, &input, 1, &rank, 5, 1);
+printf("patata2\n");		
     elapsed_time = get_current_time() - elapsed_time;
     int i;
+printf("patata\n");	
     for (i = 0; i < rank->rnum - 1; i++)
     {
             //Obtain result
@@ -779,6 +884,7 @@ bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs,
 	params.clear();
 	for (ParameterMap::const_iterator it=prs.begin(); it!=prs.end(); it++)
 	{
+		printf("param:%s   value:%s\n", it->first.c_str(), it->second.value.c_str());
 		params[it->first] = it->second;
 	}
 

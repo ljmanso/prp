@@ -87,6 +87,7 @@
 #include <AGMWorldModel.h>
 #include <ObjectOracle.h>
 #include <Logger.h>
+#include <RGBD.h>
 
 
 // User includes here
@@ -100,6 +101,7 @@ using namespace RoboCompAGMCommonBehavior;
 using namespace RoboCompAGMWorldModel;
 using namespace RoboCompObjectOracle;
 using namespace RoboCompLogger;
+using namespace RoboCompRGBD;
 
 
 
@@ -133,10 +135,28 @@ int ::objectoracle::run(int argc, char* argv[])
 	int status=EXIT_SUCCESS;
 
 	LoggerPrx logger_proxy;
+	RGBDPrx rgbd_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	string proxy, tmp;
 	initialize();
+
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "RGBDProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy RGBDProxy\n";
+		}
+		rgbd_proxy = RGBDPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("RGBDProxy initialized Ok!");
+	mprx["RGBDProxy"] = (::IceProxy::Ice::Object*)(&rgbd_proxy);//Remote server proxy creation example
 
 
 	try

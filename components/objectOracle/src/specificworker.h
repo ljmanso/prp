@@ -110,20 +110,22 @@ public:
         
 	void processDataFromDir(const boost::filesystem::path &base_dir);
 	//given an image and its location it process its objects and save them to the corresponding location
-	void processImage(const ColorSeq &image, std::string location);
+	void processImage(const RoboCompObjectOracle::ColorSeq &image, std::string location);
 	void save_tables_info();
 	void load_tables_info();
 	   
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
 	std::string lookForObject(std::string label);
-	void getLabelsFromImage(const ColorSeq &image, ResultList &result);
+	void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::World &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
 	void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification);
 	void symbolUpdated(const RoboCompAGMWorldModel::Node &modification);
 	void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications);
-	ColorSeq convertMat2ColorSeq(cv::Mat rgb);
+	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
+	std::string checkTable(const RoboCompObjectOracle::ColorSeq &rgbMatrix);
+	void proceessDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points, std::string location);
 public slots:
 	void compute();
 
@@ -150,6 +152,13 @@ private:
 	void action_imagineMostLikelyMugInPosition();
 	void action_imagineMostLikelyCoffeePotInPosition();
 	void action_imagineMostLikelyMilkInPosition();
+	
+	RoboCompDifferentialRobot::TBaseState bState;
+    RoboCompJointMotor::MotorStateMap hState;
+    RoboCompRGBD::ColorSeq rgbImage;
+	RoboCompRGBD::PointSeq points;
+	RoboCompObjectOracle::ColorSeq oracleImage;
+	
 };
 
 #endif

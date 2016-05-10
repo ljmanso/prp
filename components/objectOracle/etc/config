@@ -4,7 +4,7 @@ CommonBehavior.Endpoints=tcp -p 1
 # Endpoints for implemented interfaces
 AGMCommonBehavior.Endpoints=tcp -p 0
 ObjectOracle.Endpoints=tcp -p 0
-
+RGBDProxy = rgbd:tcp -h localhost -p 10096
 
 # Endpoints for subscriptions
 AGMExecutiveTopicTopic.Endpoints=tcp -p 0

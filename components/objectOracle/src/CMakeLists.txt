@@ -35,7 +35,7 @@ SET ( SOURCES
 
 #ROBOCOMP
 ROBOCOMP_INITIALIZE( $ENV{ROBOCOMP}/ )
-ROBOCOMP_WRAP_ICE( CommonBehavior AGMExecutive AGMWorldModel Planning AGMCommonBehavior AGMWorldModel ObjectOracle Logger )
+ROBOCOMP_WRAP_ICE( CommonBehavior AGMExecutive AGMWorldModel Planning AGMCommonBehavior AGMWorldModel ObjectOracle Logger RGBD JointMotor DifferentialRobot )
 SET (EXECUTABLE_OUTPUT_PATH ${RC_COMPONENT_DEVEL_PATH}/bin)
 
 # Qt4

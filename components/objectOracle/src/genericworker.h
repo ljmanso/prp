@@ -27,10 +27,13 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
+#include <DifferentialRobot.h>
 #include <AGMWorldModel.h>
 #include <ObjectOracle.h>
 #include <AGMExecutive.h>
 #include <Planning.h>
+#include <RGBD.h>
+#include <JointMotor.h>
 #include <Logger.h>
 #include <AGMCommonBehavior.h>
 
@@ -44,10 +47,13 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
+using namespace RoboCompDifferentialRobot;
 using namespace RoboCompAGMWorldModel;
 using namespace RoboCompObjectOracle;
 using namespace RoboCompAGMExecutive;
 using namespace RoboCompPlanning;
+using namespace RoboCompRGBD;
+using namespace RoboCompJointMotor;
 using namespace RoboCompLogger;
 using namespace RoboCompAGMCommonBehavior;
 
@@ -82,6 +88,7 @@ public:
 	
 
 	LoggerPrx logger_proxy;
+	RGBDPrx rgbd_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
@@ -93,7 +100,7 @@ public:
 	virtual bool deactivateAgent() = 0;
 	virtual StateStruct getAgentState() = 0;
 	virtual void semanticDistance(const string &word1, const string &word2, float &result) = 0;
-	virtual void getLabelsFromImage(const ColorSeq &image, ResultList &result) = 0;
+	virtual void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result) = 0;
 	virtual void structuralChange(const RoboCompAGMWorldModel::World &w) = 0;
 	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modification) = 0;
 	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification) = 0;
