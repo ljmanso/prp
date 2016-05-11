@@ -26,6 +26,13 @@
 
 typedef std::map<std::string, double>::const_iterator MapIterator;
 
+static unsigned int get_current_time(void)
+{
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+}
+
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx),
 first(true)
 {
@@ -40,8 +47,8 @@ first(true)
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	//convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
 
-	oracleImage.resize(640*480*3);
-	rgbImage.resize(640*480*3);
+	oracleImage.resize(640*480);
+	rgbImage.resize(640*480);
 	points.resize(640*480);
 	
 // 	load_tables_info();
@@ -150,11 +157,15 @@ void SpecificWorker::compute()
 cv::Mat frame(480, 640, CV_8UC3,  &(oracleImage)[0]);
 cv::imshow("3D viewer",frame);
         
-		std::string location = checkTable(oracleImage);
+		//std::string location = checkTable(oracleImage);
+		std::string location = "table1";
 		//if robot is close to any table
 		if (location != "invalid" )
 		{
+			unsigned int elapsed_time = get_current_time();
 			proceessDataFromKinect(oracleImage, points, location);
+			elapsed_time = get_current_time() - elapsed_time;
+			printf("elapsed time %d ms\n",elapsed_time);
 		}
 		
     }
@@ -188,22 +199,23 @@ if(symbol->getAttribute("imName") == "tableA")
 					QString imName = QString::fromStdString(symbol->getAttribute("imName"));
 					qDebug()<<"table"<<imName<<"dimensions"<< tableWidth << tableHeight << tableDepth;
 					
-					innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose");
+//					innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose rbd");
+//					innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose robot");
 					QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), imName);
 					QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), imName);
 					QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), imName);
 					QVec d1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, +tableDepth/2), imName);
 
-					a1.print("leftdown 1");
+/*					a1.print("leftdown 1");
 					b1.print("leftup 1");
 					c1.print("rightdown 1");
 					d1.print("rightup 1");
-					
-					QVec a2 = innerModel->project("rgbd", a1, "rgbd");
-					QVec b2 = innerModel->project("rgbd", b1, "rgbd");
-					QVec c2 = innerModel->project("rgbd", c1, "rgbd");
-					QVec d2 = innerModel->project("rgbd", d1, "rgbd");
-					
+*/					
+					QVec a2 = innerModel->project("rgbd", a1);
+					QVec b2 = innerModel->project("rgbd", b1);
+					QVec c2 = innerModel->project("rgbd", c1);
+					QVec d2 = innerModel->project("rgbd", d1);
+
 					// check if valid table
 					a2.print("leftdown 2");
 					b2.print("leftup 2");
@@ -312,13 +324,6 @@ void SpecificWorker::load_tables_info()
   	oa >> table5;
 }
 
-static unsigned int get_current_time(void)
-{
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-}
-
 std::fstream& GotoLine(std::fstream& file, unsigned int num)
 {
     file.seekg(std::ios::beg);
@@ -351,10 +356,12 @@ RoboCompObjectOracle::ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
 void SpecificWorker::proceessDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points_kinect, std::string location)
 {
 	//process whole image
-//	processImage(rgbMatrix, location);
+	processImage(rgbMatrix, location);
 	
 	//segment image and process again
 	pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
+	cloud->resize(points_kinect.size());
+
 	for (unsigned int i=0; i<points_kinect.size(); i++)
 	{
 		QVec p1 = QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1);
@@ -364,6 +371,7 @@ void SpecificWorker::proceessDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMa
 		cloud->points[i].g=rgbMatrix[i].green;
 		cloud->points[i].b=rgbMatrix[i].blue;
     }
+
 	std::vector<cv::Mat> segmented_objects;
 	cv::Mat rgbMat(480, 640, CV_8UC3,  &(rgbMatrix)[0]);
 	segmentObjects3D(cloud, rgbMat, segmented_objects);
@@ -459,7 +467,7 @@ void SpecificWorker::processImage(const RoboCompObjectOracle::ColorSeq &image, s
                     table1[label] = std::max(table1[label], (double)result[i].believe);
  					std::cout<<"Result: "<<table1[label]<<std::endl;
 				}
-            }
+            }      
         }
         else
         {
@@ -537,6 +545,7 @@ void SpecificWorker::processImage(const RoboCompObjectOracle::ColorSeq &image, s
             }
         }
     }
+printf("proccesImage end\n");       
     
 }
 
@@ -557,15 +566,16 @@ void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &im
     string label;
     ccv_dense_matrix_t* input = 0;
     ccv_convnet_input_formation(convnet->input, ccv_image, &input);
-printf("patata1\n");		
+	
     ccv_matrix_free(ccv_image);
     unsigned int elapsed_time = get_current_time();
-    ccv_array_t* rank = 0;
+
+	ccv_array_t* rank = 0;
     ccv_convnet_classify(convnet, &input, 1, &rank, 5, 1);
-printf("patata2\n");		
+
     elapsed_time = get_current_time() - elapsed_time;
     int i;
-printf("patata\n");	
+
     for (i = 0; i < rank->rnum - 1; i++)
     {
             //Obtain result
