@@ -51,6 +51,13 @@ first(true)
 	rgbImage.resize(640*480);
 	points.resize(640*480);
 	
+	std::string model_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/deploy.prototxt";
+	std::string trained_file = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/bvlc_reference_caffenet.caffemodel";
+	std::string mean_file    = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/imagenet_mean.binaryproto";
+	std::string label_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/synset_words.txt ";
+	
+	caffe_classifier = new CaffeClassifier(model_file, trained_file, mean_file, label_file);
+	
 // 	load_tables_info();
         
 
@@ -188,41 +195,41 @@ std::string SpecificWorker::checkTable(const RoboCompObjectOracle::ColorSeq &rgb
 			{
 				QString edgeLabel = QString::fromStdString(edge->getLabel());
 				const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
-if(symbol->getAttribute("imName") == "tableA")
-{
-				if (worldModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
+				if(symbol->getAttribute("imName") == "tableA")
 				{
-					const float tableWidth  = str2float(symbol->getAttribute("width"));
-					const float tableHeight = str2float(symbol->getAttribute("height"));
-					const float tableDepth  = str2float(symbol->getAttribute("depth"));
+					if (worldModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
+					{
+						const float tableWidth  = str2float(symbol->getAttribute("width"));
+						const float tableHeight = str2float(symbol->getAttribute("height"));
+						const float tableDepth  = str2float(symbol->getAttribute("depth"));
 
-					QString imName = QString::fromStdString(symbol->getAttribute("imName"));
-					qDebug()<<"table"<<imName<<"dimensions"<< tableWidth << tableHeight << tableDepth;
-					
-//					innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose rbd");
-//					innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose robot");
-					QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), imName);
-					QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), imName);
-					QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), imName);
-					QVec d1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, +tableDepth/2), imName);
+						QString imName = QString::fromStdString(symbol->getAttribute("imName"));
+						qDebug()<<"table"<<imName<<"dimensions"<< tableWidth << tableHeight << tableDepth;
+						
+	//					innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose rbd");
+	//					innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose robot");
+						QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), imName);
+						QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), imName);
+						QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), imName);
+						QVec d1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, +tableDepth/2), imName);
 
-/*					a1.print("leftdown 1");
-					b1.print("leftup 1");
-					c1.print("rightdown 1");
-					d1.print("rightup 1");
-*/					
-					QVec a2 = innerModel->project("rgbd", a1);
-					QVec b2 = innerModel->project("rgbd", b1);
-					QVec c2 = innerModel->project("rgbd", c1);
-					QVec d2 = innerModel->project("rgbd", d1);
+	/*					a1.print("leftdown 1");
+						b1.print("leftup 1");
+						c1.print("rightdown 1");
+						d1.print("rightup 1");
+	*/					
+						QVec a2 = innerModel->project("rgbd", a1);
+						QVec b2 = innerModel->project("rgbd", b1);
+						QVec c2 = innerModel->project("rgbd", c1);
+						QVec d2 = innerModel->project("rgbd", d1);
 
-					// check if valid table
-					a2.print("leftdown 2");
-					b2.print("leftup 2");
-					c2.print("rightdown 2");
-					d2.print("rightup 2");
-				}				
-}
+						// check if valid table
+						a2.print("leftdown 2");
+						b2.print("leftup 2");
+						c2.print("rightdown 2");
+						d2.print("rightup 2");
+					}				
+				}
 			}
 		}
 	}
@@ -443,12 +450,13 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 	}                        
 }
 
+
 void SpecificWorker::processImage(const RoboCompObjectOracle::ColorSeq &image, std::string location)
 {
     ResultList result;
     std::string label;
     
-    getLabelsFromImage(image, result);
+    getLabelsFromImageWithCaffe(image, result);
     
     for(uint i=0; i<result.size(); i++)
     {
@@ -545,7 +553,7 @@ void SpecificWorker::processImage(const RoboCompObjectOracle::ColorSeq &image, s
             }
         }
     }
-printf("proccesImage end\n");       
+	printf("proccesImage end\n");       
     
 }
 
@@ -616,6 +624,36 @@ void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &im
     ccv_matrix_free(input);
     ccv_convnet_free(convnet);
     
+}
+
+void SpecificWorker::getLabelsFromImageWithCaffe(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
+{
+	cv::Mat img(480,640, CV_8UC3, cv::Scalar::all(0));
+	
+	//lets transform the image to opencv
+	//	cout<<rgbMatrix.size()<<endl;
+	for(int i=0; i<image.size(); i++)
+	{
+ // 		std::cout<<"the first one: " <<i<<std::endl;
+		int row = i/640;
+		int column = i-(row*640);
+		
+		img.at<cv::Vec3b>(row,column) = cv::Vec3b(image[i].blue, image[i].green, image[i].red);
+	}
+	
+	std::vector<Prediction> predictions = caffe_classifier->Classify(img);
+	
+	  /* Print the top N predictions. */
+	for (size_t i = 0; i < predictions.size(); ++i) 
+	{
+		Prediction p = predictions[i];
+		std::cout << std::fixed << std::setprecision(4) << p.second << " - \""<< p.first << "\"" << std::endl;
+		
+		Label l;
+		l.name = p.first;
+		l.believe = p.second;
+		result.push_back(l);
+	}
 }
 
 void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modification)

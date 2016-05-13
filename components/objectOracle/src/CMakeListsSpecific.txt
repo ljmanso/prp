@@ -47,6 +47,7 @@ SET ( SOURCES
     ccv/3rdparty/kissfft/kissf_fftndr.c
     ccv/3rdparty/dsfmt/dSFMT.c
     ccv/3rdparty/sfmt/SFMT.c
+    caffeClassifier.cpp
 )
 
 
@@ -62,14 +63,16 @@ SET ( HEADERS
 
 INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
 # opencv2
-INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 
 find_package(PCL 1.2 REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
 
+#caffe cpu only definition
+add_definitions(-DCPU_ONLY)
 
 include_directories(/usr/include/libxml2)
 
-SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl -lblas ${PCL_LIBRARIES} ${Boost_LIBRARIES} )
+SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl -lblas ${PCL_LIBRARIES} ${Boost_LIBRARIES} -lcaffe)
 
 ADD_DEFINITIONS( -std=c++11 -fpermissive -D DEBUG -D HAVE_LIBPNG -D HAVE_LIBJPEG -D HAVE_AVCODEC -D HAVE_AVFORMAT -D HAVE_SWSCALE -D HAVE_SSE2 -D HAVE_GSL -D HAVE_CBLAS )

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "../ccv.h"
 #include <png.h>
+#include <zlib.h>
 
 static void _ccv_read_png_fd(FILE* in, ccv_dense_matrix_t** x, int type)
 {

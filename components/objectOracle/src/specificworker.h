@@ -68,6 +68,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
+#include "caffeClassifier.h"
+
 #endif
 
 #ifdef __cplusplus
@@ -117,6 +119,7 @@ public:
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
 	std::string lookForObject(std::string label);
 	void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result);
+	void getLabelsFromImageWithCaffe(const RoboCompObjectOracle::ColorSeq &image, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::World &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
 	void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification);
@@ -136,6 +139,7 @@ private:
 	std::map<std::string, double>  table4;
 	std::map<std::string, double>  table5;
 	
+	CaffeClassifier *caffe_classifier;
 	int image_segmented_counter;
 	std::string action;
 	QTime actionTime;
