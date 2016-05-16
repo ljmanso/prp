@@ -128,7 +128,7 @@ public:
 	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 	std::string checkTable(const RoboCompObjectOracle::ColorSeq &rgbMatrix);
-	void proceessDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points, std::string location);
+	void processDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points, std::string location);
 public slots:
 	void compute();
 

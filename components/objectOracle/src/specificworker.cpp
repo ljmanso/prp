@@ -54,7 +54,7 @@ first(true)
 	std::string model_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/deploy.prototxt";
 	std::string trained_file = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/bvlc_reference_caffenet.caffemodel";
 	std::string mean_file    = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/imagenet_mean.binaryproto";
-	std::string label_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/synset_words.txt ";
+	std::string label_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/synset_words.txt";
 	
 	caffe_classifier = new CaffeClassifier(model_file, trained_file, mean_file, label_file);
 	
@@ -160,17 +160,18 @@ void SpecificWorker::compute()
 		//Convert image to RoboCompObjectOracle
 		memcpy(&oracleImage[0], &rgbImage[0], 640*480*3);
 
-// remove when not needed
-cv::Mat frame(480, 640, CV_8UC3,  &(oracleImage)[0]);
-cv::imshow("3D viewer",frame);
+
         
-		//std::string location = checkTable(oracleImage);
-		std::string location = "table1";
+		std::string location = checkTable(oracleImage);
+		//std::string location = "table1";
 		//if robot is close to any table
 		if (location != "invalid" )
-		{
+		{		// remove when not needed
+			cv::Mat frame(480, 640, CV_8UC3,  &(oracleImage)[0]);
+			cv::imshow("3D viewer",frame);
+		
 			unsigned int elapsed_time = get_current_time();
-			proceessDataFromKinect(oracleImage, points, location);
+			processDataFromKinect(oracleImage, points, location);
 			elapsed_time = get_current_time() - elapsed_time;
 			printf("elapsed time %d ms\n",elapsed_time);
 		}
@@ -228,6 +229,14 @@ std::string SpecificWorker::checkTable(const RoboCompObjectOracle::ColorSeq &rgb
 						b2.print("leftup 2");
 						c2.print("rightdown 2");
 						d2.print("rightup 2");
+						
+						float l1 = sqrt(pow(b2(0)-a2(0), 2.0) + pow( b2(1)-a2(1), 2.0));
+						float l2 = sqrt(pow(d2(0)-c2(0), 2.0) + pow( d2(1)-c2(1), 2.0));
+						float w1 = sqrt(pow(d2(0)-b2(0), 2.0) + pow( d2(1)-b2(1), 2.0));
+						float w2 = sqrt(pow(c2(0)-a2(0), 2.0) + pow( c2(1)-a2(1), 2.0));
+						
+						//print distances
+						std::cout<<"Estas son las distances: L1: "<<l1<<" L2: "<<l2<<" W1 "<<w1<<" W2 "<<w2<<std::endl;
 					}				
 				}
 			}
@@ -360,7 +369,7 @@ RoboCompObjectOracle::ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
 	return rgbMatrix;
 }
 
-void SpecificWorker::proceessDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points_kinect, std::string location)
+void SpecificWorker::processDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points_kinect, std::string location)
 {
 	//process whole image
 	processImage(rgbMatrix, location);
