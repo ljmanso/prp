@@ -196,49 +196,71 @@ std::string SpecificWorker::checkTable(const RoboCompObjectOracle::ColorSeq &rgb
 			{
 				QString edgeLabel = QString::fromStdString(edge->getLabel());
 				const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
+				//mesa A
 				if(symbol->getAttribute("imName") == "tableA")
 				{
 					if (worldModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
 					{
-						const float tableWidth  = str2float(symbol->getAttribute("width"));
-						const float tableHeight = str2float(symbol->getAttribute("height"));
-						const float tableDepth  = str2float(symbol->getAttribute("depth"));
-
-						QString imName = QString::fromStdString(symbol->getAttribute("imName"));
-						qDebug()<<"table"<<imName<<"dimensions"<< tableWidth << tableHeight << tableDepth;
+						QVec robot_tablea = innerModel->transform("robot", "tableA");
+						float distance = sqrt(pow(robot_tablea(0),2.0) + pow(robot_tablea(1),2.0));
 						
-	//					innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose rbd");
-	//					innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose robot");
-						QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), imName);
-						QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), imName);
-						QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), imName);
-						QVec d1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, +tableDepth/2), imName);
-
-	/*					a1.print("leftdown 1");
-						b1.print("leftup 1");
-						c1.print("rightdown 1");
-						d1.print("rightup 1");
-	*/					
-						QVec a2 = innerModel->project("rgbd", a1);
-						QVec b2 = innerModel->project("rgbd", b1);
-						QVec c2 = innerModel->project("rgbd", c1);
-						QVec d2 = innerModel->project("rgbd", d1);
-
-						// check if valid table
-						a2.print("leftdown 2");
-						b2.print("leftup 2");
-						c2.print("rightdown 2");
-						d2.print("rightup 2");
+						std::cout<<"Distance to TABLEA: "<<distance<<std::endl;
 						
-						float l1 = sqrt(pow(b2(0)-a2(0), 2.0) + pow( b2(1)-a2(1), 2.0));
-						float l2 = sqrt(pow(d2(0)-c2(0), 2.0) + pow( d2(1)-c2(1), 2.0));
-						float w1 = sqrt(pow(d2(0)-b2(0), 2.0) + pow( d2(1)-b2(1), 2.0));
-						float w2 = sqrt(pow(c2(0)-a2(0), 2.0) + pow( c2(1)-a2(1), 2.0));
+						if( distance < 2000 )
+						{
+							const float tableWidth  = str2float(symbol->getAttribute("width"));
+							const float tableHeight = str2float(symbol->getAttribute("height"));
+							const float tableDepth  = str2float(symbol->getAttribute("depth"));
+
+							QString imName = QString::fromStdString(symbol->getAttribute("imName"));
+							qDebug()<<"table"<<imName<<"dimensions"<< tableWidth << tableHeight << tableDepth;
+							
+		//					innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose rbd");
+		//					innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose robot");
+							QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), imName);
+							QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), imName);
+							QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), imName);
+							QVec d1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, +tableDepth/2), imName);
+
+		/*					a1.print("leftdown 1");
+							b1.print("leftup 1");
+							c1.print("rightdown 1");
+							d1.print("rightup 1");
+		*/					
+							QVec a2 = innerModel->project("rgbd", a1);
+							QVec b2 = innerModel->project("rgbd", b1);
+							QVec c2 = innerModel->project("rgbd", c1);
+							QVec d2 = innerModel->project("rgbd", d1);
+							
+							int numpoints_on_screen = 0;
+							
+							if( a2(0) > 0 && a2(0) < 640 && a2(1) > 0 && a2(1) < 480 )
+								numpoints_on_screen++;
+							if( b2(0) > 0 && b2(0) < 640 && b2(1) > 0 && b2(1) < 480 )
+								numpoints_on_screen++;
+							if( c2(0) > 0 && c2(0) < 640 && c2(1) > 0 && c2(1) < 480 )
+								numpoints_on_screen++;
+							if( d2(0) > 0 && d2(0) < 640 && d2(1) > 0 && d2(1) < 480 )
+								numpoints_on_screen++;
+							
+							if (numpoints_on_screen > 2)
+								table = "tableA";
+
+								
+							// show some info
+							a2.print("leftdown 2");
+							b2.print("leftup 2");
+							c2.print("rightdown 2");
+							d2.print("rightup 2");
+							
+							std::cout<<"Num corners on screen: "<< numpoints_on_screen<<std::endl;
+							
+						}
 						
-						//print distances
-						std::cout<<"Estas son las distances: L1: "<<l1<<" L2: "<<l2<<" W1 "<<w1<<" W2 "<<w2<<std::endl;
-					}				
+					}
+					
 				}
+				
 			}
 		}
 	}
