@@ -83,6 +83,10 @@ extern "C"{
 
 #endif
 
+#define IMAGE_WIDTH 640
+#define IMAGE_HEIGHT 480
+#define TABLE_DISTANCE 2500
+
 //#include "t.hpp"
 
 typedef pcl::PointXYZRGB PointT;
@@ -127,8 +131,10 @@ public:
 	void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications);
 	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
-	std::string checkTable(const RoboCompObjectOracle::ColorSeq &rgbMatrix);
+	std::string checkTable();
+	bool isTableVisible(const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points, std::string location);
+	void cropImageTable();
 public slots:
 	void compute();
 
@@ -162,6 +168,8 @@ private:
     RoboCompRGBD::ColorSeq rgbImage;
 	RoboCompRGBD::PointSeq points;
 	RoboCompObjectOracle::ColorSeq oracleImage;
+	
+	QVec lu, ld, ru, rd;
 	
 };
 

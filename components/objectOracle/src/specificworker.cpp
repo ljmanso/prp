@@ -47,9 +47,9 @@ first(true)
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	//convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
 
-	oracleImage.resize(640*480);
-	rgbImage.resize(640*480);
-	points.resize(640*480);
+	oracleImage.resize(IMAGE_WIDTH*IMAGE_HEIGHT);
+	rgbImage.resize(IMAGE_WIDTH*IMAGE_HEIGHT);
+	points.resize(IMAGE_WIDTH*IMAGE_HEIGHT);
 	
 	std::string model_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/deploy.prototxt";
 	std::string trained_file = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/bvlc_reference_caffenet.caffemodel";
@@ -158,22 +158,26 @@ void SpecificWorker::compute()
         rgbd_proxy->getRGB(rgbImage, hState, bState);
 		rgbd_proxy->getXYZ(points, hState, bState);
 		//Convert image to RoboCompObjectOracle
-		memcpy(&oracleImage[0], &rgbImage[0], 640*480*3);
+		memcpy(&oracleImage[0], &rgbImage[0], IMAGE_WIDTH*IMAGE_HEIGHT*3);
 
 
         
-		std::string location = checkTable(oracleImage);
+		std::string location = checkTable();
 		//std::string location = "table1";
 		//if robot is close to any table
 		if (location != "invalid" )
 		{		// remove when not needed
-			cv::Mat frame(480, 640, CV_8UC3,  &(oracleImage)[0]);
+			
+			//crop image 
+			
+			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
+			cv::Mat frame(IMAGE_HEIGHT, IMAGE_WIDTH, CV_8UC3,  &(oracleImage)[0]);
 			cv::imshow("3D viewer",frame);
 		
 			unsigned int elapsed_time = get_current_time();
-			processDataFromKinect(oracleImage, points, location);
+//			processDataFromKinect(oracleImage, points, location);
 			elapsed_time = get_current_time() - elapsed_time;
-			printf("elapsed time %d ms\n",elapsed_time);
+//			printf("elapsed time %d ms\n",elapsed_time);
 		}
 		
     }
@@ -184,7 +188,7 @@ void SpecificWorker::compute()
 	
 	
 }
-std::string SpecificWorker::checkTable(const RoboCompObjectOracle::ColorSeq &rgbMatrix)
+std::string SpecificWorker::checkTable()
 {
 	std::string table = "invalid";
 	for (AGMModel::iterator symbol_it=worldModel->begin(); symbol_it!=worldModel->end(); symbol_it++)
@@ -196,75 +200,106 @@ std::string SpecificWorker::checkTable(const RoboCompObjectOracle::ColorSeq &rgb
 			{
 				QString edgeLabel = QString::fromStdString(edge->getLabel());
 				const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
-				//mesa A
-				if(symbol->getAttribute("imName") == "tableA")
+				if (worldModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
 				{
-					if (worldModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
+					try
 					{
-						QVec robot_tablea = innerModel->transform("robot", "tableA");
-						float distance = sqrt(pow(robot_tablea(0),2.0) + pow(robot_tablea(1),2.0));
-						
-						std::cout<<"Distance to TABLEA: "<<distance<<std::endl;
-						
-						if( distance < 2000 )
+						std::string tableIMName = symbol->getAttribute("imName");
+						const float tableWidth  = str2float(symbol->getAttribute("width"));
+						const float tableHeight = str2float(symbol->getAttribute("height"));
+						const float tableDepth  = str2float(symbol->getAttribute("depth"));
+						printf("Checking table %s\n", tableIMName.c_str());
+						if (isTableVisible(tableIMName, tableWidth, tableHeight, tableDepth))
 						{
-							const float tableWidth  = str2float(symbol->getAttribute("width"));
-							const float tableHeight = str2float(symbol->getAttribute("height"));
-							const float tableDepth  = str2float(symbol->getAttribute("depth"));
-
-							QString imName = QString::fromStdString(symbol->getAttribute("imName"));
-							qDebug()<<"table"<<imName<<"dimensions"<< tableWidth << tableHeight << tableDepth;
-							
-		//					innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose rbd");
-		//					innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), imName).print("relative table pose robot");
-							QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), imName);
-							QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), imName);
-							QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), imName);
-							QVec d1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, +tableDepth/2), imName);
-
-		/*					a1.print("leftdown 1");
-							b1.print("leftup 1");
-							c1.print("rightdown 1");
-							d1.print("rightup 1");
-		*/					
-							QVec a2 = innerModel->project("rgbd", a1);
-							QVec b2 = innerModel->project("rgbd", b1);
-							QVec c2 = innerModel->project("rgbd", c1);
-							QVec d2 = innerModel->project("rgbd", d1);
-							
-							int numpoints_on_screen = 0;
-							
-							if( a2(0) > 0 && a2(0) < 640 && a2(1) > 0 && a2(1) < 480 )
-								numpoints_on_screen++;
-							if( b2(0) > 0 && b2(0) < 640 && b2(1) > 0 && b2(1) < 480 )
-								numpoints_on_screen++;
-							if( c2(0) > 0 && c2(0) < 640 && c2(1) > 0 && c2(1) < 480 )
-								numpoints_on_screen++;
-							if( d2(0) > 0 && d2(0) < 640 && d2(1) > 0 && d2(1) < 480 )
-								numpoints_on_screen++;
-							
-							if (numpoints_on_screen > 2)
-								table = "tableA";
-
-								
-							// show some info
-							a2.print("leftdown 2");
-							b2.print("leftup 2");
-							c2.print("rightdown 2");
-							d2.print("rightup 2");
-							
-							std::cout<<"Num corners on screen: "<< numpoints_on_screen<<std::endl;
-							
+							return tableIMName;
 						}
-						
 					}
-					
+					catch(...)
+					{
+						printf("EXCEPTION: Imposible to read properties from symbol %s\n", symbol->toString().c_str());
+					}
 				}
-				
 			}
 		}
 	}
 	return table;
+}
+
+bool SpecificWorker::isTableVisible(const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth)
+{
+	float distance = innerModel->transform("rgbd", tableIMName.c_str()).norm2();
+	std::cout<<"Distance to TABLE "<<tableIMName<<":"<<distance<<std::endl;
+	
+	if( distance < TABLE_DISTANCE )
+	{
+		std::cout<<"table"<<tableIMName<<"dimensions"<< tableWidth << tableHeight << tableDepth<<std::endl;
+		
+		innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), tableIMName.c_str()).print("relative table pose rbd");
+		innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), tableIMName.c_str()).print("relative table pose robot");
+		QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), tableIMName.c_str());
+		QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), tableIMName.c_str());
+		QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), tableIMName.c_str());
+		QVec d1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, +tableDepth/2), tableIMName.c_str());
+
+/*		a1.print("leftdown 1");
+		b1.print("leftup 1");
+		c1.print("rightdown 1");
+		d1.print("rightup 1");
+*/		
+		
+		QVec a2 = innerModel->project("rgbd", a1);
+		QVec b2 = innerModel->project("rgbd", b1);
+		QVec c2 = innerModel->project("rgbd", c1);
+		QVec d2 = innerModel->project("rgbd", d1);
+		
+		int numpoints_on_screen = 0;
+		
+		if( a2(0) > 0 && a2(0) < IMAGE_WIDTH && a2(1) > 0 && a2(1) < IMAGE_HEIGHT )
+		{
+//			printf("leftdown seen\n");
+			numpoints_on_screen++;
+		}
+		if( b2(0) > 0 && b2(0) < IMAGE_WIDTH && b2(1) > 0 && b2(1) < IMAGE_HEIGHT )
+		{
+//			printf("leftup seen\n");
+			numpoints_on_screen++;
+		}
+		if( c2(0) > 0 && c2(0) < IMAGE_WIDTH && c2(1) > 0 && c2(1) < IMAGE_HEIGHT )
+		{
+//			printf("righdown seen\n");
+			numpoints_on_screen++;
+		}
+		if( d2(0) > 0 && d2(0) < IMAGE_WIDTH && d2(1) > 0 && d2(1) < IMAGE_HEIGHT )
+		{
+//			printf("rightup seen\n");
+			numpoints_on_screen++;
+		}
+
+		// show some info
+/*		a2.print("leftdown 2");
+		b2.print("leftup 2");
+		c2.print("rightdown 2");
+		d2.print("rightup 2");
+*/		
+		std::cout<<"Num corners on screen: "<< numpoints_on_screen<<std::endl;
+		if (numpoints_on_screen > 2)
+		{
+			ld = a2;
+			lu = b2;
+			rd = c2;
+			ru = d2;
+			return true;
+		}
+	}
+	return false;
+}
+
+//Crop table region from whole rgbd camera image
+void SpecificWorker::cropImageTable()
+{
+	
+	
+	
 }
 
 bool SpecificWorker::reloadConfigAgent()
@@ -663,7 +698,7 @@ void SpecificWorker::getLabelsFromImageWithCaffe(const RoboCompObjectOracle::Col
 	
 	//lets transform the image to opencv
 	//	cout<<rgbMatrix.size()<<endl;
-	for(int i=0; i<image.size(); i++)
+	for(unsigned int i=0; i<image.size(); i++)
 	{
  // 		std::cout<<"the first one: " <<i<<std::endl;
 		int row = i/640;
