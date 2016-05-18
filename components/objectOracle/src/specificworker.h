@@ -86,6 +86,7 @@ extern "C"{
 #define IMAGE_WIDTH 640
 #define IMAGE_HEIGHT 480
 #define TABLE_DISTANCE 2500
+#define OFFSET 15
 
 //#include "t.hpp"
 
@@ -169,7 +170,7 @@ private:
 	RoboCompRGBD::PointSeq points;
 	RoboCompObjectOracle::ColorSeq oracleImage;
 	
-	QVec lu, ld, ru, rd;
+	int left, right, down, up;
 	
 };
 

@@ -158,28 +158,43 @@ void SpecificWorker::compute()
         rgbd_proxy->getRGB(rgbImage, hState, bState);
 		rgbd_proxy->getXYZ(points, hState, bState);
 		//Convert image to RoboCompObjectOracle
-		memcpy(&oracleImage[0], &rgbImage[0], IMAGE_WIDTH*IMAGE_HEIGHT*3);
+//		memcpy(&oracleImage[0], &rgbImage[0], IMAGE_WIDTH*IMAGE_HEIGHT*3);
 
 
         
 		std::string location = checkTable();
 		//std::string location = "table1";
 		//if robot is close to any table
+
 		if (location != "invalid" )
 		{		// remove when not needed
-			
+printf("crop image width %i, height %i\n",right-left,up-down);
 			//crop image 
-			
+			cv::Mat crop(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
+printf("crop rows %i cols %i\n",crop.rows, crop.cols);
+			int pos = 0;
+			for(int j=down; j<up; j++)
+			{
+				for(int i=left; i<right; i++)
+				{
+					pos = j * IMAGE_WIDTH + i;
+
+					crop.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
+
+				}
+			}			
+printf("crop rows %i cols %i\n",crop.rows, crop.cols);
 			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
-			cv::Mat frame(IMAGE_HEIGHT, IMAGE_WIDTH, CV_8UC3,  &(oracleImage)[0]);
-			cv::imshow("3D viewer",frame);
+//			cv::Mat frame(right-left, up-down, CV_8UC3,  crop.data);
+			cv::imshow("3D viewer",crop);
+			//cv::imwrite( "Image.jpg", crop );
 		
 			unsigned int elapsed_time = get_current_time();
 //			processDataFromKinect(oracleImage, points, location);
 			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
 		}
-		
+		printf("end\n");
     }
     catch(const Ice::Exception &ex)
     {
@@ -252,27 +267,27 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 		QVec c2 = innerModel->project("rgbd", c1);
 		QVec d2 = innerModel->project("rgbd", d1);
 		
-		int numpoints_on_screen = 0;
-		
+		QList<QVec> points_on_screen;
+	
 		if( a2(0) > 0 && a2(0) < IMAGE_WIDTH && a2(1) > 0 && a2(1) < IMAGE_HEIGHT )
 		{
 //			printf("leftdown seen\n");
-			numpoints_on_screen++;
+			points_on_screen.append(a2);
 		}
 		if( b2(0) > 0 && b2(0) < IMAGE_WIDTH && b2(1) > 0 && b2(1) < IMAGE_HEIGHT )
 		{
 //			printf("leftup seen\n");
-			numpoints_on_screen++;
+			points_on_screen.append(b2);
 		}
 		if( c2(0) > 0 && c2(0) < IMAGE_WIDTH && c2(1) > 0 && c2(1) < IMAGE_HEIGHT )
 		{
 //			printf("righdown seen\n");
-			numpoints_on_screen++;
+			points_on_screen.append(c2);
 		}
 		if( d2(0) > 0 && d2(0) < IMAGE_WIDTH && d2(1) > 0 && d2(1) < IMAGE_HEIGHT )
 		{
 //			printf("rightup seen\n");
-			numpoints_on_screen++;
+			points_on_screen.append(d2);
 		}
 
 		// show some info
@@ -281,13 +296,41 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 		c2.print("rightdown 2");
 		d2.print("rightup 2");
 */		
-		std::cout<<"Num corners on screen: "<< numpoints_on_screen<<std::endl;
-		if (numpoints_on_screen > 2)
+		std::cout<<"Num corners on screen: "<< points_on_screen.size() <<std::endl;
+		if (points_on_screen.size() > 2)
 		{
-			ld = a2;
-			lu = b2;
-			rd = c2;
-			ru = d2;
+			left = IMAGE_WIDTH;
+			down = IMAGE_HEIGHT;
+			right = 0;
+			up = 0;
+			for (QList<QVec>::iterator  iterator=points_on_screen.begin();iterator !=points_on_screen.end();++iterator)
+			{
+				QVec point = (*iterator);
+				if (point(0) > 0 && point(0) < left)
+					left = point(0);
+				if (point(0) < IMAGE_WIDTH && point(0) > right)
+					right = point(0);
+				if (point(1) > 0 && point(1) < down)
+					down = point(1);
+				if (point(1) < IMAGE_HEIGHT && point(1) > up)
+					up = point(1);
+			}
+			left -= OFFSET;
+			right += OFFSET;
+			down -= OFFSET;
+			up += OFFSET;
+			
+			if (left < 0)
+				left = 0;
+			if (right > IMAGE_WIDTH)
+				right = IMAGE_WIDTH;
+			if (down < 0)
+				down = 0;
+			if (up > IMAGE_HEIGHT)
+				up = IMAGE_HEIGHT;
+			
+			printf("image crop left %i right %i down %i up %i\n",left, right, down, up);
+			
 			return true;
 		}
 	}
