@@ -72,8 +72,9 @@ include_directories(${PCL_INCLUDE_DIRS})
 #caffe cpu only definition
 add_definitions(-DCPU_ONLY)
 
-include_directories(/usr/include/libxml2)
+include_directories(/usr/local/include/osg /usr/include/osgViewer /usr/include/libxml2)
 
 SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl -lglog -lblas ${PCL_LIBRARIES} ${Boost_LIBRARIES} )
+SET( LIBS ${LIBS} -L/usr/local/lib64/ -losg -losgViewer -losgGA -losgText -losgDB -losgUtil )
 
 ADD_DEFINITIONS( -std=c++11 -fpermissive -D DEBUG -D HAVE_LIBPNG -D HAVE_LIBJPEG -D HAVE_AVCODEC -D HAVE_AVFORMAT -D HAVE_SWSCALE -D HAVE_SSE2 -D HAVE_GSL -D HAVE_CBLAS )

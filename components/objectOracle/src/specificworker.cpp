@@ -51,12 +51,21 @@ first(true)
 	rgbImage.resize(IMAGE_WIDTH*IMAGE_HEIGHT);
 	points.resize(IMAGE_WIDTH*IMAGE_HEIGHT);
 	
+	cloud = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>);
+	
 	std::string model_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/deploy.prototxt";
 	std::string trained_file = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/bvlc_reference_caffenet.caffemodel";
 	std::string mean_file    = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/imagenet_mean.binaryproto";
 	std::string label_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/synset_words.txt";
 	
 	caffe_classifier = new CaffeClassifier(model_file, trained_file, mean_file, label_file);
+	
+	//AGM Model Viewer
+	osgView = new OsgView();
+	show();
+	manipulator = new osgGA::TrackballManipulator;
+	osgView->setCameraManipulator(manipulator, true);
+	show();
 	
 // 	load_tables_info();
         
@@ -110,7 +119,6 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 void SpecificWorker::compute()
 {
 	static bool first=true;
-	QMutexLocker locker(mutex);
 	printf("ACTION: %s\n", action.c_str());
 	
 	boost::algorithm::to_lower(action);
@@ -160,62 +168,72 @@ void SpecificWorker::compute()
 		//Convert image to RoboCompObjectOracle
 //		memcpy(&oracleImage[0], &rgbImage[0], IMAGE_WIDTH*IMAGE_HEIGHT*3);
 
-
-        
 		std::string location = checkTable();
 		//std::string location = "table1";
 		//if robot is close to any table
 
-		if (location != "invalid" )
-		{		// remove when not needed
-printf("crop image width %i, height %i\n",right-left,up-down);
+/*		if (location != "invalid" )
+		{
+			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
+			
 			//crop image 
-			cv::Mat crop(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
-printf("crop rows %i cols %i\n",crop.rows, crop.cols);
-			int pos = 0;
+			matImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
+			cloud->clear();
+			cloud->resize((up-down)*(right-left));
+			int pos = 0, k=0;
 			for(int j=down; j<up; j++)
 			{
 				for(int i=left; i<right; i++)
 				{
 					pos = j * IMAGE_WIDTH + i;
-
-					crop.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
-
+					matImage.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
+					QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
+					memcpy(&cloud->points[k],p1.data(),3*sizeof(float));
+					cloud->points[k].r = rgbImage[pos].red;
+					cloud->points[k].g = rgbImage[pos].green;
+					cloud->points[k].b = rgbImage[pos].blue;
+					k++;
 				}
-			}			
-printf("crop rows %i cols %i\n",crop.rows, crop.cols);
-			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
-//			cv::Mat frame(right-left, up-down, CV_8UC3,  crop.data);
-			cv::imshow("3D viewer",crop);
-			//cv::imwrite( "Image.jpg", crop );
+			}
+
+			cv::Mat frame(right-left, up-down, CV_8UC3,  matImage.data);
+			cv::imshow("3D viewer",matImage);
 		
-			unsigned int elapsed_time = get_current_time();
-//			processDataFromKinect(oracleImage, points, location);
-			elapsed_time = get_current_time() - elapsed_time;
+//			unsigned int elapsed_time = get_current_time();
+			processDataFromKinect(matImage, points, location);
+//			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
-		}
-		printf("end\n");
+		}*/
+
     }
     catch(const Ice::Exception &ex)
     {
         std::cout << ex << std::endl;
     }
 	
+	//AGM Model viewer
+// 	mutex->lock();
+	updateViewer();
+// 	mutex->unlock();
 	
 }
 std::string SpecificWorker::checkTable()
 {
+	mutex->lock();
+	AGMModel::SPtr newModel(new AGMModel(worldModel));
+	mutex->unlock();
+
 	std::string table = "invalid";
-	for (AGMModel::iterator symbol_it=worldModel->begin(); symbol_it!=worldModel->end(); symbol_it++)
+	for (AGMModel::iterator symbol_it=newModel->begin(); symbol_it!=newModel->end(); symbol_it++)
 	{
 		const AGMModelSymbol::SPtr &symbol = *symbol_it;
 		if (symbol->symbolType == "object")
 		{
-			for (auto edge = symbol->edgesBegin(worldModel); edge != symbol->edgesEnd(worldModel); edge++)
+			for (auto edge = symbol->edgesBegin(newModel); edge != symbol->edgesEnd(newModel); edge++)
 			{
 				QString edgeLabel = QString::fromStdString(edge->getLabel());
 				const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
-				if (worldModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
+				if (newModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
 				{
 					try
 					{
@@ -223,7 +241,7 @@ std::string SpecificWorker::checkTable()
 						const float tableWidth  = str2float(symbol->getAttribute("width"));
 						const float tableHeight = str2float(symbol->getAttribute("height"));
 						const float tableDepth  = str2float(symbol->getAttribute("depth"));
-						printf("Checking table %s\n", tableIMName.c_str());
+	printf("Checking table %s\n", tableIMName.c_str());
 						if (isTableVisible(tableIMName, tableWidth, tableHeight, tableDepth))
 						{
 							return tableIMName;
@@ -243,14 +261,14 @@ std::string SpecificWorker::checkTable()
 bool SpecificWorker::isTableVisible(const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth)
 {
 	float distance = innerModel->transform("rgbd", tableIMName.c_str()).norm2();
-	std::cout<<"Distance to TABLE "<<tableIMName<<":"<<distance<<std::endl;
+//	std::cout<<"Distance to TABLE "<<tableIMName<<":"<<distance<<std::endl;
 	
 	if( distance < TABLE_DISTANCE )
 	{
-		std::cout<<"table"<<tableIMName<<"dimensions"<< tableWidth << tableHeight << tableDepth<<std::endl;
+//		std::cout<<"table"<<tableIMName<<"dimensions"<< tableWidth << tableHeight << tableDepth<<std::endl;
 		
-		innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), tableIMName.c_str()).print("relative table pose rbd");
-		innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), tableIMName.c_str()).print("relative table pose robot");
+//		innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), tableIMName.c_str()).print("relative table pose rbd");
+//		innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), tableIMName.c_str()).print("relative table pose robot");
 		QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), tableIMName.c_str());
 		QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), tableIMName.c_str());
 		QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), tableIMName.c_str());
@@ -296,7 +314,7 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 		c2.print("rightdown 2");
 		d2.print("rightup 2");
 */		
-		std::cout<<"Num corners on screen: "<< points_on_screen.size() <<std::endl;
+		std::cout<<"Table: "<<tableIMName<<" ==> Num corners on screen: "<< points_on_screen.size() <<std::endl;
 		if (points_on_screen.size() > 2)
 		{
 			left = IMAGE_WIDTH;
@@ -308,11 +326,11 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 				QVec point = (*iterator);
 				if (point(0) > 0 && point(0) < left)
 					left = point(0);
-				if (point(0) < IMAGE_WIDTH && point(0) > right)
+				if (point(0) <= IMAGE_WIDTH && point(0) > right)
 					right = point(0);
 				if (point(1) > 0 && point(1) < down)
 					down = point(1);
-				if (point(1) < IMAGE_HEIGHT && point(1) > up)
+				if (point(1) <= IMAGE_HEIGHT && point(1) > up)
 					up = point(1);
 			}
 			left -= OFFSET;
@@ -328,21 +346,11 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 				down = 0;
 			if (up > IMAGE_HEIGHT)
 				up = IMAGE_HEIGHT;
-			
-			printf("image crop left %i right %i down %i up %i\n",left, right, down, up);
-			
+		
 			return true;
 		}
 	}
 	return false;
-}
-
-//Crop table region from whole rgbd camera image
-void SpecificWorker::cropImageTable()
-{
-	
-	
-	
 }
 
 bool SpecificWorker::reloadConfigAgent()
@@ -469,35 +477,21 @@ RoboCompObjectOracle::ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
 	return rgbMatrix;
 }
 
-void SpecificWorker::processDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points_kinect, std::string location)
+void SpecificWorker::processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points_kinect, std::string location)
 {
 	//process whole image
-	processImage(rgbMatrix, location);
+	processImage(matImage, location);
+	std::vector<cv::Mat> segmented_objects;
 	
 	//segment image and process again
-	pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
-	cloud->resize(points_kinect.size());
-
-	for (unsigned int i=0; i<points_kinect.size(); i++)
-	{
-		QVec p1 = QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1);
-
-		memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
-		cloud->points[i].r=rgbMatrix[i].red;
-		cloud->points[i].g=rgbMatrix[i].green;
-		cloud->points[i].b=rgbMatrix[i].blue;
-    }
-
-	std::vector<cv::Mat> segmented_objects;
-	cv::Mat rgbMat(480, 640, CV_8UC3,  &(rgbMatrix)[0]);
-	segmentObjects3D(cloud, rgbMat, segmented_objects);
+	segmentObjects3D(cloud, matImage, segmented_objects);
 	
 	cout<<"El vector tiene>>>>> "<<segmented_objects.size()<<endl;
 	
 	for(uint i = 0 ; i < segmented_objects.size() ; i++)
 	{	
-		RoboCompObjectOracle::ColorSeq auxMatrix = convertMat2ColorSeq (segmented_objects[i]);
-		processImage(auxMatrix, location);
+//		RoboCompObjectOracle::ColorSeq auxMatrix = convertMat2ColorSeq (segmented_objects[i]);
+		processImage(segmented_objects[i], location);
 	}
 	
 }
@@ -528,11 +522,11 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 				//first processing of entire image
 				cv::Mat rgb = cv::imread( path2file );
 				
-				RoboCompObjectOracle::ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
+				//RoboCompObjectOracle::ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
 				
 				std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
-				std::cout<<rgbMatrix.size()<<std::endl;
-				processImage(rgbMatrix, location);
+				std::cout<<rgb.size()<<std::endl;
+				processImage(rgb, location);
 				
 				//3D based segment and process all segmented objects
 				std::string pcd_path2file = path2file.substr(0, path2file.find_last_of(".")) + ".pcd";
@@ -550,8 +544,8 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 	// 			for(std::vector<cv::Mat>::iterator it = sgemented_objects.begin(); it != sgemented_objects.end(); ++it)
 				for(uint i = 0 ; i < segmented_objects.size() ; i++)
 				{	
-					rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
-					processImage(rgbMatrix, location);
+//					rgbMatrix = convertMat2ColorSeq (segmented_objects[i]);
+					processImage(segmented_objects[i], location);
 				}
 			}
 			
@@ -560,12 +554,11 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 }
 
 
-void SpecificWorker::processImage(const RoboCompObjectOracle::ColorSeq &image, std::string location)
+void SpecificWorker::processImage(cv::Mat matImage, std::string location)
 {
     ResultList result;
     std::string label;
-    
-    getLabelsFromImageWithCaffe(image, result);
+    getLabelsFromImageWithCaffe(matImage, result);
     
     for(uint i=0; i<result.size(); i++)
     {
@@ -735,22 +728,9 @@ void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &im
     
 }
 
-void SpecificWorker::getLabelsFromImageWithCaffe(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
+void SpecificWorker::getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &result)
 {
-	cv::Mat img(480,640, CV_8UC3, cv::Scalar::all(0));
-	
-	//lets transform the image to opencv
-	//	cout<<rgbMatrix.size()<<endl;
-	for(unsigned int i=0; i<image.size(); i++)
-	{
- // 		std::cout<<"the first one: " <<i<<std::endl;
-		int row = i/640;
-		int column = i-(row*640);
-		
-		img.at<cv::Vec3b>(row,column) = cv::Vec3b(image[i].blue, image[i].green, image[i].red);
-	}
-	
-	std::vector<Prediction> predictions = caffe_classifier->Classify(img);
+	std::vector<Prediction> predictions = caffe_classifier->Classify(matImage);
 	
 	  /* Print the top N predictions. */
 	for (size_t i = 0; i < predictions.size(); ++i) 
@@ -765,45 +745,55 @@ void SpecificWorker::getLabelsFromImageWithCaffe(const RoboCompObjectOracle::Col
 	}
 }
 
-void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modification)
+
+void SpecificWorker
+::structuralChange(const RoboCompAGMWorldModel::World &modification)
 {
 	QMutexLocker locker(mutex);
  	AGMModelConverter::fromIceToInternal(modification, worldModel);
 	worldModelTime = QTime::currentTime();
- 
+printf("STRUCTURAL CHANGE\n"); 
 	delete innerModel;
 	innerModel = AGMInner::extractInnerModel(worldModel);
+	changeInner();
 }
 
 void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications)
 {
 	QMutexLocker lockIM(mutex);
+printf("EDGES UPDATE\n");		
 	for (auto modification : modifications)
 	{
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
 		AGMInner::updateImNodeFromEdge(worldModel, modification, innerModel);
 	}
+	
 }
 
 void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge &modification)
 {
 	QMutexLocker locker(mutex);
 	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+	if ((modification.a == 114 or modification.b == 114) and modification.edgeType == "RT")
+		printf("EDGE UPDATE ==> %s ==> %i %i %s\n",modification.edgeType.c_str(),modification.a,modification.b, modification.attributes["ry"].c_str());
+
 	AGMInner::updateImNodeFromEdge(worldModel, modification, innerModel);
 }
 
 void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modification)
 {
 	QMutexLocker locker(mutex);
+printf("SYMBOL  UPDATE\n");
 	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
 }
 
 void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications)
 {
-	QMutexLocker l(mutex);
+// 	QMutexLocker l(mutex);
 
-	for (auto modification : modifications)
+	for (auto modification : modifications)	
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
+printf("SYMBOLSUPDATE\n");	
 }
 
 void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result)
@@ -911,9 +901,9 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 // 		//save the cloud at 
 // // 		cluster_clouds.push_back(cloud_cluster);
 // 		
-		std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
-		std::stringstream ss;
-		ss <<"capture_"<<image_segmented_counter<< "_object_" << j;
+//		std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
+//		std::stringstream ss;
+//		ss <<"capture_"<<image_segmented_counter<< "_object_" << j;
 
 		cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
 		
@@ -963,7 +953,7 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 // 		cv::imshow("Result", cropped);
 // 		cv::waitKey(0);
 		
- 		cv::imwrite( ss.str() + ".png", cropped );
+// 		cv::imwrite( ss.str() + ".png", cropped );
 // 		
 // 		pcl::io::savePCDFileASCII (ss.str () + ".pcd", *cloud_cluster);
  		j++;
@@ -1093,11 +1083,13 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 
 void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 {
+	mutex->lock();
 	printf("inside imagineMostLikelyOBJECTPosition-%s  %d %d\n", objectType.c_str(), modifiedWorld, worldModel->version);
 	if (modifiedWorld > worldModel->version or actionTime < worldModelTime)
 		return;
 
 	AGMModel::SPtr newModel(new AGMModel(worldModel));
+	mutex->unlock();
 
 	// Create new symbols and the edges which are independent from the container
 	AGMModelSymbol::SPtr objSSt = newModel->newSymbol("objectSt");
@@ -1150,8 +1142,10 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 		newModel->addEdge(objS, roomID, "in");
 
 		// Send modification proposal
-		modifiedWorld = worldModel->version + 1;
+// 		modifiedWorld = worldModel->version + 1;
+		mutex->lock();
 		sendModificationProposal(worldModel, newModel);
+		mutex->unlock();
 	}
 	else
 	{
@@ -1187,5 +1181,39 @@ void SpecificWorker::semanticDistance(const string &word1, const string &word2, 
 {
 
 }
+//AGM Model Viewer
+void SpecificWorker::updateViewer()
+{
+	QTime cc;
+	cc = QTime::currentTime();
+	QMutexLocker locker(mutex);
+#ifdef USE_QTGUI
+	if (not innerModel) return;
+	if (not innerModel->getNode("root")) return;
+	printf("root %p\n", innerModel->getNode("root"));
 
+	if (not innerViewer)
+	{
+		innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
+		printf("innerViewer: %p\n", innerViewer);
+		innerViewer->setMainCamera(manipulator, InnerModelViewer::TOP_POV);
+	}
+	printf("(\n");
+		printf("innerViewer: %p\n", innerViewer);
+	innerViewer->update();
+	printf(")\n");
+	osgView->autoResize();
+	osgView->frame();
+#endif
+	printf("updateViewer - %d\n", cc.elapsed());
+}
 
+void SpecificWorker::changeInner ()
+{
+	if (innerViewer)
+	{
+		osgView->getRootGroup()->removeChild(innerViewer);				
+	}
+
+	innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
+}

@@ -56,6 +56,7 @@
 #include <pcl/range_image/range_image.h>
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
+#include <innermodel/innermodelviewer.h>
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
@@ -117,14 +118,14 @@ public:
         
 	void processDataFromDir(const boost::filesystem::path &base_dir);
 	//given an image and its location it process its objects and save them to the corresponding location
-	void processImage(const RoboCompObjectOracle::ColorSeq &image, std::string location);
+	void processImage(cv::Mat image, std::string location);
 	void save_tables_info();
 	void load_tables_info();
 	   
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
 	std::string lookForObject(std::string label);
 	void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result);
-	void getLabelsFromImageWithCaffe(const RoboCompObjectOracle::ColorSeq &image, ResultList &result);
+	void getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::World &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
 	void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification);
@@ -134,8 +135,7 @@ public:
 
 	std::string checkTable();
 	bool isTableVisible(const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
-	void processDataFromKinect(RoboCompObjectOracle::ColorSeq rgbMatrix, const RoboCompRGBD::PointSeq &points, std::string location);
-	void cropImageTable();
+	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
 public slots:
 	void compute();
 
@@ -169,9 +169,17 @@ private:
     RoboCompRGBD::ColorSeq rgbImage;
 	RoboCompRGBD::PointSeq points;
 	RoboCompObjectOracle::ColorSeq oracleImage;
-	
+	pcl::PointCloud<PointT>::Ptr cloud;
+	cv::Mat matImage;
 	int left, right, down, up;
 	
+	//AGM Model viewer
+	osgGA::TrackballManipulator *manipulator;
+	OsgView *osgView;	
+	InnerModelViewer *innerViewer; 
+	
+	void updateViewer();
+	void changeInner ();
 };
 
 #endif
