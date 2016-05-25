@@ -23,8 +23,21 @@
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
- // namedWindow( "Display window", 1 );// Create a window for display.
-   
+	connect(mugButton,       SIGNAL(clicked()), this, SLOT(on_mugButton_clicked()));
+	connect(laptopButton,    SIGNAL(clicked()), this, SLOT(on_laptopButton_clicked()));
+	connect(wrenchButton,    SIGNAL(clicked()), this, SLOT(on_wrenchButton_clicked()));
+	connect(ballButton,      SIGNAL(clicked()), this, SLOT(on_ballButton_clicked()));
+	connect(glassesButton,   SIGNAL(clicked()), this, SLOT(on_glassesButton_clicked()));
+	connect(keysButton,      SIGNAL(clicked()), this, SLOT(on_keysButton_clicked()));
+	connect(bottleButton,    SIGNAL(clicked()), this, SLOT(on_bottleButton_clicked()));
+	connect(canButton,       SIGNAL(clicked()), this, SLOT(on_canButton_clicked()));
+	connect(bookButton,      SIGNAL(clicked()), this, SLOT(on_bookButton_clicked()));
+	connect(cellphoneButton, SIGNAL(clicked()), this, SLOT(on_cellphoneButton_clicked()));
+	connect(appleButton,     SIGNAL(clicked()), this, SLOT(on_appleButton_clicked()));
+	connect(walletButton,    SIGNAL(clicked()), this, SLOT(on_walletButton_clicked()));
+
+
+	cloud = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>);
 }
 
 /**
@@ -43,41 +56,57 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
-    static RoboCompDifferentialRobot::TBaseState bState;
-    static RoboCompJointMotor::MotorStateMap hState;
-    static RoboCompRGBD::imgType rgbMatrix;
-    static RoboCompRGBD::depthType distanceMatrix;
-     
-    try
-    {
-        qDebug() << "read frame";
-   
-        rgbd_proxy->getData(rgbMatrix,distanceMatrix, hState, bState);
-        
-        Mat frame(480, 640, CV_8UC3,  &(rgbMatrix)[0]);
-        imshow("3D viewer",frame);
-        
-        QImage img = QImage(&rgbMatrix[0], 640, 480, QImage::Format_RGB888);
-        label->setPixmap(QPixmap::fromImage(img));
-        label->resize(label->pixmap()->size());
+	static RoboCompDifferentialRobot::TBaseState bState;
+	static RoboCompJointMotor::MotorStateMap hState;
+	static RoboCompRGBD::ColorSeq rgbMatrix;
+	static RoboCompRGBD::DepthSeq distanceMatrix;
+	
+	try
+	{
+		qDebug() << "read frame";
 
-    }
-    catch(const Ice::Exception &ex)
-    {
-        std::cout << ex << std::endl;
-    }
+		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points,         hState, bState);
+// 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points,  h, b);
+		
+		frame = cv::Mat(480, 640, CV_8UC3,  &(rgbMatrix)[0]);
+//         imshow("3D viewer",frame);
+		
+		QImage img = QImage((uint8_t *)&rgbMatrix[0], 640, 480, QImage::Format_RGB888);
+		label->setPixmap(QPixmap::fromImage(img));
+		label->resize(label->pixmap()->size());
+
+		cloud->points.resize(points.size());
+		for (unsigned int i=0; i<points.size(); i++)
+		{
+	// 		memcpy(&cloud->points[i], &points[i],3*sizeof(float));
+			
+			cloud->points[i].x = points[i].x;
+			cloud->points[i].y = points[i].y;
+			cloud->points[i].z = points[i].z;
+			cloud->points[i].r=rgbMatrix[i].red;
+			cloud->points[i].g=rgbMatrix[i].green;
+			cloud->points[i].b=rgbMatrix[i].blue;
+		}
+		cloud->width = 1;
+		cloud->height = points.size();
+
+
+	}
+	catch(const Ice::Exception &ex)
+	{
+		std::cout << ex << std::endl;
+	}
 }
 
 
-void SpecificWorker::save()
+
+void SpecificWorker::save(std::string base)
 {
-	string pcdname =  "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + "_passThrough.pcd";
-	printf("<%s>\n", pcdname.c_str());
-
-	string imagename = "/home/robocomp/robocomp/components/prp/" + QString::number(ts.tv_sec).toStdString() + ".png";
-	cv::imwrite( imagename ,rgb_image);
-
-
+	timespec ts;
+	clock_gettime(CLOCK_REALTIME, &ts);
+	string basename = lineEdit->text().toStdString() + "_" + base  + "_" + QString::number(ts.tv_sec).toStdString();
+	writer.write<PointT>(basename + ".pcd", *cloud, false);
+	cv::imwrite(basename + ".png", frame);
 }
 
 
