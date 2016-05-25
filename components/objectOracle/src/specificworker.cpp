@@ -59,14 +59,14 @@ first(true)
 	std::string label_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/synset_words.txt";
 	
 	caffe_classifier = new CaffeClassifier(model_file, trained_file, mean_file, label_file);
-	
-	//AGM Model Viewer
-	osgView = new OsgView();
-	show();
-	manipulator = new osgGA::TrackballManipulator;
-	osgView->setCameraManipulator(manipulator, true);
-	show();
-	
+	#ifdef INNER_VIEWER
+		//AGM Model Viewer
+		osgView = new OsgView();
+		show();
+		manipulator = new osgGA::TrackballManipulator;
+		osgView->setCameraManipulator(manipulator, true);
+		show();
+	#endif
 // 	load_tables_info();
         
 
@@ -99,7 +99,7 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker locker(agent_mutex);
 	
 	try
 	{
@@ -172,10 +172,9 @@ void SpecificWorker::compute()
 		//std::string location = "table1";
 		//if robot is close to any table
 
-/*		if (location != "invalid" )
+		if (location != "invalid" )
 		{
 			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
-			
 			//crop image 
 			matImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
 			cloud->clear();
@@ -203,37 +202,35 @@ void SpecificWorker::compute()
 			processDataFromKinect(matImage, points, location);
 //			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
-		}*/
+		}
 
     }
     catch(const Ice::Exception &ex)
     {
         std::cout << ex << std::endl;
     }
-	
-	//AGM Model viewer
-// 	mutex->lock();
-	updateViewer();
-// 	mutex->unlock();
-	
+	#ifdef INNER_VIEWER
+		//AGM Model viewer
+		updateViewer();
+	#endif
 }
 std::string SpecificWorker::checkTable()
 {
-	mutex->lock();
-	AGMModel::SPtr newModel(new AGMModel(worldModel));
-	mutex->unlock();
+	world_mutex->lock();
+	AGMModel::SPtr copyModel(new AGMModel(worldModel));
+	world_mutex->unlock();
 
 	std::string table = "invalid";
-	for (AGMModel::iterator symbol_it=newModel->begin(); symbol_it!=newModel->end(); symbol_it++)
+	for (AGMModel::iterator symbol_it=copyModel->begin(); symbol_it!=copyModel->end(); symbol_it++)
 	{
 		const AGMModelSymbol::SPtr &symbol = *symbol_it;
 		if (symbol->symbolType == "object")
 		{
-			for (auto edge = symbol->edgesBegin(newModel); edge != symbol->edgesEnd(newModel); edge++)
+			for (auto edge = symbol->edgesBegin(copyModel); edge != symbol->edgesEnd(copyModel); edge++)
 			{
 				QString edgeLabel = QString::fromStdString(edge->getLabel());
 				const std::pair<int32_t, int32_t> symbolPair = edge->getSymbolPair();
-				if (newModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
+				if (copyModel->getSymbol(symbolPair.second)->symbolType == "objectSt" and edgeLabel == "table")
 				{
 					try
 					{
@@ -260,7 +257,9 @@ std::string SpecificWorker::checkTable()
 
 bool SpecificWorker::isTableVisible(const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth)
 {
+	inner_mutex->lock();
 	float distance = innerModel->transform("rgbd", tableIMName.c_str()).norm2();
+	inner_mutex->unlock();
 //	std::cout<<"Distance to TABLE "<<tableIMName<<":"<<distance<<std::endl;
 	
 	if( distance < TABLE_DISTANCE )
@@ -269,6 +268,7 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 		
 //		innerModel->transform6D("rgbd", QVec::vec6(0,0,0,0,0,0), tableIMName.c_str()).print("relative table pose rbd");
 //		innerModel->transform6D("robot", QVec::vec6(0,0,0,0,0,0), tableIMName.c_str()).print("relative table pose robot");
+		inner_mutex->lock();
 		QVec a1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, -tableDepth/2), tableIMName.c_str());
 		QVec b1 = innerModel->transform("rgbd", QVec::vec3(-tableWidth/2, 0, +tableDepth/2), tableIMName.c_str());
 		QVec c1 = innerModel->transform("rgbd", QVec::vec3(+tableWidth/2, 0, -tableDepth/2), tableIMName.c_str());
@@ -279,11 +279,11 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 		c1.print("rightdown 1");
 		d1.print("rightup 1");
 */		
-		
 		QVec a2 = innerModel->project("rgbd", a1);
 		QVec b2 = innerModel->project("rgbd", b1);
 		QVec c2 = innerModel->project("rgbd", c1);
 		QVec d2 = innerModel->project("rgbd", d1);
+		inner_mutex->unlock();
 		
 		QList<QVec> points_on_screen;
 	
@@ -361,7 +361,7 @@ bool SpecificWorker::reloadConfigAgent()
 
 bool SpecificWorker::activateAgent(const ParameterMap &prs)
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker locker(agent_mutex);
 	bool activated = false;
 	if (setParametersAndPossibleActivation(prs, activated))
 	{
@@ -379,7 +379,7 @@ bool SpecificWorker::activateAgent(const ParameterMap &prs)
 
 bool SpecificWorker::setAgentParameters(const ParameterMap &prs)
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker locker(agent_mutex);
 	bool activated = false;
 	return setParametersAndPossibleActivation(prs, activated);
 }
@@ -408,7 +408,7 @@ bool SpecificWorker::deactivateAgent()
 
 StateStruct SpecificWorker::getAgentState()
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker locker(agent_mutex);
 	StateStruct s;
 	if (isActive())
 	{
@@ -746,22 +746,23 @@ void SpecificWorker::getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &r
 }
 
 
-void SpecificWorker
-::structuralChange(const RoboCompAGMWorldModel::World &modification)
+void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modification)
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker locker(world_mutex);
+	QMutexLocker lockerIN(inner_mutex);
  	AGMModelConverter::fromIceToInternal(modification, worldModel);
 	worldModelTime = QTime::currentTime();
-printf("STRUCTURAL CHANGE\n"); 
+
 	delete innerModel;
 	innerModel = AGMInner::extractInnerModel(worldModel);
-	changeInner();
+	#ifdef INNER_VIEWER
+		changeInner();
+	#endif
 }
 
 void SpecificWorker::edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications)
 {
-	QMutexLocker lockIM(mutex);
-printf("EDGES UPDATE\n");		
+	QMutexLocker locker(world_mutex);
 	for (auto modification : modifications)
 	{
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
@@ -772,28 +773,22 @@ printf("EDGES UPDATE\n");
 
 void SpecificWorker::edgeUpdated(const RoboCompAGMWorldModel::Edge &modification)
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker locker(world_mutex);
 	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
-	if ((modification.a == 114 or modification.b == 114) and modification.edgeType == "RT")
-		printf("EDGE UPDATE ==> %s ==> %i %i %s\n",modification.edgeType.c_str(),modification.a,modification.b, modification.attributes["ry"].c_str());
-
 	AGMInner::updateImNodeFromEdge(worldModel, modification, innerModel);
 }
 
 void SpecificWorker::symbolUpdated(const RoboCompAGMWorldModel::Node &modification)
 {
-	QMutexLocker locker(mutex);
-printf("SYMBOL  UPDATE\n");
+	QMutexLocker locker(world_mutex);
 	AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
 }
 
 void SpecificWorker::symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications)
 {
-// 	QMutexLocker l(mutex);
-
+	QMutexLocker locker(world_mutex);
 	for (auto modification : modifications)	
 		AGMModelConverter::includeIceModificationInInternalModel(modification, worldModel);
-printf("SYMBOLSUPDATE\n");	
 }
 
 void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result)
@@ -1022,7 +1017,7 @@ std::string SpecificWorker::lookForObject(std::string label)
 
 bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated)
 {
-	QMutexLocker locker(mutex);
+	QMutexLocker locker(agent_mutex);
 	printf("<<< setParametersAndPossibleActivation\n");
 	// We didn't reactivate the component
 	reactivated = false;
@@ -1083,13 +1078,14 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 
 void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 {
-	mutex->lock();
+	world_mutex->lock();
 	printf("inside imagineMostLikelyOBJECTPosition-%s  %d %d\n", objectType.c_str(), modifiedWorld, worldModel->version);
-	if (modifiedWorld > worldModel->version or actionTime < worldModelTime)
+	if (modifiedWorld > worldModel->version or actionTime < worldModelTime){
+		world_mutex->unlock();
 		return;
-
+	}
 	AGMModel::SPtr newModel(new AGMModel(worldModel));
-	mutex->unlock();
+	world_mutex->unlock();
 
 	// Create new symbols and the edges which are independent from the container
 	AGMModelSymbol::SPtr objSSt = newModel->newSymbol("objectSt");
@@ -1143,9 +1139,9 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 
 		// Send modification proposal
 // 		modifiedWorld = worldModel->version + 1;
-		mutex->lock();
+		world_mutex->lock();
 		sendModificationProposal(worldModel, newModel);
-		mutex->unlock();
+		world_mutex->unlock();
 	}
 	else
 	{
@@ -1157,21 +1153,18 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 
 void SpecificWorker::action_imagineMostLikelyMugInPosition()
 {
-	QMutexLocker locker(mutex);
 	imagineMostLikelyOBJECTPosition("mug");
 }
 
 
 void SpecificWorker::action_imagineMostLikelyCoffeePotInPosition()
 {
-	QMutexLocker locker(mutex);
 	imagineMostLikelyOBJECTPosition("coffeepot");
 }
 
 
 void SpecificWorker::action_imagineMostLikelyMilkInPosition()
 {
-	QMutexLocker locker(mutex);
 	imagineMostLikelyOBJECTPosition("milk");
 }
 
@@ -1181,31 +1174,29 @@ void SpecificWorker::semanticDistance(const string &word1, const string &word2, 
 {
 
 }
+#ifdef INNER_VIEWER
 //AGM Model Viewer
 void SpecificWorker::updateViewer()
 {
 	QTime cc;
 	cc = QTime::currentTime();
-	QMutexLocker locker(mutex);
-#ifdef USE_QTGUI
+	inner_mutex->lock();
 	if (not innerModel) return;
 	if (not innerModel->getNode("root")) return;
-	printf("root %p\n", innerModel->getNode("root"));
+//	printf("root %p\n", innerModel->getNode("root"));
 
 	if (not innerViewer)
 	{
 		innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
-		printf("innerViewer: %p\n", innerViewer);
+//		printf("innerViewer: %p\n", innerViewer);
 		innerViewer->setMainCamera(manipulator, InnerModelViewer::TOP_POV);
 	}
-	printf("(\n");
-		printf("innerViewer: %p\n", innerViewer);
+//	printf("innerViewer: %p\n", innerViewer);
 	innerViewer->update();
-	printf(")\n");
+	inner_mutex->unlock();
 	osgView->autoResize();
 	osgView->frame();
-#endif
-	printf("updateViewer - %d\n", cc.elapsed());
+//	printf("updateViewer - %d\n", cc.elapsed());
 }
 
 void SpecificWorker::changeInner ()
@@ -1214,6 +1205,8 @@ void SpecificWorker::changeInner ()
 	{
 		osgView->getRootGroup()->removeChild(innerViewer);				
 	}
-
+	inner_mutex->lock();
 	innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
+	inner_mutex->unlock();
 }
+#endif 
