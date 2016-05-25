@@ -173,6 +173,7 @@ private:
 	cv::Mat matImage;
 	int left, right, down, up;
 	
+	#ifdef INNER_VIEWER
 	//AGM Model viewer
 	osgGA::TrackballManipulator *manipulator;
 	OsgView *osgView;	
@@ -180,6 +181,7 @@ private:
 	
 	void updateViewer();
 	void changeInner ();
+	#endif
 };
 
 #endif

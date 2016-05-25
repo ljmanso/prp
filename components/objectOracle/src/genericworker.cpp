@@ -33,7 +33,9 @@ QObject()
 
 	logger_proxy = (*(LoggerPrx*)mprx["LoggerPub"]);
 
-	mutex = new QMutex(QMutex::Recursive);
+	world_mutex = new QMutex(QMutex::Recursive);
+	inner_mutex = new QMutex(QMutex::Recursive);
+	agent_mutex = new QMutex(QMutex::Recursive);
 
 	#ifdef USE_QTGUI
 		setupUi(this);
@@ -105,21 +107,21 @@ RoboCompPlanning::Action GenericWorker::createAction(std::string s)
 bool GenericWorker::activate(const BehaviorParameters &prs)
 {
 	printf("Worker::activate\n");
-	mutex->lock();
+	agent_mutex->lock();
 	p = prs;
 	active = true;
 	iter = 0;
-	mutex->unlock();
+	agent_mutex->unlock();
 	return active;
 }
 
 bool GenericWorker::deactivate() 
 {
 	printf("Worker::deactivate\n");
-	mutex->lock();
+	agent_mutex->lock();
 	active = false;
 	iter = 0;
-	mutex->unlock();
+	agent_mutex->unlock();
 	return active;
 }
 
