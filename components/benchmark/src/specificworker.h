@@ -88,13 +88,20 @@ public slots:
 	void on_cellphoneButton_clicked() { save("cellphone"); }
 	void on_appleButton_clicked()     { save("apple"); }
 	void on_walletButton_clicked()    { save("wallet"); }
-	
+
+	void on_staplerButton_clicked()    { save("stapler"); }
+	void on_paperButton_clicked()    { save("paper"); }
+	void on_hammerButton_clicked()    { save("hammer"); }
+	void on_toyButton_clicked()    { save("toy"); }
+
 private:
 	RoboCompRGBD::PointSeq points;
 	pcl::PCDWriter writer;
 	pcl::PointCloud<PointT>::Ptr cloud;
 
 	cv::Mat frame;
+	
+	std::map<string, QPushButton *> buttons;
 };
 
 #endif

@@ -21,6 +21,20 @@
 /**
 * \brief Default constructor
 */
+
+#define YES_STYLESHEET "QPushButton         { color: green; }   \
+                        QPushButton:checked { color: green; } \
+                        QPushButton:hover   { color: green; }"
+
+#define NO_STYLESHEET  "QPushButton         { color: red; }   \
+                        QPushButton:checked { color: red; } \
+                        QPushButton:hover   { color: red; }"
+
+#define EMPTY_STYLESHEET "QPushButton         { color: gray; }   \
+                          QPushButton:checked { color: gray; } \
+                          QPushButton:hover   { color: gray; }"
+
+
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
 	connect(mugButton,       SIGNAL(clicked()), this, SLOT(on_mugButton_clicked()));
@@ -35,6 +49,29 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	connect(cellphoneButton, SIGNAL(clicked()), this, SLOT(on_cellphoneButton_clicked()));
 	connect(appleButton,     SIGNAL(clicked()), this, SLOT(on_appleButton_clicked()));
 	connect(walletButton,    SIGNAL(clicked()), this, SLOT(on_walletButton_clicked()));
+
+	connect(staplerButton,   SIGNAL(clicked()), this, SLOT(on_staplerButton_clicked()));
+	connect(paperButton,     SIGNAL(clicked()), this, SLOT(on_paperButton_clicked()));
+	connect(hammerButton,    SIGNAL(clicked()), this, SLOT(on_hammerButton_clicked()));
+	connect(toyButton,       SIGNAL(clicked()), this, SLOT(on_toyButton_clicked()));
+
+	buttons["mug"] = mugButton;
+	buttons["laptop"] = laptopButton;
+	buttons["wrench"] = wrenchButton;
+	buttons["ball"] = ballButton;
+	buttons["glasses"] = glassesButton;
+	buttons["keys"] = keysButton;
+	buttons["bottle"] = bottleButton;
+	buttons["can"] = canButton;
+	buttons["book"] = bookButton;
+	buttons["cellphone"] = cellphoneButton;
+	buttons["apple"] = appleButton;
+	buttons["wallet"] = walletButton;
+
+	buttons["stapler"] = staplerButton;
+	buttons["paper"] = paperButton;
+	buttons["hammer"] = hammerButton;
+	buttons["toy"] = toyButton;
 
 
 	cloud = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>);
@@ -55,6 +92,37 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 }
 
 void SpecificWorker::compute()
+{
+	for (auto i : buttons)
+	{
+		if (lineEdit->text().size() != 0)
+		{
+			const QString basename = QString::fromStdString(lineEdit->text().toStdString() + "_" + i.first  + "_");
+			const bool exists = QFile::exists(basename + ".pcd") and QFile::exists(basename + ".png");
+			if (exists)
+			{
+				i.second->setStyleSheet(YES_STYLESHEET);
+				printf("yes %s\n", i.first.c_str());
+			}
+			else
+			{
+				i.second->setStyleSheet(NO_STYLESHEET);
+				printf("no  %s\n", i.first.c_str());
+
+			}
+		}
+		else
+		{
+			printf("*** %s\n", i.first.c_str());
+			i.second->setStyleSheet(EMPTY_STYLESHEET);
+		}
+	}
+	printf("------------\n");
+}
+
+
+
+void SpecificWorker::save(std::string base)
 {
 	static RoboCompDifferentialRobot::TBaseState bState;
 	static RoboCompJointMotor::MotorStateMap hState;
@@ -96,15 +164,10 @@ void SpecificWorker::compute()
 	{
 		std::cout << ex << std::endl;
 	}
-}
 
-
-
-void SpecificWorker::save(std::string base)
-{
-	timespec ts;
-	clock_gettime(CLOCK_REALTIME, &ts);
-	string basename = lineEdit->text().toStdString() + "_" + base  + "_" + QString::number(ts.tv_sec).toStdString();
+// 	timespec ts;
+// 	clock_gettime(CLOCK_REALTIME, &ts);
+	string basename = lineEdit->text().toStdString() + "_" + base  + "_"/* + QString::number(ts.tv_sec).toStdString()*/;
 	writer.write<PointT>(basename + ".pcd", *cloud, false);
 	cv::imwrite(basename + ".png", frame);
 }
