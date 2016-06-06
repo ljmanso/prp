@@ -97,7 +97,7 @@ void SpecificWorker::compute()
 	{
 		if (lineEdit->text().size() != 0)
 		{
-			const QString basename = QString::fromStdString(lineEdit->text().toStdString() + "_" + i.first  + "_");
+			const QString basename = QString::fromStdString(lineEdit->text().toStdString() + "_" + i.first );
 			const bool exists = QFile::exists(basename + ".pcd") and QFile::exists(basename + ".png");
 			if (exists)
 			{
@@ -139,6 +139,16 @@ void SpecificWorker::save(std::string base)
 		frame = cv::Mat(480, 640, CV_8UC3,  &(rgbMatrix)[0]);
 //         imshow("3D viewer",frame);
 		
+		for (int r=0; r<480; r++)
+		{
+			for (int c=0; c<640; c++)
+			{
+				frame.at<cv::Vec3b>(r,c)[0] = frame.at<cv::Vec3b>(r,c)[2];
+				frame.at<cv::Vec3b>(r,c)[1] = frame.at<cv::Vec3b>(r,c)[1];
+				frame.at<cv::Vec3b>(r,c)[2] = frame.at<cv::Vec3b>(r,c)[0];
+			}
+		}
+
 		QImage img = QImage((uint8_t *)&rgbMatrix[0], 640, 480, QImage::Format_RGB888);
 		label->setPixmap(QPixmap::fromImage(img));
 		label->resize(label->pixmap()->size());
