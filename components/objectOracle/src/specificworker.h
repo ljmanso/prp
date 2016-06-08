@@ -88,6 +88,7 @@ extern "C"{
 #define IMAGE_HEIGHT 480
 #define TABLE_DISTANCE 2500
 #define OFFSET 15
+#define INNER_VIEWER
 
 //#include "t.hpp"
 

@@ -1187,7 +1187,7 @@ void SpecificWorker::updateViewer()
 
 	if (not innerViewer)
 	{
-		innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
+		innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), false);
 //		printf("innerViewer: %p\n", innerViewer);
 		innerViewer->setMainCamera(manipulator, InnerModelViewer::TOP_POV);
 	}
@@ -1206,7 +1206,7 @@ void SpecificWorker::changeInner ()
 		osgView->getRootGroup()->removeChild(innerViewer);				
 	}
 	inner_mutex->lock();
-	innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
+	innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), false);
 	inner_mutex->unlock();
 }
 #endif 
