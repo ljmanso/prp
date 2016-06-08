@@ -106,6 +106,7 @@ public:
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
 
+        void loadTablesFromModel();
 	bool reloadConfigAgent();
 	bool activateAgent(const ParameterMap &prs);
 	bool setAgentParameters(const ParameterMap &prs);
@@ -133,8 +134,8 @@ public:
 	void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications);
 	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
-	std::string checkTable();
-	bool isTableVisible(const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
+	std::string checkTable(RoboCompRGBD::ColorSeq image);
+	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
 public slots:
 	void compute();
@@ -145,6 +146,8 @@ private:
 	std::map<std::string, double>  table3;
 	std::map<std::string, double>  table4;
 	std::map<std::string, double>  table5;
+        
+        std::vector< std::pair< std::map<std::string, double>, int> > tables; 
 	
 	CaffeClassifier *caffe_classifier;
 	int image_segmented_counter;

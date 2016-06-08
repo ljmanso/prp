@@ -62,10 +62,9 @@ first(true)
 	#ifdef INNER_VIEWER
 		//AGM Model Viewer
 		osgView = new OsgView();
-		show();
 		manipulator = new osgGA::TrackballManipulator;
 		osgView->setCameraManipulator(manipulator, true);
-		show();
+                osgView->show();
 	#endif
 // 	load_tables_info();
         
@@ -95,6 +94,22 @@ first(true)
 SpecificWorker::~SpecificWorker()
 {
 	
+}
+
+void SpecificWorker::loadTablesFromModel()
+{
+    auto symbols = worldModel->getSymbolsMap(params, "table");
+    
+    for (const auto& elem : symbols)
+    {
+        
+        std::map<std::string, double> table;
+        
+        //lets save the table map and its id
+        
+        tables.push_back( std::pair <std::map<std::string, double>, int> (table, elem.second->identifier) );
+    }
+        
 }
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
@@ -161,14 +176,14 @@ void SpecificWorker::compute()
 	}
 	//read image from kinect
 	try
-    {
-        qDebug() << "read frame";
-        rgbd_proxy->getRGB(rgbImage, hState, bState);
+        {
+                qDebug() << "read frame";
+                rgbd_proxy->getRGB(rgbImage, hState, bState);
 		rgbd_proxy->getXYZ(points, hState, bState);
 		//Convert image to RoboCompObjectOracle
 //		memcpy(&oracleImage[0], &rgbImage[0], IMAGE_WIDTH*IMAGE_HEIGHT*3);
 
-		std::string location = checkTable();
+		std::string location = checkTable(rgbImage);
 		//std::string location = "table1";
 		//if robot is close to any table
 
@@ -214,7 +229,7 @@ void SpecificWorker::compute()
 		updateViewer();
 	#endif
 }
-std::string SpecificWorker::checkTable()
+std::string SpecificWorker::checkTable(RoboCompRGBD::ColorSeq image)
 {
 	world_mutex->lock();
 	AGMModel::SPtr copyModel(new AGMModel(worldModel));
@@ -238,8 +253,8 @@ std::string SpecificWorker::checkTable()
 						const float tableWidth  = str2float(symbol->getAttribute("width"));
 						const float tableHeight = str2float(symbol->getAttribute("height"));
 						const float tableDepth  = str2float(symbol->getAttribute("depth"));
-	printf("Checking table %s\n", tableIMName.c_str());
-						if (isTableVisible(tableIMName, tableWidth, tableHeight, tableDepth))
+						printf("Checking table %s\n", tableIMName.c_str());
+						if (isTableVisible(image, tableIMName, tableWidth, tableHeight, tableDepth))
 						{
 							return tableIMName;
 						}
@@ -255,7 +270,7 @@ std::string SpecificWorker::checkTable()
 	return table;
 }
 
-bool SpecificWorker::isTableVisible(const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth)
+bool SpecificWorker::isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth)
 {
 	inner_mutex->lock();
 	float distance = innerModel->transform("rgbd", tableIMName.c_str()).norm2();
@@ -313,7 +328,32 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 		b2.print("leftup 2");
 		c2.print("rightdown 2");
 		d2.print("rightup 2");
+		
+		
+		
+		
 */		
+                //draw points on screen
+                matImage = cv::Mat(640,480,CV_8UC3, cv::Scalar::all(0));
+                    
+
+                for(unsigned int i=0; i<image.size(); i++)
+                {
+                        int row = i/640;
+                        int column = i-(row*640);
+                        
+                        matImage.at<cv::Vec3b>(row,column) = cv::Vec3b(image[i].blue, image[i].green, image[i].red);
+                }
+                    
+                for (QVec v : points_on_screen)
+                {
+                     cv::circle(matImage, cv::Point((int)v(1),(int)v(0)), 5, (0,0,255), -1);
+                }   
+
+                cv::Mat frame(right-left, up-down, CV_8UC3,  matImage.data);
+                cv::imshow("3D viewer",matImage);
+
+
 		std::cout<<"Table: "<<tableIMName<<" ==> Num corners on screen: "<< points_on_screen.size() <<std::endl;
 		if (points_on_screen.size() > 2)
 		{
@@ -333,6 +373,8 @@ bool SpecificWorker::isTableVisible(const std::string tableIMName, const float t
 				if (point(1) <= IMAGE_HEIGHT && point(1) > up)
 					up = point(1);
 			}
+			
+			
 			left -= OFFSET;
 			right += OFFSET;
 			down -= OFFSET;
@@ -432,7 +474,7 @@ void SpecificWorker::save_tables_info()
     oa << table2;
     oa << table3;
     oa << table4;
-	oa << table5;
+    oa << table5;
     
 }
 
@@ -445,7 +487,7 @@ void SpecificWorker::load_tables_info()
     oa >> table2;
     oa >> table3;
     oa >> table4;
-  	oa >> table5;
+    oa >> table5;
 }
 
 std::fstream& GotoLine(std::fstream& file, unsigned int num)
@@ -633,9 +675,9 @@ void SpecificWorker::processImage(cv::Mat matImage, std::string location)
                     }
                     else
                     {
-						if(location.compare("table5") == 0)
-						{
-							std::map<std::string,double>::iterator it = table5.find(label);
+			if(location.compare("table5") == 0)
+			{
+                            std::map<std::string,double>::iterator it = table5.find(label);
                             if (it == table5.end())
                                 table5.insert ( std::pair<std::string, double>(label,result[i].believe) );
                             else
@@ -655,7 +697,7 @@ void SpecificWorker::processImage(cv::Mat matImage, std::string location)
             }
         }
     }
-	printf("proccesImage end\n");       
+    printf("proccesImage end\n");       
     
 }
 
@@ -1187,7 +1229,7 @@ void SpecificWorker::updateViewer()
 
 	if (not innerViewer)
 	{
-		innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
+		innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), false);
 //		printf("innerViewer: %p\n", innerViewer);
 		innerViewer->setMainCamera(manipulator, InnerModelViewer::TOP_POV);
 	}
@@ -1206,7 +1248,8 @@ void SpecificWorker::changeInner ()
 		osgView->getRootGroup()->removeChild(innerViewer);				
 	}
 	inner_mutex->lock();
-	innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
+                                                  
+	innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), false);
 	inner_mutex->unlock();
 }
 #endif 
