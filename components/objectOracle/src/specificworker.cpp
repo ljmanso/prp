@@ -376,7 +376,7 @@ bool SpecificWorker::isTableVisible(RoboCompRGBD::ColorSeq image, const std::str
 			
 			left -= OFFSET;
 			right += OFFSET;
-			down -= OFFSET;
+			down -= OFFSET_TOP;
 			up += OFFSET;
 			
 			if (left < 0)
