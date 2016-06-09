@@ -136,6 +136,7 @@ public:
 	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 	std::string checkTable(RoboCompRGBD::ColorSeq image);
+        std::string checkTableApril(RoboCompRGBD::ColorSeq image);
 	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
 public slots:
