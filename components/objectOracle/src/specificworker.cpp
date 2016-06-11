@@ -218,8 +218,8 @@ void SpecificWorker::compute()
 			
 		
 //			unsigned int elapsed_time = get_current_time();
-			processDataFromKinect(matImage, points, location);
-                        labelImage(matImage);
+			//processDataFromKinect(matImage, points, location);
+                        labelImage(matImage, location);
 //			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
                         cv::imshow("3D viewer",matImage);
@@ -540,10 +540,11 @@ void SpecificWorker::processDataFromKinect(cv::Mat matImage, const RoboCompRGBD:
 	
 }
 
-void SpecificWorker::labelImage(cv::Mat &matImage)
+void SpecificWorker::labelImage(cv::Mat &matImage, std::string location)
 {
 	/// Global variables
 	cv::Mat blt,tophat,gray,bw;
+	ResultList result;
 	
 	int morph_elem = 0;
 	int morph_size = 21;
@@ -570,9 +571,9 @@ void SpecificWorker::labelImage(cv::Mat &matImage)
 	///Thresholding to create binay image.
 	int threshval=30;
 	bw = threshval < 128 ? (gray > threshval) : (gray < threshval);
-	cv::Mat labelImage(gray.size(), CV_32S);
+	cv::Mat labeledImage(gray.size(), CV_32S);
 	///Labeling each segment.
-	int nLabels = connectedComponents(bw, labelImage, 8);
+	int nLabels = connectedComponents(bw, labeledImage, 8);
 	std::vector<cv::Rect> rects(nLabels);
 	///Fitting bounding-box to segments.
     
@@ -587,7 +588,7 @@ void SpecificWorker::labelImage(cv::Mat &matImage)
 	{
 		for(int c = 0; c < dst.cols; ++c)
 		{
-		int label = labelImage.at<int>(r, c);
+		int label = labeledImage.at<int>(r, c);
 		if(c<rects[label].x)rects[label].x=c;
 		if(r<rects[label].y)rects[label].y=r;
 			if(c>rects[label].width)rects[label].width=c;
@@ -621,13 +622,21 @@ void SpecificWorker::labelImage(cv::Mat &matImage)
 		std::vector<Prediction> predictions = labeler->Classify(roi);
 			Prediction p = predictions[0];
 		top_score=p.second;
-			top_label=p.first;
-			putText(dst, top_label.substr(0, top_label.find(",")), rects[label].tl(), CV_FONT_HERSHEY_DUPLEX, 0.5, cvScalar(0,0,250), 1, CV_AA);
-		cout<<"Window ID:"<<label<<", detected category:"<<top_label<<", score:"<<top_score<<endl;
+		top_label=p.first;
+		putText(dst, top_label.substr(0, top_label.find(",")), rects[label].tl(), CV_FONT_HERSHEY_DUPLEX, 0.5, cvScalar(0,0,250), 1, CV_AA);
+// 		cout<<"Window ID:"<<label<<", detected category:"<<top_label<<", score:"<<top_score<<endl;
 		
+		//add label to results
+		Label l;
+		l.name = p.first;
+		l.believe = p.second;
+		result.push_back(l);
 	}
 	
 	matImage = dst;
+	
+	//add labels to table
+	addLabelsToTable(result, location);
 	
 }
 
@@ -692,8 +701,16 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 void SpecificWorker::processImage(cv::Mat matImage, std::string location)
 {
     ResultList result;
-    std::string label;
+    
     getLabelsFromImageWithCaffe(matImage, result);
+    addLabelsToTable(result, location);
+    printf("proccesImage end\n");       
+    
+}
+
+void SpecificWorker::addLabelsToTable(ResultList result, std::string location)
+{
+    std::string label;
     
     for(uint i=0; i<result.size(); i++)
     {
@@ -790,8 +807,6 @@ void SpecificWorker::processImage(cv::Mat matImage, std::string location)
             }
         }
     }
-    printf("proccesImage end\n");       
-    
 }
 
 void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)

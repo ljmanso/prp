@@ -137,6 +137,7 @@ public:
 	void processDataFromDir(const boost::filesystem::path &base_dir);
 	//given an image and its location it process its objects and save them to the corresponding location
 	void processImage(cv::Mat image, std::string location);
+	void addLabelsToTable(ResultList result, std::string location);
 	void save_tables_info();
 	void load_tables_info();
 	   
@@ -155,7 +156,7 @@ public:
         std::string checkTableApril(RoboCompRGBD::ColorSeq image);
 	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
-        void labelImage(cv::Mat &matImage);
+        void labelImage(cv::Mat &matImage, std::string location);
         
 public slots:
 	void compute();
