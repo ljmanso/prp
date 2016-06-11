@@ -138,6 +138,7 @@ public:
 	//given an image and its location it process its objects and save them to the corresponding location
 	void processImage(cv::Mat image, std::string location);
 	void addLabelsToTable(ResultList result, std::string location);
+	void saveData(cv::Mat matImage, const RoboCompRGBD::PointSeq &points_kinect, std::string location);
 	void save_tables_info();
 	void load_tables_info();
 	   
@@ -173,7 +174,7 @@ private:
 	CaffeClassifier *caffe_classifier;
         std::shared_ptr<Labeler> labeler;
         
-        
+        int image_save_counter;
 	int image_segmented_counter;
 	std::string action;
 	QTime actionTime;

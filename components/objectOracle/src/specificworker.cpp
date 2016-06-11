@@ -38,6 +38,7 @@ first(true)
 {
 	modifiedWorld = -1;
 	image_segmented_counter = 0;
+	image_save_counter = 0;
 	active = false;
 	worldModel = AGMModel::SPtr(new AGMModel());
 	worldModel->name = "worldModel";
@@ -220,6 +221,7 @@ void SpecificWorker::compute()
 //			unsigned int elapsed_time = get_current_time();
 			//processDataFromKinect(matImage, points, location);
                         labelImage(matImage, location);
+			saveData(matImage, points, location);
 //			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
                         cv::imshow("3D viewer",matImage);
@@ -638,6 +640,17 @@ void SpecificWorker::labelImage(cv::Mat &matImage, std::string location)
 	//add labels to table
 	addLabelsToTable(result, location);
 	
+}
+
+void SpecificWorker::saveData(cv::Mat matImage, const RoboCompRGBD::PointSeq &points_kinect, std::string location)
+{
+	
+	std::string file_name = std::to_string(image_save_counter) + "_" + location;
+	
+	cv::imwrite( file_name + ".jpg", matImage );
+	pcl::io::savePCDFileASCII (file_name + ".pcd", *cloud);
+	
+	++image_save_counter;
 }
 
 void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
