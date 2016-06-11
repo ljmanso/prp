@@ -48,6 +48,7 @@ SET ( SOURCES
     ccv/3rdparty/dsfmt/dSFMT.c
     ccv/3rdparty/sfmt/SFMT.c
     caffeClassifier.cpp
+    labeler.cpp
 )
 
 
@@ -63,7 +64,7 @@ SET ( HEADERS
 
 INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
 # opencv2
-INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/caffe.cmake )
 
 find_package(PCL 1.2 REQUIRED)

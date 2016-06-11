@@ -59,6 +59,19 @@
 #include <innermodel/innermodelviewer.h>
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/utility.hpp>
+#include <opencv2/saliency.hpp>
+#include <opencv2/highgui.hpp>
+#include "opencv2/imgcodecs.hpp"
+
+#include <algorithm>
+#include <iosfwd>
+#include <memory>
+#include <utility>
+#include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -70,6 +83,8 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include "caffeClassifier.h"
+
+#include "labeler.h"
 
 #endif
 
@@ -139,6 +154,8 @@ public:
         std::string checkTableApril(RoboCompRGBD::ColorSeq image);
 	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
+        void labelImage(cv::Mat &matImage);
+        
 public slots:
 	void compute();
 
@@ -152,6 +169,9 @@ private:
         std::vector< std::pair< std::map<std::string, double>, int> > tables; 
 	
 	CaffeClassifier *caffe_classifier;
+        std::shared_ptr<Labeler> labeler;
+        
+        
 	int image_segmented_counter;
 	std::string action;
 	QTime actionTime;
@@ -170,8 +190,8 @@ private:
 	void action_imagineMostLikelyMilkInPosition();
 	
 	RoboCompDifferentialRobot::TBaseState bState;
-    RoboCompJointMotor::MotorStateMap hState;
-    RoboCompRGBD::ColorSeq rgbImage;
+        RoboCompJointMotor::MotorStateMap hState;
+        RoboCompRGBD::ColorSeq rgbImage;
 	RoboCompRGBD::PointSeq points;
 	RoboCompObjectOracle::ColorSeq oracleImage;
 	pcl::PointCloud<PointT>::Ptr cloud;

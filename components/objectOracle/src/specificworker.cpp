@@ -59,6 +59,10 @@ first(true)
 	std::string label_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/synset_words.txt";
 	
 	caffe_classifier = new CaffeClassifier(model_file, trained_file, mean_file, label_file);
+        
+        labeler = std::make_shared<Labeler>(model_file, trained_file, mean_file, label_file);
+        
+        
 	#ifdef INNER_VIEWER
 		//AGM Model Viewer
 		osgView = new OsgView();
@@ -211,12 +215,14 @@ void SpecificWorker::compute()
 			}
 
 			cv::Mat frame(right-left, up-down, CV_8UC3,  matImage.data);
-			cv::imshow("3D viewer",matImage);
+			
 		
 //			unsigned int elapsed_time = get_current_time();
 			processDataFromKinect(matImage, points, location);
+                        labelImage(matImage);
 //			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
+                        cv::imshow("3D viewer",matImage);
 		}
 
     }
@@ -329,10 +335,7 @@ bool SpecificWorker::isTableVisible(RoboCompRGBD::ColorSeq image, const std::str
 		c2.print("rightdown 2");
 		d2.print("rightup 2");
 		
-		
-		
-		
-		
+
                 //draw points on screen
                 matImage = cv::Mat(480,640,CV_8UC3, cv::Scalar::all(0));
                     
@@ -534,6 +537,97 @@ void SpecificWorker::processDataFromKinect(cv::Mat matImage, const RoboCompRGBD:
 //		RoboCompObjectOracle::ColorSeq auxMatrix = convertMat2ColorSeq (segmented_objects[i]);
 		processImage(segmented_objects[i], location);
 	}
+	
+}
+
+void SpecificWorker::labelImage(cv::Mat &matImage)
+{
+	/// Global variables
+	cv::Mat blt,tophat,gray,bw;
+	
+	int morph_elem = 0;
+	int morph_size = 21;
+
+	int const max_elem = 2;
+	
+	if( matImage.empty() )
+	{ 
+		std::cout<<"Image to label not valid!"<<std::endl;
+		return -1; 
+	}
+
+	/// Bilateral Filtering: edge preserving color and spatial filter.
+
+	bilateralFilter(matImage, blt, 8, 40, 5, 1 );
+
+	int operation = 4 + 2;
+
+	cv::Mat element = cv::getStructuringElement( morph_elem, cv::Size( 2*morph_size + 1, 2*morph_size+1 ), cv::Point( morph_size, morph_size ) );
+
+	/// Apply the specified morphology operation (tophat).
+	morphologyEx( blt, tophat, operation, element);
+	cvtColor(tophat, gray, CV_BGR2GRAY);
+	///Thresholding to create binay image.
+	int threshval=30;
+	bw = threshval < 128 ? (gray > threshval) : (gray < threshval);
+	cv::Mat labelImage(gray.size(), CV_32S);
+	///Labeling each segment.
+	int nLabels = connectedComponents(bw, labelImage, 8);
+	std::vector<cv::Rect> rects(nLabels);
+	///Fitting bounding-box to segments.
+    
+	for(int label = 0; label < nLabels; ++label)
+	{
+			//Note:storing in form (rmin,cmin,rmax,cmax) and not (xmin,ymin,width,height)
+		rects[label]=cv::Rect(gray.rows,gray.cols, 0,0 ); 
+	}
+	
+	cv::Mat dst(gray.size(), CV_8UC3);
+	for(int r = 0; r < dst.rows; ++r)
+	{
+		for(int c = 0; c < dst.cols; ++c)
+		{
+		int label = labelImage.at<int>(r, c);
+		if(c<rects[label].x)rects[label].x=c;
+		if(r<rects[label].y)rects[label].y=r;
+			if(c>rects[label].width)rects[label].width=c;
+		if(r>rects[label].height)rects[label].height=r;
+		}
+	}
+	
+	dst=matImage;
+	cv::Scalar rect_color = cv::Scalar( 0, 0, 255 );
+	///Extract each bounding-box, draw rectangle and classify using CNN
+	for(int label = 0; label < nLabels; ++label)
+	{
+		//Note:converting back to (xmin,ymin,width,height) format.
+		rects[label].width=rects[label].width-rects[label].x;
+		rects[label].height=rects[label].height-rects[label].y;
+		if(rects[label].width*rects[label].height<200)
+			continue;            	 
+		
+		rectangle( dst, rects[label].tl(), rects[label].br(), rect_color, 2, 8, 0 );
+		cv::Rect r1=rects[label];
+		cv::Rect r2;
+		int bord=20; 
+		r2.x=r1.x-bord > 0 ? r1.x-bord : r1.x;
+		r2.y=r1.y-bord > 0 ? r1.y-bord : r1.y;
+		r2.width= r1.x+r1.width+bord < matImage.cols ? r1.width+bord:r1.width;
+		r2.height=r1.y+r1.height+bord < matImage.rows ? r1.height+bord:r1.height;
+		cv::Mat roi = matImage( r2 );
+		float top_score=-1;
+		std::string top_label="";
+
+		std::vector<Prediction> predictions = labeler->Classify(roi);
+			Prediction p = predictions[0];
+		top_score=p.second;
+			top_label=p.first;
+			putText(dst, top_label.substr(0, top_label.find(",")), rects[label].tl(), CV_FONT_HERSHEY_DUPLEX, 0.5, cvScalar(0,0,250), 1, CV_AA);
+		cout<<"Window ID:"<<label<<", detected category:"<<top_label<<", score:"<<top_score<<endl;
+		
+	}
+	
+	matImage = dst;
 	
 }
 
@@ -965,7 +1059,8 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 
  		}
  		
- 		cv::RotatedRect rect = cv::minAreaRect(cv::Mat(points));
+		cv::RotatedRect rect = cv::minAreaRect(cv::Mat(points));
+		
 // 		cv::Point2f vertices[4];
 // 		box.points(vertices);
 		cv::Mat M_, rotated, cropped;
@@ -1228,7 +1323,7 @@ void SpecificWorker::updateViewer()
 
 	if (not innerViewer)
 	{
-		innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), false);
+		innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
 //		printf("innerViewer: %p\n", innerViewer);
 		innerViewer->setMainCamera(manipulator, InnerModelViewer::TOP_POV);
 	}
@@ -1247,7 +1342,7 @@ void SpecificWorker::changeInner ()
 		osgView->getRootGroup()->removeChild(innerViewer);				
 	}
 	inner_mutex->lock();
-	innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), false);
+	innerViewer = new InnerModelViewer(innerModel, "root", osgView->getRootGroup(), true);
 	inner_mutex->unlock();
 }
 #endif 
