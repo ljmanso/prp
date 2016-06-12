@@ -158,7 +158,8 @@ public:
 	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
 	void labelImage(cv::Mat matImage, std::string location);
-        
+	void showTablesOnInterface();
+	
 public slots:
 	void compute();
 	void save_tables_info();

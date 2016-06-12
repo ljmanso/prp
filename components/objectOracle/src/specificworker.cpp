@@ -520,30 +520,37 @@ void SpecificWorker::load_tables_info()
 		oa >> table5;
 		
 		//display results
-		table1_qmat = QMap<std::string, double>(table1);
-		mapmodel_1.setMap(&table1_qmat);
-		tableView_1->setModel(&mapmodel_1);
-		
-		table2_qmat = QMap<std::string, double>(table2);
-		mapmodel_2.setMap(&table2_qmat);
-		tableView_2->setModel(&mapmodel_2);
-		
-		table3_qmat = QMap<std::string, double>(table3);
-		mapmodel_3.setMap(&table3_qmat);
-		tableView_3->setModel(&mapmodel_3);
-		
-		table4_qmat = QMap<std::string, double>(table4);
-		mapmodel_4.setMap(&table4_qmat);
-		tableView_4->setModel(&mapmodel_4);
-		
-		table5_qmat = QMap<std::string, double>(table5);
-		mapmodel_5.setMap(&table5_qmat );
-		tableView_5->setModel(&mapmodel_5);
+		showTablesOnInterface();
 		
 	}
 	else
 		std::cout<<"No tables initialization found, proceding with empty tables.";
 
+}
+
+void SpecificWorker::showTablesOnInterface()
+{
+	
+	table1_qmat = QMap<std::string, double>(table1);
+	mapmodel_1.setMap(&table1_qmat);
+	tableView_1->setModel(&mapmodel_1);
+	
+	table2_qmat = QMap<std::string, double>(table2);
+	mapmodel_2.setMap(&table2_qmat);
+	tableView_2->setModel(&mapmodel_2);
+	
+	table3_qmat = QMap<std::string, double>(table3);
+	mapmodel_3.setMap(&table3_qmat);
+	tableView_3->setModel(&mapmodel_3);
+	
+	table4_qmat = QMap<std::string, double>(table4);
+	mapmodel_4.setMap(&table4_qmat);
+	tableView_4->setModel(&mapmodel_4);
+	
+	table5_qmat = QMap<std::string, double>(table5);
+	mapmodel_5.setMap(&table5_qmat );
+	tableView_5->setModel(&mapmodel_5);
+	
 }
 
 std::fstream& GotoLine(std::fstream& file, unsigned int num)
@@ -692,6 +699,8 @@ void SpecificWorker::labelImage(cv::Mat matImage, std::string location)
 	//add labels to table
 	addLabelsToTable(result, location);
 	
+	//display results
+	showTablesOnInterface();
 }
 
 void SpecificWorker::saveData(cv::Mat &fullImage, const pcl::PointCloud<PointT>::Ptr full_points, cv::Mat &matImage, const pcl::PointCloud<PointT>::Ptr points, std::string location)
