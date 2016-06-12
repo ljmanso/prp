@@ -53,6 +53,7 @@ first(true)
 	points.resize(IMAGE_WIDTH*IMAGE_HEIGHT);
 	
 	cloud = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>);
+	fullCloud = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>);
 	
 	std::string model_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/deploy.prototxt";
 	std::string trained_file = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/bvlc_reference_caffenet.caffemodel";
@@ -182,9 +183,9 @@ void SpecificWorker::compute()
 	}
 	//read image from kinect
 	try
-        {
-                qDebug() << "read frame";
-                rgbd_proxy->getRGB(rgbImage, hState, bState);
+	{
+		qDebug() << "read frame";
+		rgbd_proxy->getRGB(rgbImage, hState, bState);
 		rgbd_proxy->getXYZ(points, hState, bState);
 		//Convert image to RoboCompObjectOracle
 //		memcpy(&oracleImage[0], &rgbImage[0], IMAGE_WIDTH*IMAGE_HEIGHT*3);
@@ -196,6 +197,10 @@ void SpecificWorker::compute()
 		if (location != "invalid" )
 		{
 			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
+			//full image
+			fullImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
+			
+			
 			//crop image 
 			matImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
 			cloud->clear();
@@ -215,14 +220,29 @@ void SpecificWorker::compute()
 					k++;
 				}
 			}
+			
+			for(int j=0; j<up; j++)
+			{
+				for(int i=0; i<right; i++)
+				{
+					pos = j * i;
+					fullImage.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
+					QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
+					memcpy(&fullCloud->points[k],p1.data(),3*sizeof(float));
+					fullCloud->points[k].r = rgbImage[pos].red;
+					fullCloud->points[k].g = rgbImage[pos].green;
+					fullCloud->points[k].b = rgbImage[pos].blue;
+					k++;
+				}
+			}
 
 			cv::Mat frame(right-left, up-down, CV_8UC3,  matImage.data);
 			
 		
 //			unsigned int elapsed_time = get_current_time();
 			//processDataFromKinect(matImage, points, location);
-                        labelImage(matImage, location);
-			saveData(matImage, points, location);
+			labelImage(matImage, location);
+			saveData(fullImage, fullCloud, matImage, cloud, location);
 //			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
                         cv::imshow("3D viewer",matImage);
@@ -498,24 +518,24 @@ void SpecificWorker::load_tables_info()
 		oa >> table5;
 		
 		//display results
-		MapModel mapmodel_1;
-		mapmodel_1.setMap(&QMap<std::string, double>(table1));
+		table1_qmat = QMap<std::string, double>(table1);
+		mapmodel_1.setMap(&table1_qmat);
 		tableView_1->setModel(&mapmodel_1);
 		
-		MapModel mapmodel_2;
-		mapmodel_2.setMap(&QMap<std::string, double>(table2));
+		table2_qmat = QMap<std::string, double>(table2);
+		mapmodel_2.setMap(&table2_qmat);
 		tableView_2->setModel(&mapmodel_2);
 		
-		MapModel mapmodel_3;
-		mapmodel_3.setMap(&QMap<std::string, double>(table3));
+		table3_qmat = QMap<std::string, double>(table3);
+		mapmodel_3.setMap(&table3_qmat);
 		tableView_3->setModel(&mapmodel_3);
 		
-		MapModel mapmodel_4;
-		mapmodel_4.setMap(&QMap<std::string, double>(table4));
+		table4_qmat = QMap<std::string, double>(table4);
+		mapmodel_4.setMap(&table4_qmat);
 		tableView_4->setModel(&mapmodel_4);
 		
-		MapModel mapmodel_5;
-		mapmodel_5.setMap(&QMap<std::string, double>(table5));
+		table5_qmat = QMap<std::string, double>(table5);
+		mapmodel_5.setMap(&table5_qmat );
 		tableView_5->setModel(&mapmodel_5);
 		
 	}
@@ -572,7 +592,7 @@ void SpecificWorker::processDataFromKinect(cv::Mat matImage, const RoboCompRGBD:
 	
 }
 
-void SpecificWorker::labelImage(cv::Mat &matImage, std::string location)
+void SpecificWorker::labelImage(cv::Mat matImage, std::string location)
 {
 	/// Global variables
 	cv::Mat blt,tophat,gray,bw;
@@ -672,10 +692,13 @@ void SpecificWorker::labelImage(cv::Mat &matImage, std::string location)
 	
 }
 
-void SpecificWorker::saveData(cv::Mat matImage, const RoboCompRGBD::PointSeq &points_kinect, std::string location)
+void SpecificWorker::saveData(cv::Mat &fullImage, const pcl::PointCloud<PointT>::Ptr full_points, cv::Mat &matImage, const pcl::PointCloud<PointT>::Ptr points, std::string location)
 {
 	
 	std::string file_name = std::to_string(image_save_counter) + "_" + location;
+	
+	cv::imwrite( file_name + "_full.jpg", fullImage );
+	pcl::io::savePCDFileASCII (file_name + "_full.pcd", *full_points);
 	
 	cv::imwrite( file_name + ".jpg", matImage );
 	pcl::io::savePCDFileASCII (file_name + ".pcd", *cloud);
@@ -828,26 +851,26 @@ void SpecificWorker::addLabelsToTable(ResultList result, std::string location)
                     }
                     else
                     {
-			if(location.compare("table5") == 0)
-			{
-                            std::map<std::string,double>::iterator it = table5.find(label);
-                            if (it == table5.end())
-                                table5.insert ( std::pair<std::string, double>(label,result[i].believe) );
-                            else
-							{
-// 								std::cout<<" ------------ Max: "<<table5[label]<<" "<<(double)result[i].believe;
-                                table5[label] = std::max(table5[label], (double)result[i].believe);
-// 								std::cout<<"Result: "<<table5[label]<<std::endl;
-							}
+						if(location.compare("table5") == 0)
+						{
+										std::map<std::string,double>::iterator it = table5.find(label);
+										if (it == table5.end())
+											table5.insert ( std::pair<std::string, double>(label,result[i].believe) );
+										else
+										{
+			// 								std::cout<<" ------------ Max: "<<table5[label]<<" "<<(double)result[i].believe;
+											table5[label] = std::max(table5[label], (double)result[i].believe);
+			// 								std::cout<<"Result: "<<table5[label]<<std::endl;
+										}
 						}
 						else
 						{
-							std::cout<<"Processing Image: Location not properly specified"<<std::endl;
+						std::cout<<"Processing Image: Location not properly specified"<<std::endl;
 							return;
 						}
-                    }
-                }
-            }
+					}
+				}
+			}
         }
     }
 }

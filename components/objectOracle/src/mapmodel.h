@@ -21,11 +21,9 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     inline void setMap(QMap<std::string, double>* map) 
 	{
-		for (QMap<std::string, double>::iterator it=map->begin(); it!=map->end(); ++it)
-			std::cout<<"Label: "<<it.key()<<std::endl;
 			
 		beginResetModel();
-		map = map; 
+		_map = map; 
 		endResetModel();
 	}
 

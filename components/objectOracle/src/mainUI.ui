@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>795</width>
-    <height>666</height>
+    <width>774</width>
+    <height>859</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,11 +16,14 @@
   <widget class="QTableView" name="tableView_1">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>10</y>
-     <width>251</width>
-     <height>291</height>
+     <width>241</width>
+     <height>351</height>
     </rect>
+   </property>
+   <property name="sortingEnabled">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QTableView" name="tableView_2">
@@ -28,39 +31,51 @@
     <rect>
      <x>270</x>
      <y>10</y>
-     <width>251</width>
-     <height>291</height>
+     <width>221</width>
+     <height>351</height>
     </rect>
+   </property>
+   <property name="sortingEnabled">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QTableView" name="tableView_3">
    <property name="geometry">
     <rect>
-     <x>530</x>
+     <x>510</x>
      <y>10</y>
-     <width>251</width>
-     <height>291</height>
+     <width>231</width>
+     <height>351</height>
     </rect>
+   </property>
+   <property name="sortingEnabled">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QTableView" name="tableView_4">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>330</y>
-     <width>251</width>
-     <height>291</height>
+     <x>20</x>
+     <y>380</y>
+     <width>241</width>
+     <height>441</height>
     </rect>
+   </property>
+   <property name="sortingEnabled">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QTableView" name="tableView_5">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>330</y>
+     <x>380</x>
+     <y>380</y>
      <width>251</width>
-     <height>291</height>
+     <height>441</height>
     </rect>
+   </property>
+   <property name="sortingEnabled">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

@@ -139,7 +139,7 @@ public:
 	//given an image and its location it process its objects and save them to the corresponding location
 	void processImage(cv::Mat image, std::string location);
 	void addLabelsToTable(ResultList result, std::string location);
-	void saveData(cv::Mat matImage, const RoboCompRGBD::PointSeq &points_kinect, std::string location);
+	void saveData(cv::Mat &fullImage, const pcl::PointCloud<PointT>::Ptr full_points, cv::Mat &matImage, const pcl::PointCloud<PointT>::Ptr points, std::string location);
 	void save_tables_info();
 	void load_tables_info();
 	   
@@ -158,7 +158,7 @@ public:
         std::string checkTableApril(RoboCompRGBD::ColorSeq image);
 	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
-        void labelImage(cv::Mat &matImage, std::string location);
+	void labelImage(cv::Mat matImage, std::string location);
         
 public slots:
 	void compute();
@@ -170,12 +170,24 @@ private:
 	std::map<std::string, double>  table4;
 	std::map<std::string, double>  table5;
 	 
+	MapModel mapmodel_1;
+	MapModel mapmodel_2;
+	MapModel mapmodel_3;
+	MapModel mapmodel_4;
+	MapModel mapmodel_5;
+	
+	QMap<std::string, double> table1_qmat;
+	QMap<std::string, double> table2_qmat;
+	QMap<std::string, double> table3_qmat;
+	QMap<std::string, double> table4_qmat;
+	QMap<std::string, double> table5_qmat;
+	
     std::vector< std::pair< std::map<std::string, double>, int> > tables; 
 	
 	CaffeClassifier *caffe_classifier;
 	std::shared_ptr<Labeler> labeler;
         
-        int image_save_counter;
+	int image_save_counter;
 	int image_segmented_counter;
 	std::string action;
 	QTime actionTime;
@@ -194,12 +206,14 @@ private:
 	void action_imagineMostLikelyMilkInPosition();
 	
 	RoboCompDifferentialRobot::TBaseState bState;
-        RoboCompJointMotor::MotorStateMap hState;
-        RoboCompRGBD::ColorSeq rgbImage;
+	RoboCompJointMotor::MotorStateMap hState;
+	RoboCompRGBD::ColorSeq rgbImage;
 	RoboCompRGBD::PointSeq points;
 	RoboCompObjectOracle::ColorSeq oracleImage;
 	pcl::PointCloud<PointT>::Ptr cloud;
 	cv::Mat matImage;
+	pcl::PointCloud<PointT>::Ptr fullCloud;
+	cv::Mat fullImage;
 	int left, right, down, up;
 	
 	#ifdef INNER_VIEWER

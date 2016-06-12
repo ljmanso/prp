@@ -23,8 +23,8 @@ QVariant MapModel::data(const QModelIndex& index, int role) const
     if (!_map)
         return QVariant();
     if (index.row() < 0 ||
-        index.row() >= _map->count() ||
-        role != Qt::DisplayRole) {
+        index.row() >= _map->count()) 
+	{
         return QVariant();
     }
     if (index.column() == 0)
