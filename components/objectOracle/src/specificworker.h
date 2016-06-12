@@ -85,6 +85,7 @@
 #include "caffeClassifier.h"
 
 #include "labeler.h"
+#include "mapmodel.h"
 
 #endif
 
@@ -168,11 +169,11 @@ private:
 	std::map<std::string, double>  table3;
 	std::map<std::string, double>  table4;
 	std::map<std::string, double>  table5;
-        
-        std::vector< std::pair< std::map<std::string, double>, int> > tables; 
+	 
+    std::vector< std::pair< std::map<std::string, double>, int> > tables; 
 	
 	CaffeClassifier *caffe_classifier;
-        std::shared_ptr<Labeler> labeler;
+	std::shared_ptr<Labeler> labeler;
         
         int image_save_counter;
 	int image_segmented_counter;

@@ -49,6 +49,8 @@ SET ( SOURCES
     ccv/3rdparty/sfmt/SFMT.c
     caffeClassifier.cpp
     labeler.cpp
+    mapmodel.cpp
+    
 )
 
 

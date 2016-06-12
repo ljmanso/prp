@@ -50,9 +50,6 @@ SET( CMAKE_AUTOMOC TRUE )
 INCLUDE( ${QT_USE_FILE} )
 
 QT4_WRAP_UI( UI_HEADERS mainUI.ui )
-
-message( " los includes del opencv ------------  " , ${LIBS})
-
 # Specify construction and link process
 SET(LIBS ${LIBS} -lagm)
 ADD_EXECUTABLE( objectoracle ${SOURCES} ${MOC_SOURCES} ${RC_SOURCES} ${UI_HEADERS} )

@@ -61,7 +61,7 @@ first(true)
 	
 	caffe_classifier = new CaffeClassifier(model_file, trained_file, mean_file, label_file);
         
-        labeler = std::make_shared<Labeler>(model_file, trained_file, mean_file, label_file);
+	labeler = std::make_shared<Labeler>(model_file, trained_file, mean_file, label_file);
         
         
 	#ifdef INNER_VIEWER
@@ -69,9 +69,10 @@ first(true)
 		osgView = new OsgView();
 		manipulator = new osgGA::TrackballManipulator;
 		osgView->setCameraManipulator(manipulator, true);
-                osgView->show();
-	#endif
-// 	load_tables_info();
+		osgView->show();
+ 	#endif
+	
+ 	load_tables_info();
         
 
 //         processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
@@ -486,12 +487,41 @@ void SpecificWorker::load_tables_info()
 {
     std::ifstream ofs("/home/robocomp/robocomp/components/prp/experimentFiles/tables_info.data");
     
-    boost::archive::text_iarchive oa(ofs);
-    oa >> table1;
-    oa >> table2;
-    oa >> table3;
-    oa >> table4;
-    oa >> table5;
+	if (ofs) 
+	{	
+		std::cout<<"Loading previously labeled tables...."<<std::endl;
+		boost::archive::text_iarchive oa(ofs);
+		oa >> table1;
+		oa >> table2;
+		oa >> table3;
+		oa >> table4;
+		oa >> table5;
+		
+		//display results
+		MapModel mapmodel_1;
+		mapmodel_1.setMap(&QMap<std::string, double>(table1));
+		tableView_1->setModel(&mapmodel_1);
+		
+		MapModel mapmodel_2;
+		mapmodel_2.setMap(&QMap<std::string, double>(table2));
+		tableView_2->setModel(&mapmodel_2);
+		
+		MapModel mapmodel_3;
+		mapmodel_3.setMap(&QMap<std::string, double>(table3));
+		tableView_3->setModel(&mapmodel_3);
+		
+		MapModel mapmodel_4;
+		mapmodel_4.setMap(&QMap<std::string, double>(table4));
+		tableView_4->setModel(&mapmodel_4);
+		
+		MapModel mapmodel_5;
+		mapmodel_5.setMap(&QMap<std::string, double>(table5));
+		tableView_5->setModel(&mapmodel_5);
+		
+	}
+	else
+		std::cout<<"No tables initialization found, proceding with empty tables.";
+
 }
 
 std::fstream& GotoLine(std::fstream& file, unsigned int num)
