@@ -44,6 +44,8 @@ first(true)
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
 	worldModelTime = actionTime = QTime::currentTime();
+	
+	connect(saveButton, SIGNAL(clicked()), this, SLOT(save_tables_info()));
 
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
 	//convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");

@@ -140,7 +140,6 @@ public:
 	void processImage(cv::Mat image, std::string location);
 	void addLabelsToTable(ResultList result, std::string location);
 	void saveData(cv::Mat &fullImage, const pcl::PointCloud<PointT>::Ptr full_points, cv::Mat &matImage, const pcl::PointCloud<PointT>::Ptr points, std::string location);
-	void save_tables_info();
 	void load_tables_info();
 	   
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
@@ -162,6 +161,7 @@ public:
         
 public slots:
 	void compute();
+	void save_tables_info();
 
 private:
 	std::map<std::string, double>  table1;
