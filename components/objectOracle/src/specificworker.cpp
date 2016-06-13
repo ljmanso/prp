@@ -200,7 +200,7 @@ void SpecificWorker::compute()
 		{
 			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
 			//full image
-			fullImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
+			fullImage = cv::Mat(480,640,CV_8UC3, cv::Scalar::all(0));
 			
 			
 			//crop image 
@@ -223,12 +223,14 @@ void SpecificWorker::compute()
 				}
 			}
 			
-			for(int j=0; j<up; j++)
+			pos = 0;
+			k=0;
+			for(int j=0; j<480; j++)
 			{
-				for(int i=0; i<right; i++)
+				for(int i=0; i<640; i++)
 				{
 					pos = j * i;
-					fullImage.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
+					fullImage.at<cv::Vec3b>(j, i) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
 					QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
 					memcpy(&fullCloud->points[k],p1.data(),3*sizeof(float));
 					fullCloud->points[k].r = rgbImage[pos].red;
