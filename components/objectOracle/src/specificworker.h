@@ -177,6 +177,12 @@ private:
 	MapModel mapmodel_4;
 	MapModel mapmodel_5;
 	
+	QSortFilterProxyModel filtermodel_1;
+	QSortFilterProxyModel filtermodel_2;
+	QSortFilterProxyModel filtermodel_3;
+	QSortFilterProxyModel filtermodel_4;
+	QSortFilterProxyModel filtermodel_5;
+	
 	QMap<std::string, double> table1_qmat;
 	QMap<std::string, double> table2_qmat;
 	QMap<std::string, double> table3_qmat;
