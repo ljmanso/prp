@@ -85,18 +85,25 @@ bool SpecificMonitor::sendParamsToWorker(RoboCompCommonBehavior::ParameterList p
 ///We need to supply a list of accepted values to each call
 void SpecificMonitor::readConfig(RoboCompCommonBehavior::ParameterList &params )
 {
-// 	RoboCompCommonBehavior::Parameter aux;
-// 	aux.editable = true;
-// 	string name = PROGRAM_NAME;
+ 	RoboCompCommonBehavior::Parameter aux;
+ 	aux.editable = false;
+ 	configGetString("", "labeling", aux.value, "off");
+	params["labeling"] = aux;
+	
+	configGetString("", "save_table_data", aux.value, "off");
+	params["save_table_data"] = aux;
+	
+	configGetString("", "save_full_data", aux.value, "off");
+	params["save_full_data"] = aux;
+	
+	
 // 	
-// 	configGetString(name+".param_name", aux.value, "default");
-// 	//Check valid ranges
-// 	if( aux.value != "val1" and aux.value != "val2")
+// 	if( aux.value != "off" && aux.value != "on")
 // 	{
 // 		std::cout << __FUNCTION__ << "Warning. Wrong XXX value. Using default xxx" << std::endl;
-// 		params[name+".param_name"] = "xxx";
+// 		params["labeling"] = aux;
 // 	}
-// 	params[name+".param_name"] = aux;
+
 }
 
 //comprueba que los parametros sean correctos y los transforma a la estructura del worker
