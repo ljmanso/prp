@@ -260,15 +260,15 @@ void SpecificWorker::compute()
 			
 			if(save_full_data)
 			{
-				//full image
-				fullImage = cv::Mat(480,640,CV_8UC3, cv::Scalar::all(0));
 				pos = 0;
 				k=0;
+				fullCloud->clear();
+				fullCloud->resize(480*640);
 				for(int j=0; j<480; j++)
 				{
 					for(int i=0; i<640; i++)
 					{
-						pos = j * i;
+						pos = j * IMAGE_WIDTH + i;
 						fullImage.at<cv::Vec3b>(j, i) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
 						QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
 						memcpy(&fullCloud->points[k],p1.data(),3*sizeof(float));
@@ -288,7 +288,7 @@ void SpecificWorker::compute()
 			//processDataFromKinect(matImage, points, location);
 			if(labeling)
 				labelImage(matImage, location);
-			
+
 //			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
 			
