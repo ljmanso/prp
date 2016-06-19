@@ -1,0 +1,12 @@
+import "/robocomp/interfaces/IDSLs/objectDetectionCNN.idsl";
+Component testobjectDetectionCNN
+{
+	Communications
+	{
+		requires objectDetectionCNN;
+		
+	};
+	language Cpp;
+	gui Qt(QWidget);
+};
+
