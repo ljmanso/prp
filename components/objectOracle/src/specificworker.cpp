@@ -230,7 +230,7 @@ void SpecificWorker::compute()
 			std::string file_name = std::to_string(image_save_counter) + "_" + location;
 			int pos = 0, k=0;
 			
-			if(save_table_data)
+			if(save_table_data || labeling)
 			{
 				//crop image 
 				matImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
@@ -253,13 +253,14 @@ void SpecificWorker::compute()
 				}
 					
 	
-				cv::imwrite( file_name + ".jpg", matImage );
-				pcl::io::savePCDFileASCII (file_name + ".pcd", *cloud);
-				cv::imshow("3D viewer",matImage);
+			//	cv::imwrite( file_name + ".jpg", matImage );
+			//	pcl::io::savePCDFileASCII (file_name + ".pcd", *cloud);
+			//	cv::imshow("3D viewer",matImage);
 			}
 			
 			if(save_full_data)
 			{
+				fullImage = cv::Mat(480,640,CV_8UC3, cv::Scalar::all(0));
 				pos = 0;
 				k=0;
 				fullCloud->clear();
@@ -287,7 +288,11 @@ void SpecificWorker::compute()
 //			unsigned int elapsed_time = get_current_time();
 			//processDataFromKinect(matImage, points, location);
 			if(labeling)
+			{
 				labelImage(matImage, location);
+				cv::imshow("Labeled table",matImage);
+			}
+					
 
 //			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
@@ -422,7 +427,7 @@ bool SpecificWorker::isTableVisible(RoboCompRGBD::ColorSeq image, const std::str
                      cv::circle(matImage, cv::Point((int)v(0),(int)v(1)), 5, (0,0,255), -1);
                 }   
 
-                cv::imshow("table" ,matImage);
+                cv::imshow("Table Detection" ,matImage);
 
 
 		std::cout<<"Table: "<<tableIMName<<" ==> Num corners on screen: "<< points_on_screen.size() <<std::endl;
