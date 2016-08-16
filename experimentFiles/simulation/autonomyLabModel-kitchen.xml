@@ -3,7 +3,7 @@
 		<axes id="ax" length="200" width="30"/>
 	<!-- 	<plane id="floor_plane" ny="1" size="15000,10000,1" py="-10" texture="/home/robocomp/robocomp/files/osgModels/textures/wood.jpg" /> -->
 		<transform id="floor" tx="3500" tz="0">
-			<plane id="back" ny="1" size="7500,8500,10" texture="#eebb77" />
+			<plane id="floor_plane" ny="1" size="7500,8500,10" texture="#eebb77" />
 		</transform>
 
 		<transform id="pared0" tx="1075.0" tz="0.0" ty="1500" >
@@ -71,11 +71,11 @@
 		<transform id="tableA" tx="1400.0" tz="3180.0" ty="800" ry="-1.5707" >
 			<plane id="tableAC" ny="1" size="1750,800"  texture="#cccccc" />
 			<transform id="bluemug" >
-				<transform id="mugRPr" tx="-10" ty="-50">
+				<transform id="mugRPr" tx="-10" ty="50">
 					<mesh id="mugR" file="/home/robocomp/robocomp/components/robocomp-ursus-rockin/files/autonomyLab/mug_blue.3ds" scale="120,120,120" rx="1.5707" rz="-1.5707" collide="1" />
 				</transform>
-				<plane id="mugTag" ny="1" py="0" size="70,-70,5.0" texture="/home/robocomp/robocomp/components/robocomp-ursus-rockin/files/autonomyLab/31.png" />
-				<plane id="mugTagb" ny="1" py="0" size="80,-80,3.5" texture="#ffffff" />
+				<plane id="mugTag" ny="1" py="100" size="70,-70,5.0" texture="/home/robocomp/robocomp/components/robocomp-ursus-rockin/files/autonomyLab/31.png" />
+				<plane id="mugTagb" ny="1" py="100" size="80,-80,3.5" texture="#ffffff" />
 			</transform> 
 		</transform> 
 		
@@ -91,7 +91,7 @@
 			<mesh id="tableDC" file="/home/robocomp/robocomp/files/osgModels/basics/cylinder.3ds" scale="600,600,12" rx="1.5707" collide="1" />
 			<mesh id="mesaRd" file="/home/robocomp/robocomp/files/osgModels/basics/cylinder.3ds" scale="30,30,400" rx="1.5707" ty="-400" collide="1" />
 			<mesh id="mesaRdb" file="/home/robocomp/robocomp/files/osgModels/basics/cylinder.3ds" scale="325,325,9" rx="1.5707" ty="-800" collide="1" />
-			<!--<plane id="mesaTag" ny="1" py="11" size="70,-70,5.0" texture="/home/robocomp/robocomp/components/robocomp-ursus-rockin/files/autonomyLab/30.png" />-->
+			<plane id="mesaTag" ny="1" py="11" size="70,-70,5.0" texture="/home/robocomp/robocomp/components/robocomp-ursus-rockin/files/autonomyLab/30.png" />
 			<plane id="mesaTagd" ny="1" py="11" size="80,-80,3.5" texture="#ffffff" />
 
 		</transform>
