@@ -74,6 +74,8 @@ class SpecificWorker : public GenericWorker
 	InnerModel *innermodel;
 	
 	int num_object_found;
+
+	int num_scene;
 	
 	pcl::PCDWriter writer;
 	
