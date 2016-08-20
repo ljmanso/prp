@@ -1,0 +1,22 @@
+
+# Sources set
+SET ( SOURCES
+  Renderer.cpp
+  specificworker.cpp
+  specificmonitor.cpp
+#  $ENV{ROBOCOMP}/classes/agmInner/agmInner.cpp
+)
+
+# Headers set
+SET ( HEADERS
+  specificworker.h
+  specificmonitor.h
+#  $ENV{ROBOCOMP}/classes/agmInner/agmInner.h
+)
+
+INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
+INCLUDE_DIRECTORIES( include/OSG include/boost)
+#SET ( LIBS ${LIBS} -Llib/OSG -Llib/boost -lGL -lGLU -losg -losgDB -losgGA -losgViewer -losgUtil -lstdc++ -lm -lboost_system -lboost_filesystem )
+SET ( LIBS ${LIBS} -L/usr/local/lib64 -L/usr/lib/x86_64-linux-gnu -lGL -lGLU -losg -losgDB -losgGA -losgViewer -losgUtil -lstdc++ -lm -lboost_system -lboost_filesystem )
+ADD_DEFINITIONS( -std=c++11 )
+

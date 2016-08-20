@@ -1,0 +1,41 @@
+FILE(REMOVE_RECURSE
+  "CommonBehavior.cpp"
+  "CommonBehavior.h"
+  "RGBD.cpp"
+  "RGBD.h"
+  "JointMotor.cpp"
+  "JointMotor.h"
+  "DifferentialRobot.cpp"
+  "DifferentialRobot.h"
+  "moc_specificworker.cxx"
+  "moc_specificmonitor.cxx"
+  "moc_genericmonitor.cxx"
+  "moc_commonbehaviorI.cxx"
+  "moc_genericworker.cxx"
+  "ui_mainUI.h"
+  "CMakeFiles/RenderOSG.dir/Renderer.cpp.o"
+  "CMakeFiles/RenderOSG.dir/specificworker.cpp.o"
+  "CMakeFiles/RenderOSG.dir/specificmonitor.cpp.o"
+  "CMakeFiles/RenderOSG.dir/opt/robocomp/classes/rapplication/rapplication.cpp.o"
+  "CMakeFiles/RenderOSG.dir/opt/robocomp/classes/qlog/qlog.cpp.o"
+  "CMakeFiles/RenderOSG.dir/main.cpp.o"
+  "CMakeFiles/RenderOSG.dir/genericmonitor.cpp.o"
+  "CMakeFiles/RenderOSG.dir/commonbehaviorI.cpp.o"
+  "CMakeFiles/RenderOSG.dir/genericworker.cpp.o"
+  "CMakeFiles/RenderOSG.dir/CommonBehavior.cpp.o"
+  "CMakeFiles/RenderOSG.dir/RGBD.cpp.o"
+  "CMakeFiles/RenderOSG.dir/JointMotor.cpp.o"
+  "CMakeFiles/RenderOSG.dir/DifferentialRobot.cpp.o"
+  "CMakeFiles/RenderOSG.dir/moc_specificworker.cxx.o"
+  "CMakeFiles/RenderOSG.dir/moc_specificmonitor.cxx.o"
+  "CMakeFiles/RenderOSG.dir/moc_genericmonitor.cxx.o"
+  "CMakeFiles/RenderOSG.dir/moc_commonbehaviorI.cxx.o"
+  "CMakeFiles/RenderOSG.dir/moc_genericworker.cxx.o"
+  "../bin/RenderOSG.pdb"
+  "../bin/RenderOSG"
+)
+
+# Per-language clean rules from dependency scanning.
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/RenderOSG.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)
