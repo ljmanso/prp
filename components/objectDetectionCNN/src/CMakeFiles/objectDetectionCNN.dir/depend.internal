@@ -1307,28 +1307,6 @@ src/CMakeFiles/objectDetectionCNN.dir/genericworker.cpp.o
  src/objectDetectionCNN.h
  src/ui_mainUI.h
 src/CMakeFiles/objectDetectionCNN.dir/main.cpp.o
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/blob.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/caffe.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/common.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/filler.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/internal_thread.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/layer.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/layer_factory.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/net.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/parallel.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/proto/caffe.pb.h
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/solver.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/solver_factory.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/syncedmem.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/benchmark.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/blocking_queue.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/cudnn.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/device_alternate.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/format.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/io.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/math_functions.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/mkl_alternate.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/upgrade_proto.hpp
  /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/src/commonbehaviorI.h
  /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/src/config.h
  /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/src/genericmonitor.h
@@ -1778,64 +1756,6 @@ src/CMakeFiles/objectDetectionCNN.dir/main.cpp.o
  /usr/include/qt4/QtGui/qwmatrix.h
  /usr/include/qt4/QtGui/qworkspace.h
  /usr/include/qt4/QtGui/qwsembedwidget.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/builtin_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/channel_descriptor.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/common_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/crt/func_macro.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuComplex.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cublas_api.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cublas_v2.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_device_runtime_api.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_fp16.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_runtime.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_runtime_api.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_surface_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_texture_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/curand.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_atomic_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_atomic_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_double_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_double_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_functions_decls.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_launch_parameters.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/driver_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/driver_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/host_config.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/host_defines.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_constants.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_functions_dbl_ptx3.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_functions_dbl_ptx3.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_20_atomic_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_20_atomic_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_20_intrinsics.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_20_intrinsics.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_30_intrinsics.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_30_intrinsics.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_32_atomic_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_32_atomic_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_32_intrinsics.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_32_intrinsics.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_35_atomic_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_35_intrinsics.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_indirect_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_indirect_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_fetch_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_fetch_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_indirect_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_indirect_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/vector_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/vector_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/vector_types.h
  src/CommonBehavior.h
  src/objectDetectionCNN.h
  src/objectdetectioncnnI.h
@@ -4012,28 +3932,6 @@ src/CMakeFiles/objectDetectionCNN.dir/moc_specificmonitor.cxx.o
  src/objectDetectionCNN.h
  src/ui_mainUI.h
 src/CMakeFiles/objectDetectionCNN.dir/moc_specificworker.cxx.o
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/blob.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/caffe.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/common.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/filler.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/internal_thread.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/layer.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/layer_factory.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/net.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/parallel.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/proto/caffe.pb.h
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/solver.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/solver_factory.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/syncedmem.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/benchmark.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/blocking_queue.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/cudnn.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/device_alternate.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/format.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/io.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/math_functions.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/mkl_alternate.hpp
- /home/harit/workspace/gsoc16/caffe-master/include/caffe/util/upgrade_proto.hpp
  /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/src/moc_specificworker.cxx
  /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/src/specificworker.h
  /opt/robocomp/classes/qlog/qlog.h
@@ -4477,64 +4375,6 @@ src/CMakeFiles/objectDetectionCNN.dir/moc_specificworker.cxx.o
  /usr/include/qt4/QtGui/qwmatrix.h
  /usr/include/qt4/QtGui/qworkspace.h
  /usr/include/qt4/QtGui/qwsembedwidget.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/builtin_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/channel_descriptor.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/common_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/crt/func_macro.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuComplex.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cublas_api.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cublas_v2.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_device_runtime_api.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_fp16.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_runtime.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_runtime_api.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_surface_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/cuda_texture_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/curand.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_atomic_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_atomic_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_double_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_double_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_functions_decls.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_launch_parameters.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/device_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/driver_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/driver_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/host_config.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/host_defines.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_constants.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_functions_dbl_ptx3.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/math_functions_dbl_ptx3.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_20_atomic_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_20_atomic_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_20_intrinsics.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_20_intrinsics.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_30_intrinsics.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_30_intrinsics.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_32_atomic_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_32_atomic_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_32_intrinsics.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_32_intrinsics.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_35_atomic_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/sm_35_intrinsics.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_indirect_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_indirect_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/surface_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_fetch_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_fetch_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_indirect_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_indirect_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/texture_types.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/vector_functions.h
- /usr/local/cuda-7.5/targets/x86_64-linux/include/vector_functions.hpp
- /usr/local/cuda-7.5/targets/x86_64-linux/include/vector_types.h
  src/CommonBehavior.h
  src/config.h
  src/genericworker.h

@@ -49,17 +49,18 @@ class SpecificWorker : public GenericWorker
 {
 bool first;
 string model_file   = "";
-string trained_file = "";
+string weights_file = "";
 string mean_file    = "";
 string label_file   = "";
 string training_path = "";
-  
+int gpuid=-1;  
+
 Q_OBJECT
 public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
-
+    void read_CNN_config(const string config_file);
 	void getLabelsFromImage(const ColorSeq &image, const int rows, const int cols, ResultList &result);
 
 public slots:

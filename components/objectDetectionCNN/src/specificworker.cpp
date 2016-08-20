@@ -61,8 +61,11 @@ if(first)
 	first=false;
 	
 	::google::InitGoogleLogging("objectDetectionCNN");
-	read_caffe_config("etc/caffe_config",model_file, trained_file, mean_file, label_file);
-	classifier= new Classifier(model_file, trained_file, mean_file, label_file);
+	//read_CNN_config("etc/caffe_config",model_file, trained_file, mean_file, label_file);
+	read_CNN_config("etc/caffe_config");
+	if(gpuid>-1)Caffe::set_mode(Caffe::GPU);
+	else Caffe::set_mode(Caffe::CPU);
+	classifier= new Classifier(model_file, weights_file, mean_file, label_file);
 	
 }
 
@@ -146,7 +149,7 @@ for(int i=0;i<rows;i++)
          rectangle( dst, rects[labelid].tl(), rects[labelid].br(), rect_color, 2, 8, 0 );
          Rect r1=rects[labelid];
          Rect r2;
-         int bord=20; 
+         int bord=2; 
          r2.x=r1.x-bord > 0 ? r1.x-bord : r1.x;
          r2.y=r1.y-bord > 0 ? r1.y-bord : r1.y;
          r2.width= r1.x+r1.width+bord < src.cols ? r1.width+bord:r1.width;
@@ -160,7 +163,7 @@ for(int i=0;i<rows;i++)
 	     top_score=p.second;
 		 top_labelid=p.first;
 		 putText(dst, top_labelid.substr(0, top_labelid.find(",")), rects[labelid].tl(), CV_FONT_HERSHEY_DUPLEX, 0.5, cvScalar(0,0,250), 1, CV_AA);
-	     if(top_score<0.05)continue;
+	     if(top_score<0.9)continue;
 	     BoundingBox bb;
 	     bb.x=r1.x;
 	     bb.y=r1.y;
@@ -174,7 +177,7 @@ for(int i=0;i<rows;i++)
 	     l.bb=bb;
 	     result.push_back(l);
 	     
-	     cout<<"Window ID:"<<labelid<<", detected category:"<<top_labelid<<", score:"<<top_score<<endl;
+	     cout<<"Window ID:"<<labelid<<", detected category:"<<p.first<<":"<<top_labelid<<", score:"<<top_score<<endl;
              
     }
   //imshow( window_name, dst);
@@ -183,7 +186,57 @@ for(int i=0;i<rows;i++)
                 				
 }
 
+//read_caffe_config("etc/caffe_config",model_file, trained_file, mean_file, label_file);
+void SpecificWorker::read_CNN_config(const string config_file)
+{
+std::ifstream f(config_file.c_str());
+if(!f.good())
+	{
+		cout<<"CNN config file not found at: "<<config_file<<"\n exiting...!"<<endl;
+		exit(1);
+	}
+	
+std::string line;
 
+ while (getline(f, line))
+    {
+        istringstream ss(line);
+        string name, value;
+        
+        ss >> name >> value;
+        //std::cout<<"name="<<name<<std::endl;
+        //std::cout<<"value="<<value<<std::endl;
+        //cout<<"find(weights)"<<(int)name.find("caffemodel")<<endl;
+        
+        if((int)name.find("model_file")>=0) model_file=value;
+        else if((int)name.find("weights_file")>=0) weights_file=value;
+        else if((int)name.find("label_file")>=0) label_file=value;
+        else if((int)name.find("mean_file")>=0) mean_file=value;
+        else if((int)name.find("gpuid")>=0) gpuid=std::stoi(value);
+    }    
+        if(model_file.length()<3)
+        {
+           
+           cout<<"CNN model file not found in config file. \nexiting...!"<<endl;
+		   exit(1);
+	    }
+	    
+	    if(weights_file.length()<3)
+        {
+           cout<<"CNN weights file not found in config file. \nexiting...!"<<endl;
+		   exit(1);
+	    }
+	    
+	    
+	    if(label_file.length()<3)
+        {
+           cout<<"CNN label file not found in config file. \nexiting...!"<<endl;
+		   exit(1);
+	    }
+	f.close();    
+        //cout<<model_file<<"OK.....4"<<endl;
+    
+}
 
 
 

@@ -319,3 +319,34 @@ int main(int argc, char** argv)
 #endif
 }
 
+Determining if the Q_WS_X11 exist passed with the following output:
+Change Dir: /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3772518820/fast"
+make[1]: Entering directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3772518820.dir/build.make CMakeFiles/cmTryCompileExec3772518820.dir/build
+make[2]: Entering directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3772518820.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -I/usr/include/qt4    -o CMakeFiles/cmTryCompileExec3772518820.dir/CheckSymbolExists.cxx.o -c /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+Linking CXX executable cmTryCompileExec3772518820
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3772518820.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTryCompileExec3772518820.dir/CheckSymbolExists.cxx.o  -o cmTryCompileExec3772518820 -rdynamic 
+make[2]: Leaving directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/CMakeFiles/CMakeTmp'
+make[1]: Leaving directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/CMakeFiles/CMakeTmp'
+
+File /home/harit/workspace/gsoc16/robocomp/components/prp/components/objectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_X11
+  return ((int*)(&Q_WS_X11))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
