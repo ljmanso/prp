@@ -6,32 +6,22 @@ This is code for object detection using CNN and image processing.
 ## Configuration parameters
 As any other component,
 ``` *objectDetectionCNN* ```
-needs a configuration file to start. In
+All the configuration parameters are present in:
 
     etc/config
     etc/caffe_config
 
-you can find an example of a configuration file in /etc. You need to install caffe and change required paths in  caffe_config.
+You need to install caffe and change required paths in  caffe_config.
     
 #Starting the component
-To avoid changing the *config* file in the repository, we can copy it to the component's home directory, so changes will remain untouched by future git pulls:
+Simply run 
+```sh run.sh```
 
-    cd
-
-``` <objectDetectionCNN 's path> ```
-
-    cp etc/config config
-    
-After editing the new config file we can run the component:
-
-    bin/
-
-```./objectDetectionCNN --Ice.Config=config```
 The component will load the network and wait for input.
 The input is given through remote procedure call. See component:
-`testobjectDetectionCNN` 
-for detection on real images and
-
     testobjectDetectionCNNsimulation
 for object detection in simulation environment.
+Note: you will need to combine the model file from tar.gz.* in models. You can do that by
+cat bvlc_vgg_sim_iter_1200.caffemodel.tar.gz.* | tar xzvf -
+
     
