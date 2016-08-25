@@ -64,7 +64,6 @@ SET ( HEADERS
   specificmonitor.h
 )
 
-INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
 # opencv2
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/caffe.cmake )
