@@ -9,6 +9,23 @@ fontSize=12
 longPattern=3
 ===
 
+stop : active(1)
+{
+	{
+		1:robot(1,1)
+		2:status(2,2)
+		1->2(hasStatus)
+		1->2(stop)*
+	}
+	=>
+	{
+		1:robot(1,1)
+		2:status(2,2)
+		1->2(hasStatus)
+		1->2(stop)
+	}
+}
+
 changeRoom : active(1)
 {
 	{
