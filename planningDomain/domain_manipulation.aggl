@@ -116,37 +116,37 @@ leaveObjectInTable : active(1)
 	}
 }
 
-setRestPosition : active(1)
+setRestArmPosition : active(1)
 {
 	{
 		robot:robot(0,-110)
 		status:status(0,110)
 		robot->status(hasStatus)
-		robot->status(rest)*
+		robot->status(restArm)*
 	}
 	=>
 	{
 		robot:robot(0,-110)
 		status:status(0,110)
 		robot->status(hasStatus)
-		robot->status(rest)
+		robot->status(restArm)
 	}
 }
 
-unsetRestPosition : passive(1)
+unsetRestArmPosition : passive(1)
 {
 	{
 		robot:robot(0,-110)
 		status:status(0,110)
 		robot->status(hasStatus)
-		robot->status(rest)
+		robot->status(restArm)
 	}
 	=>
 	{
 		robot:robot(0,-110)
 		status:status(0,110)
 		robot->status(hasStatus)
-		robot->status(rest)*
+		robot->status(restArm)*
 	}
 }
 
