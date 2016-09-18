@@ -62,10 +62,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/core/utility.hpp>
+//#include <opencv2/core/utility.hpp>
 //#include <opencv2/saliency.hpp>
-#include <opencv2/highgui.hpp>
-#include "opencv2/imgcodecs.hpp"
+//#include "opencv2/imgcodecs.hpp"
 
 #include <algorithm>
 #include <iosfwd>
@@ -153,7 +152,7 @@ public:
 	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 	std::string checkTable(RoboCompRGBD::ColorSeq image);
-        std::string checkTableApril(RoboCompRGBD::ColorSeq image);
+	std::string checkTableApril(RoboCompRGBD::ColorSeq image);
 	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
 	void labelImage(cv::Mat matImage, std::string location);
@@ -167,6 +166,7 @@ private:
 	
 	//config params
 	bool save_full_data, save_table_data, labeling;
+	InnerModelCamera *camera;
 	
 	std::map<std::string, double>  table1;
 	std::map<std::string, double>  table2;
