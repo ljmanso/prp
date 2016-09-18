@@ -374,10 +374,10 @@ bool SpecificWorker::isTableVisible(RoboCompRGBD::ColorSeq image, const std::str
 		c1.print("rightdown 1");
 		d1.print("rightup 1");
 */		
-		QVec a2 = innerModel->project("rgbd", a1);
-		QVec b2 = innerModel->project("rgbd", b1);
-		QVec c2 = innerModel->project("rgbd", c1);
-		QVec d2 = innerModel->project("rgbd", d1);
+		QVec a2 = camera->project("rgbd", a1);
+		QVec b2 = camera->project("rgbd", b1);
+		QVec c2 = camera->project("rgbd", c1);
+		QVec d2 = camera->project("rgbd", d1);
 		inner_mutex->unlock();
 		
 		QList<QVec> points_on_screen;
@@ -1017,6 +1017,7 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modifi
 
 	delete innerModel;
 	innerModel = AGMInner::extractInnerModel(worldModel);
+	camera = innerModel->getCamera("rgbd");
 	#ifdef INNER_VIEWER
 		changeInner();
 	#endif
