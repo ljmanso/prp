@@ -36,6 +36,11 @@ static unsigned int get_current_time(void)
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx),
 first(true)
 {
+	inner_mutex = new QMutex(QMutex::Recursive);
+	world_mutex = new QMutex(QMutex::Recursive);
+	agent_mutex = new QMutex(QMutex::Recursive);
+	
+	save_full_data = save_table_data = labeling = false;
 	modifiedWorld = -1;
 	image_segmented_counter = 0;
 	image_save_counter = 0;
@@ -127,6 +132,31 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
 	QMutexLocker locker(agent_mutex);
 	
+	if(params["labeling"].value == "on")
+	{
+		printf("Labeling is ON\n");
+		labeling =true;
+	}
+	else
+		printf("Labeling is OFF\n");
+	
+	if(params["save_full_data"].value == "on")
+	{
+		printf("Saving Full Data is ON\n");
+		save_full_data = true; 
+	}
+	else
+		printf("Saving Full Data is OFF\n");
+	
+	
+	if(params["save_table_data"].value == "on")
+	{
+		printf("Saving Table Data is ON\n");
+		save_table_data = true;
+	}
+	else
+		printf("Saving Table Data is OFF\n");
+	
 	try
 	{
 		RoboCompAGMWorldModel::World w = agmexecutive_proxy->getModel();
@@ -137,6 +167,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		printf("The executive is probably not running, waiting for first AGM model publication...");
 	}
 	
+
 	
 	timer.start(Period);
 	return true;
@@ -201,59 +232,77 @@ void SpecificWorker::compute()
 		if (location != "invalid" )
 		{
 			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
-			//full image
-			fullImage = cv::Mat(480,640,CV_8UC3, cv::Scalar::all(0));
 			
-			
-			//crop image 
-			matImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
-			cloud->clear();
-			cloud->resize((up-down)*(right-left));
+			std::string file_name = std::to_string(image_save_counter) + "_" + location;
 			int pos = 0, k=0;
-			for(int j=down; j<up; j++)
+			
+			if(save_table_data || labeling)
 			{
-				for(int i=left; i<right; i++)
+				//crop image 
+				matImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
+				cloud->clear();
+				cloud->resize((up-down)*(right-left));
+				
+				for(int j=down; j<up; j++)
 				{
-					pos = j * IMAGE_WIDTH + i;
-					matImage.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
-					QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
-					memcpy(&cloud->points[k],p1.data(),3*sizeof(float));
-					cloud->points[k].r = rgbImage[pos].red;
-					cloud->points[k].g = rgbImage[pos].green;
-					cloud->points[k].b = rgbImage[pos].blue;
-					k++;
+					for(int i=left; i<right; i++)
+					{
+						pos = j * IMAGE_WIDTH + i;
+						matImage.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
+						QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
+						memcpy(&cloud->points[k],p1.data(),3*sizeof(float));
+						cloud->points[k].r = rgbImage[pos].red;
+						cloud->points[k].g = rgbImage[pos].green;
+						cloud->points[k].b = rgbImage[pos].blue;
+						k++;
+					}
 				}
+					
+	
+			//	cv::imwrite( file_name + ".jpg", matImage );
+			//	pcl::io::savePCDFileASCII (file_name + ".pcd", *cloud);
+			//	cv::imshow("3D viewer",matImage);
 			}
 			
-			pos = 0;
-			k=0;
-			fullCloud->clear();
-			fullCloud->resize(480*640);
-			for(int j=0; j<480; j++)
+			if(save_full_data)
 			{
-				for(int i=0; i<640; i++)
+				fullImage = cv::Mat(480,640,CV_8UC3, cv::Scalar::all(0));
+				pos = 0;
+				k=0;
+				fullCloud->clear();
+				fullCloud->resize(480*640);
+				for(int j=0; j<480; j++)
 				{
-					pos = j * IMAGE_WIDTH + i;
-					fullImage.at<cv::Vec3b>(j, i) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
-					QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
-					memcpy(&fullCloud->points[k],p1.data(),3*sizeof(float));
-					fullCloud->points[k].r = rgbImage[pos].red;
-					fullCloud->points[k].g = rgbImage[pos].green;
-					fullCloud->points[k].b = rgbImage[pos].blue;
-					k++;
+					for(int i=0; i<640; i++)
+					{
+						pos = j * IMAGE_WIDTH + i;
+						fullImage.at<cv::Vec3b>(j, i) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
+						QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
+						memcpy(&fullCloud->points[k],p1.data(),3*sizeof(float));
+						fullCloud->points[k].r = rgbImage[pos].red;
+						fullCloud->points[k].g = rgbImage[pos].green;
+						fullCloud->points[k].b = rgbImage[pos].blue;
+						k++;
+					}
 				}
+				cv::imwrite( file_name + "_full.jpg", fullImage );
+				pcl::io::savePCDFileASCII (file_name + "_full.pcd", *fullCloud);
 			}
-
-			cv::Mat frame(right-left, up-down, CV_8UC3,  matImage.data);
 			
+			++image_save_counter;
 		
 //			unsigned int elapsed_time = get_current_time();
 			//processDataFromKinect(matImage, points, location);
-			//labelImage(matImage, location);
-			saveData(fullImage, fullCloud, matImage, cloud, location);
+			if(labeling)
+			{
+				labelImage(matImage, location);
+				cv::imshow("Labeled table",matImage);
+			}
+					
+
 //			elapsed_time = get_current_time() - elapsed_time;
 //			printf("elapsed time %d ms\n",elapsed_time);
-                        cv::imshow("3D viewer",matImage);
+			
 		}
 
     }
@@ -331,10 +380,10 @@ bool SpecificWorker::isTableVisible(RoboCompRGBD::ColorSeq image, const std::str
 		c1.print("rightdown 1");
 		d1.print("rightup 1");
 */		
-		QVec a2 = innerModel->project("rgbd", a1);
-		QVec b2 = innerModel->project("rgbd", b1);
-		QVec c2 = innerModel->project("rgbd", c1);
-		QVec d2 = innerModel->project("rgbd", d1);
+		QVec a2 = camera->project("rgbd", a1);
+		QVec b2 = camera->project("rgbd", b1);
+		QVec c2 = camera->project("rgbd", c1);
+		QVec d2 = camera->project("rgbd", d1);
 		inner_mutex->unlock();
 		
 		QList<QVec> points_on_screen;
@@ -384,7 +433,7 @@ bool SpecificWorker::isTableVisible(RoboCompRGBD::ColorSeq image, const std::str
                      cv::circle(matImage, cv::Point((int)v(0),(int)v(1)), 5, (0,0,255), -1);
                 }   
 
-                cv::imshow("table" ,matImage);
+                cv::imshow("Table Detection" ,matImage);
 
 
 		std::cout<<"Table: "<<tableIMName<<" ==> Num corners on screen: "<< points_on_screen.size() <<std::endl;
@@ -709,20 +758,6 @@ void SpecificWorker::labelImage(cv::Mat matImage, std::string location)
 	showTablesOnInterface();
 }
 
-void SpecificWorker::saveData(cv::Mat &fullImage, const pcl::PointCloud<PointT>::Ptr full_points, cv::Mat &matImage, const pcl::PointCloud<PointT>::Ptr points, std::string location)
-{
-	
-	std::string file_name = std::to_string(image_save_counter) + "_" + location;
-	
-	cv::imwrite( file_name + "_full.jpg", fullImage );
-	pcl::io::savePCDFileASCII (file_name + "_full.pcd", *full_points);
-	
-	cv::imwrite( file_name + ".jpg", matImage );
-	pcl::io::savePCDFileASCII (file_name + ".pcd", *cloud);
-	
-	++image_save_counter;
-}
-
 void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 {
 	//Recursively read all files and compute VFH
@@ -1000,6 +1035,7 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modifi
 
 	delete innerModel;
 	innerModel = AGMInner::extractInnerModel(worldModel);
+	camera = innerModel->getCamera("rgbd");
 	#ifdef INNER_VIEWER
 		changeInner();
 	#endif

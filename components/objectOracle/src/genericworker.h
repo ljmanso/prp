@@ -98,7 +98,7 @@ public:
 	virtual bool deactivateAgent() = 0;
 	virtual StateStruct getAgentState() = 0;
 	virtual void semanticDistance(const string &word1, const string &word2, float &result) = 0;
-	virtual void getLabelsFromImage(const ColorSeq &image, ResultList &result) = 0;
+	virtual void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result) = 0;
 	virtual void structuralChange(const RoboCompAGMWorldModel::World &w) = 0;
 	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modification) = 0;
 	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification) = 0;

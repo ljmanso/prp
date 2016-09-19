@@ -43,6 +43,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
 	
 	num_object_found = 0;
+	num_scene = 15;
 }
 
 /**
@@ -198,7 +199,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 	pcl::EuclideanClusterExtraction<PointT> ec;
 	
 	ec.setClusterTolerance (40); 
-	ec.setMinClusterSize (100);
+	ec.setMinClusterSize (50);
 	ec.setMaxClusterSize (50000);
 	ec.setSearchMethod (tree);
 	
@@ -238,7 +239,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 		#ifdef SAVE_DATA	
  
 			std::stringstream ss;
-			ss <<"capture_object_" << j;
+			ss <<num_scene<<"_capture_object_" << j;
 		
                 /////save /*rgbd*/ 
 
@@ -289,12 +290,13 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 			
 // 		cv::namedWindow( "Display window2", cv::WINDOW_AUTOSIZE );// Create a window for display.
 // 		cv::imshow( "Display window2", rgb_image );
-// 		cv::imwrite( "scene.png", rgb_image );
+		std::string scenename = std::to_string(num_scene) + "_scene.png";
+ 		cv::imwrite( scenename, rgb_image );
 			
 // 		cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
 // 		cv::imshow( "Display window", crop );
 
-// 		cv::imwrite( ss.str() + ".png", crop );
+ 		cv::imwrite( ss.str() + ".png", crop );
 
 			/////save rgbd end
 			
@@ -326,6 +328,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 #endif
 		j++;
         }
+	num_scene++;
 
 }
 
@@ -511,6 +514,8 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 	string pcdname =  "/home/robocomp/robocomp/components/prp/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
 	printf("<%s>\n", pcdname.c_str());
 	writer.write<PointT> ( pcdname, *cloud, false);
+	pcdname = std::to_string(num_scene) + "_scene.pcd";
+	writer.write<PointT> ( pcdname , *cloud, false);
         
         string imagename = "/home/robocomp/robocomp/components/prp/" + QString::number(ts.tv_sec).toStdString() + ".png";
         cv::imwrite( imagename ,rgb_image);

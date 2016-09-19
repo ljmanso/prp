@@ -71,12 +71,12 @@ SET ( HEADERS
   specificmonitor.h
 )
 
-INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
 # opencv2
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/caffe.cmake )
 
-find_package(PCL 1.2 REQUIRED)
+#find_package(PCL 1.7 REQUIRED COMPONENTS io )
+find_package(PCL 1.7 REQUIRED COMPONENTS kdtree octree search sample_consensus io filters  geometry 2d features  ml segmentation  surface registration recognition keypoints tracking )
 include_directories(${PCL_INCLUDE_DIRS})
 
 #caffe cpu only definition
@@ -84,6 +84,10 @@ add_definitions(-DCPU_ONLY)
 
 list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
 list(REMOVE_ITEM PCL_LIBRARIES "vtkRenderingFreeTypeOpenGL")
+add_definitions(-DQT4=1)
+add_definitions(-DQT4)
+add_definitions(-DQT_QMAKE_EXECUTABLE=/usr/bin/qmake-qt4)
+add_definitions(-DQT_MOC_EXECUTABLE=/usr/bin/moc-qt4)
 
 include_directories(/usr/local/include/osg /usr/include/osgViewer /usr/include/libxml2)
 

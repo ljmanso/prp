@@ -62,10 +62,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/core/utility.hpp>
-#include <opencv2/saliency.hpp>
-#include <opencv2/highgui.hpp>
-#include "opencv2/imgcodecs.hpp"
+//#include <opencv2/core/utility.hpp>
+//#include <opencv2/saliency.hpp>
+//#include "opencv2/imgcodecs.hpp"
 
 #include <algorithm>
 #include <iosfwd>
@@ -146,7 +145,6 @@ public:
 	//given an image and its location it process its objects and save them to the corresponding location
 	void processImage(cv::Mat image, std::string location);
 	void addLabelsToTable(ResultList result, std::string location);
-	void saveData(cv::Mat &fullImage, const pcl::PointCloud<PointT>::Ptr full_points, cv::Mat &matImage, const pcl::PointCloud<PointT>::Ptr points, std::string location);
 	void load_tables_info();
 	   
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
@@ -161,7 +159,7 @@ public:
 	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 	std::string checkTable(RoboCompRGBD::ColorSeq image);
-        std::string checkTableApril(RoboCompRGBD::ColorSeq image);
+	std::string checkTableApril(RoboCompRGBD::ColorSeq image);
 	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
 	void labelImage(cv::Mat matImage, std::string location);
@@ -172,6 +170,13 @@ public slots:
 	void save_tables_info();
 
 private:
+	
+	QMutex *inner_mutex, *world_mutex, *agent_mutex;
+	
+	//config params
+	bool save_full_data, save_table_data, labeling;
+	InnerModelCamera *camera;
+	
 	std::map<std::string, double>  table1;
 	std::map<std::string, double>  table2;
 	std::map<std::string, double>  table3;
