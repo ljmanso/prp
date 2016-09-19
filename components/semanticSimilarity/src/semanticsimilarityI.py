@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 by YOUR NAME HERE
+# Copyright (C) 2016 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
 #
@@ -30,7 +30,7 @@ if len(ROBOCOMP)<1:
 	sys.exit()
 	
 
-preStr = "-I"+ROBOCOMP+"/interfaces/ --all "+ROBOCOMP+"/interfaces/"
+preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
 
 Ice.loadSlice(preStr+"SemanticSimilarity.ice")
 from RoboCompSemanticSimilarity import *
@@ -39,8 +39,12 @@ class SemanticSimilarityI(SemanticSimilarity):
 	def __init__(self, worker):
 		self.worker = worker
 
-	def w2bDistance(self, word1, word2, c):
-		return self.worker.w2bDistance(word1, word2)
+	def w2vDistance(self, word1, word2, c):
+		return self.worker.w2vDistance(word1, word2)
+	def w2vVectorsDistance(self, vector1, vector2, c):
+		return self.worker.w2vVectorsDistance(vector1, vector2)
+	def getWordRepresentation(self, word, c):
+		return self.worker.getWordRepresentation(word)
 
 
 

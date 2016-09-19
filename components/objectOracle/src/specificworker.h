@@ -86,9 +86,11 @@
 
 #include "labeler.h"
 #include "mapmodel.h"
+#include "word2vec.h"
 
 #endif
 
+#ifdef CONVNET
 #ifdef __cplusplus
 extern "C"{
 #endif 
@@ -98,6 +100,7 @@ extern "C"{
 #ifdef __cplusplus
 }
 
+#endif
 #endif
 
 #define IMAGE_WIDTH 640
@@ -115,9 +118,13 @@ class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
 private:
+#ifdef CONVNET
 	ccv_convnet_t* convnet;
+#endif
 	fstream file;
 	bool first;
+	
+	Model w2v_model;
 
 public:
 	SpecificWorker(MapPrx& mprx);	
