@@ -62,10 +62,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/core/utility.hpp>
+//#include <opencv2/core/utility.hpp>
 //#include <opencv2/saliency.hpp>
-#include <opencv2/highgui.hpp>
-#include "opencv2/imgcodecs.hpp"
+//#include "opencv2/imgcodecs.hpp"
 
 #include <algorithm>
 #include <iosfwd>
@@ -86,9 +85,11 @@
 
 #include "labeler.h"
 #include "mapmodel.h"
+#include "word2vec.h"
 
 #endif
 
+#ifdef CONVNET
 #ifdef __cplusplus
 extern "C"{
 #endif 
@@ -98,6 +99,7 @@ extern "C"{
 #ifdef __cplusplus
 }
 
+#endif
 #endif
 
 #define IMAGE_WIDTH 640
@@ -115,9 +117,13 @@ class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
 private:
+#ifdef CONVNET
 	ccv_convnet_t* convnet;
+#endif
 	fstream file;
 	bool first;
+	
+	Model w2v_model;
 
 public:
 	SpecificWorker(MapPrx& mprx);	
@@ -153,7 +159,7 @@ public:
 	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 	std::string checkTable(RoboCompRGBD::ColorSeq image);
-        std::string checkTableApril(RoboCompRGBD::ColorSeq image);
+	std::string checkTableApril(RoboCompRGBD::ColorSeq image);
 	bool isTableVisible(RoboCompRGBD::ColorSeq image, const std::string tableIMName, const float tableWidth, const float tableHeight, const float tableDepth);
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
 	void labelImage(cv::Mat matImage, std::string location);
@@ -165,8 +171,11 @@ public slots:
 
 private:
 	
+	QMutex *inner_mutex, *world_mutex, *agent_mutex;
+	
 	//config params
 	bool save_full_data, save_table_data, labeling;
+	InnerModelCamera *camera;
 	
 	std::map<std::string, double>  table1;
 	std::map<std::string, double>  table2;

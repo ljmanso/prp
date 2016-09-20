@@ -8,7 +8,7 @@ nodeThickness=2
 fontSize=12
 longPattern=3
 ===
-stop : active(1)
+setStop : active(1)
 {
 	{
 		1:robot(0,0)
@@ -24,6 +24,26 @@ stop : active(1)
 		1->2(stop)
 	}
 }
+
+unsetStop : passive(1)
+{
+	{
+		1:robot(0,0)
+		2:status(210,0)
+		1->2(hasStatus)
+		1->2(stop)
+	}
+	=>
+	{
+		1:robot(0,0)
+		2:status(210,0)
+		1->2(hasStatus)
+		1->2(stop)*
+	}
+}
+
+
+
 
 changeRoom : active(1)
 {

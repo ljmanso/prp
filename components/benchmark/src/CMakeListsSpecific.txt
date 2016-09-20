@@ -12,7 +12,7 @@ SET ( HEADERS
 )
 
 
-INCLUDE($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake)
+INCLUDE($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake)
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
 
 

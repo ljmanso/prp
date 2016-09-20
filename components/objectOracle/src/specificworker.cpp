@@ -36,6 +36,10 @@ static unsigned int get_current_time(void)
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx),
 first(true)
 {
+	inner_mutex = new QMutex(QMutex::Recursive);
+	world_mutex = new QMutex(QMutex::Recursive);
+	agent_mutex = new QMutex(QMutex::Recursive);
+	
 	save_full_data = save_table_data = labeling = false;
 	modifiedWorld = -1;
 	image_segmented_counter = 0;
@@ -48,8 +52,10 @@ first(true)
 	
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(save_tables_info()));
 
+#ifdef CONVNET
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
-	//convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+	convnet = ccv_convnet_read(0, "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012-vgg-d.sqlite3");
+#endif
 
 	oracleImage.resize(IMAGE_WIDTH*IMAGE_HEIGHT);
 	rgbImage.resize(IMAGE_WIDTH*IMAGE_HEIGHT);
@@ -374,10 +380,10 @@ bool SpecificWorker::isTableVisible(RoboCompRGBD::ColorSeq image, const std::str
 		c1.print("rightdown 1");
 		d1.print("rightup 1");
 */		
-		QVec a2 = innerModel->project("rgbd", a1);
-		QVec b2 = innerModel->project("rgbd", b1);
-		QVec c2 = innerModel->project("rgbd", c1);
-		QVec d2 = innerModel->project("rgbd", d1);
+		QVec a2 = camera->project("rgbd", a1);
+		QVec b2 = camera->project("rgbd", b1);
+		QVec c2 = camera->project("rgbd", c1);
+		QVec d2 = camera->project("rgbd", d1);
 		inner_mutex->unlock();
 		
 		QList<QVec> points_on_screen;
@@ -931,6 +937,7 @@ void SpecificWorker::addLabelsToTable(ResultList result, std::string location)
     }
 }
 
+#ifdef CONVNET
 void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
 {
 
@@ -999,6 +1006,17 @@ void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &im
     ccv_convnet_free(convnet);
     
 }
+#else
+void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
+{
+			Label l;
+            l.name = "CCV_CONNET NOT ENABLED AT COMPILE TIME";
+            l.believe = 1;
+            result.push_back(l);
+}
+#endif
+
+
 
 void SpecificWorker::getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &result)
 {
@@ -1027,6 +1045,7 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modifi
 
 	delete innerModel;
 	innerModel = AGMInner::extractInnerModel(worldModel);
+	camera = innerModel->getCamera("rgbd");
 	#ifdef INNER_VIEWER
 		changeInner();
 	#endif

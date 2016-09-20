@@ -177,7 +177,7 @@ void SpecificWorker::save(std::string base)
 
 // 	timespec ts;
 // 	clock_gettime(CLOCK_REALTIME, &ts);
-	string basename = lineEdit->text().toStdString() + "_" + base  + "_"/* + QString::number(ts.tv_sec).toStdString()*/;
+	string basename = lineEdit->text().toStdString() + "_" + base /* + QString::number(ts.tv_sec).toStdString()*/;
 	writer.write<PointT>(basename + ".pcd", *cloud, false);
 	cv::imwrite(basename + ".png", frame);
 }
