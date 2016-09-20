@@ -29,6 +29,9 @@
 #include <CommonBehavior.h>
 
 #include <ObjectOracle.h>
+#include <RGBD.h>
+#include <JointMotor.h>
+#include <DifferentialRobot.h>
 #include <Logger.h>
 #include <RGBD.h>
 #include <JointMotor.h>
@@ -85,8 +88,8 @@ public:
 	
 
 	SemanticSimilarityPrx semanticsimilarity_proxy;
-	RGBDPrx rgbd_proxy;
 	LoggerPrx logger_proxy;
+	RGBDPrx rgbd_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
@@ -98,7 +101,7 @@ public:
 	virtual bool deactivateAgent() = 0;
 	virtual StateStruct getAgentState() = 0;
 	virtual void semanticDistance(const string &word1, const string &word2, float &result) = 0;
-	virtual void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result) = 0;
+	virtual void getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, ResultList &result) = 0;
 	virtual void structuralChange(const RoboCompAGMWorldModel::World &w) = 0;
 	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modification) = 0;
 	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification) = 0;

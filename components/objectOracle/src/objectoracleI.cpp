@@ -18,7 +18,7 @@
  */
 #include "objectoracleI.h"
 
-ObjectOracleI::ObjectOracleI(GenericWorker *_worker, QObject *parent) : QObject(parent)
+ObjectOracleI::ObjectOracleI(GenericWorker *_worker)
 {
 	worker = _worker;
 }
@@ -33,7 +33,7 @@ void ObjectOracleI::semanticDistance(const string  &word1, const string  &word2,
 	worker->semanticDistance(word1, word2, result);
 }
 
-void ObjectOracleI::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq  &image,  ResultList  &result, const Ice::Current&)
+void ObjectOracleI::getLabelsFromImage(const RoboCompRGBD::ColorSeq  &image,  ResultList  &result, const Ice::Current&)
 {
 	worker->getLabelsFromImage(image, result);
 }

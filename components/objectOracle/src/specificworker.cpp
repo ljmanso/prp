@@ -618,9 +618,9 @@ std::fstream& GotoLine(std::fstream& file, unsigned int num)
     return file;
 }
 
-RoboCompObjectOracle::ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
+RoboCompRGBD::ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
 {
-	RoboCompObjectOracle::ColorSeq rgbMatrix;
+	RoboCompRGBD::ColorSeq rgbMatrix;
 	rgbMatrix.resize(rgb.cols*rgb.rows);
 	
 	for (int row = 0; row<rgb.rows; row++)
@@ -650,7 +650,7 @@ void SpecificWorker::processDataFromKinect(cv::Mat matImage, const RoboCompRGBD:
 	
 	for(uint i = 0 ; i < segmented_objects.size() ; i++)
 	{	
-//		RoboCompObjectOracle::ColorSeq auxMatrix = convertMat2ColorSeq (segmented_objects[i]);
+//		RoboCompRGBD::ColorSeq auxMatrix = convertMat2ColorSeq (segmented_objects[i]);
 		processImage(segmented_objects[i], location);
 	}
 	
@@ -784,7 +784,7 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 				//first processing of entire image
 				cv::Mat rgb = cv::imread( path2file );
 				
-				//RoboCompObjectOracle::ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
+				//RoboCompRGBD::ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
 				
 				std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
 				std::cout<<rgb.size()<<std::endl;
@@ -928,7 +928,7 @@ void SpecificWorker::addLabelsToTable(ResultList result, std::string location)
 }
 
 #ifdef CONVNET
-void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
+void SpecificWorker::getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, ResultList &result)
 {
 
 #ifdef DEBUG
@@ -997,7 +997,7 @@ void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &im
     
 }
 #else
-void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
+void SpecificWorker::getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, ResultList &result)
 {
 			Label l;
             l.name = "CCV_CONNET NOT ENABLED AT COMPILE TIME";

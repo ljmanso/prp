@@ -18,7 +18,7 @@
  */
 #include "agmexecutivetopicI.h"
 
-AGMExecutiveTopicI::AGMExecutiveTopicI(GenericWorker *_worker, QObject *parent) : QObject(parent)
+AGMExecutiveTopicI::AGMExecutiveTopicI(GenericWorker *_worker)
 {
 	worker = _worker;
 }

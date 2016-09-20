@@ -85,6 +85,9 @@
 #include <agmexecutivetopicI.h>
 
 #include <ObjectOracle.h>
+#include <RGBD.h>
+#include <JointMotor.h>
+#include <DifferentialRobot.h>
 #include <Logger.h>
 #include <RGBD.h>
 #include <JointMotor.h>
@@ -139,8 +142,8 @@ int ::objectoracle::run(int argc, char* argv[])
 	int status=EXIT_SUCCESS;
 
 	SemanticSimilarityPrx semanticsimilarity_proxy;
-	RGBDPrx rgbd_proxy;
 	LoggerPrx logger_proxy;
+	RGBDPrx rgbd_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	string proxy, tmp;
