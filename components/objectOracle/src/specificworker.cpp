@@ -1240,7 +1240,7 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 // 	return result;
 }
 
-std::string SpecificWorker::lookForObject(std::string label)
+std::string SpecificWorker::lookForObjectNoW2V(std::string label)
 {
     std::string table = "none";
     double current_believe = -1;
@@ -1295,6 +1295,52 @@ std::string SpecificWorker::lookForObject(std::string label)
 		table5.erase(it5);	
     
     return table;
+}
+
+std::string SpecificWorker::lookForObjectNoW2V(std::string label)
+{
+	float higher_similarity, calculated_similarity;
+	std::string current_table;
+	
+	std::vector<float> label_representation;
+	
+	semticsimilarity_proxy->getWordRepresentation(label, label_representation);
+	
+	//intialize to the firs table values
+	 
+	semticsimilarity_proxy->w2vVectorsDistance(table1_w2v, label_representation, higher_similarity);
+	current_table = "table1";
+	
+	semticsimilarity_proxy->w2vVectorsDistance(table2_w2v, label_representation, calculated_similarity);
+	if ( calculated_similarity > higher_similarity )
+	{
+		higher_similarity = calculated_similarity;
+		current_table = "table2";
+	}
+	
+	semticsimilarity_proxy->w2vVectorsDistance(table3_w2v, label_representation, calculated_similarity);
+	if ( calculated_similarity > higher_similarity )
+	{
+		higher_similarity = calculated_similarity;
+		current_table = "table3";
+	}
+	
+	semticsimilarity_proxy->w2vVectorsDistance(table4_w2v, label_representation, calculated_similarity);
+	if ( calculated_similarity > higher_similarity )
+	{
+		higher_similarity = calculated_similarity;
+		current_table = "table4";
+	}
+	
+	semticsimilarity_proxy->w2vVectorsDistance(table5_w2v, label_representation, calculated_similarity);
+	if ( calculated_similarity > higher_similarity )
+	{
+		higher_similarity = calculated_similarity;
+		current_table = "table5";
+	}
+	
+	return current_table;
+	
 }
 
 bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated)

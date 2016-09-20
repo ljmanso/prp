@@ -148,6 +148,7 @@ public:
 	void load_tables_info();
 	   
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
+	std::string SpecificWorker::lookForObjectNoW2V(std::string label);
 	std::string lookForObject(std::string label);
 	void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result);
 	void getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &result);
