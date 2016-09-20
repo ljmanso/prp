@@ -101,6 +101,8 @@ first(true)
 //         {
 //                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
 //         }
+	
+	std::cout<<"The cup is at: "<<lookForObject("cup")<<std::endl;
 
 }
 
@@ -1297,42 +1299,41 @@ std::string SpecificWorker::lookForObjectNoW2V(std::string label)
     return table;
 }
 
-std::string SpecificWorker::lookForObjectNoW2V(std::string label)
+std::string SpecificWorker::lookForObject(std::string label)
 {
 	float higher_similarity, calculated_similarity;
 	std::string current_table;
 	
 	std::vector<float> label_representation;
+
+	semanticsimilarity_proxy->getWordRepresentation(label, label_representation);
 	
-	semticsimilarity_proxy->getWordRepresentation(label, label_representation);
-	
-	//intialize to the firs table values
-	 
-	semticsimilarity_proxy->w2vVectorsDistance(table1_w2v, label_representation, higher_similarity);
+	//intialize to the first table values
+	semanticsimilarity_proxy->w2vVectorsDistance(table1_w2v, label_representation, higher_similarity);
 	current_table = "table1";
 	
-	semticsimilarity_proxy->w2vVectorsDistance(table2_w2v, label_representation, calculated_similarity);
+	semanticsimilarity_proxy->w2vVectorsDistance(table2_w2v, label_representation, calculated_similarity);
 	if ( calculated_similarity > higher_similarity )
 	{
 		higher_similarity = calculated_similarity;
 		current_table = "table2";
 	}
 	
-	semticsimilarity_proxy->w2vVectorsDistance(table3_w2v, label_representation, calculated_similarity);
+	semanticsimilarity_proxy->w2vVectorsDistance(table3_w2v, label_representation, calculated_similarity);
 	if ( calculated_similarity > higher_similarity )
 	{
 		higher_similarity = calculated_similarity;
 		current_table = "table3";
 	}
 	
-	semticsimilarity_proxy->w2vVectorsDistance(table4_w2v, label_representation, calculated_similarity);
+	semanticsimilarity_proxy->w2vVectorsDistance(table4_w2v, label_representation, calculated_similarity);
 	if ( calculated_similarity > higher_similarity )
 	{
 		higher_similarity = calculated_similarity;
 		current_table = "table4";
 	}
 	
-	semticsimilarity_proxy->w2vVectorsDistance(table5_w2v, label_representation, calculated_similarity);
+	semanticsimilarity_proxy->w2vVectorsDistance(table5_w2v, label_representation, calculated_similarity);
 	if ( calculated_similarity > higher_similarity )
 	{
 		higher_similarity = calculated_similarity;

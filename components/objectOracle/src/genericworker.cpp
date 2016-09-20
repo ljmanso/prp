@@ -28,8 +28,8 @@ QObject()
 #endif
 
 {
-	rgbd_proxy = (*(RGBDPrx*)mprx["RGBDProxy"]);
 	semanticsimilarity_proxy = (*(SemanticSimilarityPrx*)mprx["SemanticSimilarityProxy"]);
+	rgbd_proxy = (*(RGBDPrx*)mprx["RGBDProxy"]);
 	agmexecutive_proxy = (*(AGMExecutivePrx*)mprx["AGMExecutiveProxy"]);
 	logger_proxy = (*(LoggerPrx*)mprx["LoggerPub"]);
 

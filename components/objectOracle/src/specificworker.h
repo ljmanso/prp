@@ -122,7 +122,7 @@ private:
 	fstream file;
 	bool first;
 	
-	Model w2v_model;
+#include "feature_vectors.h"
 
 public:
 	SpecificWorker(MapPrx& mprx);	

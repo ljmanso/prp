@@ -87,9 +87,9 @@ public:
 	bool isActive() { return active; }
 	
 
-	SemanticSimilarityPrx semanticsimilarity_proxy;
-	LoggerPrx logger_proxy;
 	RGBDPrx rgbd_proxy;
+	LoggerPrx logger_proxy;
+	SemanticSimilarityPrx semanticsimilarity_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
