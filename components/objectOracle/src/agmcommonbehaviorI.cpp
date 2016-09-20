@@ -18,7 +18,7 @@
  */
 #include "agmcommonbehaviorI.h"
 
-AGMCommonBehaviorI::AGMCommonBehaviorI(GenericWorker *_worker, QObject *parent) : QObject(parent)
+AGMCommonBehaviorI::AGMCommonBehaviorI(GenericWorker *_worker)
 {
 	worker = _worker;
 }
