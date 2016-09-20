@@ -27,18 +27,14 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
-#include <DifferentialRobot.h>
-#include <AGMWorldModel.h>
+
 #include <ObjectOracle.h>
-#include <AGMExecutive.h>
-#include <Planning.h>
+#include <Logger.h>
 #include <RGBD.h>
 #include <JointMotor.h>
-#include <Logger.h>
-#include <AGMCommonBehavior.h>
-
+#include <DifferentialRobot.h>
+#include <SemanticSimilarity.h>
 #include <agm.h>
-
 
 #define CHECK_PERIOD 5000
 #define BASIC_PERIOD 100
@@ -50,6 +46,7 @@ using namespace std;
 using namespace RoboCompDifferentialRobot;
 using namespace RoboCompAGMWorldModel;
 using namespace RoboCompObjectOracle;
+using namespace RoboCompSemanticSimilarity;
 using namespace RoboCompAGMExecutive;
 using namespace RoboCompPlanning;
 using namespace RoboCompRGBD;
@@ -81,14 +78,15 @@ public:
 	virtual void setPeriod(int p);
 	
 	virtual bool setParams(RoboCompCommonBehavior::ParameterList params) = 0;
-	QMutex *world_mutex, *inner_mutex, *agent_mutex;
+	QMutex *mutex;
 	bool activate(const BehaviorParameters& parameters);
 	bool deactivate();
 	bool isActive() { return active; }
 	
 
-	LoggerPrx logger_proxy;
+	SemanticSimilarityPrx semanticsimilarity_proxy;
 	RGBDPrx rgbd_proxy;
+	LoggerPrx logger_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
@@ -107,7 +105,6 @@ public:
 	virtual void symbolUpdated(const RoboCompAGMWorldModel::Node &modification) = 0;
 	virtual void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modification) = 0;
 
-
 protected:
 	QTimer timer;
 	int Period;
@@ -118,6 +115,9 @@ protected:
 	int iter;
 	bool setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated);
 	RoboCompPlanning::Action createAction(std::string s);
+
+private:
+
 
 public slots:
 	virtual void compute() = 0;

@@ -28,14 +28,12 @@ QObject()
 #endif
 
 {
+	semanticsimilarity_proxy = (*(SemanticSimilarityPrx*)mprx["SemanticSimilarityProxy"]);
 	rgbd_proxy = (*(RGBDPrx*)mprx["RGBDProxy"]);
 	agmexecutive_proxy = (*(AGMExecutivePrx*)mprx["AGMExecutiveProxy"]);
-
 	logger_proxy = (*(LoggerPrx*)mprx["LoggerPub"]);
 
-	world_mutex = new QMutex(QMutex::Recursive);
-	inner_mutex = new QMutex(QMutex::Recursive);
-	agent_mutex = new QMutex(QMutex::Recursive);
+	mutex = new QMutex(QMutex::Recursive);
 
 	#ifdef USE_QTGUI
 		setupUi(this);
@@ -107,21 +105,21 @@ RoboCompPlanning::Action GenericWorker::createAction(std::string s)
 bool GenericWorker::activate(const BehaviorParameters &prs)
 {
 	printf("Worker::activate\n");
-	agent_mutex->lock();
+	mutex->lock();
 	p = prs;
 	active = true;
 	iter = 0;
-	agent_mutex->unlock();
+	mutex->unlock();
 	return active;
 }
 
 bool GenericWorker::deactivate() 
 {
 	printf("Worker::deactivate\n");
-	agent_mutex->lock();
+	mutex->lock();
 	active = false;
 	iter = 0;
-	agent_mutex->unlock();
+	mutex->unlock();
 	return active;
 }
 

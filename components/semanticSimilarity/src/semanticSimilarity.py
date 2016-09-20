@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# Copyright (C) 2015 by YOUR NAME HERE
+# Copyright (C) 2016 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
 #
@@ -55,32 +55,14 @@
 #
 #
 
-import sys, traceback, Ice, IceStorm, subprocess, threading, time, Queue, os, copy
+import sys, traceback, IceStorm, subprocess, threading, time, Queue, os, copy
 
 # Ctrl+c handling
 import signal
-signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 from PySide import *
 
 from specificworker import *
-
-ROBOCOMP = ''
-try:
-	ROBOCOMP = os.environ['ROBOCOMP']
-except:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
-	ROBOCOMP = '/opt/robocomp'
-if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
-	sys.exit()
-
-
-preStr = "-I"+ROBOCOMP+"/interfaces/ --all "+ROBOCOMP+"/interfaces/"
-Ice.loadSlice(preStr+"CommonBehavior.ice")
-import RoboCompCommonBehavior
-Ice.loadSlice(preStr+"SemanticSimilarity.ice")
-import RoboCompSemanticSimilarity
 
 
 class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
@@ -120,19 +102,28 @@ if __name__ == '__main__':
 	ic = Ice.initialize(params)
 	status = 0
 	mprx = {}
+	parameters = {}
+	for i in ic.getProperties():
+		parameters[str(i)] = str(ic.getProperties().getProperty(i))
 
-
+		# Topic Manager
+		proxy = ic.getProperties().getProperty("TopicManager.Proxy")
+		obj = ic.stringToProxy(proxy)
+		try:
+			topicManager = IceStorm.TopicManagerPrx.checkedCast(obj)
+		except Ice.ConnectionRefusedException, e:
+			print 'Cannot connect to IceStorm! ('+proxy+')'
+			sys.exit(-1)
 	if status == 0:
 		worker = SpecificWorker(mprx)
-
+		worker.setParams(parameters)
 
 		adapter = ic.createObjectAdapter('SemanticSimilarity')
 		adapter.add(SemanticSimilarityI(worker), ic.stringToIdentity('semanticsimilarity'))
 		adapter.activate()
 
 
-#		adapter.add(CommonBehaviorI(<LOWER>I, ic), ic.stringToIdentity('commonbehavior'))
-
+		signal.signal(signal.SIGINT, signal.SIG_DFL)
 		app.exec_()
 
 	if ic:

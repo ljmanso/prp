@@ -59,6 +59,8 @@
  * ...
  *
  */
+#include <signal.h>
+
 // QT includes
 #include <QtCore>
 #include <QtGui>
@@ -82,12 +84,12 @@
 #include <objectoracleI.h>
 #include <agmexecutivetopicI.h>
 
-#include <AGMExecutive.h>
-#include <AGMCommonBehavior.h>
-#include <AGMWorldModel.h>
 #include <ObjectOracle.h>
 #include <Logger.h>
 #include <RGBD.h>
+#include <JointMotor.h>
+#include <DifferentialRobot.h>
+#include <SemanticSimilarity.h>
 
 
 // User includes here
@@ -95,15 +97,6 @@
 // Namespaces
 using namespace std;
 using namespace RoboCompCommonBehavior;
-
-using namespace RoboCompAGMExecutive;
-using namespace RoboCompAGMCommonBehavior;
-using namespace RoboCompAGMWorldModel;
-using namespace RoboCompObjectOracle;
-using namespace RoboCompLogger;
-using namespace RoboCompRGBD;
-
-
 
 class objectoracle : public RoboComp::Application
 {
@@ -132,14 +125,43 @@ int ::objectoracle::run(int argc, char* argv[])
 #else
 	QCoreApplication a(argc, argv);  // NON-GUI application
 #endif
+
+
+	sigset_t sigs;
+	sigemptyset(&sigs);
+	sigaddset(&sigs, SIGHUP);
+	sigaddset(&sigs, SIGINT);
+	sigaddset(&sigs, SIGTERM);
+	sigprocmask(SIG_UNBLOCK, &sigs, 0);
+
+
+
 	int status=EXIT_SUCCESS;
 
-	LoggerPrx logger_proxy;
+	SemanticSimilarityPrx semanticsimilarity_proxy;
 	RGBDPrx rgbd_proxy;
+	LoggerPrx logger_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	string proxy, tmp;
 	initialize();
+
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "SemanticSimilarityProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy SemanticSimilarityProxy\n";
+		}
+		semanticsimilarity_proxy = SemanticSimilarityPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("SemanticSimilarityProxy initialized Ok!");
+	mprx["SemanticSimilarityProxy"] = (::IceProxy::Ice::Object*)(&semanticsimilarity_proxy);//Remote server proxy creation example
 
 
 	try

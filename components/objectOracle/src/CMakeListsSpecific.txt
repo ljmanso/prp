@@ -1,57 +1,64 @@
 
 # Sources set
-SET ( SOURCES
+set ( SOURCES
     specificworker.cpp
     specificmonitor.cpp
-    ccv/ccv_algebra.c
-    ccv/ccv_basic.c
-    ccv/ccv_bbf.c
-    ccv/ccv_cache.c
-    ccv/ccv_classic.c
-    ccv/ccv_convnet.c
-    ccv/ccv_daisy.c
-    ccv/ccv_doxygen.h
-    ccv/ccv_dpm.c
-    ccv/ccv_ferns.c
-    ccv/ccv.h
-    ccv/ccv_icf.c
-    ccv/ccv_image_processing.c
-    ccv/ccv_internal.h
-    ccv/ccv_io.c
-    ccv/ccv_memory.c
-    ccv/ccv_mser.c
-    ccv/ccv_numeric.c
-    ccv/ccv_output.c
-    ccv/ccv_resample.c
-    ccv/ccv_scd.c
-    ccv/ccv_sift.c
-    ccv/ccv_sparse_coding.c
-    ccv/ccv_swt.c
-    ccv/ccv_tld.c
-    ccv/ccv_transform.c
-    ccv/ccv_util.c
-    ccv/io/_ccv_io_libpng.c
-    ccv/io/_ccv_io_libjpeg.c
-    ccv/io/_ccv_io_bmp.c
-    ccv/io/_ccv_io_binary.c
-    ccv/io/_ccv_io_raw.c
-    ccv/3rdparty/sqlite3/sqlite3.c
-    ccv/3rdparty/sha1/sha1.c
-    ccv/3rdparty/kissfft/kiss_fft.c
-    ccv/3rdparty/kissfft/kiss_fftnd.c 
-    ccv/3rdparty/kissfft/kiss_fftr.c 
-    ccv/3rdparty/kissfft/kiss_fftndr.c 
-    ccv/3rdparty/kissfft/kissf_fft.c 
-    ccv/3rdparty/kissfft/kissf_fftnd.c 
-    ccv/3rdparty/kissfft/kissf_fftr.c
-    ccv/3rdparty/kissfft/kissf_fftndr.c
-    ccv/3rdparty/dsfmt/dSFMT.c
-    ccv/3rdparty/sfmt/SFMT.c
     caffeClassifier.cpp
     labeler.cpp
     mapmodel.cpp
     
 )
+
+if ( CONVNET_SUPPORT )
+	set ( SOURCES
+	    ccv/ccv_algebra.c
+		ccv/ccv_basic.c
+		ccv/ccv_bbf.c
+		ccv/ccv_cache.c
+		ccv/ccv_classic.c
+		ccv/ccv_convnet.c
+		ccv/ccv_daisy.c
+		ccv/ccv_doxygen.h
+		ccv/ccv_dpm.c
+		ccv/ccv_ferns.c
+		ccv/ccv.h
+		ccv/ccv_icf.c
+		ccv/ccv_image_processing.c
+		ccv/ccv_internal.h
+		ccv/ccv_io.c
+		ccv/ccv_memory.c
+		ccv/ccv_mser.c
+		ccv/ccv_numeric.c
+		ccv/ccv_output.c
+		ccv/ccv_resample.c
+		ccv/ccv_scd.c
+		ccv/ccv_sift.c
+		ccv/ccv_sparse_coding.c
+		ccv/ccv_swt.c
+		ccv/ccv_tld.c
+		ccv/ccv_transform.c
+		ccv/ccv_util.c
+		ccv/io/_ccv_io_libpng.c
+		ccv/io/_ccv_io_libjpeg.c
+		ccv/io/_ccv_io_bmp.c
+		ccv/io/_ccv_io_binary.c
+		ccv/io/_ccv_io_raw.c
+		ccv/3rdparty/sqlite3/sqlite3.c
+		ccv/3rdparty/sha1/sha1.c
+		ccv/3rdparty/kissfft/kiss_fft.c
+		ccv/3rdparty/kissfft/kiss_fftnd.c 
+		ccv/3rdparty/kissfft/kiss_fftr.c 
+		ccv/3rdparty/kissfft/kiss_fftndr.c 
+		ccv/3rdparty/kissfft/kissf_fft.c 
+		ccv/3rdparty/kissfft/kissf_fftnd.c 
+		ccv/3rdparty/kissfft/kissf_fftr.c
+		ccv/3rdparty/kissfft/kissf_fftndr.c
+		ccv/3rdparty/dsfmt/dSFMT.c
+		ccv/3rdparty/sfmt/SFMT.c
+	)
+	
+	target_compile_definitions(objectoracle PRIVATE CONVNET=0 )
+endif()
 
 
 find_package(Boost
@@ -75,6 +82,8 @@ include_directories(${PCL_INCLUDE_DIRS})
 #caffe cpu only definition
 add_definitions(-DCPU_ONLY)
 
+list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+list(REMOVE_ITEM PCL_LIBRARIES "vtkRenderingFreeTypeOpenGL")
 add_definitions(-DQT4=1)
 add_definitions(-DQT4)
 add_definitions(-DQT_QMAKE_EXECUTABLE=/usr/bin/qmake-qt4)
@@ -83,6 +92,6 @@ add_definitions(-DQT_MOC_EXECUTABLE=/usr/bin/moc-qt4)
 include_directories(/usr/local/include/osg /usr/include/osgViewer /usr/include/libxml2)
 
 SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl -lglog -lblas ${PCL_LIBRARIES} ${Boost_LIBRARIES} )
-SET( LIBS ${LIBS} -L/usr/local/lib64/ -losg -losgViewer -losgGA -losgText -losgDB -losgUtil )
+SET( LIBS ${LIBS} -L/usr/local/lib64/ -losg -losgViewer -losgGA -losgText -losgDB -losgUtil -lcaffe )
 
 ADD_DEFINITIONS( -std=c++11 -fpermissive -D DEBUG -D HAVE_LIBPNG -D HAVE_LIBJPEG -D HAVE_AVCODEC -D HAVE_AVFORMAT -D HAVE_SWSCALE -D HAVE_SSE2 -D HAVE_GSL -D HAVE_CBLAS )
