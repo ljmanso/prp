@@ -85,7 +85,6 @@
 
 #include "labeler.h"
 #include "mapmodel.h"
-#include "word2vec.h"
 
 #endif
 
@@ -123,7 +122,7 @@ private:
 	fstream file;
 	bool first;
 	
-	Model w2v_model;
+#include "feature_vectors.h"
 
 public:
 	SpecificWorker(MapPrx& mprx);	
@@ -148,15 +147,16 @@ public:
 	void load_tables_info();
 	   
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
+	std::string SpecificWorker::lookForObjectNoW2V(std::string label);
 	std::string lookForObject(std::string label);
-	void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result);
+	void getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, ResultList &result);
 	void getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &result);
 	void structuralChange(const RoboCompAGMWorldModel::World &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
 	void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification);
 	void symbolUpdated(const RoboCompAGMWorldModel::Node &modification);
 	void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications);
-	RoboCompObjectOracle::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
+	RoboCompRGBD::ColorSeq convertMat2ColorSeq(cv::Mat rgb);
 
 	std::string checkTable(RoboCompRGBD::ColorSeq image);
 	std::string checkTableApril(RoboCompRGBD::ColorSeq image);
@@ -228,7 +228,7 @@ private:
 	RoboCompJointMotor::MotorStateMap hState;
 	RoboCompRGBD::ColorSeq rgbImage;
 	RoboCompRGBD::PointSeq points;
-	RoboCompObjectOracle::ColorSeq oracleImage;
+	RoboCompRGBD::ColorSeq oracleImage;
 	pcl::PointCloud<PointT>::Ptr cloud;
 	cv::Mat matImage;
 	pcl::PointCloud<PointT>::Ptr fullCloud;

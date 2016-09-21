@@ -101,6 +101,8 @@ first(true)
 //         {
 //                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
 //         }
+	
+	std::cout<<"The cup is at: "<<lookForObject("cup")<<std::endl;
 
 }
 
@@ -628,9 +630,9 @@ std::fstream& GotoLine(std::fstream& file, unsigned int num)
     return file;
 }
 
-RoboCompObjectOracle::ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
+RoboCompRGBD::ColorSeq SpecificWorker::convertMat2ColorSeq(cv::Mat rgb)
 {
-	RoboCompObjectOracle::ColorSeq rgbMatrix;
+	RoboCompRGBD::ColorSeq rgbMatrix;
 	rgbMatrix.resize(rgb.cols*rgb.rows);
 	
 	for (int row = 0; row<rgb.rows; row++)
@@ -660,7 +662,7 @@ void SpecificWorker::processDataFromKinect(cv::Mat matImage, const RoboCompRGBD:
 	
 	for(uint i = 0 ; i < segmented_objects.size() ; i++)
 	{	
-//		RoboCompObjectOracle::ColorSeq auxMatrix = convertMat2ColorSeq (segmented_objects[i]);
+//		RoboCompRGBD::ColorSeq auxMatrix = convertMat2ColorSeq (segmented_objects[i]);
 		processImage(segmented_objects[i], location);
 	}
 	
@@ -794,7 +796,7 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 				//first processing of entire image
 				cv::Mat rgb = cv::imread( path2file );
 				
-				//RoboCompObjectOracle::ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
+				//RoboCompRGBD::ColorSeq rgbMatrix = convertMat2ColorSeq (rgb);
 				
 				std::cout<<"Processing image: "<<path2file<<" from table: "<<location<<endl;
 				std::cout<<rgb.size()<<std::endl;
@@ -938,7 +940,7 @@ void SpecificWorker::addLabelsToTable(ResultList result, std::string location)
 }
 
 #ifdef CONVNET
-void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
+void SpecificWorker::getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, ResultList &result)
 {
 
 #ifdef DEBUG
@@ -1007,7 +1009,7 @@ void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &im
     
 }
 #else
-void SpecificWorker::getLabelsFromImage(const RoboCompObjectOracle::ColorSeq &image, ResultList &result)
+void SpecificWorker::getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, ResultList &result)
 {
 			Label l;
             l.name = "CCV_CONNET NOT ENABLED AT COMPILE TIME";
@@ -1250,7 +1252,7 @@ void SpecificWorker::segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Ma
 // 	return result;
 }
 
-std::string SpecificWorker::lookForObject(std::string label)
+std::string SpecificWorker::lookForObjectNoW2V(std::string label)
 {
     std::string table = "none";
     double current_believe = -1;
@@ -1305,6 +1307,51 @@ std::string SpecificWorker::lookForObject(std::string label)
 		table5.erase(it5);	
     
     return table;
+}
+
+std::string SpecificWorker::lookForObject(std::string label)
+{
+	float higher_similarity, calculated_similarity;
+	std::string current_table;
+	
+	std::vector<float> label_representation;
+
+	semanticsimilarity_proxy->getWordRepresentation(label, label_representation);
+	
+	//intialize to the first table values
+	semanticsimilarity_proxy->w2vVectorsDistance(table1_w2v, label_representation, higher_similarity);
+	current_table = "table1";
+	
+	semanticsimilarity_proxy->w2vVectorsDistance(table2_w2v, label_representation, calculated_similarity);
+	if ( calculated_similarity > higher_similarity )
+	{
+		higher_similarity = calculated_similarity;
+		current_table = "table2";
+	}
+	
+	semanticsimilarity_proxy->w2vVectorsDistance(table3_w2v, label_representation, calculated_similarity);
+	if ( calculated_similarity > higher_similarity )
+	{
+		higher_similarity = calculated_similarity;
+		current_table = "table3";
+	}
+	
+	semanticsimilarity_proxy->w2vVectorsDistance(table4_w2v, label_representation, calculated_similarity);
+	if ( calculated_similarity > higher_similarity )
+	{
+		higher_similarity = calculated_similarity;
+		current_table = "table4";
+	}
+	
+	semanticsimilarity_proxy->w2vVectorsDistance(table5_w2v, label_representation, calculated_similarity);
+	if ( calculated_similarity > higher_similarity )
+	{
+		higher_similarity = calculated_similarity;
+		current_table = "table5";
+	}
+	
+	return current_table;
+	
 }
 
 bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated)

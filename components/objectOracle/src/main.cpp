@@ -85,6 +85,9 @@
 #include <agmexecutivetopicI.h>
 
 #include <ObjectOracle.h>
+#include <RGBD.h>
+#include <JointMotor.h>
+#include <DifferentialRobot.h>
 #include <Logger.h>
 #include <RGBD.h>
 #include <JointMotor.h>
@@ -138,30 +141,13 @@ int ::objectoracle::run(int argc, char* argv[])
 
 	int status=EXIT_SUCCESS;
 
-	SemanticSimilarityPrx semanticsimilarity_proxy;
-	RGBDPrx rgbd_proxy;
 	LoggerPrx logger_proxy;
+	RGBDPrx rgbd_proxy;
+	SemanticSimilarityPrx semanticsimilarity_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	string proxy, tmp;
 	initialize();
-
-
-	try
-	{
-		if (not GenericMonitor::configGetString(communicator(), prefix, "SemanticSimilarityProxy", proxy, ""))
-		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy SemanticSimilarityProxy\n";
-		}
-		semanticsimilarity_proxy = SemanticSimilarityPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
-	}
-	catch(const Ice::Exception& ex)
-	{
-		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
-		return EXIT_FAILURE;
-	}
-	rInfo("SemanticSimilarityProxy initialized Ok!");
-	mprx["SemanticSimilarityProxy"] = (::IceProxy::Ice::Object*)(&semanticsimilarity_proxy);//Remote server proxy creation example
 
 
 	try
@@ -179,6 +165,23 @@ int ::objectoracle::run(int argc, char* argv[])
 	}
 	rInfo("RGBDProxy initialized Ok!");
 	mprx["RGBDProxy"] = (::IceProxy::Ice::Object*)(&rgbd_proxy);//Remote server proxy creation example
+
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "SemanticSimilarityProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy SemanticSimilarityProxy\n";
+		}
+		semanticsimilarity_proxy = SemanticSimilarityPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("SemanticSimilarityProxy initialized Ok!");
+	mprx["SemanticSimilarityProxy"] = (::IceProxy::Ice::Object*)(&semanticsimilarity_proxy);//Remote server proxy creation example
 
 
 	try

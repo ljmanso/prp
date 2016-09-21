@@ -19,9 +19,6 @@
 #ifndef OBJECTORACLE_H
 #define OBJECTORACLE_H
 
-// QT includes
-#include <QtCore/QObject>
-
 // Ice includes
 #include <Ice/Ice.h>
 #include <ObjectOracle.h>
@@ -31,22 +28,18 @@
 
 using namespace RoboCompObjectOracle;
 
-class ObjectOracleI : public QObject , public virtual RoboCompObjectOracle::ObjectOracle
+class ObjectOracleI : public virtual RoboCompObjectOracle::ObjectOracle
 {
-Q_OBJECT
 public:
-	ObjectOracleI( GenericWorker *_worker, QObject *parent = 0 );
+	ObjectOracleI(GenericWorker *_worker);
 	~ObjectOracleI();
 	
 	void semanticDistance(const string  &word1, const string  &word2,  float  &result, const Ice::Current&);
-	void getLabelsFromImage(const RoboCompObjectOracle::ColorSeq  &image,  ResultList  &result, const Ice::Current&);
+	void getLabelsFromImage(const RoboCompRGBD::ColorSeq  &image,  ResultList  &result, const Ice::Current&);
 
-	QMutex *mutex;
 private:
 
 	GenericWorker *worker;
-public slots:
-
 
 };
 
