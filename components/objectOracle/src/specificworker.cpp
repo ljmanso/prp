@@ -49,6 +49,7 @@ first(true)
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
 	worldModelTime = actionTime = QTime::currentTime();
+	num_saleslman_visited=0;
 	
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(save_tables_info()));
 
@@ -68,11 +69,14 @@ first(true)
 	std::string trained_file = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/bvlc_reference_caffenet.caffemodel";
 	std::string mean_file    = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/imagenet_mean.binaryproto";
 	std::string label_file   = "/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/caffe/synset_words.txt";
-	
+
+#ifdef CAFFE_CLASSIFIER
 	caffe_classifier = new CaffeClassifier(model_file, trained_file, mean_file, label_file);
-        
 	labeler = std::make_shared<Labeler>(model_file, trained_file, mean_file, label_file);
-        
+#endif	
+	
+	for(int i=0; i<5;i++)
+		visited_table[i]=false;
         
 	#ifdef INNER_VIEWER
 		//AGM Model Viewer
@@ -82,7 +86,7 @@ first(true)
 		osgView->show();
  	#endif
 	
- 	load_tables_info();
+//  	load_tables_info();
         
 
 //         processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/images/");
@@ -101,8 +105,6 @@ first(true)
 //         {
 //                 cout << "Key: " << iter->first << endl << "Value: " << iter->second<< endl;
 //         }
-	
-	std::cout<<"The cup is at: "<<lookForObject("cup")<<std::endl;
 
 }
 
@@ -128,6 +130,29 @@ void SpecificWorker::loadTablesFromModel()
         tables.push_back( std::pair <std::map<std::string, double>, int> (table, elem.second->identifier) );
     }
         
+}
+
+std::vector<std::vector<int> > permuteUnique(std::vector<int> num) {
+    std::sort(num.begin(), num.end());
+    std::vector<std::vector<int> > res;
+    if(num.empty()) {
+        return res;
+    }
+    do {
+        res.push_back(num);
+    } while (std::next_permutation(num.begin(), num.end()));
+    return res;
+}
+
+void print(const std::vector<int>& v)
+{
+	std::cout << "{";
+	const char* sep = "";
+	for (const auto& e : v) {
+		std::cout << sep << e;
+		sep = ", ";
+	}
+	std::cout << "}\n";
 }
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
@@ -169,7 +194,80 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		printf("The executive is probably not running, waiting for first AGM model publication...");
 	}
 	
+	//Initialice tables distances for traveling salesman
+	innerModel = AGMInner::extractInnerModel(worldModel);
+	
+	//distances from robot to tables
+	table_distances[0][0] = 0;
+	table_distances[0][1] = innerModel->transform("robot", "tableA_reachPos").norm2();
+	table_distances[0][2] = innerModel->transform("robot", "tableB_reachPos").norm2();
+	table_distances[0][3] = innerModel->transform("robot", "tableC_reachPos").norm2();
+	table_distances[0][4] = innerModel->transform("robot", "tableD_reachPos").norm2();
+	table_distances[0][5] = innerModel->transform("robot", "tableE_reachPos").norm2();
+	
+	//distances from tableA to tables
+	table_distances[1][0] = table_distances[0][1];
+	table_distances[1][1] = 0;
+	table_distances[1][2] = innerModel->transform("tableA_reachPos", "tableB_reachPos").norm2();
+	table_distances[1][3] = innerModel->transform("tableA_reachPos", "tableC_reachPos").norm2();
+	table_distances[1][4] = innerModel->transform("tableA_reachPos", "tableD_reachPos").norm2();
+	table_distances[1][5] = innerModel->transform("tableA_reachPos", "tableE_reachPos").norm2();
 
+	//distances from tableB to tables
+	table_distances[2][0] = table_distances[0][2];
+	table_distances[2][1] = table_distances[1][2];
+	table_distances[2][2] = 0;
+	table_distances[2][3] = innerModel->transform("tableA_reachPos", "tableC_reachPos").norm2();
+	table_distances[2][4] = innerModel->transform("tableA_reachPos", "tableD_reachPos").norm2();
+	table_distances[2][5] = innerModel->transform("tableA_reachPos", "tableE_reachPos").norm2();
+	
+	//distances from tableC to tables
+	table_distances[3][0] = table_distances[0][3];
+	table_distances[3][1] = table_distances[1][3];
+	table_distances[3][2] = table_distances[2][3];
+	table_distances[3][3] = 0;
+	table_distances[3][4] = innerModel->transform("tableA_reachPos", "tableD_reachPos").norm2();
+	table_distances[3][5] = innerModel->transform("tableA_reachPos", "tableE_reachPos").norm2();
+	
+	//distances from tableD to tables
+	table_distances[4][0] = table_distances[0][4];
+	table_distances[4][1] = table_distances[1][4];
+	table_distances[4][2] = table_distances[2][4];
+	table_distances[4][3] = table_distances[3][4];
+	table_distances[4][4] = 0;
+	table_distances[4][5] = innerModel->transform("tableA_reachPos", "tableE_reachPos").norm2();
+	
+	//distances from tableE to tables
+	table_distances[5][0] = table_distances[0][5];
+	table_distances[5][1] = table_distances[1][5];
+	table_distances[5][2] = table_distances[2][5];
+	table_distances[5][3] = table_distances[3][5];
+	table_distances[5][4] = table_distances[4][5];
+	table_distances[5][5] = 0;
+	
+	//create all possible paths and calculate weights
+	
+	float current_min_weight = 9999999;
+	auto res = permuteUnique({0,1,2,3,4});
+	for (const auto& e : res) 
+	//for (const auto& e = res.begin(); e != res.end(); ++e)
+	{
+		//initialice weight to first path from robot
+		float weight = table_distances[0][e[0]];
+
+		for(int i=0;i<4;i++)
+		{
+			weight += table_distances[e[i]][e[i+1]];
+		}
+		if(weight < current_min_weight)
+		{
+// 			std::cout<<"this da waight"<<weight<<std::endl;
+// 			print(e);
+			current_min_weight = weight;
+			tables_order = e;
+		}
+	}
+	
 	
 	timer.start(Period);
 	return true;
@@ -178,9 +276,23 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 void SpecificWorker::compute()
 {
 	static bool first=true;
-	printf("ACTION: %s\n", action.c_str());
+// 	printf("ACTION: %s\n", action.c_str());
 	
 	boost::algorithm::to_lower(action);
+	
+	// retrieve model
+	if (worldModel->getIdentifierByType("robot") < 0)
+	{
+		try
+		{
+			RoboCompAGMWorldModel::World w = agmexecutive_proxy->getModel();
+			structuralChange(w);
+		}
+		catch(...)
+		{
+			printf("The executive is probably not running, waiting for first AGM model publication...");
+		}
+	}
 	
 	if (action == "imaginemostlikelymuginposition")
 	{
@@ -192,7 +304,8 @@ void SpecificWorker::compute()
 		qLog::getInstance()->setProxy("both", logger_proxy);
 		rDebug2(("oracleAgent started\n"));
 		first=false;
-		load_tables_info();
+		
+// 		load_tables_info();
   		//processDataFromDir("/home/marcog/robocomp/components/prp/experimentFiles/capturas/");
 		//show map after processing
 		
@@ -219,104 +332,106 @@ void SpecificWorker::compute()
         //save_tables_info();
 	}
 	//read image from kinect
-	try
-	{
-		qDebug() << "read frame";
-		rgbd_proxy->getRGB(rgbImage, hState, bState);
-		rgbd_proxy->getXYZ(points, hState, bState);
-		//Convert image to RoboCompObjectOracle
-//		memcpy(&oracleImage[0], &rgbImage[0], IMAGE_WIDTH*IMAGE_HEIGHT*3);
-
-		std::string location = checkTable(rgbImage);
-		//std::string location = "table1";
-		//if robot is close to any table
-
-		if (location != "invalid" )
-		{
-			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
-			
-			std::string file_name = std::to_string(image_save_counter) + "_" + location;
-			int pos = 0, k=0;
-			
-			if(save_table_data || labeling)
-			{
-				//crop image 
-				matImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
-				cloud->clear();
-				cloud->resize((up-down)*(right-left));
-				
-				for(int j=down; j<up; j++)
-				{
-					for(int i=left; i<right; i++)
-					{
-						pos = j * IMAGE_WIDTH + i;
-						matImage.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
-						QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
-						memcpy(&cloud->points[k],p1.data(),3*sizeof(float));
-						cloud->points[k].r = rgbImage[pos].red;
-						cloud->points[k].g = rgbImage[pos].green;
-						cloud->points[k].b = rgbImage[pos].blue;
-						k++;
-					}
-				}
-					
-	
-			//	cv::imwrite( file_name + ".jpg", matImage );
-			//	pcl::io::savePCDFileASCII (file_name + ".pcd", *cloud);
-			//	cv::imshow("3D viewer",matImage);
-			}
-			
-			if(save_full_data)
-			{
-				fullImage = cv::Mat(480,640,CV_8UC3, cv::Scalar::all(0));
-				pos = 0;
-				k=0;
-				fullCloud->clear();
-				fullCloud->resize(480*640);
-				for(int j=0; j<480; j++)
-				{
-					for(int i=0; i<640; i++)
-					{
-						pos = j * IMAGE_WIDTH + i;
-						fullImage.at<cv::Vec3b>(j, i) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
-						QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
-						memcpy(&fullCloud->points[k],p1.data(),3*sizeof(float));
-						fullCloud->points[k].r = rgbImage[pos].red;
-						fullCloud->points[k].g = rgbImage[pos].green;
-						fullCloud->points[k].b = rgbImage[pos].blue;
-						k++;
-					}
-				}
-				cv::imwrite( file_name + "_full.jpg", fullImage );
-				pcl::io::savePCDFileASCII (file_name + "_full.pcd", *fullCloud);
-			}
-			
-			++image_save_counter;
-		
-//			unsigned int elapsed_time = get_current_time();
-			//processDataFromKinect(matImage, points, location);
-			if(labeling)
-			{
-				labelImage(matImage, location);
-				cv::imshow("Labeled table",matImage);
-			}
-					
-
-//			elapsed_time = get_current_time() - elapsed_time;
-//			printf("elapsed time %d ms\n",elapsed_time);
-			
-		}
-
-    }
-    catch(const Ice::Exception &ex)
-    {
-        std::cout << ex << std::endl;
-    }
+// 	try
+// 	{
+// 		qDebug() << "read frame";
+// 		rgbd_proxy->getRGB(rgbImage, hState, bState);
+// 		rgbd_proxy->getXYZ(points, hState, bState);
+// 		//Convert image to RoboCompObjectOracle
+// //		memcpy(&oracleImage[0], &rgbImage[0], IMAGE_WIDTH*IMAGE_HEIGHT*3);
+// 
+// 		std::string location = checkTable(rgbImage);
+// 		//std::string location = "table1";
+// 		//if robot is close to any table
+// 
+// 		if (location != "invalid" )
+// 		{
+// 			printf("**************************************\nLOCATION %s\n********************************\n",location.c_str());
+// 			
+// 			std::string file_name = std::to_string(image_save_counter) + "_" + location;
+// 			int pos = 0, k=0;
+// 			
+// 			if(save_table_data || labeling)
+// 			{
+// 				//crop image 
+// 				matImage = cv::Mat(up-down,right-left,CV_8UC3, cv::Scalar::all(0));
+// 				cloud->clear();
+// 				cloud->resize((up-down)*(right-left));
+// 				
+// 				for(int j=down; j<up; j++)
+// 				{
+// 					for(int i=left; i<right; i++)
+// 					{
+// 						pos = j * IMAGE_WIDTH + i;
+// 						matImage.at<cv::Vec3b>(j-down, i-left) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
+// 						QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
+// 						memcpy(&cloud->points[k],p1.data(),3*sizeof(float));
+// 						cloud->points[k].r = rgbImage[pos].red;
+// 						cloud->points[k].g = rgbImage[pos].green;
+// 						cloud->points[k].b = rgbImage[pos].blue;
+// 						k++;
+// 					}
+// 				}
+// 					
+// 	
+// 			//	cv::imwrite( file_name + ".jpg", matImage );
+// 			//	pcl::io::savePCDFileASCII (file_name + ".pcd", *cloud);
+// 			//	cv::imshow("3D viewer",matImage);
+// 			}
+// 			
+// 			if(save_full_data)
+// 			{
+// 				fullImage = cv::Mat(480,640,CV_8UC3, cv::Scalar::all(0));
+// 				pos = 0;
+// 				k=0;
+// 				fullCloud->clear();
+// 				fullCloud->resize(480*640);
+// 				for(int j=0; j<480; j++)
+// 				{
+// 					for(int i=0; i<640; i++)
+// 					{
+// 						pos = j * IMAGE_WIDTH + i;
+// 						fullImage.at<cv::Vec3b>(j, i) = cv::Vec3b(rgbImage[pos].blue, rgbImage[pos].green, rgbImage[pos].red);
+// 						QVec p1 = QVec::vec4(points[pos].x, points[pos].y, points[pos].z, 1);
+// 						memcpy(&fullCloud->points[k],p1.data(),3*sizeof(float));
+// 						fullCloud->points[k].r = rgbImage[pos].red;
+// 						fullCloud->points[k].g = rgbImage[pos].green;
+// 						fullCloud->points[k].b = rgbImage[pos].blue;
+// 						k++;
+// 					}
+// 				}
+// 				cv::imwrite( file_name + "_full.jpg", fullImage );
+// 				pcl::io::savePCDFileASCII (file_name + "_full.pcd", *fullCloud);
+// 			}
+// 			
+// 			++image_save_counter;
+// 		
+// //			unsigned int elapsed_time = get_current_time();
+// 			//processDataFromKinect(matImage, points, location);
+// 			if(labeling)
+// 			{
+// 				labelImage(matImage, location);
+// 				cv::imshow("Labeled table",matImage);
+// 			}
+// 					
+// 
+// //			elapsed_time = get_current_time() - elapsed_time;
+// //			printf("elapsed time %d ms\n",elapsed_time);
+// 			
+// 		}
+// 
+//     }
+//     catch(const Ice::Exception &ex)
+//     {
+//         std::cout << ex << std::endl;
+//     }
 	#ifdef INNER_VIEWER
 		//AGM Model viewer
 		updateViewer();
 	#endif
+		
 }
+
 std::string SpecificWorker::checkTable(RoboCompRGBD::ColorSeq image)
 {
 	world_mutex->lock();
@@ -658,6 +773,7 @@ void SpecificWorker::processDataFromKinect(cv::Mat matImage, const RoboCompRGBD:
 	
 }
 
+#ifdef CAFFE_CLASSIFIER
 void SpecificWorker::labelImage(cv::Mat matImage, std::string location)
 {
 	/// Global variables
@@ -759,6 +875,7 @@ void SpecificWorker::labelImage(cv::Mat matImage, std::string location)
 	//display results
 	showTablesOnInterface();
 }
+#endif
 
 void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 {
@@ -821,8 +938,16 @@ void SpecificWorker::processDataFromDir(const boost::filesystem::path &base_dir)
 void SpecificWorker::processImage(cv::Mat matImage, std::string location)
 {
     ResultList result;
-    
+
+#ifdef CAFFE_CLASSIFIER
     getLabelsFromImageWithCaffe(matImage, result);
+#else
+	#ifdef CONVNET
+	getLabelsFromImage(matImage, result);
+	#else
+	qFatal("SELECT A CLASSIFIYING NETWORK AT COMPILE TIME");
+	#endif
+#endif
     addLabelsToTable(result, location);
     printf("proccesImage end\n");       
     
@@ -1009,7 +1134,7 @@ void SpecificWorker::getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, Res
 #endif
 
 
-
+#ifdef CAFFE_CLASSIFIER
 void SpecificWorker::getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &result)
 {
 	std::vector<Prediction> predictions = caffe_classifier->Classify(matImage);
@@ -1026,7 +1151,7 @@ void SpecificWorker::getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &r
 		result.push_back(l);
 	}
 }
-
+#endif
 
 void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modification)
 {
@@ -1037,7 +1162,7 @@ void SpecificWorker::structuralChange(const RoboCompAGMWorldModel::World &modifi
 
 	delete innerModel;
 	innerModel = AGMInner::extractInnerModel(worldModel);
-	camera = innerModel->getCamera("rgbd");
+	camera = innerModel->getRGBD("rgbd");
 	#ifdef INNER_VIEWER
 		changeInner();
 	#endif
@@ -1301,49 +1426,172 @@ std::string SpecificWorker::lookForObjectNoW2V(std::string label)
 
 std::string SpecificWorker::lookForObject(std::string label)
 {
-	float higher_similarity, calculated_similarity;
-	std::string current_table;
+	label = "cup";
+	float higher_similarity = -9999999;
+	float calculated_similarity;
+	std::string current_table = "no_table";
+	int table_to_visit_number = -1;
 	
 	std::vector<float> label_representation;
 
 	semanticsimilarity_proxy->getWordRepresentation(label, label_representation);
 	
+	printf("Tables to visit: ");
+	for(int i=0;i<5;i++)
+		if(visited_table[i] == false)
+			printf(" %d ", i);
+	printf("\n");
+	
+		
 	//intialize to the first table values
-	semanticsimilarity_proxy->w2vVectorsDistance(table1_w2v, label_representation, higher_similarity);
-	current_table = "table1";
-	
-	semanticsimilarity_proxy->w2vVectorsDistance(table2_w2v, label_representation, calculated_similarity);
-	if ( calculated_similarity > higher_similarity )
+	if(visited_table[0] == false)
 	{
-		higher_similarity = calculated_similarity;
-		current_table = "table2";
+		semanticsimilarity_proxy->w2vVectorsDistance(table1_w2v, label_representation, higher_similarity);
+		printf("Table1 caclulated similarity>  %f", higher_similarity);
+		current_table = "table1";
+		table_to_visit_number = 0;
 	}
 	
-	semanticsimilarity_proxy->w2vVectorsDistance(table3_w2v, label_representation, calculated_similarity);
-	if ( calculated_similarity > higher_similarity )
+	if(visited_table[1] == false)
 	{
-		higher_similarity = calculated_similarity;
-		current_table = "table3";
+		semanticsimilarity_proxy->w2vVectorsDistance(table2_w2v, label_representation, calculated_similarity);
+		printf("Table2 caclulated similarity>  %f", calculated_similarity);
+		if ( calculated_similarity > higher_similarity )
+		{
+			higher_similarity = calculated_similarity;
+			current_table = "table2";
+			table_to_visit_number = 1;
+		}
 	}
 	
-	semanticsimilarity_proxy->w2vVectorsDistance(table4_w2v, label_representation, calculated_similarity);
-	if ( calculated_similarity > higher_similarity )
+	if(visited_table[2] == false)
 	{
-		higher_similarity = calculated_similarity;
-		current_table = "table4";
+		semanticsimilarity_proxy->w2vVectorsDistance(table3_w2v, label_representation, calculated_similarity);
+		printf("Table3 caclulated similarity>  %f", calculated_similarity);
+		if ( calculated_similarity > higher_similarity )
+		{
+			higher_similarity = calculated_similarity;
+			current_table = "table3";
+			table_to_visit_number = 2;
+		}
 	}
 	
-	semanticsimilarity_proxy->w2vVectorsDistance(table5_w2v, label_representation, calculated_similarity);
-	if ( calculated_similarity > higher_similarity )
+	if(visited_table[3] == false)
 	{
-		higher_similarity = calculated_similarity;
-		current_table = "table5";
+		semanticsimilarity_proxy->w2vVectorsDistance(table4_w2v, label_representation, calculated_similarity);
+		printf("Table4 caclulated similarity>  %f", calculated_similarity);
+		if ( calculated_similarity > higher_similarity )
+		{
+			higher_similarity = calculated_similarity;
+			current_table = "table4";
+			table_to_visit_number = 3;
+		}
 	}
+	
+	if(visited_table[4] == false)
+	{
+		semanticsimilarity_proxy->w2vVectorsDistance(table5_w2v, label_representation, calculated_similarity);
+		printf("Table5 caclulated similarity>  %f", calculated_similarity);
+		if ( calculated_similarity > higher_similarity )
+		{
+			higher_similarity = calculated_similarity;
+			current_table = "table5";
+			table_to_visit_number = 4;
+		}
+	}
+	
+	if ( table_to_visit_number!=-1 )
+		visited_table[table_to_visit_number]=true;
 	
 	return current_table;
 	
 }
 
+
+std::string SpecificWorker::lookForObject_random(std::string label)
+{
+	//check if there's a non visited table
+	bool theres_a_non_visited_table = false;
+	std::string current_table;
+	for(int i=0;i<5;i++)
+	{
+		if ( visited_table[i]==false )
+		{
+			theres_a_non_visited_table = true;
+			break;
+		}
+	}
+	
+	//if so select a random table among the remaining ones
+	if(theres_a_non_visited_table)
+	{
+		int table_seletected = rand() % 5;
+		
+		while(visited_table[table_seletected]==true)
+		{
+			table_seletected = rand() % 5;
+		}
+
+		visited_table[table_seletected] = true;
+		
+		switch (table_seletected)
+		{
+			case 0:
+				current_table="table1";
+				break;
+			case 1:
+				current_table="table2";
+				break;
+			case 2:
+				current_table="table3";
+				break;
+			case 3:
+				current_table="table4";
+				break;
+			case 4:
+				current_table="table5";
+				break;
+		}
+		
+		return current_table;
+	}
+	else
+		return "no_table";
+	
+}
+
+std::string SpecificWorker::lookForObject_salesman(std::string label)
+{
+	std::string current_table;
+	//if so select a random table among the remaining ones
+	if(num_saleslman_visited < 5)
+	{
+		
+		switch (tables_order[num_saleslman_visited])
+		{
+			case 0:
+				current_table="table1";
+				break;
+			case 1:
+				current_table="table2";
+				break;
+			case 2:
+				current_table="table3";
+				break;
+			case 3:
+				current_table="table4";
+				break;
+			case 4:
+				current_table="table5";
+				break;
+		}
+		num_saleslman_visited++;
+		
+		return current_table;
+	}
+	else
+		return "no_table";
+}
 bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated)
 {
 	QMutexLocker locker(agent_mutex);
@@ -1433,13 +1681,13 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	int room_id = -1;
 	if( table == "table1" )
 	{
-		id = 38;
-		room_id = 5;
+		id = 20;
+		room_id = 3;
 	}
 	if( table == "table2" )
 	{
-		id = 35;
-		room_id = 5;
+		id = 23;
+		room_id = 3;
 	}
 	if( table == "table3" )
 	{
@@ -1448,17 +1696,18 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	}
 	if( table == "table4" )
 	{
-		id = 23;
-		room_id = 3;
+		id = 35;
+		room_id = 5;
 	}
 	if( table == "table5" )
 	{
-		id = 20;
-		room_id = 3;
+		id = 38;
+		room_id = 5;
 	}
 
 	if (id != -1 and room_id != -1)
 	{
+		printf("Object: %s found in %s !!!!!, id: %d, room_id: %d", objectType.c_str(), table.c_str(), id, room_id); 
 		// Create the edges that indicate in which table the object will be located
 		AGMModelSymbol::SPtr tableID = newModel->getSymbol(id);
 		AGMModelSymbol::SPtr roomID  = newModel->getSymbol(room_id);

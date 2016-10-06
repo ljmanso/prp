@@ -77,7 +77,7 @@ class SpecificWorker(GenericWorker):
 	# w2bDistance
 	#
 	def w2vDistance(self, word1, word2):
-		if word1 in model.vocab and word2 in model.vocab:
+		if word1 in self.model.vocab and word2 in self.model.vocab:
 			result  = self.model.similarity(word1, word2)
 		else:
 			result = 0
@@ -95,8 +95,8 @@ class SpecificWorker(GenericWorker):
     # getWordRepresentation
     #   
 	def getWordRepresentation(self, word):
-		if word in model.vocab:
-			return model[word]
+		if word in self.model.vocab:
+			return self.model[word]
 		else:
 			numpy.zeros(shape=(300,1))
 		
