@@ -28,6 +28,10 @@
 
 #ifndef Q_MOC_RUN
 
+// #define INNER_VIEWER
+// #define CAFFE_CLASSIFIER
+// #define CONVNET
+
 #include <pcl/point_cloud.h>
 #include <pcl/pcl_base.h>
 #include <pcl/point_types.h>
@@ -81,7 +85,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
+#ifdef CAFFE_CLASSIFIER
 #include "caffeClassifier.h"
+#endif
 
 #include "labeler.h"
 #include "mapmodel.h"
@@ -106,7 +112,7 @@ extern "C"{
 #define TABLE_DISTANCE 2500
 #define OFFSET 50
 #define OFFSET_TOP 80
-#define INNER_VIEWER
+
 
 //#include "t.hpp"
 
@@ -129,7 +135,7 @@ public:
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
 
-        void loadTablesFromModel();
+	void loadTablesFromModel();
 	bool reloadConfigAgent();
 	bool activateAgent(const ParameterMap &prs);
 	bool setAgentParameters(const ParameterMap &prs);
@@ -147,10 +153,14 @@ public:
 	void load_tables_info();
 	   
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
-	std::string SpecificWorker::lookForObjectNoW2V(std::string label);
+	std::string lookForObjectNoW2V(std::string label);
+	std::string lookForObject_random(std::string label);
+	std::string lookForObject_salesman(std::string label);
 	std::string lookForObject(std::string label);
 	void getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, ResultList &result);
+#ifdef CAFFE_CLASSIFIER
 	void getLabelsFromImageWithCaffe(cv::Mat matImage, ResultList &result);
+#endif
 	void structuralChange(const RoboCompAGMWorldModel::World &modification);
 	void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications);
 	void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification);
@@ -173,9 +183,14 @@ private:
 	
 	QMutex *inner_mutex, *world_mutex, *agent_mutex;
 	
+	//traveling salesman alg distances
+	float table_distances[6][6];
+	std::vector<int> tables_order;
+	int num_saleslman_visited;
+	
 	//config params
 	bool save_full_data, save_table_data, labeling;
-	InnerModelCamera *camera;
+	InnerModelRGBD *camera;
 	
 	std::map<std::string, double>  table1;
 	std::map<std::string, double>  table2;
@@ -201,9 +216,12 @@ private:
 	QMap<std::string, double> table4_qmat;
 	QMap<std::string, double> table5_qmat;
 	
-    std::vector< std::pair< std::map<std::string, double>, int> > tables; 
+	bool visited_table[5];
 	
+    std::vector< std::pair< std::map<std::string, double>, int> > tables; 
+#ifdef CAFFE_CLASSIFIER
 	CaffeClassifier *caffe_classifier;
+#endif
 	std::shared_ptr<Labeler> labeler;
         
 	int image_save_counter;
