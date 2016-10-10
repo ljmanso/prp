@@ -45,6 +45,7 @@ first(true)
 	image_segmented_counter = 0;
 	image_save_counter = 0;
 	active = false;
+	need_to_imagine = false;
 	worldModel = AGMModel::SPtr(new AGMModel());
 	worldModel->name = "worldModel";
 	innerModel = new InnerModel();
@@ -294,9 +295,15 @@ void SpecificWorker::compute()
 		}
 	}
 	
-	if (action == "imaginemostlikelymuginposition")
+// 	if (action == "imaginemostlikelymuginposition")
+// 	{
+// 		action_imagineMostLikelyMugInPosition();
+// 	}
+	
+	if( need_to_imagine )
 	{
 		action_imagineMostLikelyMugInPosition();
+		need_to_imagine = false;
 	}
 
 	if (first)
@@ -620,8 +627,11 @@ bool SpecificWorker::activateAgent(const ParameterMap &prs)
 
 bool SpecificWorker::setAgentParameters(const ParameterMap &prs)
 {
+	printf("dentro del setagentparameters \n");
 	QMutexLocker locker(agent_mutex);
+	printf("no mutex no cry \n");
 	bool activated = false;
+	
 	return setParametersAndPossibleActivation(prs, activated);
 }
 
@@ -1637,6 +1647,15 @@ bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs,
 
 	printf("setParametersAndPossibleActivation >>>\n");
 
+	//check if need to imaginemostlikelymuginposition
+	std::string plan = prs["plan"].value;
+	printf("%d \n", plan);
+	if(plan.find("imagineMostLikelyMugInPosition" != std::string::npos))
+	{
+		printf("imagine most likely mug en el plan!!! \n");
+		need_to_imagine = true;
+	}
+	
 	return true;
 }
 
@@ -1661,20 +1680,31 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 		world_mutex->unlock();
 		return;
 	}
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	AGMModel::SPtr newModel(new AGMModel(worldModel));
 	world_mutex->unlock();
-
+printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	// Create new symbols and the edges which are independent from the container
 	AGMModelSymbol::SPtr objSSt = newModel->newSymbol("objectSt");
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	AGMModelSymbol::SPtr objS   = newModel->newSymbol("protoObject");
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(objS, objSSt, objectType);
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(objS, objSSt, "reachable");
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(objS, objSSt, "noReach");
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(objS, objSSt, "hasStatus");
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	auto symbols = newModel->getSymbolsMap(params, "robot", "status", "table", "room");
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(symbols["robot"], objS, "know");
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	
+	printf("about to call the look for object thing\n");
 	//Locate objS
 	std::string table = lookForObject(objectType);
 	int id = -1;
