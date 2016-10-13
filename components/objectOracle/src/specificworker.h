@@ -218,6 +218,8 @@ private:
 	
 	bool visited_table[5];
 	
+	bool need_to_imagine;
+	
     std::vector< std::pair< std::map<std::string, double>, int> > tables; 
 #ifdef CAFFE_CLASSIFIER
 	CaffeClassifier *caffe_classifier;

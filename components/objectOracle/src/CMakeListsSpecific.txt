@@ -3,8 +3,8 @@
 set ( SOURCES
     specificworker.cpp
     specificmonitor.cpp
-    caffeClassifier.cpp
-    labeler.cpp
+#   caffeClassifier.cpp
+#    labeler.cpp
     mapmodel.cpp
     
 )
@@ -91,8 +91,8 @@ add_definitions(-DQT_MOC_EXECUTABLE=/usr/bin/moc-qt4)
 
 include_directories(/usr/local/include/osg /usr/include/osgViewer /usr/include/libxml2)
 
-SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl -lglog -lblas ${PCL_LIBRARIES} ${Boost_LIBRARIES} )
-SET( LIBS ${LIBS} -L/usr/local/lib64/ -losg -losgViewer -losgGA -losgText -losgDB -losgUtil -lcaffe ${VTK_LIBRARIES} )
+SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl  ${PCL_LIBRARIES} ${Boost_LIBRARIES} ${VTK_LIBRARIES})
+#SET( LIBS ${LIBS} -L/usr/local/lib64/ -losg -losgViewer -lglog -lblas -losgGA -losgText -losgDB -losgUtil -lcaffe )
 
 ADD_DEFINITIONS( -std=c++11 -fpermissive -D DEBUG -D HAVE_LIBPNG -D HAVE_LIBJPEG -D HAVE_AVCODEC -D HAVE_AVFORMAT -D HAVE_SWSCALE -D HAVE_SSE2 -D HAVE_GSL -D HAVE_CBLAS )
 
