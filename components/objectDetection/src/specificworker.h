@@ -77,8 +77,10 @@ class SpecificWorker : public GenericWorker
 	InnerModel *poses_inner;
 	tagsList tags;
 	QMutex april_mutex;
+	int num_pose;
 	
 	int num_object_found;
+	std::string file_view_mathing;
 
 	int num_scene;
 	

@@ -440,24 +440,9 @@ void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave,
 {
 
 	poses_inner = new InnerModel();
-	
-	pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT>);
-	tree->setInputCloud (this->cloud);
-	cluster_indices.clear();
-	cluster_clouds.clear();
-	pcl::EuclideanClusterExtraction<PointT> ec;
-	
-	ec.setClusterTolerance (40); 
-	ec.setMinClusterSize (50);
-	ec.setMaxClusterSize (50000);
-	ec.setSearchMethod (tree);
-	
-	ec.setInputCloud (this->cloud);
-	ec.extract (cluster_indices);
-
 	 
 	int j = 0;
-	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
+	num_pose = 0;
 	for(std::vector<pcl::PointCloud<PointT>::Ptr>::const_iterator it = cluster_clouds.begin(); it != cluster_clouds.end(); ++it)
 	{
 		if(j==numPoseToSave)
@@ -487,17 +472,166 @@ void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave,
 		j++;
 	}
 	std::string inner_name = label + ".xml";
-	innermodel->save(QString(inner_name.c_str()));
+	poses_inner->save(QString(inner_name.c_str()));
+	delete (poses_inner);
 
 }
 
 void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9)
 {
+	poses_inner = new InnerModel();
+	std::string inner_name = label + ".xml";
+	poses_inner->open(inner_name);
+	
+	int j = 0;
+	
+	for(std::vector<pcl::PointCloud<PointT>::Ptr>::const_iterator it = cluster_clouds.begin(); it != cluster_clouds.end(); ++it)
+	{
+		if(j==numPoseToSave)
+		{
+			//check if appril seen
+			pose6D offset;
+			if(aprilSeen(offset, tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9))
+			{
+				//add the pose to innermodel
+				InnerModelNode *parent_node = poses_inner->getTransform("canon_pose");
+				std::stringstream ss;
+				ss <<"pose_"<<num_pose<<"_"<< label;
+				
+				InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, offset.tx, offset.ty, offset.tz, offset.rx, offset.ry, offset.rz);
+				parent_node->addChild(node);
+				
+				//save the cloud 
+				std::cout << "PointCloud representing the Cluster: " << (*it)->points.size() << " data points." << std::endl;
+		
+				
+				ss <<"pose_"<<num_pose<<"_"<< label;
+		
+				writer.write<PointT> (ss.str () + ".pcd", **it, false);
+			}
+			else
+			{
+				qFatal("CAN'T SEE ANY APRIL!");
+			}
+		}
+		j++;
+	}
+	num_pose++;
+	poses_inner->save(QString(inner_name.c_str()));
+	delete (poses_inner);
 	
 }
 
 void SpecificWorker::guessPose(const string &label, pose6D &guess)
 {
+	//Load mathing view and find transform to real point cloud
+	pcl::PointCloud<PointT>::Ptr object (new pcl::PointCloud<PointT>);
+	//change vfh extension to pcd
+	std::string view_to_load = file_view_mathing;
+	
+	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) //* load the file
+	{
+		printf ("Couldn't read file test_pcd.pcd \n");
+	}
+	
+	pcl::PointCloud<PointT>::Ptr scene = cluster_clouds[num_object_found];
+	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
+
+	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
+	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
+	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+	pcl::PointCloud<pcl::FPFHSignature33>::Ptr scene_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+	
+	std::cout<<object->size()<<std::endl;
+	std::cout<<scene->size()<<std::endl;
+	// Downsample
+	pcl::console::print_highlight ("Downsampling...\n");
+	pcl::VoxelGrid<PointT> grid;
+	const float leaf = 5;
+	grid.setLeafSize (leaf, leaf, leaf);
+	grid.setInputCloud (object);
+	grid.filter (*object);
+	grid.setInputCloud (scene);
+	grid.filter (*scene);
+	
+	// Estimate normals for scene
+	pcl::console::print_highlight ("Estimating scene normals...\n");
+	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
+	nest.setRadiusSearch (10);
+	nest.setInputCloud (object);
+	nest.compute (*object_normals);
+	nest.setInputCloud (scene);
+	nest.compute (*scene_normals);
+	
+	// Estimate features
+	pcl::console::print_highlight ("Estimating features...\n");
+	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
+	fest.setRadiusSearch (25);
+	fest.setInputCloud (object);
+	fest.setInputNormals (object_normals);
+	fest.compute (*object_features);
+	fest.setInputCloud (scene);
+	fest.setInputNormals (scene_normals);
+	fest.compute (*scene_features);
+	
+	// Perform alignment
+	pcl::console::print_highlight ("Starting alignment...\n");
+	pcl::SampleConsensusPrerejective<PointT, PointT, pcl::FPFHSignature33> align;
+	align.setInputSource (object);
+	align.setSourceFeatures (object_features);
+	align.setInputTarget (scene);
+	align.setTargetFeatures (scene_features);
+	align.setMaximumIterations (50000); // Number of RANSAC iterations
+	align.setNumberOfSamples (3); // Number of points to sample for generating/prerejecting a pose
+	align.setCorrespondenceRandomness (5); // Number of nearest features to use
+	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
+	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
+	align.setInlierFraction (0.25f); // Required inlier fraction for accepting a pose hypothesis
+	{	
+		pcl::ScopeTime t("Alignment");
+		align.align (*object_aligned);
+	}
+	
+	Eigen::Matrix4f transformation = align.getFinalTransformation ();
+	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
+	
+	float tx, ty, tz, rx, ry, rz;
+	tx = transformation(3,0);
+	ty = transformation(3,1);
+	tz = transformation(3,2);
+	rx = ea(0);
+	ry = ea(1);
+	rz = ea(2);
+	
+#ifdef DEBUG
+	std::cout<<"Ransac Translation: "<<tx<<" "<<ty<<" "<<tz<<std::endl;
+	std::cout<<"Ransac Rotation: "<<rx<<" "<<ry<<" "<<rz<<std::endl;
+#endif
+	
+	
+	//load innermodel and calculate translation respect root
+	poses_inner = new InnerModel();
+	std::string inner_name = label + ".xml";
+	poses_inner->open(inner_name);
+	
+	//get transform name (same as pcd file name)
+	std::string node_name = file_view_mathing.substr(file_view_mathing.find_last_of("/")+1);
+	node_name = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
+	
+	//parent node will be the matching view
+	InnerModelNode *parent_node = poses_inner->getTransform(node_name.c_str());
+	InnerModelTransform *node = poses_inner->newTransform("current_live_view", "static", parent_node, tx, ty, tz, rx, ry, rz);
+	parent_node->addChild(node);
+	
+	//calculate transform to canon pose
+	RTMat transform_to_canon = poses_inner->getTransformationMatrix("canon_pose", "current_live_vew");
+	
+	guess.tx = transform_to_canon.getTr()[0];
+	guess.ty = transform_to_canon.getTr()[1];
+	guess.tz = transform_to_canon.getTr()[2];
+	guess.rx = transform_to_canon.getRxValue();
+	guess.ry = transform_to_canon.getRyValue();
+	guess.rz = transform_to_canon.getRzValue();
 	
 }
 
@@ -758,15 +892,38 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 		
 		std::cout<<guess2<<std::endl;
 		
-		if(objectTofind == guess0 || objectTofind == guess1 || objectTofind == guess2)
+		if(objectTofind == guess0)
 		{
 			num_object_found = i;
+			file_view_mathing = vfh_guesses[0];
 			
 #ifdef DEBUG
 			std::cout<<"Founded on item: "<<i<<std::endl;
 #endif
 			return true;
 		}
+		if(objectTofind == guess1)
+		{
+			num_object_found = i;
+			file_view_mathing = vfh_guesses[1];
+			
+#ifdef DEBUG
+			std::cout<<"Founded on item: "<<i<<std::endl;
+#endif
+			return true;
+		}
+		if(objectTofind == guess2)
+		{
+			num_object_found = i;
+			file_view_mathing = vfh_guesses[2];
+			
+#ifdef DEBUG
+			std::cout<<"Founded on item: "<<i<<std::endl;
+#endif
+			return true;
+		}
+		
+		
 	}
 	return false;
 }
@@ -789,8 +946,7 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 	// Point clouds
 	pcl::PointCloud<PointT>::Ptr object (new pcl::PointCloud<PointT>);
 	//change vfh extension to pcd
-	std::string view_to_load = vfh_guesses[num_object_found].substr(0, vfh_guesses[num_object_found].find_last_of("."));
-	view_to_load += ".pcd";
+	std::string view_to_load = file_view_mathing;
 	
 	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) //* load the file
 	{
