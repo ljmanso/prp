@@ -299,11 +299,12 @@ void SpecificWorker::compute()
 // 	{
 // 		action_imagineMostLikelyMugInPosition();
 // 	}
-	
-	if( need_to_imagine )
+	//check if need to imaginemostlikelymuginposition
+	std::string plan = params["plan"].value;
+// 	printf("tol plan: %d \n", plan);
+	if(plan.find("imagineMostLikelyMugInPosition") != std::string::npos)
 	{
 		action_imagineMostLikelyMugInPosition();
-		need_to_imagine = false;
 	}
 
 	if (first)
@@ -1646,15 +1647,6 @@ bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs,
 	}
 
 	printf("setParametersAndPossibleActivation >>>\n");
-
-	//check if need to imaginemostlikelymuginposition
-	std::string plan = prs["plan"].value;
-	printf("%d \n", plan);
-	if(plan.find("imagineMostLikelyMugInPosition" != std::string::npos))
-	{
-		printf("imagine most likely mug en el plan!!! \n");
-		need_to_imagine = true;
-	}
 	
 	return true;
 }
@@ -1706,7 +1698,7 @@ printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	
 	printf("about to call the look for object thing\n");
 	//Locate objS
-	std::string table = lookForObject(objectType);
+	std::string table = lookForObject_random(objectType);
 	int id = -1;
 	int room_id = -1;
 	if( table == "table1" )

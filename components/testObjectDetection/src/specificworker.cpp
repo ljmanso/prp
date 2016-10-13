@@ -33,6 +33,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	connect(pose, SIGNAL(clicked()), this, SLOT(getPose()));
 	connect(rotation, SIGNAL(clicked()), this, SLOT(getRotation()));
 	connect(reload, SIGNAL(clicked()), this, SLOT(reloadVFH()));
+	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
 }
 
 /**
@@ -107,6 +108,11 @@ void SpecificWorker::getRotation()
 {
 	float rx, ry, rz;
 	objectdetection_proxy->getRotation(rx, ry, rz);
+}
+
+void SpecificWorker::getCanonicalPose()
+{
+	
 }
 
 void SpecificWorker::compute()

@@ -246,8 +246,9 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
                 cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
 		for (int i = 0; i<cloud_cluster->points.size(); i++)
 		{
-			QVec xy = innermodel->project("robot", QVec::vec3(cloud_cluster->points[i].x, cloud_cluster->points[i].y, cloud_cluster->points[i].z), "rgbd"); 
-
+			InnerModelCamera *camera = innermodel->getCamera("rgbd");
+			QVec xy = camera->project("robot", QVec::vec3(cloud_cluster->points[i].x, cloud_cluster->points[i].y, cloud_cluster->points[i].z), "rgbd"); 
+			
 			if (xy(0)>=0 and xy(0) < 640 and xy(1)>=0 and xy(1) < 480 )
 			{
 				M.at<uchar> ((int)xy(1), (int)xy(0)) = 255;
@@ -327,9 +328,177 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 		writer.write<PointT> (ss.str () + ".pcd", *cloud_cluster, false); 
 #endif
 		j++;
-        }
+	}
 	num_scene++;
 
+}
+
+bool SpecificWorker::aprilSeen(pose6D &offset, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9)
+{
+	april_mutex.lock();
+	
+	for (auto ap : tags)
+	{
+		auto ap2 = ap;
+		if(ap2.id==1)
+		{
+			offset.tx = ap2.tx + tag1.tx;
+			offset.ty = ap2.ty + tag1.ty;
+			offset.tz = ap2.tz + tag1.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		if(ap2.id==2)
+		{
+			offset.tx = ap2.tx + tag2.tx;
+			offset.ty = ap2.ty + tag2.ty;
+			offset.tz = ap2.tz + tag2.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		if(ap2.id==3)
+		{
+			offset.tx = ap2.tx + tag3.tx;
+			offset.ty = ap2.ty + tag3.ty;
+			offset.tz = ap2.tz + tag3.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		if(ap2.id==4)
+		{
+			offset.tx = ap2.tx + tag4.tx;
+			offset.ty = ap2.ty + tag4.ty;
+			offset.tz = ap2.tz + tag4.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		if(ap2.id==5)
+		{
+			offset.tx = ap2.tx + tag5.tx;
+			offset.ty = ap2.ty + tag5.ty;
+			offset.tz = ap2.tz + tag5.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		if(ap2.id==6)
+		{
+			offset.tx = ap2.tx + tag6.tx;
+			offset.ty = ap2.ty + tag6.ty;
+			offset.tz = ap2.tz + tag6.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		if(ap2.id==7)
+		{
+			offset.tx = ap2.tx + tag7.tx;
+			offset.ty = ap2.ty + tag7.ty;
+			offset.tz = ap2.tz + tag7.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		if(ap2.id==8)
+		{
+			offset.tx = ap2.tx + tag8.tx;
+			offset.ty = ap2.ty + tag8.ty;
+			offset.tz = ap2.tz + tag8.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		if(ap2.id==9)
+		{
+			offset.tx = ap2.tx + tag9.tx;
+			offset.ty = ap2.ty + tag9.ty;
+			offset.tz = ap2.tz + tag9.tz;
+			offset.rx = ap2.rx; 
+			offset.ry = ap2.ry;
+			offset.rz = ap2.rz;
+			return true;
+		}
+		
+	}
+	april_mutex.unlock();
+	return false;
+}
+
+void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9)
+{
+
+	poses_inner = new InnerModel();
+	
+	pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT>);
+	tree->setInputCloud (this->cloud);
+	cluster_indices.clear();
+	cluster_clouds.clear();
+	pcl::EuclideanClusterExtraction<PointT> ec;
+	
+	ec.setClusterTolerance (40); 
+	ec.setMinClusterSize (50);
+	ec.setMaxClusterSize (50000);
+	ec.setSearchMethod (tree);
+	
+	ec.setInputCloud (this->cloud);
+	ec.extract (cluster_indices);
+
+	 
+	int j = 0;
+	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
+	for(std::vector<pcl::PointCloud<PointT>::Ptr>::const_iterator it = cluster_clouds.begin(); it != cluster_clouds.end(); ++it)
+	{
+		if(j==numPoseToSave)
+		{
+			//check if appril seen
+			pose6D offset;
+			if(aprilSeen(offset, tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9))
+			{
+				//add the pose to innermodel
+				InnerModelNode *root_node = poses_inner->getRoot();
+				InnerModelTransform *node = poses_inner->newTransform("canon_pose", "static", root_node, offset.tx, offset.ty, offset.tz, offset.rx, offset.ry, offset.rz);
+				root_node->addChild(node);
+				
+				//save the cloud 
+				std::cout << "PointCloud representing the Cluster: " << (*it)->points.size() << " data points." << std::endl;
+		
+				std::stringstream ss;
+				ss <<"canon_pose_" << label;
+		
+				writer.write<PointT> (ss.str () + ".pcd", **it, false);
+			}
+			else
+			{
+				qFatal("CAN'T SEE ANY APRIL!");
+			}
+		}
+		j++;
+	}
+	std::string inner_name = label + ".xml";
+	innermodel->save(QString(inner_name.c_str()));
+
+}
+
+void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9)
+{
+	
+}
+
+void SpecificWorker::guessPose(const string &label, pose6D &guess)
+{
+	
 }
 
 void SpecificWorker::passThrough()
@@ -703,7 +872,9 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 
 void SpecificWorker::newAprilTag(const tagsList &tags)
 {
-
+	april_mutex.lock();
+	this->tags = tags;
+	april_mutex.unlock();
 }
 
 

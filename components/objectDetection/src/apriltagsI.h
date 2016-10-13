@@ -19,9 +19,6 @@
 #ifndef APRILTAGS_H
 #define APRILTAGS_H
 
-// QT includes
-#include <QtCore/QObject>
-
 // Ice includes
 #include <Ice/Ice.h>
 #include <AprilTags.h>
@@ -31,21 +28,17 @@
 
 using namespace RoboCompAprilTags;
 
-class AprilTagsI : public QObject , public virtual RoboCompAprilTags::AprilTags
+class AprilTagsI : public virtual RoboCompAprilTags::AprilTags
 {
-Q_OBJECT
 public:
-	AprilTagsI( GenericWorker *_worker, QObject *parent = 0 );
+	AprilTagsI(GenericWorker *_worker);
 	~AprilTagsI();
 	
 	void newAprilTag(const tagsList  &tags, const Ice::Current&);
 
-	QMutex *mutex;
 private:
 
 	GenericWorker *worker;
-public slots:
-
 
 };
 

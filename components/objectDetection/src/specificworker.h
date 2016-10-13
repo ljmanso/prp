@@ -64,7 +64,7 @@
 #endif
 
 #define DEBUG 1
-#define SAVE_DATA 1
+#define SAVE_DATA 0
 typedef pcl::PointXYZRGB PointT;
 
 
@@ -72,6 +72,11 @@ class SpecificWorker : public GenericWorker
 {
 	
 	InnerModel *innermodel;
+	
+	//for poses calculation respect to the canonical one
+	InnerModel *poses_inner;
+	tagsList tags;
+	QMutex april_mutex;
 	
 	int num_object_found;
 
@@ -153,6 +158,10 @@ public:
 	bool findTheObject(const string &objectTofind);
 	void getRotation(float &rx, float &ry, float &rz);
 	void getPose(float &x, float &y, float &z);
+	bool aprilSeen(pose6D &offset, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+	void saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+	void saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+	void guessPose(const string &label, pose6D &guess);
 
 public slots:
 	void compute(); 	
