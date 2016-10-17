@@ -18,10 +18,9 @@
  */
 #include "apriltagsI.h"
 
-AprilTagsI::AprilTagsI(GenericWorker *_worker, QObject *parent) : QObject(parent)
+AprilTagsI::AprilTagsI(GenericWorker *_worker)
 {
 	worker = _worker;
-	mutex = worker->mutex;       // Shared worker mutex
 }
 
 

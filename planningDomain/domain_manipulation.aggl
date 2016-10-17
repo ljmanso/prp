@@ -14,6 +14,7 @@ graspObject : active(1)
 {
 	{
 		table:object(0,110)
+		rSt:status(0, -250)
 		object:object(130,0)
 		room:room(-130,0)
 		ost:objectSt(290,0)
@@ -23,10 +24,12 @@ graspObject : active(1)
 		robot->room(in)
 		table->room(in)
 		object->ost(reach)
+		robot->rSt(hasStatus)
 	}
 	=>
 	{
 		table:object(0,110)
+		rSt:status(0, -250)
 		object:object(130,0)
 		room:room(-130,0)
 		ost:objectSt(290,0)
@@ -36,20 +39,22 @@ graspObject : active(1)
 		robot->room(in)
 		table->room(in)
 		object->ost(reach)
+		robot->rSt(hasStatus)
+		robot->rSt(restArm)*
 	}
 }
 
-handObject_offer : active(1)
+hierarchical handObject : active(1) activates(handObject_offer, handObject_leave)
 {
 	{
 		person:person(0,110)
 		object:object(130,0)
 		robot:robot(0,-110)
 		room:room(-130,0)
-		robot->object(know)
 		object->robot(in)
-		robot->room(in)
 		person->room(in)
+		robot->object(know)
+		robot->room(in)
 	}
 	=>
 	{
@@ -57,15 +62,44 @@ handObject_offer : active(1)
 		object:object(130,0)
 		robot:robot(0,-110)
 		room:room(-130,0)
-		robot->object(know)
 		object->person(in)
-		object->robot(in)
-		robot->room(in)
 		person->room(in)
+		robot->object(know)
+		robot->room(in)
 	}
 }
 
-handObject_leave : active(1)
+dormant handObject_offer : active(1)
+{
+	{
+		person:person(0,110)
+		object:object(130,0)
+		robot:robot(0,-110)
+		room:room(-130,0)
+		status:personSt(0,220)
+		robot->object(know)
+		object->robot(in)
+		robot->room(in)
+		person->room(in)
+		person->status(hasStatus)
+	}
+	=>
+	{
+		person:person(0,110)
+		object:object(130,0)
+		robot:robot(0,-110)
+		room:room(-130,0)
+		status:personSt(0,220)
+		object->person(offered)
+		object->robot(in)
+		robot->room(in)
+		robot->object(know)
+		person->room(in)
+		person->status(hasStatus)
+	}
+}
+
+dormant handObject_leave : active(1)
 {
 	{
 		person:person(0,110)
@@ -74,7 +108,7 @@ handObject_leave : active(1)
 		room:room(-130,0)
 		robot->object(know)
 		object->robot(in)
-		object->person(in)
+		object->person(offered)
 		robot->room(in)
 		person->room(in)
 	}
