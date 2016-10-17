@@ -18,10 +18,9 @@
  */
 #include "objectdetectionI.h"
 
-objectDetectionI::objectDetectionI(GenericWorker *_worker, QObject *parent) : QObject(parent)
+objectDetectionI::objectDetectionI(GenericWorker *_worker)
 {
 	worker = _worker;
-	mutex = worker->mutex;       // Shared worker mutex
 }
 
 
@@ -87,6 +86,11 @@ void objectDetectionI::surfHomography( listType  &guesses, const Ice::Current&)
 void objectDetectionI::fitTheViewVFH(const Ice::Current&)
 {
 	worker->fitTheViewVFH();
+}
+
+void objectDetectionI::saveRegPose(const string  &label, const int  numPoseToSave, const pose6D  &tag1, const pose6D  &tag2, const pose6D  &tag3, const pose6D  &tag4, const pose6D  &tag5, const pose6D  &tag6, const pose6D  &tag7, const pose6D  &tag8, const pose6D  &tag9, const Ice::Current&)
+{
+	worker->saveRegPose(label, numPoseToSave, tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9);
 }
 
 void objectDetectionI::showObject(const int  numObject, const Ice::Current&)
@@ -159,9 +163,19 @@ void objectDetectionI::projectInliers(const string  &model, const Ice::Current&)
 	worker->projectInliers(model);
 }
 
+void objectDetectionI::guessPose(const string  &label,  pose6D  &guess, const Ice::Current&)
+{
+	worker->guessPose(label, guess);
+}
+
 void objectDetectionI::extractPolygon(const string  &model, const Ice::Current&)
 {
 	worker->extractPolygon(model);
+}
+
+void objectDetectionI::saveCanonPose(const string  &label, const int  numPoseToSave, const pose6D  &tag1, const pose6D  &tag2, const pose6D  &tag3, const pose6D  &tag4, const pose6D  &tag5, const pose6D  &tag6, const pose6D  &tag7, const pose6D  &tag8, const pose6D  &tag9, const Ice::Current&)
+{
+	worker->saveCanonPose(label, numPoseToSave, tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9);
 }
 
 

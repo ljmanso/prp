@@ -30,7 +30,6 @@ QObject()
 {
 	rgbd_proxy = (*(RGBDPrx*)mprx["RGBDProxy"]);
 
-
 	mutex = new QMutex(QMutex::Recursive);
 
 	#ifdef USE_QTGUI

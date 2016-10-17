@@ -27,13 +27,12 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
-#include <RGBD.h>
-#include <DifferentialRobot.h>
+
 #include <objectDetection.h>
 #include <AprilTags.h>
+#include <RGBD.h>
 #include <JointMotor.h>
-
-
+#include <DifferentialRobot.h>
 
 #define CHECK_PERIOD 5000
 #define BASIC_PERIOD 100
@@ -83,6 +82,7 @@ public:
 	virtual void passThrough() = 0;
 	virtual void surfHomography(listType &guesses) = 0;
 	virtual void fitTheViewVFH() = 0;
+	virtual void saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9) = 0;
 	virtual void showObject(const int numObject) = 0;
 	virtual void convexHull(const string &model) = 0;
 	virtual void mirrorPC() = 0;
@@ -97,13 +97,17 @@ public:
 	virtual void grabThePointCloud(const string &image, const string &pcd) = 0;
 	virtual void fitModel(const string &model, const string &method) = 0;
 	virtual void projectInliers(const string &model) = 0;
+	virtual void guessPose(const string &label, pose6D &guess) = 0;
 	virtual void extractPolygon(const string &model) = 0;
+	virtual void saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9) = 0;
 	virtual void newAprilTag(const tagsList &tags) = 0;
-
 
 protected:
 	QTimer timer;
 	int Period;
+
+private:
+
 
 public slots:
 	virtual void compute() = 0;

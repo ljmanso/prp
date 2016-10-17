@@ -19,9 +19,6 @@
 #ifndef OBJECTDETECTION_H
 #define OBJECTDETECTION_H
 
-// QT includes
-#include <QtCore/QObject>
-
 // Ice includes
 #include <Ice/Ice.h>
 #include <objectDetection.h>
@@ -31,11 +28,10 @@
 
 using namespace RoboCompobjectDetection;
 
-class objectDetectionI : public QObject , public virtual RoboCompobjectDetection::objectDetection
+class objectDetectionI : public virtual RoboCompobjectDetection::objectDetection
 {
-Q_OBJECT
 public:
-	objectDetectionI( GenericWorker *_worker, QObject *parent = 0 );
+	objectDetectionI(GenericWorker *_worker);
 	~objectDetectionI();
 	
 	void grabTheAR(const Ice::Current&);
@@ -50,6 +46,7 @@ public:
 	void passThrough(const Ice::Current&);
 	void surfHomography( listType  &guesses, const Ice::Current&);
 	void fitTheViewVFH(const Ice::Current&);
+	void saveRegPose(const string  &label, const int  numPoseToSave, const pose6D  &tag1, const pose6D  &tag2, const pose6D  &tag3, const pose6D  &tag4, const pose6D  &tag5, const pose6D  &tag6, const pose6D  &tag7, const pose6D  &tag8, const pose6D  &tag9, const Ice::Current&);
 	void showObject(const int  numObject, const Ice::Current&);
 	void convexHull(const string  &model, const Ice::Current&);
 	void mirrorPC(const Ice::Current&);
@@ -64,14 +61,13 @@ public:
 	void grabThePointCloud(const string  &image, const string  &pcd, const Ice::Current&);
 	void fitModel(const string  &model, const string  &method, const Ice::Current&);
 	void projectInliers(const string  &model, const Ice::Current&);
+	void guessPose(const string  &label,  pose6D  &guess, const Ice::Current&);
 	void extractPolygon(const string  &model, const Ice::Current&);
+	void saveCanonPose(const string  &label, const int  numPoseToSave, const pose6D  &tag1, const pose6D  &tag2, const pose6D  &tag3, const pose6D  &tag4, const pose6D  &tag5, const pose6D  &tag6, const pose6D  &tag7, const pose6D  &tag8, const pose6D  &tag9, const Ice::Current&);
 
-	QMutex *mutex;
 private:
 
 	GenericWorker *worker;
-public slots:
-
 
 };
 

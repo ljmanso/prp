@@ -59,6 +59,8 @@
  * ...
  *
  */
+#include <signal.h>
+
 // QT includes
 #include <QtCore>
 #include <QtGui>
@@ -84,6 +86,8 @@
 #include <objectDetection.h>
 #include <AprilTags.h>
 #include <RGBD.h>
+#include <JointMotor.h>
+#include <DifferentialRobot.h>
 
 
 // User includes here
@@ -91,12 +95,6 @@
 // Namespaces
 using namespace std;
 using namespace RoboCompCommonBehavior;
-
-using namespace RoboCompobjectDetection;
-using namespace RoboCompAprilTags;
-using namespace RoboCompRGBD;
-
-
 
 class objectDetectionComp : public RoboComp::Application
 {
@@ -125,6 +123,17 @@ int ::objectDetectionComp::run(int argc, char* argv[])
 #else
 	QCoreApplication a(argc, argv);  // NON-GUI application
 #endif
+
+
+	sigset_t sigs;
+	sigemptyset(&sigs);
+	sigaddset(&sigs, SIGHUP);
+	sigaddset(&sigs, SIGINT);
+	sigaddset(&sigs, SIGTERM);
+	sigprocmask(SIG_UNBLOCK, &sigs, 0);
+
+
+
 	int status=EXIT_SUCCESS;
 
 	RGBDPrx rgbd_proxy;
