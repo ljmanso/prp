@@ -53,7 +53,12 @@ class SpecificWorker(GenericWorker):
 		self.ui.rb3.clicked.connect(self.rb3)
 		self.ui.rb4.clicked.connect(self.rb4)
 		self.ui.rb5.clicked.connect(self.rb5)
-
+		
+		self.notEvenReadyButtons = [ self.ui.startButton ]
+		self.readyButtons = [ self.ui.missionButton ]
+		self.inMissionButtons = [ self.ui.doneButton, self.ui.wb1, self.ui.wb2, self.ui.wb3, self.ui.wb4, self.ui.wb5, self.ui.rb1, self.ui.rb2, self.ui.rb3, self.ui.rb4, self.ui.rb5 ]
+		self.setUIState("notEvenReady")
+		
 	def log(self, s):
 		s2 = str(self.T.elapsed()) + ' # ' + s + '\n'
 		self.logfile.write(s2)
@@ -108,8 +113,9 @@ class SpecificWorker(GenericWorker):
 
 	@QtCore.Slot()
 	def goStartPosition(self):
+		self.setUIState("ready")
 		print 'goStartPosition(self):'
-
+	
 
 
 	@QtCore.Slot()
@@ -154,17 +160,30 @@ class SpecificWorker(GenericWorker):
 
 	@QtCore.Slot()
 	def doMission(self):
-		self.log("Start mission " + str(self.current))
+		self.setUIState("inMission")
+		self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
 		self.missionT = QtCore.QTime()
 		self.missionT.start()
 
 
 	@QtCore.Slot()
 	def missionDone(self):
+		self.setUIState("notEvenReady")
 		self.log("Mission " + str(self.current) + " done. It took " + str(self.missionT.elapsed()) + " ms")
 		self.current += 1
 
 
-
-
+	def setUIState(self, v):
+		if v == "notEvenReady":
+			for b in self.notEvenReadyButtons: b.setEnabled(True)
+			for b in self.readyButtons: b.setEnabled(False)
+			for b in self.inMissionButtons: b.setEnabled(False)
+		if v == "ready":
+			for b in self.notEvenReadyButtons: b.setEnabled(False)
+			for b in self.readyButtons: b.setEnabled(True)
+			for b in self.inMissionButtons: b.setEnabled(False)
+		if v == "inMission":
+			for b in self.notEvenReadyButtons: b.setEnabled(False)
+			for b in self.readyButtons: b.setEnabled(False)
+			for b in self.inMissionButtons: b.setEnabled(True)
 
