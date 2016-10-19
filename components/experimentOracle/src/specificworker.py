@@ -23,20 +23,43 @@ from PySide import *
 from genericworker import *
 
 import random
+import os.path
 
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
-		self.timer.timeout.connect(self.compute)
-		self.Period = 2000
 
+		self.T = QtCore.QTime()
+		self.T.start()
+
+		self.current = 0
+		self.logfile = open('experimentLog.txt', 'w')
 		self.loadOrGenerateExperimentList()
 
+		self.Period = 200
+		self.timer.start(self.Period)
+		self.timer.timeout.connect(self.compute)
 		self.ui.startButton.clicked.connect(self.goStartPosition)
 		self.ui.missionButton.clicked.connect(self.doMission)
 		self.ui.doneButton.clicked.connect(self.missionDone)
 
-		self.timer.start(self.Period)
+		self.ui.wb1.clicked.connect(self.wb1)
+		self.ui.wb2.clicked.connect(self.wb2)
+		self.ui.wb3.clicked.connect(self.wb3)
+		self.ui.wb4.clicked.connect(self.wb4)
+		self.ui.wb5.clicked.connect(self.wb5)
+		self.ui.rb1.clicked.connect(self.rb1)
+		self.ui.rb2.clicked.connect(self.rb2)
+		self.ui.rb3.clicked.connect(self.rb3)
+		self.ui.rb4.clicked.connect(self.rb4)
+		self.ui.rb5.clicked.connect(self.rb5)
+
+	def log(self, s):
+		s2 = str(self.T.elapsed()) + ' # ' + s + '\n'
+		self.logfile.write(s2)
+		print s2
+		self.logfile.flush()
+
 
 	def setParams(self, params):
 		return True
@@ -48,45 +71,98 @@ class SpecificWorker(GenericWorker):
 		self.points['2'] = [1.0,2.0,3.0]
 		self.points['3'] = [1.0,2.0,3.0]
 		self.points['4'] = [1.0,2.0,3.0]
-		self.points['5'] = [1.0,2.0,3.0]
-		self.points['6'] = [1.0,2.0,3.0]
-		self.points['7'] = [1.0,2.0,3.0]
-		self.points['8'] = [1.0,2.0,3.0]
-		self.points['9'] = [1.0,2.0,3.0]
 		
 		self.objects = ['cup', 'ball', 'wrench', 'screen', 'screwdriver', 'stapler', 'mouse', 'bag', 'pingpong', 'noodles']
 		
 		
 		
-		try:
-			self.experiments = []
-			with open('experimentSchedule.txt','r') as f:
+		self.experiments = []
+		schedule = 'experimentSchedule.txt'
+		if os.path.isfile(schedule):
+			with open(schedule, 'r') as f:
 				for line in f.readlines():
-					self.experiments.append(line.split('#'))
-		except:
-			for obj in self.objects:
-				srcs = self.points.keys()
-				random.shuffle(srcs)
-				for src in srcs:
-					print obj, srcs
-				
+					experiment = eval(line)
+					print experiment
+					self.experiments.append(experiment)
+		else:
+			with open(schedule, 'w') as f:
+				for obj in self.objects:
+					srcs = self.points.keys()
+					random.shuffle(srcs)
+					for src in srcs:
+						experiment = [ obj, src, self.points[src] ]
+						print experiment
+						self.experiments.append(experiment)
+						f.write(str(experiment)+'\n')
+
+		self.log("Experiment started")
+
+
+
 	@QtCore.Slot()
 	def compute(self):
+		self.ui.targetLabel.setText(str(self.experiments[self.current]))
+		self.ui.counterLabel.setText(str(self.current))
 		pass
-	
-	
+
+
 	@QtCore.Slot()
 	def goStartPosition(self):
-		return True
+		print 'goStartPosition(self):'
+
+
+
+	@QtCore.Slot()
+	def wb1(self):
+		self.wrongTable(1)
+	@QtCore.Slot()
+	def wb2(self):
+		self.wrongTable(2)
+	@QtCore.Slot()
+	def wb3(self):
+		self.wrongTable(3)
+	@QtCore.Slot()
+	def wb4(self):
+		self.wrongTable(4)
+	@QtCore.Slot()
+	def wb5(self):
+		self.wrongTable(5)
+	@QtCore.Slot()
+	def wrongTable(self, t):
+		self.log("Going to wrong table" + str(t))
+
+	@QtCore.Slot()
+	def rb1(self):
+		self.rightTable(1)
+	@QtCore.Slot()
+	def rb2(self):
+		self.rightTable(2)
+	@QtCore.Slot()
+	def rb3(self):
+		self.rightTable(3)
+	@QtCore.Slot()
+	def rb4(self):
+		self.rightTable(4)
+	@QtCore.Slot()
+	def rb5(self):
+		self.rightTable(5)
+	@QtCore.Slot()
+	def rightTable(self, t):
+		self.log("Going to right table" + str(t))
+
+
 
 	@QtCore.Slot()
 	def doMission(self):
-		return True
+		self.log("Start mission " + str(self.current))
+		self.missionT = QtCore.QTime()
+		self.missionT.start()
 
 
 	@QtCore.Slot()
 	def missionDone(self):
-		return True
+		self.log("Mission " + str(self.current) + " done. It took " + str(self.missionT.elapsed()) + " ms")
+		self.current += 1
 
 
 
