@@ -71,11 +71,11 @@ class SpecificWorker(GenericWorker):
 	
 	def loadOrGenerateExperimentList(self):
 		self.points = {}
-		self.points['0'] = [1.0,2.0,3.0]
-		self.points['1'] = [1.0,2.0,3.0]
-		self.points['2'] = [1.0,2.0,3.0]
-		self.points['3'] = [1.0,2.0,3.0]
-		self.points['4'] = [1.0,2.0,3.0]
+		self.points['0'] = [0.0, 0.1, 0.2, 1.2]
+		self.points['1'] = [1.0, 1.1, 1.2, 1.2]
+		self.points['2'] = [2.0, 2.1, 2.2, 1.2]
+		self.points['3'] = [3.0, 3.1, 3.2, 1.2]
+		self.points['4'] = [4.0, 4.1, 4.2, 1.2]
 		
 		self.objects = ['cup', 'ball', 'wrench', 'screen', 'screwdriver', 'stapler', 'mouse', 'bag', 'pingpong', 'noodles']
 		
@@ -114,8 +114,16 @@ class SpecificWorker(GenericWorker):
 	@QtCore.Slot()
 	def goStartPosition(self):
 		self.setUIState("ready")
-		print 'goStartPosition(self):'
-	
+		print 'goStartPosition()'
+		target = RoboCompTrajectoryRobot2D.TargetPose
+		target.doRotation = True
+		target.x = self.experiments[self.current][2][0]
+		target.y = self.experiments[self.current][2][1]
+		target.z = self.experiments[self.current][2][2]
+		target.rx = 0.
+		target.ry = self.experiments[self.current][2][3]
+		target.rz = 0.
+		self.trajectoryrobot2d_proxy.go(target)
 
 
 	@QtCore.Slot()
@@ -161,6 +169,7 @@ class SpecificWorker(GenericWorker):
 	@QtCore.Slot()
 	def doMission(self):
 		self.setUIState("inMission")
+		self.agmexecutive_proxy.setMission("/home/robocomp/robocomp/components/robocomp-shelly/etc/targetFindMug.aggt")
 		self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
 		self.missionT = QtCore.QTime()
 		self.missionT.start()
