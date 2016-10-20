@@ -1,0 +1,13 @@
+import "/robocomp/interfaces/IDSLs/AGMExecutive.idsl";
+import "/robocomp/interfaces/IDSLs/TrajectoryRobot2D.idsl";
+
+Component experimentOracle
+{
+	Communications
+	{
+		requires AGMExecutive, TrajectoryRobot2D;
+	};
+	language python;
+	gui Qt(QWidget);
+};
+
