@@ -42,8 +42,12 @@ from RoboCompPlanning import *
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
 Ice.loadSlice(preStr+"TrajectoryRobot2D.ice")
 from RoboCompTrajectoryRobot2D import *
+preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
+Ice.loadSlice(preStr+"AGMCommonBehavior.ice")
+from RoboCompAGMCommonBehavior import *
 
 
+from agmcommonbehaviorI import *
 
 try:
 	from ui_mainUI import *
@@ -60,8 +64,8 @@ class GenericWorker(QtGui.QWidget):
 		super(GenericWorker, self).__init__()
 
 
-		self.agmexecutive_proxy = mprx["AGMExecutiveProxy"]
 		self.trajectoryrobot2d_proxy = mprx["TrajectoryRobot2DProxy"]
+		self.agmexecutive_proxy = mprx["AGMExecutiveProxy"]
 		self.ui = Ui_guiDlg()
 		self.ui.setupUi(self)
 		self.show()

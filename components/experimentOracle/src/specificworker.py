@@ -168,11 +168,7 @@ class SpecificWorker(GenericWorker):
 
 	@QtCore.Slot()
 	def doMission(self):
-		self.setUIState("inMission")
 		self.agmexecutive_proxy.setMission("/home/robocomp/robocomp/components/robocomp-shelly/etc/targetFindMug.aggt")
-		self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
-		self.missionT = QtCore.QTime()
-		self.missionT.start()
 
 
 	@QtCore.Slot()
@@ -195,4 +191,99 @@ class SpecificWorker(GenericWorker):
 			for b in self.notEvenReadyButtons: b.setEnabled(False)
 			for b in self.readyButtons: b.setEnabled(False)
 			for b in self.inMissionButtons: b.setEnabled(True)
+
+
+
+
+
+
+	#
+	# reloadConfigAgent
+	#
+	def reloadConfigAgent(self):
+		ret = bool()
+		#
+		#implementCODE
+		#
+		return ret
+
+
+	#
+	# activateAgent
+	#
+	def activateAgent(self, prs):
+		if 'imagine' in prs['plan']:
+			self.setUIState("inMission")
+			self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
+			self.missionT = QtCore.QTime()
+			self.missionT.start()
+
+		ret = bool()
+		return ret
+
+
+	#
+	# setAgentParameters
+	#
+	def setAgentParameters(self, prs):
+		ret = bool()
+		#
+		#implementCODE
+		#
+		return ret
+
+
+	#
+	# getAgentParameters
+	#
+	def getAgentParameters(self):
+		ret = ParameterMap()
+		#
+		#implementCODE
+		#
+		return ret
+
+
+	#
+	# killAgent
+	#
+	def killAgent(self):
+		#
+		#implementCODE
+		#
+		pass
+
+
+	#
+	# uptimeAgent
+	#
+	def uptimeAgent(self):
+		ret = int()
+		#
+		#implementCODE
+		#
+		return ret
+
+
+	#
+	# deactivateAgent
+	#
+	def deactivateAgent(self):
+		ret = bool()
+		#
+		#implementCODE
+		#
+		return ret
+
+
+	#
+	# getAgentState
+	#
+	def getAgentState(self):
+		ret = StateStruct()
+		#
+		#implementCODE
+		#
+		return ret
+
 
