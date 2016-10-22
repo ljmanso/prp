@@ -57,6 +57,7 @@ class SpecificWorker(GenericWorker):
 		self.notEvenReadyButtons = [ self.ui.startButton ]
 		self.readyButtons = [ self.ui.missionButton ]
 		self.inMissionButtons = [ self.ui.doneButton, self.ui.wb1, self.ui.wb2, self.ui.wb3, self.ui.wb4, self.ui.wb5, self.ui.rb1, self.ui.rb2, self.ui.rb3, self.ui.rb4, self.ui.rb5 ]
+		self.uistate = ''
 		self.setUIState("notEvenReady")
 		
 	def log(self, s):
@@ -191,7 +192,7 @@ class SpecificWorker(GenericWorker):
 			for b in self.notEvenReadyButtons: b.setEnabled(False)
 			for b in self.readyButtons: b.setEnabled(False)
 			for b in self.inMissionButtons: b.setEnabled(True)
-
+		self.uistate = v
 
 
 
@@ -202,9 +203,6 @@ class SpecificWorker(GenericWorker):
 	#
 	def reloadConfigAgent(self):
 		ret = bool()
-		#
-		#implementCODE
-		#
 		return ret
 
 
@@ -212,7 +210,7 @@ class SpecificWorker(GenericWorker):
 	# activateAgent
 	#
 	def activateAgent(self, prs):
-		if 'imagine' in prs['plan']:
+		if 'imagine' in prs['plan'] and self.uistate != "inMission":
 			self.setUIState("inMission")
 			self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
 			self.missionT = QtCore.QTime()
@@ -227,9 +225,6 @@ class SpecificWorker(GenericWorker):
 	#
 	def setAgentParameters(self, prs):
 		ret = bool()
-		#
-		#implementCODE
-		#
 		return ret
 
 
@@ -238,9 +233,6 @@ class SpecificWorker(GenericWorker):
 	#
 	def getAgentParameters(self):
 		ret = ParameterMap()
-		#
-		#implementCODE
-		#
 		return ret
 
 
@@ -248,9 +240,6 @@ class SpecificWorker(GenericWorker):
 	# killAgent
 	#
 	def killAgent(self):
-		#
-		#implementCODE
-		#
 		pass
 
 
@@ -259,9 +248,6 @@ class SpecificWorker(GenericWorker):
 	#
 	def uptimeAgent(self):
 		ret = int()
-		#
-		#implementCODE
-		#
 		return ret
 
 
@@ -270,9 +256,6 @@ class SpecificWorker(GenericWorker):
 	#
 	def deactivateAgent(self):
 		ret = bool()
-		#
-		#implementCODE
-		#
 		return ret
 
 
@@ -281,9 +264,6 @@ class SpecificWorker(GenericWorker):
 	#
 	def getAgentState(self):
 		ret = StateStruct()
-		#
-		#implementCODE
-		#
 		return ret
 
 
