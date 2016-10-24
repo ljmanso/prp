@@ -57,6 +57,7 @@ class SpecificWorker(GenericWorker):
 		self.notEvenReadyButtons = [ self.ui.startButton ]
 		self.readyButtons = [ self.ui.missionButton ]
 		self.inMissionButtons = [ self.ui.doneButton, self.ui.wb1, self.ui.wb2, self.ui.wb3, self.ui.wb4, self.ui.wb5, self.ui.rb1, self.ui.rb2, self.ui.rb3, self.ui.rb4, self.ui.rb5 ]
+		self.uistate = ''
 		self.setUIState("notEvenReady")
 		
 	def log(self, s):
@@ -168,11 +169,7 @@ class SpecificWorker(GenericWorker):
 
 	@QtCore.Slot()
 	def doMission(self):
-		self.setUIState("inMission")
 		self.agmexecutive_proxy.setMission("/home/robocomp/robocomp/components/robocomp-shelly/etc/targetFindMug.aggt")
-		self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
-		self.missionT = QtCore.QTime()
-		self.missionT.start()
 
 
 	@QtCore.Slot()
@@ -195,4 +192,78 @@ class SpecificWorker(GenericWorker):
 			for b in self.notEvenReadyButtons: b.setEnabled(False)
 			for b in self.readyButtons: b.setEnabled(False)
 			for b in self.inMissionButtons: b.setEnabled(True)
+		self.uistate = v
+
+
+
+
+
+	#
+	# reloadConfigAgent
+	#
+	def reloadConfigAgent(self):
+		ret = bool()
+		return ret
+
+
+	#
+	# activateAgent
+	#
+	def activateAgent(self, prs):
+		if 'imagine' in prs['plan'] and self.uistate != "inMission":
+			self.setUIState("inMission")
+			self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
+			self.missionT = QtCore.QTime()
+			self.missionT.start()
+
+		ret = bool()
+		return ret
+
+
+	#
+	# setAgentParameters
+	#
+	def setAgentParameters(self, prs):
+		ret = bool()
+		return ret
+
+
+	#
+	# getAgentParameters
+	#
+	def getAgentParameters(self):
+		ret = ParameterMap()
+		return ret
+
+
+	#
+	# killAgent
+	#
+	def killAgent(self):
+		pass
+
+
+	#
+	# uptimeAgent
+	#
+	def uptimeAgent(self):
+		ret = int()
+		return ret
+
+
+	#
+	# deactivateAgent
+	#
+	def deactivateAgent(self):
+		ret = bool()
+		return ret
+
+
+	#
+	# getAgentState
+	#
+	def getAgentState(self):
+		ret = StateStruct()
+		return ret
+
 
