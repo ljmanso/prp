@@ -1,0 +1,4 @@
+model_file models/deploy.prototxt 
+weights_file models/bvlc_vgg_sim_iter_1200.caffemodel
+mean_file etc/imagenet_mean.binaryproto
+label_file models/synset_words.txt 

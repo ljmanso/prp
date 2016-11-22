@@ -1,0 +1,4 @@
+deploy.prototxt:/home/harit/workspace/gsoc16/caffe-master/models/VGG16/deploy.prototxt 
+weights/caffemodel:/home/harit/Downloads/imagenet_models/VGG16.v2.caffemodel 
+imagenet_mean.binaryproto:/home/harit/workspace/gsoc16/caffe-master/data/ilsvrc12/imagenet_mean.binaryproto
+synset_words.txt:/home/harit/workspace/gsoc16/caffe-master/data/ilsvrc12/synset_words.txt 

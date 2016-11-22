@@ -1,0 +1,3 @@
+/home/harit/robocomp/files/osgModels/objects/toys/car.ive
+/home/harit/robocomp/files/osgModels/objects/toys/airplane2.ive
+/home/harit/robocomp/files/osgModels/objects/toys/train.ive

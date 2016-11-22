@@ -1,0 +1,10 @@
+img_dir_file data/images
+train_list_file data/train.txt
+train_list_lmdb data/train.lmdb 
+test_list_file data/test.txt
+mean_file mean.binaryproto
+solver_file model/myquick_solver.prototxt
+weights_file model/VGG_ILSVRC_16_layers.caffemodel
+model_file model/mytrain_val.prototxt
+#gpuids 0
+

@@ -1,0 +1,10 @@
+import "/robocomp/interfaces/IDSLs/RGBD.idsl";
+Component trainCNN
+{
+	Communications
+	{
+	};
+	language Cpp;
+	gui Qt(QWidget);
+};
+

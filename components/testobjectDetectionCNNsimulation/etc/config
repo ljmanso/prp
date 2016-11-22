@@ -1,0 +1,17 @@
+CommonBehavior.Endpoints=tcp -p 11001
+
+
+# Proxies for required interfaces
+OmniRobotProxy = omnirobot:tcp -h localhost -p 12238
+RGBDProxy = rgbd:tcp -h localhost -p 10096
+objectDetectionCNNProxy = objectdetectioncnn:tcp -h localhost -p 10007
+
+
+
+Ice.Warn.Connections=0
+Ice.Trace.Network=0
+Ice.Trace.Protocol=0
+Ice.ACM.Client=10
+Ice.ACM.Server=10
+
+
