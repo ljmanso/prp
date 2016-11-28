@@ -83,7 +83,7 @@
 #include <objectdetectionI.h>
 #include <apriltagsI.h>
 
-#include <objectDetection.h>
+#include <ObjectDetection.h>
 #include <AprilTags.h>
 #include <GenericBase.h>
 #include <JointMotor.h>
@@ -194,15 +194,15 @@ int ::objectDetectionComp::run(int argc, char* argv[])
 
 
 		// Server adapter creation and publication
-		if (not GenericMonitor::configGetString(communicator(), prefix, "objectDetection.Endpoints", tmp, ""))
+		if (not GenericMonitor::configGetString(communicator(), prefix, "ObjectDetection.Endpoints", tmp, ""))
 		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy objectDetection";
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy ObjectDetection";
 		}
-		Ice::ObjectAdapterPtr adapterobjectDetection = communicator()->createObjectAdapterWithEndpoints("objectDetection", tmp);
-		objectDetectionI *objectdetection = new objectDetectionI(worker);
-		adapterobjectDetection->add(objectdetection, communicator()->stringToIdentity("objectdetection"));
-		adapterobjectDetection->activate();
-		cout << "[" << PROGRAM_NAME << "]: objectDetection adapter created in port " << tmp << endl;
+		Ice::ObjectAdapterPtr adapterObjectDetection = communicator()->createObjectAdapterWithEndpoints("ObjectDetection", tmp);
+		ObjectDetectionI *objectdetection = new ObjectDetectionI(worker);
+		adapterObjectDetection->add(objectdetection, communicator()->stringToIdentity("objectdetection"));
+		adapterObjectDetection->activate();
+		cout << "[" << PROGRAM_NAME << "]: ObjectDetection adapter created in port " << tmp << endl;
 
 
 

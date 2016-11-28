@@ -21,18 +21,18 @@
 
 // Ice includes
 #include <Ice/Ice.h>
-#include <objectDetection.h>
+#include <ObjectDetection.h>
 
 #include <config.h>
 #include "genericworker.h"
 
-using namespace RoboCompobjectDetection;
+using namespace RoboCompObjectDetection;
 
-class objectDetectionI : public virtual RoboCompobjectDetection::objectDetection
+class ObjectDetectionI : public virtual RoboCompObjectDetection::ObjectDetection
 {
 public:
-	objectDetectionI(GenericWorker *_worker);
-	~objectDetectionI();
+	ObjectDetectionI(GenericWorker *_worker);
+	~ObjectDetectionI();
 	
 	void grabTheAR(const Ice::Current&);
 	void aprilFitModel(const string  &model, const Ice::Current&);

@@ -28,7 +28,7 @@
 
 #include <CommonBehavior.h>
 
-#include <objectDetection.h>
+#include <ObjectDetection.h>
 #include <AprilTags.h>
 #include <GenericBase.h>
 #include <JointMotor.h>
@@ -45,7 +45,7 @@ using namespace std;
 
 using namespace RoboCompGenericBase;
 using namespace RoboCompRGBD;
-using namespace RoboCompobjectDetection;
+using namespace RoboCompObjectDetection;
 using namespace RoboCompAprilTags;
 using namespace RoboCompJointMotor;
 
