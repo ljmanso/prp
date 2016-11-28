@@ -1,0 +1,96 @@
+Determining if the Q_WS_WIN exist failed with the following output:
+Change Dir: /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec339458271/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec339458271.dir/build.make CMakeFiles/cmTryCompileExec339458271.dir/build
+make[1]: Entering directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec339458271.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -I/usr/include/qt4    -o CMakeFiles/cmTryCompileExec339458271.dir/CheckSymbolExists.cxx.o -c /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
+   return ((int*)(&Q_WS_WIN))[argc];
+                   ^
+make[1]: *** [CMakeFiles/cmTryCompileExec339458271.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp'
+make: *** [cmTryCompileExec339458271/fast] Error 2
+
+File /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_WIN
+  return ((int*)(&Q_WS_WIN))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_QWS exist failed with the following output:
+Change Dir: /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2231203900/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2231203900.dir/build.make CMakeFiles/cmTryCompileExec2231203900.dir/build
+make[1]: Entering directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2231203900.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -I/usr/include/qt4    -o CMakeFiles/cmTryCompileExec2231203900.dir/CheckSymbolExists.cxx.o -c /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
+   return ((int*)(&Q_WS_QWS))[argc];
+                   ^
+make[1]: Leaving directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp'
+make[1]: *** [CMakeFiles/cmTryCompileExec2231203900.dir/CheckSymbolExists.cxx.o] Error 1
+make: *** [cmTryCompileExec2231203900/fast] Error 2
+
+File /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_QWS
+  return ((int*)(&Q_WS_QWS))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_MAC exist failed with the following output:
+Change Dir: /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2197831275/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2197831275.dir/build.make CMakeFiles/cmTryCompileExec2197831275.dir/build
+make[1]: Entering directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2197831275.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -I/usr/include/qt4    -o CMakeFiles/cmTryCompileExec2197831275.dir/CheckSymbolExists.cxx.o -c /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
+   return ((int*)(&Q_WS_MAC))[argc];
+                   ^
+make[1]: *** [CMakeFiles/cmTryCompileExec2197831275.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory `/home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp'
+make: *** [cmTryCompileExec2197831275/fast] Error 2
+
+File /home/harit/workspace/gsoc16/robocomp/components/prp/components/testobjectDetectionCNN/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_MAC
+  return ((int*)(&Q_WS_MAC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+

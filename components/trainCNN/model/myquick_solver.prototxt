@@ -1,0 +1,15 @@
+net: "model/mytrain_val.prototxt"
+#test_iter: 4000
+#test_interval: 4000
+#test_initialization: false
+display: 300
+average_loss: 40
+base_lr: 0.0001
+lr_policy: "poly"
+power: 0.5
+max_iter: 84000
+momentum: 0.9
+weight_decay: 0.0002
+snapshot: 300
+snapshot_prefix: "snapshots/bvlc_vgg_sim"
+solver_mode: GPU

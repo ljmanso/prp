@@ -1,0 +1,11 @@
+modelfile_name etc/modelfile.txt
+output_image_directory_name data/images
+output_depth_directory_name data/depths
+viewport_size_x 480 
+viewport_size_y 480 
+Nbin_azimuth 10
+start_azimuth -180   
+Nbin_elevation 10    
+start_elevation -180
+Nbin_yaw 10
+start_yaw -180

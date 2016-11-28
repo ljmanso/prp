@@ -1,0 +1,10 @@
+# Hashes of file build rules.
+b9fc1281da195f8d8c1253924b36198f src/CommonBehavior.cpp
+2acfc86bb67875c2d40e58b322bce503 src/moc_commonbehaviorI.cxx
+ab73adc344090647d939d1cd6ed73b89 src/moc_genericmonitor.cxx
+e79e82ccbb07241dbfa0c30c6588b9ee src/moc_genericworker.cxx
+108a8393493162caa2e5f15d7dccdcdc src/moc_objectdetectioncnnI.cxx
+a2dd2147b3aac66ca9f72ce0a53b2b04 src/moc_specificmonitor.cxx
+20c41936f5a479e9b128684e8a20a591 src/moc_specificworker.cxx
+5513feddf7e846f77506b7809595cac7 src/objectDetectionCNN.cpp
+1d85f9464af39b433e8f6fcbb4fdb36e src/ui_mainUI.h
