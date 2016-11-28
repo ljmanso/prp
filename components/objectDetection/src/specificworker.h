@@ -106,7 +106,7 @@ class SpecificWorker : public GenericWorker
 	RoboCompRGBD::depthType distanceMatrix;
 	RoboCompRGBD::PointSeq points_kinect;
 	RoboCompJointMotor::MotorStateMap h;
-	RoboCompDifferentialRobot::TBaseState b;
+	RoboCompGenericBase::TBaseState b;
 	
 	//color Segmentator
  	Segmentator segmentator;
@@ -157,6 +157,7 @@ public:
 	void projectInliers(const string &model);
 	void extractPolygon(const string &model);
 	void newAprilTag(const tagsList &tags);
+	void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState);
 	bool findTheObject(const string &objectTofind);
 	void getRotation(float &rx, float &ry, float &rz);
 	void getPose(float &x, float &y, float &z);

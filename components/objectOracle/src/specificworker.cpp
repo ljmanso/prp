@@ -51,8 +51,11 @@ first(true)
 	innerModel = new InnerModel();
 	worldModelTime = actionTime = QTime::currentTime();
 	num_saleslman_visited=0;
+	first_salesman = true;
 	
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(save_tables_info()));
+	
+	srand (time(NULL));
 
 #ifdef CONVNET
 	file.open("/home/robocomp/robocomp/components/prp/experimentFiles/dpModels/ccv/image-net-2012.words", std::ifstream::in);
@@ -195,7 +198,13 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		printf("The executive is probably not running, waiting for first AGM model publication...");
 	}
 	
-	//Initialice tables distances for traveling salesman
+	timer.start(Period);
+	return true;
+}
+
+void SpecificWorker::calculate_salesman()
+{
+		//Initialice tables distances for traveling salesman
 	innerModel = AGMInner::extractInnerModel(worldModel);
 	
 	//distances from robot to tables
@@ -269,9 +278,9 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		}
 	}
 	
+	for(int i=0; i<tables_order.size(); i++)
+		cout<<" "<<tables_order[i]<<" "<<endl;
 	
-	timer.start(Period);
-	return true;
 }
 
 void SpecificWorker::compute()
@@ -299,13 +308,36 @@ void SpecificWorker::compute()
 // 	{
 // 		action_imagineMostLikelyMugInPosition();
 // 	}
-	//check if need to imaginemostlikelymuginposition
-	std::string plan = params["plan"].value;
-// 	printf("tol plan: %d \n", plan);
-	if(plan.find("imagineMostLikelyMugInPosition") != std::string::npos)
+	std::map<std::string, AGMModelSymbol::SPtr> symbols;
+	
+	try
 	{
-		action_imagineMostLikelyMugInPosition();
+		symbols = worldModel->getSymbolsMap(params, "robot", "status", "room");
 	}
+	catch(...)
+	{
+// 		printf("objectAgent: Couldn't retrieve action's parameters\n");
+		return false;
+	}
+
+	try
+	{
+		worldModel->getEdge(symbols["robot"], symbols["status"], "usedOracle");
+	}
+	catch(...)
+	{
+		cout<<" ************************************ ORACLE NOT USED"<<endl;	
+		//check if need to imaginemostlikelymuginposition
+		std::string plan = params["plan"].value;
+
+		if(plan.find("imagineMostLikelyMugInPosition") != std::string::npos)
+		{
+			action_imagineMostLikelyMugInPosition();
+		}
+	}
+	
+
+
 
 	if (first)
 	{
@@ -1437,7 +1469,7 @@ std::string SpecificWorker::lookForObjectNoW2V(std::string label)
 
 std::string SpecificWorker::lookForObject(std::string label)
 {
-	label = "cup";
+	label = "noodles";
 	float higher_similarity = -9999999;
 	float calculated_similarity;
 	std::string current_table = "no_table";
@@ -1536,16 +1568,16 @@ std::string SpecificWorker::lookForObject_random(std::string label)
 	//if so select a random table among the remaining ones
 	if(theres_a_non_visited_table)
 	{
-		int table_seletected = rand() % 5;
+		int table_selected = rand() % 5;
+  
+		cout<<endl<<" Table selected on random: "<<table_selected<<endl<<endl;
 		
-		while(visited_table[table_seletected]==true)
+		while(visited_table[table_selected]==true)
 		{
-			table_seletected = rand() % 5;
+			table_selected = rand() % 5;
 		}
-
-		visited_table[table_seletected] = true;
 		
-		switch (table_seletected)
+		switch (table_selected)
 		{
 			case 0:
 				current_table="table1";
@@ -1563,6 +1595,7 @@ std::string SpecificWorker::lookForObject_random(std::string label)
 				current_table="table5";
 				break;
 		}
+		cout<<endl<<"about to return: "<<current_table<<endl<<endl;
 		
 		return current_table;
 	}
@@ -1573,6 +1606,12 @@ std::string SpecificWorker::lookForObject_random(std::string label)
 
 std::string SpecificWorker::lookForObject_salesman(std::string label)
 {
+	if(first_salesman)
+	{
+		first_salesman = false;
+		calculate_salesman();
+	}
+	
 	std::string current_table;
 	//if so select a random table among the remaining ones
 	if(num_saleslman_visited < 5)
@@ -1596,7 +1635,7 @@ std::string SpecificWorker::lookForObject_salesman(std::string label)
 				current_table="table5";
 				break;
 		}
-		num_saleslman_visited++;
+		usleep(1000);
 		
 		return current_table;
 	}
@@ -1651,15 +1690,33 @@ bool SpecificWorker::setParametersAndPossibleActivation(const ParameterMap &prs,
 	return true;
 }
 
+
 void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel)
 {
-	try
+	QMutexLocker locker(mutex);
+
+	for (int i=0; i<20; i++)
 	{
-		AGMMisc::publishModification(newModel, agmexecutive_proxy, "objectoracleAgent");
-	}
-	catch(...)
-	{
-		exit(1);
+		try
+		{
+			AGMMisc::publishModification(newModel, agmexecutive_proxy, std::string( "humanAgent"));
+			return;
+		}
+		catch(const RoboCompAGMExecutive::Locked &e)
+		{
+		}
+		catch(const RoboCompAGMExecutive::OldModel &e)
+		{
+			throw;
+		}
+		catch(const RoboCompAGMExecutive::InvalidChange &e)
+		{
+			throw;
+		}
+		catch(const Ice::Exception& e)
+		{
+			exit(1);
+		}
 	}
 }
 
@@ -1675,7 +1732,7 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	AGMModel::SPtr newModel(new AGMModel(worldModel));
 	world_mutex->unlock();
-printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
+	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	// Create new symbols and the edges which are independent from the container
 	AGMModelSymbol::SPtr objSSt = newModel->newSymbol("objectSt");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
@@ -1693,12 +1750,18 @@ printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(symbols["robot"], objS, "know");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
+	try{
+	  newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
+	}
+	catch (...) {
+	    std::cerr <<"Failed when adding edge"<< std::endl;
+	}
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	
 	printf("about to call the look for object thing\n");
 	//Locate objS
-	std::string table = lookForObject_random(objectType);
+	std::string table = lookForObject_salesman(objectType);
+	cout<<endl<<table<<endl<<endl;
 	int id = -1;
 	int room_id = -1;
 	if( table == "table1" )
@@ -1729,27 +1792,60 @@ printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 
 	if (id != -1 and room_id != -1)
 	{
-		printf("Object: %s found in %s !!!!!, id: %d, room_id: %d", objectType.c_str(), table.c_str(), id, room_id); 
-		// Create the edges that indicate in which table the object will be located
+		printf("\n\nObject: %s found in %s !!!!!, id: %d, room_id: %d \n\n", objectType.c_str(), table.c_str(), id, room_id); 
+		// Create the edges that indicatstaplese in which table the object will be located
+		printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 		AGMModelSymbol::SPtr tableID = newModel->getSymbol(id);
+		printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 		AGMModelSymbol::SPtr roomID  = newModel->getSymbol(room_id);
+		printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 		newModel->addEdge(objS, tableID, "in");
+		printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 		newModel->addEdge(tableID, objS, "RT");
+		printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 		newModel->addEdge(objS, roomID, "in");
+		printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 
 		// Send modification proposal
 // 		modifiedWorld = worldModel->version + 1;
 		world_mutex->lock();
-		sendModificationProposal(worldModel, newModel);
+		try
+		{
+			sendModificationProposal(worldModel, newModel);
+			num_saleslman_visited++;
+			
+			if( table == "table1" )
+			{
+				visited_table[0]=true;
+			}
+			if( table == "table2" )
+			{
+				visited_table[1]=true;
+			}
+			if( table == "table3" )
+			{
+				visited_table[2]=true;
+			}
+			if( table == "table4" )
+			{
+				visited_table[3]=true;
+			}
+			if( table == "table5" )
+			{
+				visited_table[4]=true;
+			}
+		}catch(...)
+		{
+			printf("mundo viejuno\n");
+		}
 		world_mutex->unlock();
+		printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	}
 	else
 	{
 		printf("Object: %s not found", objectType.c_str()); 
 	}
 }
-
-
 
 void SpecificWorker::action_imagineMostLikelyMugInPosition()
 {

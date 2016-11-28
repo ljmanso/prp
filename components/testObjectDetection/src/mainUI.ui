@@ -364,7 +364,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_13">
+  <widget class="QLineEdit" name="label_le">
    <property name="geometry">
     <rect>
      <x>320</x>

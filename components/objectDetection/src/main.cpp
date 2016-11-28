@@ -85,9 +85,11 @@
 
 #include <objectDetection.h>
 #include <AprilTags.h>
+#include <GenericBase.h>
+#include <JointMotor.h>
 #include <RGBD.h>
 #include <JointMotor.h>
-#include <DifferentialRobot.h>
+#include <GenericBase.h>
 
 
 // User includes here

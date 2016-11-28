@@ -187,6 +187,7 @@ private:
 	float table_distances[6][6];
 	std::vector<int> tables_order;
 	int num_saleslman_visited;
+	bool first_salesman;
 	
 	//config params
 	bool save_full_data, save_table_data, labeling;
@@ -231,6 +232,7 @@ private:
 	bool active;
 	bool setParametersAndPossibleActivation(const ParameterMap &prs, bool &reactivated);
 	void sendModificationProposal(AGMModel::SPtr &worldModel, AGMModel::SPtr &newModel);
+	void calculate_salesman();
 
 	int32_t modifiedWorld;
 	void imagineMostLikelyOBJECTPosition(string objectType);

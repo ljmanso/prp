@@ -31,6 +31,8 @@ class SpecificWorker(GenericWorker):
 
 		self.T = QtCore.QTime()
 		self.T.start()
+    
+		self.newplan = False
 
 		self.current = 0
 		self.logfile = open('experimentLog.txt', 'w')
@@ -72,13 +74,13 @@ class SpecificWorker(GenericWorker):
 	
 	def loadOrGenerateExperimentList(self):
 		self.points = {}
-		self.points['0'] = [0.0, 0.1, 0.2, 1.2]
-		self.points['1'] = [1.0, 1.1, 1.2, 1.2]
-		self.points['2'] = [2.0, 2.1, 2.2, 1.2]
-		self.points['3'] = [3.0, 3.1, 3.2, 1.2]
-		self.points['4'] = [4.0, 4.1, 4.2, 1.2]
+		self.points['0'] = [1600.0, 0.,  1000., 0.7]
+		self.points['1'] = [3000.0, 0.,  1900., 2.7]
+		self.points['2'] = [4600.0, 0.,  1500., 4.5]
+		self.points['3'] = [1700.0, 0., -1100., 1.5]
+		self.points['4'] = [4780.0, 0., -1090., 2.7]
 		
-		self.objects = ['cup', 'ball', 'wrench', 'screen', 'screwdriver', 'stapler', 'mouse', 'bag', 'pingpong', 'noodles']
+		self.objects = ['ball', 'wrench', 'screen', 'screwdriver', 'stapler', 'mouse', 'bag', 'pingpong', 'noodles']
 		
 		
 		
@@ -109,14 +111,25 @@ class SpecificWorker(GenericWorker):
 	def compute(self):
 		self.ui.targetLabel.setText(str(self.experiments[self.current]))
 		self.ui.counterLabel.setText(str(self.current))
-		pass
+		if self.newplan == True:
+			self.newplan = False
+    
+			print self.prs['plan'].value
+			print self.uistate
+			if 'imagine' in self.prs['plan'].value and self.uistate != "inMission":
+				self.setUIState("inMission")
+				self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
+				self.missionT = QtCore.QTime()
+				self.missionT.start()
+
+		    
 
 
 	@QtCore.Slot()
 	def goStartPosition(self):
 		self.setUIState("ready")
 		print 'goStartPosition()'
-		target = RoboCompTrajectoryRobot2D.TargetPose
+		target = TargetPose()
 		target.doRotation = True
 		target.x = self.experiments[self.current][2][0]
 		target.y = self.experiments[self.current][2][1]
@@ -210,12 +223,8 @@ class SpecificWorker(GenericWorker):
 	# activateAgent
 	#
 	def activateAgent(self, prs):
-		if 'imagine' in prs['plan'] and self.uistate != "inMission":
-			self.setUIState("inMission")
-			self.log("Start mission " + str(self.current) + " " + str(self.experiments[self.current]))
-			self.missionT = QtCore.QTime()
-			self.missionT.start()
-
+		self.newplan = True
+		self.prs = prs
 		ret = bool()
 		return ret
 
