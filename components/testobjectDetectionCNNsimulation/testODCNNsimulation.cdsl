@@ -1,0 +1,16 @@
+import "/robocomp/interfaces/IDSLs/RGBD.idsl";
+import "/robocomp/interfaces/IDSLs/OmniRobot.idsl";
+import "/robocomp/interfaces/IDSLs/objectDetectionCNN.idsl";
+
+Component testODCNNsimulation
+{
+	Communications
+	{
+		requires RGBD;
+		requires OmniRobot;
+		requires objectDetectionCNN;
+	};
+	language Cpp;
+	gui Qt(QWidget);
+};
+

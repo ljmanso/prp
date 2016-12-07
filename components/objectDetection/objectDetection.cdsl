@@ -1,4 +1,4 @@
-import "/robocomp/interfaces/IDSLs/objectDetection.idsl";
+import "/robocomp/interfaces/IDSLs/ObjectDetection.idsl";
 import "/robocomp/interfaces/IDSLs/AprilTags.idsl";
 import "/robocomp/interfaces/IDSLs/RGBD.idsl";
 
@@ -6,7 +6,7 @@ Component objectDetectionComp
 {
 	Communications
 	{
-		implements objectDetection;
+		implements ObjectDetection;
 		requires RGBD;
 		subscribesTo AprilTags;
 	};

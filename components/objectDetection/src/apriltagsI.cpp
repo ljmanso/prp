@@ -28,6 +28,11 @@ AprilTagsI::~AprilTagsI()
 {
 }
 
+void AprilTagsI::newAprilTagAndPose(const tagsList  &tags, const RoboCompGenericBase::TBaseState  &bState, const RoboCompJointMotor::MotorStateMap  &hState, const Ice::Current&)
+{
+	worker->newAprilTagAndPose(tags, bState, hState);
+}
+
 void AprilTagsI::newAprilTag(const tagsList  &tags, const Ice::Current&)
 {
 	worker->newAprilTag(tags);

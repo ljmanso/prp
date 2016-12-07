@@ -247,7 +247,8 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 		for (int i = 0; i<cloud_cluster->points.size(); i++)
 		{
 			InnerModelCamera *camera = innermodel->getCamera("rgbd");
-			QVec xy = camera->project("robot", QVec::vec3(cloud_cluster->points[i].x, cloud_cluster->points[i].y, cloud_cluster->points[i].z), "rgbd"); 
+			
+			QVec xy = camera->project("robot", QVec::vec3(cloud_cluster->points[i].x, cloud_cluster->points[i].y, cloud_cluster->points[i].z)); 
 			
 			if (xy(0)>=0 and xy(0) < 640 and xy(1)>=0 and xy(1) < 480 )
 			{
@@ -1024,9 +1025,13 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 	
 }
 
-
+void SpecificWorker::newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState)
+{
+	
+}
 
 void SpecificWorker::newAprilTag(const tagsList &tags)
+
 {
 	april_mutex.lock();
 	this->tags = tags;

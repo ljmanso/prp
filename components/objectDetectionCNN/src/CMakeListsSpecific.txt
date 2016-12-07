@@ -1,0 +1,20 @@
+
+# Sources set
+SET ( SOURCES
+  specificworker.cpp
+  specificmonitor.cpp
+#  $ENV{ROBOCOMP}/classes/agmInner/agmInner.cpp
+)
+
+# Headers set
+SET ( HEADERS
+  specificworker.h
+  specificmonitor.h
+#  $ENV{ROBOCOMP}/classes/agmInner/agmInner.h
+)
+
+INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
+INCLUDE (cmake/modules/caffe.cmake )
+ADD_DEFINITIONS( -std=c++11 )
+

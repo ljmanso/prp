@@ -28,11 +28,13 @@
 
 #include <CommonBehavior.h>
 
-#include <objectDetection.h>
+#include <ObjectDetection.h>
 #include <AprilTags.h>
+#include <GenericBase.h>
+#include <JointMotor.h>
 #include <RGBD.h>
 #include <JointMotor.h>
-#include <DifferentialRobot.h>
+#include <GenericBase.h>
 
 #define CHECK_PERIOD 5000
 #define BASIC_PERIOD 100
@@ -41,9 +43,9 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
+using namespace RoboCompGenericBase;
 using namespace RoboCompRGBD;
-using namespace RoboCompDifferentialRobot;
-using namespace RoboCompobjectDetection;
+using namespace RoboCompObjectDetection;
 using namespace RoboCompAprilTags;
 using namespace RoboCompJointMotor;
 
@@ -100,6 +102,7 @@ public:
 	virtual void guessPose(const string &label, pose6D &guess) = 0;
 	virtual void extractPolygon(const string &model) = 0;
 	virtual void saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9) = 0;
+	virtual void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState) = 0;
 	virtual void newAprilTag(const tagsList &tags) = 0;
 
 protected:

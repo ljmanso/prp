@@ -33,7 +33,7 @@ SET ( SOURCES
 
 #ROBOCOMP
 ROBOCOMP_INITIALIZE( $ENV{ROBOCOMP}/ )
-ROBOCOMP_WRAP_ICE( CommonBehavior objectDetection AprilTags RGBD JointMotor DifferentialRobot )
+ROBOCOMP_WRAP_ICE( CommonBehavior ObjectDetection AprilTags GenericBase JointMotor RGBD JointMotor GenericBase )
 SET (EXECUTABLE_OUTPUT_PATH ${RC_COMPONENT_DEVEL_PATH}/bin)
 
 # Qt4
