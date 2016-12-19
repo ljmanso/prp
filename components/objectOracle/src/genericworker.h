@@ -31,11 +31,11 @@
 #include <ObjectOracle.h>
 #include <RGBD.h>
 #include <JointMotor.h>
-#include <DifferentialRobot.h>
+#include <GenericBase.h>
 #include <Logger.h>
 #include <RGBD.h>
 #include <JointMotor.h>
-#include <DifferentialRobot.h>
+#include <GenericBase.h>
 #include <SemanticSimilarity.h>
 #include <agm.h>
 
@@ -46,7 +46,7 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
-using namespace RoboCompDifferentialRobot;
+using namespace RoboCompGenericBase;
 using namespace RoboCompAGMWorldModel;
 using namespace RoboCompObjectOracle;
 using namespace RoboCompSemanticSimilarity;
@@ -87,9 +87,9 @@ public:
 	bool isActive() { return active; }
 	
 
+	SemanticSimilarityPrx semanticsimilarity_proxy;
 	RGBDPrx rgbd_proxy;
 	LoggerPrx logger_proxy;
-	SemanticSimilarityPrx semanticsimilarity_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;
@@ -103,10 +103,10 @@ public:
 	virtual void semanticDistance(const string &word1, const string &word2, float &result) = 0;
 	virtual void getLabelsFromImage(const RoboCompRGBD::ColorSeq &image, ResultList &result) = 0;
 	virtual void structuralChange(const RoboCompAGMWorldModel::World &w) = 0;
-	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modification) = 0;
+	virtual void edgesUpdated(const RoboCompAGMWorldModel::EdgeSequence &modifications) = 0;
 	virtual void edgeUpdated(const RoboCompAGMWorldModel::Edge &modification) = 0;
 	virtual void symbolUpdated(const RoboCompAGMWorldModel::Node &modification) = 0;
-	virtual void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modification) = 0;
+	virtual void symbolsUpdated(const RoboCompAGMWorldModel::NodeSequence &modifications) = 0;
 
 protected:
 	QTimer timer;
