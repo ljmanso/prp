@@ -246,7 +246,7 @@ private:
 	void action_imagineMostLikelyCoffeePotInPosition();
 	void action_imagineMostLikelyMilkInPosition();
 	
-	RoboCompDifferentialRobot::TBaseState bState;
+	RoboCompGenericBase::TBaseState bState;
 	RoboCompJointMotor::MotorStateMap hState;
 	RoboCompRGBD::ColorSeq rgbImage;
 	RoboCompRGBD::PointSeq points;
