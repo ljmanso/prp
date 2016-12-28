@@ -598,7 +598,7 @@ void SpecificWorker::guessPose(const string &label, pose6D &guess)
 	align.setInputTarget (scene);
 	align.setTargetFeatures (scene_features);
 	align.setMaximumIterations (50000); // Number of RANSAC iterations
-	align.setNumberOfSamples (3); // Number of points to sample for generating/prerejecting a pose
+	align.setNumberOfSamples (2); // Number of points to sample for generating/prerejecting a pose
 	align.setCorrespondenceRandomness (5); // Number of nearest features to use
 	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
 	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
@@ -929,8 +929,9 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 			int end=cluster_clouds[i]->size()-1;
 			QVec xy = camera->project("robot", QVec::vec3(cluster_clouds[i]->points[end].x, cluster_clouds[i]->points[end].y, cluster_clouds[i]->points[end].z)); 
 			QVec xyfrist = camera->project("robot", QVec::vec3(cluster_clouds[i]->points[0].x, cluster_clouds[i]->points[0].y, cluster_clouds[i]->points[0].z)); 
-			text->setPos(((int)xy(0)+xyfrist(0))/2-30,(int)(xy(1)+xyfrist(1))/2);
+			text->setPos(xyfrist(0)-50,(int)(xy(1)+xyfrist(1))/2);
 			scene.addItem(text);
+			dist=3.40e38;
 		}
 		/*
 		std::cout<<vfh_guesses[i]<<std::endl;
@@ -992,7 +993,7 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 		int end=cluster_clouds[num_object_found]->size()-1;
 		QVec xy = camera->project("robot", QVec::vec3(cluster_clouds[num_object_found]->points[end].x, cluster_clouds[num_object_found]->points[end].y, cluster_clouds[num_object_found]->points[end].z)); 
 		QVec xyfrist = camera->project("robot", QVec::vec3(cluster_clouds[num_object_found]->points[0].x, cluster_clouds[num_object_found]->points[0].y, cluster_clouds[num_object_found]->points[0].z)); 
-		text->setPos(((int)xy(0)+xyfrist(0))/2-30,(int)(xy(1)+xyfrist(1))/2);
+		text->setPos(xyfrist(0)-30,(int)(xy(1)+xyfrist(1))/2);
 		scene.addItem(text);
 	}
 	std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
@@ -1017,6 +1018,9 @@ void SpecificWorker::getPose(float &x, float &y, float &z)
 void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 {
 	// Point clouds
+	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
+	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
+	string pathxml="/home/robocomp/robocomp/components/prp/objects/"+guessgan+"/"+guessgan+".xml";
 	pcl::PointCloud<PointT>::Ptr object (new pcl::PointCloud<PointT>);
 	//change vfh extension to pcd
 	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
@@ -1074,7 +1078,7 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 	align.setInputTarget (scene);
 	align.setTargetFeatures (scene_features);
 	align.setMaximumIterations (50000); // Number of RANSAC iterations
-	align.setNumberOfSamples (1); // Number of points to sample for generating/prerejecting a pose
+	align.setNumberOfSamples (2); // Number of points to sample for generating/prerejecting a pose
 	align.setCorrespondenceRandomness (5); // Number of nearest features to use
 	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
 	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
@@ -1086,11 +1090,21 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 	
 	Eigen::Matrix4f transformation = align.getFinalTransformation ();
 	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
-	std::cout<<"Alignmet end results: rx = "<<ea(0)<<"; ry = "<<ea(1)<<", rz = "<<ea(2)<<std::endl;
+	qDebug()<<"Rotation"<<ea(0)<<", "<<ea(1)<<", "<<ea(2);
 	rx = ea(0);
 	ry = ea(1);
 	rz = ea(2);
 	
+	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
+	node_name=node_name.substr(node_name.find_last_of("/")+1);
+	InnerModel inner(pathxml);
+	QVec rot = (inner.getRotationMatrixTo("canon_pose",QString::fromStdString(node_name))).extractAnglesR_min();
+	qDebug()<<rot;
+	rx+=rot(0);
+	ry+=rot(1);
+	rz+=rot(2);
+	std::cout<<"Alignmet end results: rx = "<<rx<<"; ry = "<<ry<<", rz = "<<rz<<std::endl;
+
 #if DEBUG
 	std::cout<<"Rotation: "<<rx<<" "<<ry<<" "<<rz<<std::endl;
 #endif
