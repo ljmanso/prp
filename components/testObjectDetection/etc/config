@@ -2,7 +2,7 @@ CommonBehavior.Endpoints=tcp -p 1234
 
 
 # Proxies for required interfaces
-objectDetectionProxy = objectdetection:tcp -h 10.0.30.22 -p 17333
+ObjectDetectionProxy = objectdetection:tcp -h localhost -p 12333
 
 
 
@@ -11,5 +11,3 @@ Ice.Trace.Network=0
 Ice.Trace.Protocol=0
 Ice.ACM.Client=10
 Ice.ACM.Server=10
-
-

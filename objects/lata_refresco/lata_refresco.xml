@@ -1,0 +1,20 @@
+<innermodel>
+	<transform id="canon_pose" tx="-138.8039856" ty="204.2176819" tz="722.8129272"  rx="0.6166042686" ry="-0.01380487718" rz="0.003486240515">
+		<transform id="pose_0_lata_refresco" tx="205.2850342" ty="202.1797791" tz="721.5286865"  rx="0.5887541175" ry="0.01780712605" rz="-0.01477885433">
+		</transform>
+		<transform id="pose_1_lata_refresco" tx="20.76385689" ty="261.9197693" tz="761.2525635"  rx="0.615636766" ry="0.01066673547" rz="-0.7379999161">
+		</transform>
+		<transform id="pose_2_lata_refresco" tx="205.3783417" ty="208.3378143" tz="726.069458"  rx="0.6278812289" ry="0.01972237416" rz="-1.57516408">
+		</transform>
+		<transform id="pose_3_lata_refresco" tx="53.79957581" ty="260.2657471" tz="771.5118408"  rx="-2.532096863" ry="-3.146141052" rz="0.7164405584">
+		</transform>
+		<transform id="pose_4_lata_refresco" tx="-133.0640106" ty="200.7445984" tz="721.3406982"  rx="-2.50795126" ry="-3.132838249" rz="0.01825590059">
+		</transform>
+		<transform id="pose_5_lata_refresco" tx="35.14006424" ty="255.6210632" tz="756.7753296"  rx="-2.515131474" ry="-3.1355896" rz="-0.7684267759">
+		</transform>
+		<transform id="pose_6_lata_refresco" tx="-130.9881592" ty="202.9519348" tz="720.3709106"  rx="0.6131796241" ry="-0.03943479806" rz="1.565586925">
+		</transform>
+		<transform id="pose_7_lata_refresco" tx="53.40472794" ty="256.9527283" tz="756.8434448"  rx="0.587783277" ry="-0.01208729763" rz="0.7022898793">
+		</transform>
+	</transform>
+</innermodel>

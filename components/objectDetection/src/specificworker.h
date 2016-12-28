@@ -58,12 +58,13 @@
 
 #ifndef Q_MOC_RUN
 	#include <innermodel/innermodel.h>
+	#include <innermodel/innermodelviewer.h>
 	#include "color_segmentation/Segmentator.h"
 	#include "shapes/table.h"
 	#include "vfh/vfh.h"
 #endif
 
-#define DEBUG 1
+#define DEBUG 0
 #define SAVE_DATA 0
 typedef pcl::PointXYZRGB PointT;
 
@@ -111,7 +112,7 @@ class SpecificWorker : public GenericWorker
 	//color Segmentator
  	Segmentator segmentator;
 	
-        //euclidean clustering
+	//euclidean clustering
 	std::vector<pcl::PointIndices> cluster_indices;
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
         
@@ -121,6 +122,7 @@ class SpecificWorker : public GenericWorker
 	std::vector<string> vfh_guesses;
         
 	boost::shared_ptr<Table> table;
+	QGraphicsScene scene;
   
 Q_OBJECT
 public:
@@ -162,15 +164,18 @@ public:
 	void getRotation(float &rx, float &ry, float &rz);
 	void getPose(float &x, float &y, float &z);
 	bool aprilSeen(pose6D &offset, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+// 	save a file canon_pose_label.pcd and label.xml
 	void saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+// 	save a files pose_num_pose_label.pcd
 	void saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+// 	
 	void guessPose(const string &label, pose6D &guess);
 
 public slots:
 	void compute(); 	
 
 private:
-	
+	void visualize(pcl::PointCloud<PointT>::Ptr cloud);
 };
 
 #endif

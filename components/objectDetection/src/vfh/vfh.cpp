@@ -254,7 +254,6 @@ void VFH::nearestKSearch (flann::Index<flann::ChiSquareDistance<float> > &index,
 }
 void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<std::string> &guesses)
 {
-
 	pcl::PointCloud<pcl::VFHSignature308>::Ptr vfhs(new pcl::PointCloud<pcl::VFHSignature308> ());
 	computeVFHistogram(object, vfhs);
 	vfh_model histogram;
@@ -269,7 +268,7 @@ void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<std:
 	for (size_t i = 0; i < fields[vfh_idx].count; ++i)
 	{
 		histogram.second[i] = vfhs->points[0].histogram[i];
-		std::cout<<histogram.second[i]<<std::endl;
+// 		std::cout<<histogram.second[i]<<std::endl;
 	}
 	histogram.first = "cloud_from_object.vfh";
 
@@ -282,13 +281,17 @@ void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<std:
 	guesses.clear();
 	
 	pcl::console::print_highlight ("The closest 16 neighbors are:\n");
-	for (int i = 0; i < 16; ++i)
+	for (int i = 0; i < models.size(); ++i)
 	{
 		Eigen::Vector4f centroid;
 		pcl::compute3DCentroid (*object, centroid);
-		std::cerr<<centroid[0]<<centroid[1]<<centroid[2]<<centroid[3]<<std::endl;
-		pcl::console::print_info ("    %d - %s (%d) with a distance of: %f\n", 
+// 		std::cerr<<centroid[0]<<centroid[1]<<centroid[2]<<centroid[3]<<std::endl;		
+		/*pcl::console::print_info ("    %d - %s (%d) with a distance of: %f\n", 
 				i, models.at (k_indices[0][i]).first.c_str (), k_indices[0][i], k_distances[0][i]);
-		guesses.push_back(models.at (k_indices[0][i]).first);
+		*/std::string d;
+		std::stringstream sd;
+		sd<<k_distances[0][i];
+		d=models.at(k_indices[0][i]).first+"#"+sd.str();
+		guesses.push_back(d);
 	}
 }
