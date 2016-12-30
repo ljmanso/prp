@@ -28,8 +28,7 @@ QObject()
 #endif
 
 {
-	objectdetection_proxy = (*(objectDetectionPrx*)mprx["objectDetectionProxy"]);
-
+	objectdetection_proxy = (*(ObjectDetectionPrx*)mprx["ObjectDetectionProxy"]);
 
 	mutex = new QMutex(QMutex::Recursive);
 

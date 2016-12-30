@@ -2,7 +2,7 @@ CommonBehavior.Endpoints=tcp -p 12332
 
 
 # Endpoints for implemented interfaces
-objectDetection.Endpoints=tcp -p 12333
+ObjectDetection.Endpoints=tcp -p 12333
 
 
 # Endpoints for subscriptions
