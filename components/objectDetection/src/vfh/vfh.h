@@ -8,6 +8,8 @@
 #include <pcl/point_types.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/vfh.h>
+#include <pcl/features/cvfh.h>
+#include <pcl/features/our_cvfh.h>
 #include <pcl/io/pcd_io.h>
 #include <boost/filesystem.hpp>
 
@@ -24,12 +26,16 @@ class VFH
 	std::string kdtree_idx_file_name;
 	std::string training_data_h5_file_name;
 	std::string training_data_list_file_name;
-	
+	std::string type_feature;
+	std::string h_extension;
 	std::vector<vfh_model> models;
 	flann::Matrix<int> k_indices;
 	flann::Matrix<float> k_distances;
 	flann::Matrix<float> data;
+	
 public:
+	
+	void set_type_feature(std::string feature);
 	
 	//Loads vfh histogram
 	bool loadHist (const boost::filesystem::path &path, vfh_model &vfh);

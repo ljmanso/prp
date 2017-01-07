@@ -40,5 +40,5 @@ SET ( LIBS ${LIBS} )
 
 ADD_DEFINITIONS( -std=c++11 )
 
-add_executable(createVFH createVFH.cpp)
-target_link_libraries (createVFH ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
+add_executable(createDescriptors createDescriptors.cpp)
+target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})

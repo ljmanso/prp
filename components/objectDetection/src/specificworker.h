@@ -39,7 +39,7 @@
  #include <pcl/filters/passthrough.h>
  #include <pcl/segmentation/extract_clusters.h>
  #include <pcl/filters/statistical_outlier_removal.h>
- #include <pcl/io/pcd_io.h>
+ #include <pcl/io/io.h>
  #include <pcl/conversions.h>
  #include <pcl/point_types_conversion.h>
  #include <opencv2/core/core.hpp>
@@ -51,6 +51,7 @@
  #include <pcl/registration/sample_consensus_prerejective.h>
  #include <pcl/features/fpfh_omp.h>
  #include <pcl/common/time.h>
+ #include <pcl/visualization/cloud_viewer.h>
 #endif
 
 #include <genericworker.h>
@@ -71,9 +72,10 @@ typedef pcl::PointXYZRGB PointT;
 
 class SpecificWorker : public GenericWorker
 {
-	
+	QString id_robot, id_camera;
+	string descriptors_extension;
 	InnerModel *innermodel;
-	
+
 	//for poses calculation respect to the canonical one
 	InnerModel *poses_inner;
 	tagsList tags;
@@ -115,7 +117,7 @@ class SpecificWorker : public GenericWorker
 	//euclidean clustering
 	std::vector<pcl::PointIndices> cluster_indices;
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
-        
+    
         
 	//VFH
 	boost::shared_ptr<VFH> vfh_matcher;
@@ -175,7 +177,7 @@ public slots:
 	void compute(); 	
 
 private:
-	void visualize(pcl::PointCloud<PointT>::Ptr cloud);
+	void visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds);
 };
 
 #endif

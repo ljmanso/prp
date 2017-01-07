@@ -1,5 +1,16 @@
 #include "vfh.h"
 
+void VFH::set_type_feature(std::__cxx11::string feature)
+{
+	type_feature=feature;
+	if(type_feature=="VFH")
+		h_extension="vfh";
+	else if(type_feature=="CVFH")
+		h_extension="cvfh";
+	else if(type_feature== "OUR-CVFH")
+		h_extension="ourcvfh";
+}
+
 bool VFH::loadHist (const boost::filesystem::path &path, vfh_model &vfh)
 {
   int vfh_idx;
@@ -12,6 +23,7 @@ bool VFH::loadHist (const boost::filesystem::path &path, vfh_model &vfh)
     Eigen::Quaternionf orientation;
     pcl::PCDReader r;
     int type; unsigned int idx;
+	std::cout<<path.string()<<std::endl;
     r.readHeader (path.string (), cloud, origin, orientation, version, type, idx);
 
     vfh_idx = pcl::getFieldIndex (cloud, "vfh");
@@ -24,7 +36,7 @@ bool VFH::loadHist (const boost::filesystem::path &path, vfh_model &vfh)
   {
     return (false);
   }
-
+  std::cout<<"Hola"<<std::endl;
   // Treat the VFH signature as a single Point Cloud
   pcl::PointCloud <pcl::VFHSignature308> point;
   pcl::io::loadPCDFile (path.string (), point);
@@ -59,21 +71,57 @@ void VFH::computeVFHistogram(pcl::PointCloud<PointT>::Ptr cloud, const pcl::Poin
 	ne.setRadiusSearch(10);
 	//computing normals
 	ne.compute(*cloud_normals);
-
-	//---proceed to compute VFH---
-
-	//Create the VFH estimation class and pas the input to it
-	pcl::VFHEstimation<PointT, pcl::Normal, pcl::VFHSignature308> vfh;
-	vfh.setInputCloud (cloud);
-	vfh.setInputNormals (cloud_normals);
-
-	//create an empty kdtree representation and pass it to the vfh estimation object
-	//its content will be filled inside the object based on the given input.
 	pcl::search::KdTree<PointT>::Ptr vfhtree (new pcl::search::KdTree<PointT> ());
-	vfh.setSearchMethod (vfhtree);
 
-	//compute the features
-	vfh.compute (*vfhs);
+	if(type_feature=="VFH")
+	{
+		//---proceed to compute VFH---
+		//Create the VFH estimation class and pas the input to it
+		pcl::VFHEstimation<PointT, pcl::Normal, pcl::VFHSignature308> vfh;
+		vfh.setInputCloud (cloud);
+		vfh.setInputNormals (cloud_normals);
+
+		//create an empty kdtree representation and pass it to the vfh estimation object
+		//its content will be filled inside the object based on the given input.
+		vfh.setSearchMethod (vfhtree);
+
+		//compute the features
+		vfh.compute (*vfhs);
+	}
+	else if(type_feature=="CVFH")
+	{
+		// CVFH estimation object.
+		pcl::CVFHEstimation<PointT, pcl::Normal, pcl::VFHSignature308> cvfh;
+		cvfh.setInputCloud(cloud);
+		cvfh.setInputNormals(cloud_normals);
+		cvfh.setSearchMethod(vfhtree);
+		// Set the maximum allowable deviation of the normals,
+		// for the region segmentation step.
+		cvfh.setEPSAngleThreshold(5.0 / 180.0 * M_PI); // 5 degrees.
+		// Set the curvature threshold (maximum disparity between curvatures),
+		// for the region segmentation step.
+		cvfh.setCurvatureThreshold(1.0);
+		// Set to true to normalize the bins of the resulting histogram,
+		// using the total number of points. Note: enabling it will make CVFH
+		// invariant to scale just like VFH, but the authors encourage the opposite.
+		cvfh.setNormalizeBins(false);
+		cvfh.compute(*vfhs);
+	}
+	else if(type_feature== "OUR-CVFH")
+	{
+		// OUR-CVFH estimation object.
+		pcl::OURCVFHEstimation<PointT, pcl::Normal, pcl::VFHSignature308> ourcvfh;
+		ourcvfh.setInputCloud(cloud);
+		ourcvfh.setInputNormals(cloud_normals);
+		ourcvfh.setSearchMethod(vfhtree);
+		ourcvfh.setEPSAngleThreshold(5.0 / 180.0 * M_PI); // 5 degrees.
+		ourcvfh.setCurvatureThreshold(1.0);
+		ourcvfh.setNormalizeBins(false);
+		// Set the minimum axis ratio between the SGURF axes. At the disambiguation phase,
+		// this will decide if additional Reference Frames need to be created, if ambiguous.
+		ourcvfh.setAxisRatio(0.8);
+		ourcvfh.compute(*vfhs);
+	}
 }
 
 //Function that recursively reads all files and computes the VFH for them
@@ -108,7 +156,7 @@ void VFH::readFilesAndComputeVFH (const boost::filesystem::path &base_dir)
 				//save them to file
 				pcl::PCDWriter writer;
 				std::stringstream ss;
-				ss <<boost::filesystem::path(*it).branch_path()<< "/" << boost::filesystem::basename(*it) << ".vfh";
+				ss <<boost::filesystem::path(*it).branch_path()<< "/" << boost::filesystem::basename(*it) <<"."<< h_extension;
 				pcl::console::print_highlight ("writing %s\n", ss.str().c_str());
 				writer.write<pcl::VFHSignature308> (ss.str(), *vfhs, false);
 			}
@@ -158,7 +206,8 @@ void VFH::reloadVFH(std::string path_to_dir)
 	std::string model_directory (path_to_dir);
 	
 	// Load the model histograms
-	loadFeatureModels (model_directory, ".vfh", models);
+	loadFeatureModels (model_directory, "."+h_extension, models);
+	
   pcl::console::print_highlight ("Loaded %d VFH models. Creating training data %s/%s.\n", 
       (int)models.size (), training_data_h5_file_name.c_str (), training_data_list_file_name.c_str ());
 	
@@ -270,13 +319,13 @@ void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<std:
 		histogram.second[i] = vfhs->points[0].histogram[i];
 // 		std::cout<<histogram.second[i]<<std::endl;
 	}
-	histogram.first = "cloud_from_object.vfh";
+	histogram.first = "cloud_from_object."+ h_extension;
 
 	//let look for the match
 	flann::Index<flann::ChiSquareDistance<float> > index (data, flann::SavedIndexParams ("kdtree.idx"));
 
 	index.buildIndex ();
-	nearestKSearch (index, histogram, 16, k_indices, k_distances);
+	nearestKSearch (index, histogram, models.size(), k_indices, k_distances);
 	
 	guesses.clear();
 	
@@ -295,3 +344,4 @@ void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<std:
 		guesses.push_back(d);
 	}
 }
+

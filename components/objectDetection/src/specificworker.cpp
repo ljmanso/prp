@@ -36,9 +36,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	//let's set the sizes
 	table->set_board_size(500,30,500);
         
-	innermodel = new InnerModel("/home/robocomp/robocomp/components/robocomp-shelly/etc/shelly.xml");
-        
-	viewpoint_transform = innermodel->getTransformationMatrix("robot", "rgbd_transform");
+	
         
 	marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
 	
@@ -74,7 +72,20 @@ void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
 
-	
+	string name = PROGRAM_NAME;
+	innermodel = new InnerModel(params[name+".innermodel"].value);
+    id_robot=QString::fromStdString(params[name+".id_robot"].value);
+	id_camera=QString::fromStdString(params[name+".id_camera"].value);
+	QString id_camera_transform=QString::fromStdString(params[name+".id_camera_transform"].value);
+	viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
+	vfh_matcher->set_type_feature(params[name+".type_features"].value);
+	if(params[name+".type_features"].value=="VFH")
+		descriptors_extension="vfh";
+	else if(params[name+".type_features"].value=="CVFH")
+		descriptors_extension="cvfh";
+	else if(params[name+".type_features"].value=="OUR-VFH")
+		descriptors_extension="ourcvfh";
+	std::cout<<params[name+".type_features"].value<<" " <<descriptors_extension<<std::endl;
 	timer.start(Period);
 
 	return true;
@@ -173,7 +184,7 @@ void SpecificWorker::centroidBasedPose(float &x, float &y, float &theta)
 
 void SpecificWorker::reloadVFH(const string &pathToSet)
 {
-	string s="./bin/createVFH "+pathToSet;
+	string s="./bin/createDescriptors "+pathToSet +" "+ descriptors_extension;
 	char *cstr = &s[0u];
 	if (system(cstr)==0)
 	{
@@ -253,9 +264,9 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 			cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
 			for (int i = 0; i<cloud_cluster->points.size(); i++)
 			{
-				InnerModelCamera *camera = innermodel->getCamera("rgbd");
+				InnerModelCamera *camera = innermodel->getCamera(id_camera);
 				
-				QVec xy = camera->project("robot", QVec::vec3(cloud_cluster->points[i].x, cloud_cluster->points[i].y, cloud_cluster->points[i].z)); 
+				QVec xy = camera->project(id_robot, QVec::vec3(cloud_cluster->points[i].x, cloud_cluster->points[i].y, cloud_cluster->points[i].z)); 
 				
 				if (xy(0)>=0 and xy(0) < 640 and xy(1)>=0 and xy(1) < 480 )
 				{
@@ -807,6 +818,8 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 	QMat PP = viewpoint_transform;
 	
 	cloud->points.resize(points_kinect.size());
+	
+	
 	for (unsigned int i=0; i<points_kinect.size(); i++)
 	{
 // 		memcpy(&cloud->points[i], &points_kinect[i],3*sizeof(float));
@@ -814,6 +827,7 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 		QVec p1 = QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1);
 //  	QVec p2 = PP * p1;
  		QVec p22 = (PP * p1).fromHomogeneousCoordinates();
+// 		QVec p22 = p1.fromHomogeneousCoordinates();
 		
 		memcpy(&cloud->points[i],p22.data(),3*sizeof(float));
 		
@@ -823,6 +837,7 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 	}
 	cloud->width = 1;
 	cloud->height = points_kinect.size();
+
 	
 	std::vector< int > index;
 	removeNaNFromPointCloud (*cloud, *cloud, index);
@@ -839,7 +854,7 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 		string imagename = "/home/robocomp/robocomp/components/prp/objects/" + QString::number(ts.tv_sec).toStdString() + ".png";
 		cv::imwrite( imagename ,rgb_image);
 #endif
-  
+
 }
 
 void SpecificWorker::fitModel(const string &model, const string &method)
@@ -897,23 +912,24 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 	qDebug()<<__FUNCTION__<<cluster_clouds.size();
 	for(int i=0; i<cluster_clouds.size();i++)
 	{
-		try
-		{
+// 		try
+// 		{
 			vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
-		}
-		catch(...){}
+// 		}
+// 		catch(...){}
 		for (int j=0; j<vfh_guesses.size();j++)
 		{
-// 			std::cout<<vfh_guesses[j]<<std::endl;
+			std::cout<<vfh_guesses[j]<<std::endl;
 			guessact=vfh_guesses[j];
 			dis_str=guessact = guessact.substr(guessact.find_last_of("#")+1);
 			guessact = vfh_guesses[j].substr(0, vfh_guesses[0].find_last_of("/"));
 			guessact = guessact.substr(guessact.find_last_of("/")+1);
 // 			std::cout<<dis_str<<endl;
-			if(std::stof(dis_str)<dist && (objectTofind == guessact || objectTofind ==""))
+			qDebug()<<QString::fromStdString(dis_str).toFloat()<<" < "<<dist;
+			if(QString::fromStdString(dis_str).toFloat()<dist && (objectTofind == guessact || objectTofind ==""))
 			{
 				guessgan=guessact;
-				dist=std::stof(dis_str);
+				dist=QString::fromStdString(dis_str).toFloat();
 				num_object_found = i;
 				file_view_mathing = vfh_guesses[j].substr(0, vfh_guesses[0].find_last_of("#"));
 			}
@@ -925,10 +941,10 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 			QFont serifFont("Times", 25, QFont::Bold);
 			text->setFont(serifFont);
 			scene.addItem(text);
-			InnerModelCamera *camera = innermodel->getCamera("rgbd");
+			InnerModelCamera *camera = innermodel->getCamera(id_camera);
 			int end=cluster_clouds[i]->size()-1;
-			QVec xy = camera->project("robot", QVec::vec3(cluster_clouds[i]->points[end].x, cluster_clouds[i]->points[end].y, cluster_clouds[i]->points[end].z)); 
-			QVec xyfrist = camera->project("robot", QVec::vec3(cluster_clouds[i]->points[0].x, cluster_clouds[i]->points[0].y, cluster_clouds[i]->points[0].z)); 
+			QVec xy = camera->project(id_robot, QVec::vec3(cluster_clouds[i]->points[end].x, cluster_clouds[i]->points[end].y, cluster_clouds[i]->points[end].z)); 
+			QVec xyfrist = camera->project(id_robot, QVec::vec3(cluster_clouds[i]->points[0].x, cluster_clouds[i]->points[0].y, cluster_clouds[i]->points[0].z)); 
 			text->setPos(xyfrist(0)-50,(int)(xy(1)+xyfrist(1))/2);
 			scene.addItem(text);
 			dist=3.40e38;
@@ -989,10 +1005,10 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 		QFont serifFont("Times", 25, QFont::Bold);
 		text->setFont(serifFont);
 		scene.addItem(text);
-		InnerModelCamera *camera = innermodel->getCamera("rgbd");
+		InnerModelCamera *camera = innermodel->getCamera(id_camera);
 		int end=cluster_clouds[num_object_found]->size()-1;
-		QVec xy = camera->project("robot", QVec::vec3(cluster_clouds[num_object_found]->points[end].x, cluster_clouds[num_object_found]->points[end].y, cluster_clouds[num_object_found]->points[end].z)); 
-		QVec xyfrist = camera->project("robot", QVec::vec3(cluster_clouds[num_object_found]->points[0].x, cluster_clouds[num_object_found]->points[0].y, cluster_clouds[num_object_found]->points[0].z)); 
+		QVec xy = camera->project(id_robot, QVec::vec3(cluster_clouds[num_object_found]->points[end].x, cluster_clouds[num_object_found]->points[end].y, cluster_clouds[num_object_found]->points[end].z)); 
+		QVec xyfrist = camera->project(id_robot, QVec::vec3(cluster_clouds[num_object_found]->points[0].x, cluster_clouds[num_object_found]->points[0].y, cluster_clouds[num_object_found]->points[0].z)); 
 		text->setPos(xyfrist(0)-30,(int)(xy(1)+xyfrist(1))/2);
 		scene.addItem(text);
 	}
@@ -1013,7 +1029,6 @@ void SpecificWorker::getPose(float &x, float &y, float &z)
 	z = centroid[2];
 	
 }
-
 //todo again
 void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 {
@@ -1078,7 +1093,7 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 	align.setInputTarget (scene);
 	align.setTargetFeatures (scene_features);
 	align.setMaximumIterations (50000); // Number of RANSAC iterations
-	align.setNumberOfSamples (2); // Number of points to sample for generating/prerejecting a pose
+	align.setNumberOfSamples (3); // Number of points to sample for generating/prerejecting a pose
 	align.setCorrespondenceRandomness (5); // Number of nearest features to use
 	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
 	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
@@ -1094,7 +1109,10 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 	rx = ea(0);
 	ry = ea(1);
 	rz = ea(2);
-	
+// 	vector<pcl::PointCloud< PointT >::Ptr>clouds;
+// 	clouds.push_back(scene);
+// 	clouds.push_back(object_aligned);
+// 	visualize(clouds);
 	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
 	node_name=node_name.substr(node_name.find_last_of("/")+1);
 	InnerModel inner(pathxml);
@@ -1123,12 +1141,65 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 	april_mutex.unlock();
 }
 
-void SpecificWorker::visualize(pcl::PointCloud< PointT >::Ptr cloud)
+unsigned int text_id = 0;
+void keyboardEventOccurred (const pcl::visualization::KeyboardEvent &event,
+                            void* viewer_void)
 {
-// 	InnerModelViewer viewer;
-// 	viewer.
+  pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
+  if (event.getKeySym () == "r" && event.keyDown ())
+  {
+//     std::cout << "r was pressed => removing all text" << std::endl;
+
+    char str[512];
+    for (unsigned int i = 0; i < text_id; ++i)
+    {
+      sprintf (str, "text#%03d", i);
+      viewer->removeShape (str);
+    }
+    text_id = 0;
+  }
+}
+void mouseEventOccurred (const pcl::visualization::MouseEvent &event,
+                         void* viewer_void)
+{
+  pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
+  if (event.getButton () == pcl::visualization::MouseEvent::LeftButton &&
+      event.getType () == pcl::visualization::MouseEvent::MouseButtonRelease)
+  {
+//     std::cout << "Left mouse button released at position (" << event.getX () << ", " << event.getY () << ")" << std::endl;
+
+    char str[512];
+    sprintf (str, "text#%03d", text_id ++);
+//     viewer->addText ("clicked here", event.getX (), event.getY (), str);
+  }
 }
 
+
+void SpecificWorker::visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds)
+{
+	unsigned int id=0;
+	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
+	viewer->setBackgroundColor (0, 0, 0);
+	for(auto cloud:clouds)
+	{
+		pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(cloud);
+		viewer->addPointCloud<pcl::PointXYZRGB> (cloud, rgb, QString::number(id).toStdString());
+		viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, QString::number(id).toStdString());
+		id++;
+	}
+	viewer->addCoordinateSystem (1.0);
+	viewer->initCameraParameters ();
+	viewer->registerKeyboardCallback (keyboardEventOccurred, (void*)viewer.get ());
+	viewer->registerMouseCallback (mouseEventOccurred, (void*)viewer.get ());
+	
+	while (!viewer->wasStopped ())
+	{
+		viewer->spinOnce (100);
+		boost::this_thread::sleep (boost::posix_time::microseconds (100000));
+	}
+// 	HWND hWnd = (HWND)viewer->getRenderWindow()->GetGenericWindowId(); 
+// 	viewer->getRenderWindow()
+}
 
 
 
