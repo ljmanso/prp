@@ -34,7 +34,12 @@ class VFH
 	flann::Matrix<float> data;
 	
 public:
-	
+	struct file_dist_t
+	{
+		std::string file;
+		std::string label;
+		float dist;
+	};
 	void set_type_feature(std::string feature);
 	
 	//Loads vfh histogram
@@ -72,7 +77,7 @@ public:
 				int k, flann::Matrix<int> &indices, flann::Matrix<float> &distances);
 	
 	//guess with trained data
-	void doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<std::string> &guesses);
+	void doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<file_dist_t> &guesses);
 };
 
 #endif

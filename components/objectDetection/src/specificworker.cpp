@@ -83,7 +83,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		descriptors_extension="vfh";
 	else if(params[name+".type_features"].value=="CVFH")
 		descriptors_extension="cvfh";
-	else if(params[name+".type_features"].value=="OUR-VFH")
+	else if(params[name+".type_features"].value=="OUR-CVFH")
 		descriptors_extension="ourcvfh";
 	std::cout<<params[name+".type_features"].value<<" " <<descriptors_extension<<std::endl;
 	timer.start(Period);
@@ -184,13 +184,13 @@ void SpecificWorker::centroidBasedPose(float &x, float &y, float &theta)
 
 void SpecificWorker::reloadVFH(const string &pathToSet)
 {
-	string s="./bin/createDescriptors "+pathToSet +" "+ descriptors_extension;
-	char *cstr = &s[0u];
-	if (system(cstr)==0)
-	{
+// 	string s="./bin/createDescriptors "+pathToSet +" "+ descriptors_extension;
+// 	char *cstr = &s[0u];
+// 	if (system(cstr)==0)
+// 	{
 		vfh_matcher->reloadVFH(pathToSet);
 		vfh_matcher->loadTrainingData();
-	}
+// 	}
 }
 
 void SpecificWorker::ransac(const string &model)
@@ -790,7 +790,9 @@ void SpecificWorker::vfh(listType &guesses)
 {
     int object__to_show = 0;
     vfh_matcher->doTheGuess(cluster_clouds[object__to_show], vfh_guesses);
-	guesses = vfh_guesses;
+	for(auto a:vfh_guesses)
+		guesses.push_back(a.file);
+// 	guesses = vfh_guesses;
 }
 
 void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
@@ -901,7 +903,8 @@ void SpecificWorker::extractPolygon(const string &model)
 
 bool SpecificWorker::findTheObject(const string &objectTofind)
 {
-	std::string guessact, guessgan="", dis_str;
+	std::string guessgan="";
+	VFH::file_dist_t guesswin;
 	cv::Mat dest;
 	scene.clear();
     cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
@@ -909,34 +912,23 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 	QGraphicsPixmapItem* item=new QGraphicsPixmapItem(QPixmap::fromImage(image));
 	scene.addItem(item);
 	float dist=3.40e38;
-	qDebug()<<__FUNCTION__<<cluster_clouds.size();
 	for(int i=0; i<cluster_clouds.size();i++)
 	{
-// 		try
-// 		{
-			vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
-// 		}
-// 		catch(...){}
-		for (int j=0; j<vfh_guesses.size();j++)
+
+		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
+		std::sort( vfh_guesses.begin(), vfh_guesses.end(), [](VFH::file_dist_t a, VFH::file_dist_t b){ return (a.dist < b.dist); }) ;
+		if (objectTofind!="")
+			std::remove_if(vfh_guesses.begin(), vfh_guesses.end(),[&objectTofind](VFH::file_dist_t a){ return (a.label !=objectTofind); });
+		if(dist>vfh_guesses[0].dist)
 		{
-			std::cout<<vfh_guesses[j]<<std::endl;
-			guessact=vfh_guesses[j];
-			dis_str=guessact = guessact.substr(guessact.find_last_of("#")+1);
-			guessact = vfh_guesses[j].substr(0, vfh_guesses[0].find_last_of("/"));
-			guessact = guessact.substr(guessact.find_last_of("/")+1);
-// 			std::cout<<dis_str<<endl;
-			qDebug()<<QString::fromStdString(dis_str).toFloat()<<" < "<<dist;
-			if(QString::fromStdString(dis_str).toFloat()<dist && (objectTofind == guessact || objectTofind ==""))
-			{
-				guessgan=guessact;
-				dist=QString::fromStdString(dis_str).toFloat();
-				num_object_found = i;
-				file_view_mathing = vfh_guesses[j].substr(0, vfh_guesses[0].find_last_of("#"));
-			}
+			guessgan=vfh_guesses[0].label;
+			dist=vfh_guesses[0].dist;
+			num_object_found = i;
+			file_view_mathing = vfh_guesses[0].file;
 		}
 		if(objectTofind=="")
 		{
-			std::cout<<"La nuebe "<<i<<" es un/a: "<<guessgan<<endl;
+			std::cout<<"La nuebe "<<i<<" es un/a: "<<guessgan<<" - "<<dist<<endl;
 			QGraphicsTextItem *text=new QGraphicsTextItem(QString::fromStdString(guessgan));
 			QFont serifFont("Times", 25, QFont::Bold);
 			text->setFont(serifFont);
@@ -949,56 +941,7 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 			scene.addItem(text);
 			dist=3.40e38;
 		}
-		/*
-		std::cout<<vfh_guesses[i]<<std::endl;
-		std::string guess0, guess1, guess2;
-		guess0 = vfh_guesses[0].substr(0, vfh_guesses[0].find_last_of("/"));
-		guess0 = guess0.substr(guess0.find_last_of("/")+1);
-		
-		std::cout<<guess0<<std::endl;
-		
-		guess1 = vfh_guesses[1].substr(0, vfh_guesses[1].find_last_of("/"));
-		guess1 = guess1.substr(guess1.find_last_of("/")+1);
-		
-		std::cout<<guess1<<std::endl;
-		
-		guess2 = vfh_guesses[2].substr(0, vfh_guesses[2].find_last_of("/"));
-		guess2 = guess2.substr(guess2.find_last_of("/")+1);
-		
-		std::cout<<guess2<<std::endl;
-		
-		if(objectTofind == guess0)
-		{
-			num_object_found = i;
-			file_view_mathing = vfh_guesses[0];
-			
-#if DEBUG
-			std::cout<<"Founded on item: "<<i<<std::endl;
-#endif
-			return true;
-		}
-		if(objectTofind == guess1)
-		{
-			num_object_found = i;
-			file_view_mathing = vfh_guesses[1];
-			
-#if DEBUG
-			std::cout<<"Founded on item: "<<i<<std::endl;
-#endif
-			return true;
-		}
-		if(objectTofind == guess2)
-		{
-			num_object_found = i;
-			file_view_mathing = vfh_guesses[2];
-			
-#if DEBUG
-			std::cout<<"Founded on item: "<<i<<std::endl;
-#endif
-			return true;
-		}*/
 	}
-// 	std::cout<<"Este objeto es: "<<guessgan<<endl;
 	if(objectTofind!="")
 	{
 		QGraphicsTextItem *text=new QGraphicsTextItem(QString::fromStdString(guessgan));
@@ -1011,8 +954,8 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 		QVec xyfrist = camera->project(id_robot, QVec::vec3(cluster_clouds[num_object_found]->points[0].x, cluster_clouds[num_object_found]->points[0].y, cluster_clouds[num_object_found]->points[0].z)); 
 		text->setPos(xyfrist(0)-30,(int)(xy(1)+xyfrist(1))/2);
 		scene.addItem(text);
+		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
 	}
-	std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
 	if (guessgan!="")
 		return true;
 	return false;
@@ -1142,36 +1085,35 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 }
 
 unsigned int text_id = 0;
-void keyboardEventOccurred (const pcl::visualization::KeyboardEvent &event,
-                            void* viewer_void)
+void keyboardEventOccurred (const pcl::visualization::KeyboardEvent &event,void* viewer_void)
 {
-  pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
-  if (event.getKeySym () == "r" && event.keyDown ())
-  {
-//     std::cout << "r was pressed => removing all text" << std::endl;
+	pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
+	if (event.getKeySym () == "r" && event.keyDown ())
+	{
+		//     std::cout << "r was pressed => removing all text" << std::endl;
 
-    char str[512];
-    for (unsigned int i = 0; i < text_id; ++i)
-    {
-      sprintf (str, "text#%03d", i);
-      viewer->removeShape (str);
-    }
-    text_id = 0;
-  }
+		char str[512];
+		for (unsigned int i = 0; i < text_id; ++i)
+		{
+			sprintf (str, "text#%03d", i);
+			viewer->removeShape (str);
+		}
+		text_id = 0;
+	}
 }
-void mouseEventOccurred (const pcl::visualization::MouseEvent &event,
-                         void* viewer_void)
-{
-  pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
-  if (event.getButton () == pcl::visualization::MouseEvent::LeftButton &&
-      event.getType () == pcl::visualization::MouseEvent::MouseButtonRelease)
-  {
-//     std::cout << "Left mouse button released at position (" << event.getX () << ", " << event.getY () << ")" << std::endl;
 
-    char str[512];
-    sprintf (str, "text#%03d", text_id ++);
-//     viewer->addText ("clicked here", event.getX (), event.getY (), str);
-  }
+void mouseEventOccurred (const pcl::visualization::MouseEvent &event,void* viewer_void)
+{
+	pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
+	if (event.getButton () == pcl::visualization::MouseEvent::LeftButton &&
+		event.getType () == pcl::visualization::MouseEvent::MouseButtonRelease)
+	{
+		//     std::cout << "Left mouse button released at position (" << event.getX () << ", " << event.getY () << ")" << std::endl;
+
+		char str[512];
+		sprintf (str, "text#%03d", text_id ++);
+		//     viewer->addText ("clicked here", event.getX (), event.getY (), str);
+	}
 }
 
 

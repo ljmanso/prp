@@ -121,7 +121,7 @@ class SpecificWorker : public GenericWorker
         
 	//VFH
 	boost::shared_ptr<VFH> vfh_matcher;
-	std::vector<string> vfh_guesses;
+	std::vector<VFH::file_dist_t> vfh_guesses;
         
 	boost::shared_ptr<Table> table;
 	QGraphicsScene scene;

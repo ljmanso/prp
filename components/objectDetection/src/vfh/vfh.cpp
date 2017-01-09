@@ -301,7 +301,7 @@ void VFH::nearestKSearch (flann::Index<flann::ChiSquareDistance<float> > &index,
 	index.knnSearch (p, indices, distances, k, flann::SearchParams (512));
 	delete[] p.ptr ();
 }
-void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<std::string> &guesses)
+void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<file_dist_t> &guesses)
 {
 	pcl::PointCloud<pcl::VFHSignature308>::Ptr vfhs(new pcl::PointCloud<pcl::VFHSignature308> ());
 	computeVFHistogram(object, vfhs);
@@ -329,19 +329,24 @@ void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<std:
 	
 	guesses.clear();
 	
-	pcl::console::print_highlight ("The closest 16 neighbors are:\n");
+// 	pcl::console::print_highlight ("The closest 16 neighbors are:\n");
 	for (int i = 0; i < models.size(); ++i)
 	{
+		file_dist_t dato;
 		Eigen::Vector4f centroid;
 		pcl::compute3DCentroid (*object, centroid);
 // 		std::cerr<<centroid[0]<<centroid[1]<<centroid[2]<<centroid[3]<<std::endl;		
 		/*pcl::console::print_info ("    %d - %s (%d) with a distance of: %f\n", 
 				i, models.at (k_indices[0][i]).first.c_str (), k_indices[0][i], k_distances[0][i]);
-		*/std::string d;
-		std::stringstream sd;
-		sd<<k_distances[0][i];
-		d=models.at(k_indices[0][i]).first+"#"+sd.str();
-		guesses.push_back(d);
+		*/
+// 		std::string d;
+// 		std::stringstream sd;
+// 		sd<<k_distances[0][i];
+		dato.file=models.at(k_indices[0][i]).first;
+		dato.label =dato.file.substr(0, dato.file.find_last_of("/"));
+		dato.label = dato.label.substr(dato.label.find_last_of("/")+1);
+		dato.dist=k_distances[0][i];
+		guesses.push_back(dato);
 	}
 }
 
