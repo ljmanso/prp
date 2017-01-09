@@ -39,7 +39,7 @@
  #include <pcl/filters/passthrough.h>
  #include <pcl/segmentation/extract_clusters.h>
  #include <pcl/filters/statistical_outlier_removal.h>
- #include <pcl/io/pcd_io.h>
+ #include <pcl/io/io.h>
  #include <pcl/conversions.h>
  #include <pcl/point_types_conversion.h>
  #include <opencv2/core/core.hpp>
@@ -51,6 +51,7 @@
  #include <pcl/registration/sample_consensus_prerejective.h>
  #include <pcl/features/fpfh_omp.h>
  #include <pcl/common/time.h>
+ #include <pcl/visualization/cloud_viewer.h>
 #endif
 
 #include <genericworker.h>
@@ -58,21 +59,23 @@
 
 #ifndef Q_MOC_RUN
 	#include <innermodel/innermodel.h>
+	#include <innermodel/innermodelviewer.h>
 	#include "color_segmentation/Segmentator.h"
 	#include "shapes/table.h"
 	#include "vfh/vfh.h"
 #endif
 
-#define DEBUG 1
+#define DEBUG 0
 #define SAVE_DATA 0
 typedef pcl::PointXYZRGB PointT;
 
 
 class SpecificWorker : public GenericWorker
 {
-	
+	QString id_robot, id_camera;
+	string descriptors_extension;
 	InnerModel *innermodel;
-	
+
 	//for poses calculation respect to the canonical one
 	InnerModel *poses_inner;
 	tagsList tags;
@@ -111,16 +114,17 @@ class SpecificWorker : public GenericWorker
 	//color Segmentator
  	Segmentator segmentator;
 	
-        //euclidean clustering
+	//euclidean clustering
 	std::vector<pcl::PointIndices> cluster_indices;
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
-        
+    
         
 	//VFH
 	boost::shared_ptr<VFH> vfh_matcher;
-	std::vector<string> vfh_guesses;
+	std::vector<VFH::file_dist_t> vfh_guesses;
         
 	boost::shared_ptr<Table> table;
+	QGraphicsScene scene;
   
 Q_OBJECT
 public:
@@ -162,15 +166,18 @@ public:
 	void getRotation(float &rx, float &ry, float &rz);
 	void getPose(float &x, float &y, float &z);
 	bool aprilSeen(pose6D &offset, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+// 	save a file canon_pose_label.pcd and label.xml
 	void saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+// 	save a files pose_num_pose_label.pcd
 	void saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+// 	
 	void guessPose(const string &label, pose6D &guess);
 
 public slots:
 	void compute(); 	
 
 private:
-	
+	void visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds);
 };
 
 #endif
