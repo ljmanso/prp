@@ -90,7 +90,17 @@ void SpecificWorker::reloadVFH()
 void SpecificWorker::findTheObject()
 {
 	std::string object = text_object->toPlainText().toStdString();
-	objectdetection_proxy->findTheObject(object);
+	bool result=objectdetection_proxy->findTheObject(object);
+	if(object!="")
+	{
+		isObject->setVisible(true);
+		if(result)
+			isObject->setText("El Objeto SI esta en la mesa.");
+		else
+			isObject->setText("El Objeto NO esta en la mesa.");
+	}
+	else
+		isObject->setVisible(false);
 }
 
 void SpecificWorker::getPose()

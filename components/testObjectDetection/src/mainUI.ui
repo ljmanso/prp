@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="maximumSize">
        <size>
         <width>258</width>
@@ -173,7 +173,7 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="maximumSize">
         <size>
          <width>423</width>
@@ -308,7 +308,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="maximumSize">
         <size>
          <width>414</width>
@@ -432,6 +432,11 @@
          </widget>
         </item>
        </layout>
+      </widget>
+      <widget class="QLabel" name="isObject">
+       <property name="text">
+        <string/>
+       </property>
       </widget>
      </widget>
     </widget>

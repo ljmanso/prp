@@ -348,5 +348,6 @@ void VFH::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<file
 		dato.dist=k_distances[0][i];
 		guesses.push_back(dato);
 	}
+	std::sort( guesses.begin(), guesses.end(), [](VFH::file_dist_t a, VFH::file_dist_t b){ return (a.dist < b.dist);}) ;
 }
 

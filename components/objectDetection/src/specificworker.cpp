@@ -44,6 +44,8 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	num_scene = 15;
 	graphic->setScene(&scene);
 	graphic->show();
+	item_pixmap=new QGraphicsPixmapItem();
+	scene.addItem(item_pixmap);
 }
 
 /**
@@ -93,17 +95,33 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
-// 	try
-// 	{
-// 		camera_proxy->getYImage(0,img, cState, bState);
-// 		memcpy(image_gray.data, &img[0], m_width*m_height*sizeof(uchar));
-// 		searchTags(image_gray);
-// 	}
-// 	catch(const Ice::Exception &e)
-// 	{
-// 		std::cout << "Error reading from Camera" << e << std::endl;
-// 	}
-// 	trylibrostime
+	RoboCompRGBD::ColorSeq rgbMatrix;	
+// 	RoboCompRGBD::depthType distanceMatrix;
+// 	RoboCompRGBD::PointSeq points_kinect;
+	RoboCompJointMotor::MotorStateMap h;
+	RoboCompGenericBase::TBaseState b;
+	cv::Mat rgb_image(480,640, CV_8UC3, cv::Scalar::all(0));
+	try
+	{
+		rgbd_proxy->getRGB(rgbMatrix,h,b);
+// 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
+	}
+	catch(Ice::Exception e)
+	{
+		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
+		return;
+	}
+	for(unsigned int i=0; i<rgbMatrix.size(); i++)
+	{
+		int row = (i/640), column = i-(row*640);
+		rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+	}
+	
+	cv::Mat dest;
+    cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
+    QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
+	item_pixmap->setPixmap(QPixmap::fromImage(image));
+	scene.update();
 }
 
 
@@ -904,60 +922,44 @@ void SpecificWorker::extractPolygon(const string &model)
 bool SpecificWorker::findTheObject(const string &objectTofind)
 {
 	std::string guessgan="";
-	VFH::file_dist_t guesswin;
-	cv::Mat dest;
-	scene.clear();
-    cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
-    QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
-	QGraphicsPixmapItem* item=new QGraphicsPixmapItem(QPixmap::fromImage(image));
-	scene.addItem(item);
+	while(!V_text_item.empty())
+	{
+		scene.removeItem(V_text_item.back());
+		V_text_item.pop_back();
+	}
 	float dist=3.40e38;
-	for(int i=0; i<cluster_clouds.size();i++)
+	for(unsigned int i=0; i<cluster_clouds.size();i++)
 	{
-
 		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
-		std::sort( vfh_guesses.begin(), vfh_guesses.end(), [](VFH::file_dist_t a, VFH::file_dist_t b){ return (a.dist < b.dist); }) ;
-		if (objectTofind!="")
-			std::remove_if(vfh_guesses.begin(), vfh_guesses.end(),[&objectTofind](VFH::file_dist_t a){ return (a.label !=objectTofind); });
-		if(dist>vfh_guesses[0].dist)
+		
+		VFH::file_dist_t second;
+		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
+// 		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
+
+		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
 		{
-			guessgan=vfh_guesses[0].label;
-			dist=vfh_guesses[0].dist;
-			num_object_found = i;
-			file_view_mathing = vfh_guesses[0].file;
-		}
-		if(objectTofind=="")
-		{
-			std::cout<<"La nuebe "<<i<<" es un/a: "<<guessgan<<" - "<<dist<<endl;
-			QGraphicsTextItem *text=new QGraphicsTextItem(QString::fromStdString(guessgan));
-			QFont serifFont("Times", 25, QFont::Bold);
-			text->setFont(serifFont);
-			scene.addItem(text);
-			InnerModelCamera *camera = innermodel->getCamera(id_camera);
-			int end=cluster_clouds[i]->size()-1;
-			QVec xy = camera->project(id_robot, QVec::vec3(cluster_clouds[i]->points[end].x, cluster_clouds[i]->points[end].y, cluster_clouds[i]->points[end].z)); 
-			QVec xyfrist = camera->project(id_robot, QVec::vec3(cluster_clouds[i]->points[0].x, cluster_clouds[i]->points[0].y, cluster_clouds[i]->points[0].z)); 
-			text->setPos(xyfrist(0)-50,(int)(xy(1)+xyfrist(1))/2);
-			scene.addItem(text);
-			dist=3.40e38;
+			if(dist>vfh_guesses[0].dist && (vfh_guesses[0].label==objectTofind||objectTofind==""))
+			{
+				guessgan=vfh_guesses[0].label;
+				dist=vfh_guesses[0].dist;
+				num_object_found = i;
+				file_view_mathing = vfh_guesses[0].file;
+			}
+			if(objectTofind=="")
+			{
+				settexttocloud(guessgan,cluster_clouds[i]);
+				dist=3.40e38;
+				guessgan="";
+			}
 		}
 	}
-	if(objectTofind!="")
+	if((guessgan!=""&&guessgan==objectTofind))
 	{
-		QGraphicsTextItem *text=new QGraphicsTextItem(QString::fromStdString(guessgan));
-		QFont serifFont("Times", 25, QFont::Bold);
-		text->setFont(serifFont);
-		scene.addItem(text);
-		InnerModelCamera *camera = innermodel->getCamera(id_camera);
-		int end=cluster_clouds[num_object_found]->size()-1;
-		QVec xy = camera->project(id_robot, QVec::vec3(cluster_clouds[num_object_found]->points[end].x, cluster_clouds[num_object_found]->points[end].y, cluster_clouds[num_object_found]->points[end].z)); 
-		QVec xyfrist = camera->project(id_robot, QVec::vec3(cluster_clouds[num_object_found]->points[0].x, cluster_clouds[num_object_found]->points[0].y, cluster_clouds[num_object_found]->points[0].z)); 
-		text->setPos(xyfrist(0)-30,(int)(xy(1)+xyfrist(1))/2);
-		scene.addItem(text);
+		paintcloud(cluster_clouds[num_object_found]);
+		settexttocloud(guessgan,cluster_clouds[num_object_found]);
 		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
-	}
-	if (guessgan!="")
 		return true;
+	}
 	return false;
 }
 
@@ -1141,6 +1143,68 @@ void SpecificWorker::visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds)
 	}
 // 	HWND hWnd = (HWND)viewer->getRenderWindow()->GetGenericWindowId(); 
 // 	viewer->getRenderWindow()
+}
+
+void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr cloud)
+{
+	QGraphicsTextItem *text=new QGraphicsTextItem(QString::fromStdString(name));
+	QFont serifFont("Times", 25, QFont::Bold);
+	text->setFont(serifFont);
+	InnerModelCamera *camera = innermodel->getCamera(id_camera);
+	int end=cloud->size()-1;
+	QVec xy = camera->project(id_robot, QVec::vec3(cloud->points[end].x, cloud->points[end].y, cloud->points[end].z)); 
+	QVec xyfrist = camera->project(id_robot, QVec::vec3(cloud->points[0].x, cloud->points[0].y, cloud->points[0].z)); 
+	text->setPos(xyfrist(0)-30,(int)(xy(1)+xyfrist(1))/2);
+	scene.addItem(text);
+	V_text_item.push_back(text);
+}
+
+void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
+{
+	while(!V_pixmap_item.empty())
+	{
+		scene.removeItem(V_pixmap_item.back());
+		V_pixmap_item.pop_back();
+	}
+	InnerModelCamera *camera = innermodel->getCamera(id_camera);
+	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
+	image.fill(Qt::transparent);
+	int max=cloud->points[0].z,min=cloud->points[0].z;
+	for(unsigned int i=1;i<cloud->points.size();i++)
+	{
+		if(cloud->points[i].z>max)
+			max=cloud->points[i].z;
+		if(cloud->points[i].z<min)
+			min=cloud->points[i].z;
+	}
+	qDebug()<<max<<" "<<min;
+	for(unsigned int i=0;i<cloud->points.size();i++)
+	{
+		QVec xy = camera->project(id_robot, QVec::vec3(cloud->points[i].x, cloud->points[i].y, cloud->points[i].z));
+		
+		int x = xy(0), y = xy(1);
+		if (xy(0)>=0 and xy(0) < 640 and xy(1)>=0 and xy(1) < 480 )
+		{
+// 		M.at<uchar> ((int)xy(1), (int)xy(0)) = 255;
+			unsigned int color=(cloud->points[i].z - min) * -254 / (max - min)-254;
+			image.setPixel(x-15,y+10,qRgb(color, 0, 0));
+		}sii 
+		else if (not (isinf(xy(1)) or isinf(xy(0))))
+		{
+			std::cout<<"Accediendo a -noinf: "<<xy(1)<<" "<<xy(0)<<std::endl;
+		}
+		
+// 		QGraphicsEllipseItem* e=new QGraphicsEllipseItem(x,y,1,1);
+// 		e->setBrush(QBrush(Qt::blue));
+// 		scene.addItem(e);
+// 		rgb_image.at<cv::Vec3b>(x, y) = cv::Vec3b(255, 255, 255);
+	}
+
+// 	cv::Mat dest;
+//     cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
+//     QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
+	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
+	scene.addItem(V_pixmap_item.back());
 }
 
 
