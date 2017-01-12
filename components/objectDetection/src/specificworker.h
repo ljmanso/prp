@@ -67,6 +67,7 @@
 
 #define DEBUG 0
 #define SAVE_DATA 0
+#define THRESHOLD 0.75
 typedef pcl::PointXYZRGB PointT;
 
 
@@ -75,7 +76,9 @@ class SpecificWorker : public GenericWorker
 	QString id_robot, id_camera;
 	string descriptors_extension;
 	InnerModel *innermodel;
-
+	QGraphicsPixmapItem* item_pixmap;
+	vector<QGraphicsTextItem*> V_text_item;
+	vector<QGraphicsPixmapItem*> V_pixmap_item;
 	//for poses calculation respect to the canonical one
 	InnerModel *poses_inner;
 	tagsList tags;
@@ -178,6 +181,8 @@ public slots:
 
 private:
 	void visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds);
+	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
+	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
 };
 
 #endif
