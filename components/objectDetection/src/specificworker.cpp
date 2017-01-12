@@ -966,12 +966,11 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 //todo again
 void SpecificWorker::getPose(float &x, float &y, float &z)
 {
-	
 	Eigen::Vector4f centroid;
 	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
-	x = centroid[0];
-	y = centroid[1];
-	z = centroid[2];
+	x = centroid[0]*1000.;
+	y = centroid[1]*1000.;
+	z = centroid[2]*1000.;
 	
 }
 //todo again
