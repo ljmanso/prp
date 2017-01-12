@@ -131,7 +131,7 @@ void SpecificWorker::getRotation()
 void SpecificWorker::fullRun()
 {
 	string label=label_le->text().toStdString();
-// 	char *c;
+	char *c;
 	pose6D tags[9],guess;
 	int numOfClusters = 0;
 	objectdetection_proxy->grabThePointCloud("image.png", "rgbd.pcd");
@@ -150,10 +150,10 @@ void SpecificWorker::fullRun()
 		tags[i].ry=0;
 		tags[i].rz=0;
 	}
-// 	string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
-// 	c= &s[0u];
-// 	
-// 	system(c);
+	string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
+	c= &s[0u];
+	
+	system(c);
 	if(canonPoseRb->isChecked())
 		objectdetection_proxy->saveCanonPose(label,ob_to_save->value(),tags[0],tags[1],tags[2],tags[3],tags[4],tags[5],tags[6],tags[7],tags[8]);
 	if(regularPose->isChecked())

@@ -202,13 +202,13 @@ void SpecificWorker::centroidBasedPose(float &x, float &y, float &theta)
 
 void SpecificWorker::reloadVFH(const string &pathToSet)
 {
-// 	string s="./bin/createDescriptors "+pathToSet +" "+ descriptors_extension;
-// 	char *cstr = &s[0u];
-// 	if (system(cstr)==0)
-// 	{
+	string s="./bin/createDescriptors "+pathToSet +" "+ descriptors_extension;
+	char *cstr = &s[0u];
+	if (system(cstr)==0)
+	{
 		vfh_matcher->reloadVFH(pathToSet);
 		vfh_matcher->loadTrainingData();
-// 	}
+	}
 }
 
 void SpecificWorker::ransac(const string &model)
@@ -1188,7 +1188,7 @@ void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
 // 		M.at<uchar> ((int)xy(1), (int)xy(0)) = 255;
 			unsigned int color=(cloud->points[i].z - min) * -254 / (max - min)-254;
 			image.setPixel(x-15,y+10,qRgb(color, 0, 0));
-		}sii 
+		}
 		else if (not (isinf(xy(1)) or isinf(xy(0))))
 		{
 			std::cout<<"Accediendo a -noinf: "<<xy(1)<<" "<<xy(0)<<std::endl;
