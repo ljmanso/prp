@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -29,6 +29,7 @@ QObject()
 
 {
 	rgbd_proxy = (*(RGBDPrx*)mprx["RGBDProxy"]);
+	jointmotor_proxy = (*(JointMotorPrx*)mprx["JointMotorProxy"]);
 
 	mutex = new QMutex(QMutex::Recursive);
 

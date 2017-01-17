@@ -11,6 +11,7 @@ AprilTagsTopic.Endpoints=tcp -p 0
 
 # Proxies for required interfaces
 RGBDProxy = rgbd:tcp -h 10.0.30.33 -p 10096
+JointMotorProxy = jointmotor:tcp -h 10.0.30.11 -p 20000
 
 Ice.MessageSizeMax=2000480
 

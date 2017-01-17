@@ -73,7 +73,7 @@ typedef pcl::PointXYZRGB PointT;
 
 class SpecificWorker : public GenericWorker
 {
-	QString id_robot, id_camera;
+	QString id_robot, id_camera,id_camera_transform;
 	string descriptors_extension;
 	InnerModel *innermodel;
 	QGraphicsPixmapItem* item_pixmap;
@@ -137,7 +137,8 @@ public:
 	void grabThePointCloud(const string &image, const string &pcd);
 	void readThePointCloud(const string &image, const string &pcd);
 	
-	
+	void updatergbd();
+	void updateinner();
 	void grabTheAR();
 	void aprilFitModel(const string &model);
 	void segmentImage();
@@ -166,13 +167,14 @@ public:
 	void newAprilTag(const tagsList &tags);
 	void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState);
 	bool findTheObject(const string &objectTofind);
+	bool findObjects(listObject &lObjects);
 	void getRotation(float &rx, float &ry, float &rz);
 	void getPose(float &x, float &y, float &z);
-	bool aprilSeen(pose6D &offset, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+	bool aprilSeen(pose6D &offset);
 // 	save a file canon_pose_label.pcd and label.xml
-	void saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+	void saveCanonPose(const string &label, const int numPoseToSave, pose6D &tag1, pose6D &tag2, pose6D &tag3, pose6D &tag4, pose6D &tag5, pose6D &tag6, pose6D &tag7, pose6D &tag8, pose6D &tag9);
 // 	save a files pose_num_pose_label.pcd
-	void saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
+	void saveRegPose(const string &label, const int numPoseToSave, pose6D &tag1, pose6D &tag2, pose6D &tag3, pose6D &tag4, pose6D &tag5, pose6D &tag6, pose6D &tag7, pose6D &tag8, pose6D &tag9);
 // 	
 	void guessPose(const string &label, pose6D &guess);
 
@@ -183,6 +185,7 @@ private:
 	void visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds);
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
+	bool transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath);
 };
 
 #endif

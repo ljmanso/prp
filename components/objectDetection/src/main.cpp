@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -90,6 +90,7 @@
 #include <RGBD.h>
 #include <JointMotor.h>
 #include <GenericBase.h>
+#include <JointMotor.h>
 
 
 // User includes here
@@ -138,10 +139,28 @@ int ::objectDetectionComp::run(int argc, char* argv[])
 
 	int status=EXIT_SUCCESS;
 
+	JointMotorPrx jointmotor_proxy;
 	RGBDPrx rgbd_proxy;
 
 	string proxy, tmp;
 	initialize();
+
+
+	try
+	{
+		if (not GenericMonitor::configGetString(communicator(), prefix, "JointMotorProxy", proxy, ""))
+		{
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy JointMotorProxy\n";
+		}
+		jointmotor_proxy = JointMotorPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+	}
+	catch(const Ice::Exception& ex)
+	{
+		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		return EXIT_FAILURE;
+	}
+	rInfo("JointMotorProxy initialized Ok!");
+	mprx["JointMotorProxy"] = (::IceProxy::Ice::Object*)(&jointmotor_proxy);//Remote server proxy creation example
 
 
 	try
