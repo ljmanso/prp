@@ -59,7 +59,7 @@ void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
     
     if(! rgb_image.data )                              // Check for invalid inpute
     {
-        cout <<  "Could not open or find the image rgb.png" << std::endl ;
+        cout <<  "Could not open or find the image " << image << std::endl ;
     }
     
     if (pcl::io::loadPCDFile<PointT> (pcd, *cloud) == -1) //* load the file
@@ -129,7 +129,7 @@ void SpecificWorker::updatergbd()
 // 	}
 // 	catch(...)
 // 	{
-		rgb_image = cv::imread("/home/ivan/robocomp/components/prp/scene/Scene.png");
+		rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
 
 		if(! rgb_image.data )                              // Check for invalid inpute
 		{
@@ -1031,7 +1031,7 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 void SpecificWorker::caputurePointCloudObjects()
 {
 // 	grabThePointCloud("image.png", "rgbd.pcd");
-	readThePointCloud("/home/ivan/robocomp/components/prp/scene/Scene.png","/home/ivan/robocomp/components/prp/scene/Scene.pcd");
+	readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
 	ransac("plane");
 	projectInliers("plane");
 	convexHull("plane");
