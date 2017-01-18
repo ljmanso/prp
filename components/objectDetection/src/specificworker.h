@@ -51,7 +51,7 @@
  #include <pcl/registration/sample_consensus_prerejective.h>
  #include <pcl/features/fpfh_omp.h>
  #include <pcl/common/time.h>
- #include <pcl/visualization/cloud_viewer.h>
+//  #include <pcl/visualization/cloud_viewer.h>
 #endif
 
 #include <genericworker.h>

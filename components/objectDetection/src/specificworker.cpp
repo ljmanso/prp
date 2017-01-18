@@ -918,12 +918,24 @@ pose6D  SpecificWorker::getPose()
 	//change vfh extension to pcd
 	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
 	view_to_load = view_to_load + ".pcd"; 
+	pcl::PointCloud<PointT>::Ptr scene(cluster_clouds[num_object_found]);
 	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) //* load the file
 	{
 		printf ("Couldn't read file test_pcd.pcd \n");
 	}
+	for(unsigned int i =0;i<object->points.size();i++)
+	{
+		object->points[i].x=object->points[i].x/1000.;
+		object->points[i].y=object->points[i].y/1000.;
+		object->points[i].z=object->points[i].z/1000.;
+	}
+	for(unsigned int i =0;i<scene->points.size();i++)
+	{
+		scene->points[i].x=scene->points[i].x/1000.;
+		scene->points[i].y=scene->points[i].y/1000.;
+		scene->points[i].z=scene->points[i].z/1000.;
+	}
 	
-	pcl::PointCloud<PointT>::Ptr scene = cluster_clouds[num_object_found];
 	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
 
 	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
@@ -936,7 +948,7 @@ pose6D  SpecificWorker::getPose()
 	// Downsample
 	pcl::console::print_highlight ("Downsampling...\n");
 	pcl::VoxelGrid<PointT> grid;
-	const float leaf = 3;
+	const float leaf = 0.005f;
 	grid.setLeafSize (leaf, leaf, leaf);
 	grid.setInputCloud (object);
 	grid.filter (*object);
@@ -946,7 +958,7 @@ pose6D  SpecificWorker::getPose()
 	// Estimate normals for scene
 	pcl::console::print_highlight ("Estimating scene normals...\n");
 	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
-	nest.setRadiusSearch (10);
+	nest.setRadiusSearch (0.01);
 	nest.setInputCloud (object);
 	nest.compute (*object_normals);
 	nest.setInputCloud (scene);
@@ -955,7 +967,7 @@ pose6D  SpecificWorker::getPose()
 	// Estimate features
 	pcl::console::print_highlight ("Estimating features...\n");
 	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
-	fest.setRadiusSearch (25);
+	fest.setRadiusSearch (0.025);
 	fest.setInputCloud (object);
 	fest.setInputNormals (object_normals);
 	fest.compute (*object_features);
