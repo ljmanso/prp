@@ -6,588 +6,351 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>721</width>
-    <height>495</height>
+    <width>498</width>
+    <height>191</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>498</width>
+    <height>191</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>testObjectDetectionComp</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QPushButton" name="grab">
-         <property name="text">
-          <string>grab</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="rans">
-         <property name="text">
-          <string>ransac</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="project">
-         <property name="text">
-          <string>project</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="convex">
-         <property name="text">
-          <string>convexHull</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="extract">
-         <property name="text">
-          <string>prismExt</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="euclidean">
-         <property name="text">
-          <string>euclidean</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="reload">
-         <property name="text">
-          <string>realoadVFH</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="findObject">
-         <property name="text">
-          <string>find the</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTextEdit" name="text_object">
+      <widget class="QPushButton" name="reload">
+       <property name="minimumSize">
+        <size>
+         <width>99</width>
+         <height>27</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>256</width>
+         <height>27</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>realoadVFH</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="findObject">
+       <property name="minimumSize">
+        <size>
+         <width>99</width>
+         <height>27</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>256</width>
+         <height>27</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>find the</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="text_object">
+       <property name="minimumSize">
+        <size>
+         <width>99</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>256</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="maximumSize">
+       <size>
+        <width>423</width>
+        <height>85</height>
+       </size>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="3" column="3">
+        <widget class="QLineEdit" name="rz_object">
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>30</height>
+           <width>100</width>
+           <height>27</height>
           </size>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="pose">
-         <property name="text">
-          <string>pose</string>
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="ry_object">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>27</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="rotation">
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_4">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>17</height>
+          </size>
+         </property>
          <property name="text">
-          <string>rotation</string>
+          <string>Z</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_2">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>17</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>X</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="x_object">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>27</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="y_object">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>27</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="z_object">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>27</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_15">
+         <property name="maximumSize">
+          <size>
+           <width>103</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>pose object</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_3">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>17</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Y</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="rx_object">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>27</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label">
+         <property name="maximumSize">
+          <size>
+           <width>103</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>rotation object</string>
          </property>
         </widget>
        </item>
       </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="maximumSize">
+       <size>
+        <width>414</width>
+        <height>82</height>
+       </size>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="7" column="3">
-          <widget class="QLineEdit" name="z5">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QCheckBox" name="canonPoseRb">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="maximumSize">
             <size>
-             <width>100</width>
-             <height>16777215</height>
+             <width>156</width>
+             <height>22</height>
             </size>
            </property>
-          </widget>
-         </item>
-         <item row="9" column="3">
-          <widget class="QLineEdit" name="z7">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="QLineEdit" name="x9">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label">
            <property name="text">
-            <string>Offset tag1:</string>
+            <string>Save Canon Pose</string>
            </property>
           </widget>
          </item>
-         <item row="10" column="1">
-          <widget class="QLineEdit" name="x8">
+         <item>
+          <widget class="QCheckBox" name="regularPose">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="maximumSize">
             <size>
-             <width>100</width>
-             <height>16777215</height>
+             <width>156</width>
+             <height>22</height>
             </size>
            </property>
-          </widget>
-         </item>
-         <item row="8" column="3">
-          <widget class="QLineEdit" name="z6">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="3">
-          <widget class="QLineEdit" name="z2">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="2">
-          <widget class="QLineEdit" name="y6">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Z</string>
+            <string>Save Regular Pose</string>
            </property>
           </widget>
          </item>
-         <item row="9" column="2">
-          <widget class="QLineEdit" name="y7">
+         <item>
+          <widget class="QCheckBox" name="ObtainPose">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="maximumSize">
             <size>
-             <width>100</width>
-             <height>16777215</height>
+             <width>156</width>
+             <height>22</height>
             </size>
            </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Y</string>
+            <string>Obtain Pose of</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="2">
-          <widget class="QLineEdit" name="y3">
+        </layout>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="label_le">
            <property name="maximumSize">
             <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="3">
-          <widget class="QLineEdit" name="z9">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="3">
-          <widget class="QLineEdit" name="z8">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
+             <width>500</width>
+             <height>27</height>
             </size>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="label_14">
+           <property name="maximumSize">
+            <size>
+             <width>99</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="text">
-            <string>X</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="3">
-          <widget class="QLineEdit" name="z4">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="3">
-          <widget class="QLineEdit" name="z1">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Offset tag2:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0">
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>Offset tag7:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Offset tag8:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="x3">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QLineEdit" name="x6">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="2">
-          <widget class="QLineEdit" name="y2">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Offset tag3:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="label_12">
-           <property name="text">
-            <string>Offset tag5:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Offset tag4:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QLineEdit" name="x5">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="2">
-          <widget class="QLineEdit" name="y4">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QLineEdit" name="x4">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="2">
-          <widget class="QLineEdit" name="y8">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="x1">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>Offset tag9:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="label_10">
-           <property name="text">
-            <string>Offset tag6:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="2">
-          <widget class="QLineEdit" name="y9">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="2">
-          <widget class="QLineEdit" name="y5">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QLineEdit" name="y1">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QLineEdit" name="x7">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="x2">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="3">
-          <widget class="QLineEdit" name="z3">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
+            <string>Object to save</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="x_object">
+          <widget class="QSpinBox" name="ob_to_save">
            <property name="maximumSize">
             <size>
-             <width>100</width>
-             <height>16777215</height>
+             <width>99</width>
+             <height>27</height>
             </size>
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QLineEdit" name="y_object">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_8">
            <property name="maximumSize">
             <size>
              <width>100</width>
-             <height>16777215</height>
+             <height>30</height>
             </size>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QLineEdit" name="z_object">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_15">
            <property name="text">
-            <string>pose object</string>
+            <string>Label:</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QCheckBox" name="canonPoseRb">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Save Canon Pose</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="regularPose">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Save Regular Pose</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="ObtainPose">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Obtain Pose of</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_8">
-             <property name="maximumSize">
-              <size>
-               <width>100</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Label:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="label_le">
-             <property name="maximumSize">
-              <size>
-               <width>100</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_14">
-             <property name="text">
-              <string>Object to save</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QSpinBox" name="ob_to_save"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QPushButton" name="go">
-           <property name="maximumSize">
-            <size>
-             <width>35</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>GO!</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QPushButton" name="go">
+         <property name="maximumSize">
+          <size>
+           <width>35</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>GO!</string>
+         </property>
+        </widget>
        </item>
       </layout>
-     </item>
-    </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="isObject">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
