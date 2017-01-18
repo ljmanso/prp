@@ -59,7 +59,7 @@ void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
     
     if(! rgb_image.data )                              // Check for invalid inpute
     {
-        cout <<  "Could not open or find the image rgb.png" << std::endl ;
+        cout <<  "Could not open or find the image " << image << std::endl ;
     }
     
     if (pcl::io::loadPCDFile<PointT> (pcd, *cloud) == -1) //* load the file
@@ -129,7 +129,7 @@ void SpecificWorker::updatergbd()
 // 	}
 // 	catch(...)
 // 	{
-		rgb_image = cv::imread("/home/ivan/robocomp/components/prp/scene/Scene.png");
+		rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
 
 		if(! rgb_image.data )                              // Check for invalid inpute
 		{
@@ -936,6 +936,9 @@ pose6D  SpecificWorker::getPose()
 		scene->points[i].z=scene->points[i].z/1000.;
 	}
 	
+	writer.write<PointT> ("seen.pcd", *scene, false);
+	writer.write<PointT> ("saved.pcd", *object, false);
+
 	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
 
 	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
@@ -993,7 +996,6 @@ pose6D  SpecificWorker::getPose()
 		align.align (*object_aligned);
 	}
 	
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
 	
 	Eigen::Matrix4f transformation = align.getFinalTransformation ();
 // 	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
@@ -1052,7 +1054,7 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 void SpecificWorker::caputurePointCloudObjects()
 {
 // 	grabThePointCloud("image.png", "rgbd.pcd");
-	readThePointCloud("/home/ivan/robocomp/components/prp/scene/Scene.png","/home/ivan/robocomp/components/prp/scene/Scene.pcd");
+	readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
 	ransac("plane");
 	projectInliers("plane");
 	convexHull("plane");
