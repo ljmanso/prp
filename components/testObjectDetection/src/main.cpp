@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -59,6 +59,8 @@
  * ...
  *
  */
+#include <signal.h>
+
 // QT includes
 #include <QtCore>
 #include <QtGui>
@@ -69,6 +71,7 @@
 #include <Ice/Application.h>
 
 #include <rapplication/rapplication.h>
+#include <sigwatch/sigwatch.h>
 #include <qlog/qlog.h>
 
 #include "config.h"
@@ -79,7 +82,7 @@
 #include "commonbehaviorI.h"
 
 
-#include <objectDetection.h>
+#include <ObjectDetection.h>
 
 
 // User includes here
@@ -87,10 +90,6 @@
 // Namespaces
 using namespace std;
 using namespace RoboCompCommonBehavior;
-
-using namespace RoboCompobjectDetection;
-
-
 
 class testObjectDetectionComp : public RoboComp::Application
 {
@@ -119,9 +118,23 @@ int ::testObjectDetectionComp::run(int argc, char* argv[])
 #else
 	QCoreApplication a(argc, argv);  // NON-GUI application
 #endif
+
+
+	sigset_t sigs;
+	sigemptyset(&sigs);
+	sigaddset(&sigs, SIGHUP);
+	sigaddset(&sigs, SIGINT);
+	sigaddset(&sigs, SIGTERM);
+	sigprocmask(SIG_UNBLOCK, &sigs, 0);
+
+	UnixSignalWatcher sigwatch;
+	sigwatch.watchForSignal(SIGINT);
+	sigwatch.watchForSignal(SIGTERM);
+	QObject::connect(&sigwatch, SIGNAL(unixSignal(int)), &a, SLOT(quit()));
+
 	int status=EXIT_SUCCESS;
 
-	objectDetectionPrx objectdetection_proxy;
+	ObjectDetectionPrx objectdetection_proxy;
 
 	string proxy, tmp;
 	initialize();
@@ -129,19 +142,19 @@ int ::testObjectDetectionComp::run(int argc, char* argv[])
 
 	try
 	{
-		if (not GenericMonitor::configGetString(communicator(), prefix, "objectDetectionProxy", proxy, ""))
+		if (not GenericMonitor::configGetString(communicator(), prefix, "ObjectDetectionProxy", proxy, ""))
 		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy objectDetectionProxy\n";
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy ObjectDetectionProxy\n";
 		}
-		objectdetection_proxy = objectDetectionPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+		objectdetection_proxy = ObjectDetectionPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
 	}
 	catch(const Ice::Exception& ex)
 	{
 		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
 		return EXIT_FAILURE;
 	}
-	rInfo("objectDetectionProxy initialized Ok!");
-	mprx["objectDetectionProxy"] = (::IceProxy::Ice::Object*)(&objectdetection_proxy);//Remote server proxy creation example
+	rInfo("ObjectDetectionProxy initialized Ok!");
+	mprx["ObjectDetectionProxy"] = (::IceProxy::Ice::Object*)(&objectdetection_proxy);//Remote server proxy creation example
 
 
 
@@ -189,6 +202,8 @@ int ::testObjectDetectionComp::run(int argc, char* argv[])
 #endif
 		// Run QT Application Event Loop
 		a.exec();
+		
+		
 		status = EXIT_SUCCESS;
 	}
 	catch(const Ice::Exception& ex)

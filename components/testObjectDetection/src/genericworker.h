@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -27,9 +27,8 @@
 #include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
-#include <objectDetection.h>
 
-
+#include <ObjectDetection.h>
 
 #define CHECK_PERIOD 5000
 #define BASIC_PERIOD 100
@@ -38,7 +37,7 @@ typedef map <string,::IceProxy::Ice::Object*> MapPrx;
 
 using namespace std;
 
-using namespace RoboCompobjectDetection;
+using namespace RoboCompObjectDetection;
 
 
 
@@ -61,13 +60,15 @@ public:
 	QMutex *mutex;
 	
 
-	objectDetectionPrx objectdetection_proxy;
-
+	ObjectDetectionPrx objectdetection_proxy;
 
 
 protected:
 	QTimer timer;
 	int Period;
+
+private:
+
 
 public slots:
 	virtual void compute() = 0;
