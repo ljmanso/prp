@@ -43,15 +43,15 @@ public:
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
 public slots:
 	void compute(); 
-	void grabThePointCloud();	
-	void ransac();
-	void projectInliers();
-	void convexHull();
-	void extractPolygon();
-	void euclideanExtract();
+// 	void grabThePointCloud();	
+// 	void ransac();
+// 	void projectInliers();
+// 	void convexHull();
+// 	void extractPolygon();
+// 	void euclideanExtract();
 	void findTheObject();
-	void getPose();
-	void getRotation();
+// 	void getPose();
+// 	void getRotation();
 	void reloadVFH();
 	void fullRun();
 private:

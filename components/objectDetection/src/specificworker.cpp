@@ -92,14 +92,21 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::updateinner()
 {
-	MotorList motors;
-	motors.push_back("head_yaw_joint");
-	motors.push_back("head_pitch_joint");
-	MotorStateMap motors_states = jointmotor_proxy->getMotorStateMap(motors);
-	for(auto motor:motors)
-	{
-		innermodel->updateJointValue(QString::fromStdString(motor),motors_states[motor].pos);
-	}
+// 	try
+// 	{
+// 		MotorList motors;
+// 		motors.push_back("head_yaw_joint");
+// 		motors.push_back("head_pitch_joint");
+// 		MotorStateMap motors_states = jointmotor_proxy->getMotorStateMap(motors);
+// 		for(auto motor:motors)
+// 		{
+// 			innermodel->updateJointValue(QString::fromStdString(motor),motors_states[motor].pos);
+// 		}
+// 	}
+// 	catch(...)
+// 	{
+		innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
+// 	}
 }
 
 void SpecificWorker::updatergbd()
@@ -110,25 +117,30 @@ void SpecificWorker::updatergbd()
 	RoboCompJointMotor::MotorStateMap h;
 	RoboCompGenericBase::TBaseState b;
 	cv::Mat rgb_image(480,640, CV_8UC3, cv::Scalar::all(0));
-	try
-	{
-		rgbd_proxy->getRGB(rgbMatrix,h,b);
-// 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
-	}
-	catch(Ice::Exception e)
-	{
-		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
-		return;
-	}
-	for(unsigned int i=0; i<rgbMatrix.size(); i++)
-	{
-		int row = (i/640), column = i-(row*640);
-		rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
-	}
+// 	try
+// 	{
+// 		rgbd_proxy->getRGB(rgbMatrix,h,b);
+// // 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
+// 		for(unsigned int i=0; i<rgbMatrix.size(); i++)
+// 		{
+// 			int row = (i/640), column = i-(row*640);
+// 			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+// 		}
+// 	}
+// 	catch(...)
+// 	{
+		rgb_image = cv::imread("/home/ivan/robocomp/components/prp/scene/Scene.png");
+
+		if(! rgb_image.data )                              // Check for invalid inpute
+		{
+			cout <<  "Could not open or find the image rgb.png" << std::endl ;
+		}
+// 	}
+	
 	
 	cv::Mat dest;
-    cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
-    QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
+	cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
+	QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
 	item_pixmap->setPixmap(QPixmap::fromImage(image));
 	scene.update();
 }
@@ -138,17 +150,6 @@ void SpecificWorker::compute()
 // // 	qDebug()<<"entro";
 	updateinner();
 	updatergbd();
-}
-
-
-void SpecificWorker::grabTheAR()
-{
-
-}
-
-void SpecificWorker::aprilFitModel(const string &model)
-{
-
 }
 
 void SpecificWorker::segmentImage()
@@ -181,40 +182,6 @@ void SpecificWorker::segmentImage()
 #endif
 }
 
-void SpecificWorker::mindTheGapPC()
-{
-
-}
-
-void SpecificWorker::getPose(float &x, float &y, float &z, float &rx, float &ry, float &rz)
-{
-    
-    //publish imageen
-//     cv_bridge::CvImage out_msg;
-//     out_msg.encoding = sensor_msgs::image_encodings::TYPE_8UC3; // Or whatever
-//     out_msg.image = rgb_image; // Your cv::Matencoding
-//     image_pub.publish(out_msg.toImageMsg());
-//     
-//     //publish point cloud
-//     sensor_msgs::PointCloud2 cloud2;
-//     pcl::toROSMsg(*cloud, cloud2);
-//     pcd_pub.publish(cloud2);
-
-    x = 1.5;
-    y = 2.5;
-    z = 3.5;
-	rx = 1.5;
-    ry = 2.5;
-    rz = 3.5;
-    
-    
-    
-}
-
-void SpecificWorker::centroidBasedPose(float &x, float &y, float &theta)
-{
-
-}
 
 void SpecificWorker::reloadVFH(const string &pathToSet)
 {
@@ -443,8 +410,9 @@ bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud
 	}
 // 	writer.write<PointT> (outputPath + ".pcd", cloud_output, false);
 }
-void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave, pose6D &tag1, pose6D &tag2, pose6D &tag3, pose6D &tag4, pose6D &tag5, pose6D &tag6, pose6D &tag7, pose6D &tag8, pose6D &tag9)
+void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave)
 {
+	caputurePointCloudObjects();
 	qDebug()<<__FUNCTION__;
 	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
 	poses_inner = new InnerModel();
@@ -488,8 +456,9 @@ void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave,
 	qDebug()<<"End "<<__FUNCTION__;
 } 
 
-void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave, pose6D &tag1, pose6D &tag2, pose6D &tag3, pose6D &tag4, pose6D &tag5, pose6D &tag6, pose6D &tag7, pose6D &tag8, pose6D &tag9)
+void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 {
+	caputurePointCloudObjects();
 	qDebug()<<__FUNCTION__;
 	poses_inner = new InnerModel();
 	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
@@ -542,120 +511,120 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave, p
 	qDebug()<<"End "<<__FUNCTION__;
 }
 
-void SpecificWorker::guessPose(const string &label, pose6D &guess)
-{
-	qDebug()<<__FUNCTION__;
-	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
-	//Load mathing view and find transform to real point cloud
-	pcl::PointCloud<PointT>::Ptr object (new pcl::PointCloud<PointT>);
-	//change vfh extension to pcd
-	std::string view_to_load = file_view_mathing;
-	
-	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) //* load the file
-	{
-		printf ("Couldn't read file test_pcd.pcd \n");
-	}
-	
-	pcl::PointCloud<PointT>::Ptr scene = cluster_clouds[num_object_found];
-	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
-
-	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
-	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
-	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
-	pcl::PointCloud<pcl::FPFHSignature33>::Ptr scene_features (new pcl::PointCloud<pcl::FPFHSignature33>);
-	
-	std::cout<<object->size()<<std::endl;
-	std::cout<<scene->size()<<std::endl;
-	// Downsample
-	pcl::console::print_highlight ("Downsampling...\n");
-	pcl::VoxelGrid<PointT> grid;
-	const float leaf = 5;
-	grid.setLeafSize (leaf, leaf, leaf);
-	grid.setInputCloud (object);
-	grid.filter (*object);
-	grid.setInputCloud (scene);
-	grid.filter (*scene);
-	
-	// Estimate normals for scene
-	pcl::console::print_highlight ("Estimating scene normals...\n");
-	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
-	nest.setRadiusSearch (10);
-	nest.setInputCloud (object);
-	nest.compute (*object_normals);
-	nest.setInputCloud (scene);
-	nest.compute (*scene_normals);
-	
-	// Estimate features
-	pcl::console::print_highlight ("Estimating features...\n");
-	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
-	fest.setRadiusSearch (25);
-	fest.setInputCloud (object);
-	fest.setInputNormals (object_normals);
-	fest.compute (*object_features);
-	fest.setInputCloud (scene);
-	fest.setInputNormals (scene_normals);
-	fest.compute (*scene_features);
-	
-	// Perform alignment
-	pcl::console::print_highlight ("Starting alignment...\n");
-	pcl::SampleConsensusPrerejective<PointT, PointT, pcl::FPFHSignature33> align;
-	align.setInputSource (object);
-	align.setSourceFeatures (object_features);
-	align.setInputTarget (scene);
-	align.setTargetFeatures (scene_features);
-	align.setMaximumIterations (50000); // Number of RANSAC iterations
-	align.setNumberOfSamples (2); // Number of points to sample for generating/prerejecting a pose
-	align.setCorrespondenceRandomness (5); // Number of nearest features to use
-	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
-	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
-	align.setInlierFraction (0.25f); // Required inlier fraction for accepting a pose hypothesis
-	{	
-		pcl::ScopeTime t("Alignment");
-		align.align (*object_aligned);
-	}
-	
-	Eigen::Matrix4f transformation = align.getFinalTransformation ();
-	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
-	
-	float tx, ty, tz, rx, ry, rz;
-	tx = transformation(3,0);
-	ty = transformation(3,1);
-	tz = transformation(3,2);
-	rx = ea(0);
-	ry = ea(1);
-	rz = ea(2);
-	
-#if DEBUG
-	std::cout<<"Ransac Translation: "<<tx<<" "<<ty<<" "<<tz<<std::endl;
-	std::cout<<"Ransac Rotation: "<<rx<<" "<<ry<<" "<<rz<<std::endl;
-#endif
-	
-	
-	//load innermodel and calculate translation respect root
-	poses_inner = new InnerModel();
-	std::string inner_name = path + label + ".xml";
-	poses_inner->open(inner_name);
-	
-	//get transform name (same as pcd file name)
-	std::string node_name = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
-	node_name = node_name.substr(file_view_mathing.find_last_of("/")+1);
-	std::cout<<node_name<<endl;
-	//parent node will be the matching view
-	InnerModelNode *parent_node = poses_inner->getTransform(node_name.c_str());
-	InnerModelTransform *node = poses_inner->newTransform("current_live_view", "static", parent_node, tx, ty, tz, rx, ry, rz);
-	parent_node->addChild(node);
-	
-	//calculate transform to canon pose
-	RTMat transform_to_canon = poses_inner->getTransformationMatrix("canon_pose", "current_live_vew");
-	
-	guess.tx = transform_to_canon.getTr()[0];
-	guess.ty = transform_to_canon.getTr()[1];
-	guess.tz = transform_to_canon.getTr()[2];
-	guess.rx = transform_to_canon.getRxValue();
-	guess.ry = transform_to_canon.getRyValue();
-	guess.rz = transform_to_canon.getRzValue();
-	
-}
+// void SpecificWorker::guessPose(const string &label, pose6D &guess)
+// {
+// 	qDebug()<<__FUNCTION__;
+// 	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
+// 	//Load mathing view and find transform to real point cloud
+// 	pcl::PointCloud<PointT>::Ptr object (new pcl::PointCloud<PointT>);
+// 	//change vfh extension to pcd
+// 	std::string view_to_load = file_view_mathing;
+// 	
+// 	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) //* load the file
+// 	{
+// 		printf ("Couldn't read file test_pcd.pcd \n");
+// 	}
+// 	
+// 	pcl::PointCloud<PointT>::Ptr scene = cluster_clouds[num_object_found];
+// 	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
+// 
+// 	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
+// 	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
+// 	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+// 	pcl::PointCloud<pcl::FPFHSignature33>::Ptr scene_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+// 	
+// 	std::cout<<object->size()<<std::endl;
+// 	std::cout<<scene->size()<<std::endl;
+// 	// Downsample
+// 	pcl::console::print_highlight ("Downsampling...\n");
+// 	pcl::VoxelGrid<PointT> grid;
+// 	const float leaf = 5;
+// 	grid.setLeafSize (leaf, leaf, leaf);
+// 	grid.setInputCloud (object);
+// 	grid.filter (*object);
+// 	grid.setInputCloud (scene);
+// 	grid.filter (*scene);
+// 	
+// 	// Estimate normals for scene
+// 	pcl::console::print_highlight ("Estimating scene normals...\n");
+// 	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
+// 	nest.setRadiusSearch (10);
+// 	nest.setInputCloud (object);
+// 	nest.compute (*object_normals);
+// 	nest.setInputCloud (scene);
+// 	nest.compute (*scene_normals);
+// 	
+// 	// Estimate features
+// 	pcl::console::print_highlight ("Estimating features...\n");
+// 	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
+// 	fest.setRadiusSearch (25);
+// 	fest.setInputCloud (object);
+// 	fest.setInputNormals (object_normals);
+// 	fest.compute (*object_features);
+// 	fest.setInputCloud (scene);
+// 	fest.setInputNormals (scene_normals);
+// 	fest.compute (*scene_features);
+// 	
+// 	// Perform alignment
+// 	pcl::console::print_highlight ("Starting alignment...\n");
+// 	pcl::SampleConsensusPrerejective<PointT, PointT, pcl::FPFHSignature33> align;
+// 	align.setInputSource (object);
+// 	align.setSourceFeatures (object_features);
+// 	align.setInputTarget (scene);
+// 	align.setTargetFeatures (scene_features);
+// 	align.setMaximumIterations (50000); // Number of RANSAC iterations
+// 	align.setNumberOfSamples (2); // Number of points to sample for generating/prerejecting a pose
+// 	align.setCorrespondenceRandomness (5); // Number of nearest features to use
+// 	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
+// 	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
+// 	align.setInlierFraction (0.25f); // Required inlier fraction for accepting a pose hypothesis
+// 	{	
+// 		pcl::ScopeTime t("Alignment");
+// 		align.align (*object_aligned);
+// 	}
+// 	
+// 	Eigen::Matrix4f transformation = align.getFinalTransformation ();
+// 	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
+// 	
+// 	float tx, ty, tz, rx, ry, rz;
+// 	tx = transformation(3,0);
+// 	ty = transformation(3,1);
+// 	tz = transformation(3,2);
+// 	rx = ea(0);
+// 	ry = ea(1);
+// 	rz = ea(2);
+// 	
+// #if DEBUG
+// 	std::cout<<"Ransac Translation: "<<tx<<" "<<ty<<" "<<tz<<std::endl;
+// 	std::cout<<"Ransac Rotation: "<<rx<<" "<<ry<<" "<<rz<<std::endl;
+// #endif
+// 	
+// 	
+// 	//load innermodel and calculate translation respect root
+// 	poses_inner = new InnerModel();
+// 	std::string inner_name = path + label + ".xml";
+// 	poses_inner->open(inner_name);
+// 	
+// 	//get transform name (same as pcd file name)
+// 	std::string node_name = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
+// 	node_name = node_name.substr(file_view_mathing.find_last_of("/")+1);
+// 	std::cout<<node_name<<endl;
+// 	//parent node will be the matching view
+// 	InnerModelNode *parent_node = poses_inner->getTransform(node_name.c_str());
+// 	InnerModelTransform *node = poses_inner->newTransform("current_live_view", "static", parent_node, tx, ty, tz, rx, ry, rz);
+// 	parent_node->addChild(node);
+// 	
+// 	//calculate transform to canon pose
+// 	RTMat transform_to_canon = poses_inner->getTransformationMatrix("canon_pose", "current_live_vew");
+// 	
+// 	guess.tx = transform_to_canon.getTr()[0];
+// 	guess.ty = transform_to_canon.getTr()[1];
+// 	guess.tz = transform_to_canon.getTr()[2];
+// 	guess.rx = transform_to_canon.getRxValue();
+// 	guess.ry = transform_to_canon.getRyValue();
+// 	guess.rz = transform_to_canon.getRzValue();
+// 	
+// }
 
 void SpecificWorker::passThrough()
 {
@@ -684,21 +653,6 @@ void SpecificWorker::passThrough()
 #endif
         
         
-}
-
-void SpecificWorker::surfHomography(listType &guesses)
-{
-
-}
-
-void SpecificWorker::fitTheViewVFH()
-{
-
-}
-
-void SpecificWorker::showObject(const int numObject)
-{
-
 }
 
 void SpecificWorker::convexHull(const string &model)
@@ -746,10 +700,6 @@ void SpecificWorker::convexHull(const string &model)
 // //     #endif
 }
 
-void SpecificWorker::mirrorPC()
-{
-
-}
 
 void SpecificWorker::statisticalOutliersRemoval()
 {
@@ -764,21 +714,6 @@ void SpecificWorker::loadTrainedVFH()
 {
 	vfh_matcher->loadTrainingData();
 	std::cout<<"Training data loaded"<<std::endl;
-}
-
-void SpecificWorker::reset()
-{
-
-}
-
-void SpecificWorker::normalSegmentation(const string &model)
-{
-
-}
-
-void SpecificWorker::getInliers(const string &model)
-{
-
 }
 
 void SpecificWorker::vfh(listType &guesses)
@@ -855,16 +790,6 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 
 }
 
-void SpecificWorker::fitModel(const string &model, const string &method)
-{
-
-}
-
-void SpecificWorker::setContinousMode(const bool &mode)
-{
-
-}
-
 void SpecificWorker::projectInliers(const string &model)
 {
 	table->project_board_inliers(this->cloud, ransac_inliers, projected_plane);
@@ -897,8 +822,9 @@ void SpecificWorker::extractPolygon(const string &model)
 #endif
 }
 
-bool SpecificWorker::findTheObject(const string &objectTofind)
+bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 {
+	caputurePointCloudObjects();
 	std::string guessgan="";
 	while(!V_text_item.empty())
 	{
@@ -936,6 +862,7 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 		paintcloud(cluster_clouds[num_object_found]);
 		settexttocloud(guessgan,cluster_clouds[num_object_found]);
 		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
+		pose=getPose();
 		return true;
 	}
 	return false;
@@ -943,13 +870,7 @@ bool SpecificWorker::findTheObject(const string &objectTofind)
 
 bool SpecificWorker::findObjects(listObject& lObjects)
 {
-	grabThePointCloud("image.png", "rgbd.pcd");
-	ransac("plane");
-	projectInliers("plane");
-	convexHull("plane");
-	extractPolygon("plane");
-	int n=0;
-	euclideanClustering(n);
+	caputurePointCloudObjects();
 	std::string guessgan="";
 	for(unsigned int i=0; i<cluster_clouds.size();i++)
 	{
@@ -967,8 +888,8 @@ bool SpecificWorker::findObjects(listObject& lObjects)
 		file_view_mathing = vfh_guesses[0].file;
 		pose6D p;
 		p.label=vfh_guesses[0].label;
-		getPose(p.tx,p.ty,p.tz);
-		getRotation(p.rx,p.ry,p.rz);
+		p=getPose();
+// 		getRotation(p.rx,p.ry,p.rz);
 		lObjects.push_back(p);
 		guessgan="";
 	}
@@ -980,18 +901,15 @@ bool SpecificWorker::findObjects(listObject& lObjects)
 }
 
 //todo again
-void SpecificWorker::getPose(float &x, float &y, float &z)
+
+pose6D  SpecificWorker::getPose()
 {
-	Eigen::Vector4f centroid;
-	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
-	x = centroid[0];
-	y = centroid[1];
-	z = centroid[2];
+// 	Eigen::Vector4f centroid;
+// 	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
+// 	x = centroid[0];
+// 	y = centroid[1];
+// 	z = centroid[2];
 	
-}
-//todo again
-void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
-{
 	// Point clouds
 	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
 	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
@@ -1018,7 +936,7 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 	// Downsample
 	pcl::console::print_highlight ("Downsampling...\n");
 	pcl::VoxelGrid<PointT> grid;
-	const float leaf = 5;
+	const float leaf = 3;
 	grid.setLeafSize (leaf, leaf, leaf);
 	grid.setInputCloud (object);
 	grid.filter (*object);
@@ -1063,6 +981,8 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 		align.align (*object_aligned);
 	}
 	
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
+	
 	Eigen::Matrix4f transformation = align.getFinalTransformation ();
 // 	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
 // 	qDebug()<<"Rotation"<<ea(0)<<", "<<ea(1)<<", "<<ea(2);
@@ -1083,24 +1003,19 @@ void SpecificWorker::getRotation(float &rx, float &ry, float &rz)
 	InnerModel inner(pathxml);
 	QMat canonToPoseR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
 	static QMat april = RTMat(0,0,0,M_PI_2, 0, 0);
-	qDebug()<<"1";
 	QMat objR = april * (poseToViewR * canonToPoseR).invert();
-	qDebug()<<"2";
 	QVec pose = ccc(objR);
-	qDebug()<<"3";
 	pose.print("pose");
-	QVec rot = objR.extractAnglesR_min();
-	qDebug()<<rot;
-	rx=rot(0);
-	ry=rot(1);
-	rz=rot(2);
-	std::cout<<"Alignmet end results: rx = "<<rx<<"; ry = "<<ry<<", rz = "<<rz<<std::endl;
-
-#if DEBUG
-	std::cout<<"Rotation: "<<rx<<" "<<ry<<" "<<rz<<std::endl;
-#endif
-	
+	pose6D poseObj;
+	poseObj.tx=pose(0);
+	poseObj.ty=pose(1);
+	poseObj.tz=pose(2);
+	poseObj.rx=pose(3);
+	poseObj.ry=pose(4);
+	poseObj.rz=pose(5);
+	return poseObj;
 }
+//todo again
 
 void SpecificWorker::newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState)
 {
@@ -1113,63 +1028,16 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 	this->tags = tags;
 }
 
-unsigned int text_id = 0;
-void keyboardEventOccurred (const pcl::visualization::KeyboardEvent &event,void* viewer_void)
+void SpecificWorker::caputurePointCloudObjects()
 {
-	pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
-	if (event.getKeySym () == "r" && event.keyDown ())
-	{
-		//     std::cout << "r was pressed => removing all text" << std::endl;
-
-		char str[512];
-		for (unsigned int i = 0; i < text_id; ++i)
-		{
-			sprintf (str, "text#%03d", i);
-			viewer->removeShape (str);
-		}
-		text_id = 0;
-	}
-}
-
-void mouseEventOccurred (const pcl::visualization::MouseEvent &event,void* viewer_void)
-{
-	pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
-	if (event.getButton () == pcl::visualization::MouseEvent::LeftButton &&
-		event.getType () == pcl::visualization::MouseEvent::MouseButtonRelease)
-	{
-		//     std::cout << "Left mouse button released at position (" << event.getX () << ", " << event.getY () << ")" << std::endl;
-
-		char str[512];
-		sprintf (str, "text#%03d", text_id ++);
-		//     viewer->addText ("clicked here", event.getX (), event.getY (), str);
-	}
-}
-
-
-void SpecificWorker::visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds)
-{
-	unsigned int id=0;
-	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
-	viewer->setBackgroundColor (0, 0, 0);
-	for(auto cloud:clouds)
-	{
-		pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(cloud);
-		viewer->addPointCloud<pcl::PointXYZRGB> (cloud, rgb, QString::number(id).toStdString());
-		viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, QString::number(id).toStdString());
-		id++;
-	}
-	viewer->addCoordinateSystem (1.0);
-	viewer->initCameraParameters ();
-	viewer->registerKeyboardCallback (keyboardEventOccurred, (void*)viewer.get ());
-	viewer->registerMouseCallback (mouseEventOccurred, (void*)viewer.get ());
-	
-	while (!viewer->wasStopped ())
-	{
-		viewer->spinOnce (100);
-		boost::this_thread::sleep (boost::posix_time::microseconds (100000));
-	}
-// 	HWND hWnd = (HWND)viewer->getRenderWindow()->GetGenericWindowId(); 
-// 	viewer->getRenderWindow()
+// 	grabThePointCloud("image.png", "rgbd.pcd");
+	readThePointCloud("/home/ivan/robocomp/components/prp/scene/Scene.png","/home/ivan/robocomp/components/prp/scene/Scene.pcd");
+	ransac("plane");
+	projectInliers("plane");
+	convexHull("plane");
+	extractPolygon("plane");
+	int n;
+	euclideanClustering(n);
 }
 
 void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr cloud)
