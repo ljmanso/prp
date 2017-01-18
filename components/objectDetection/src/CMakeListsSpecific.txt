@@ -32,7 +32,7 @@ INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
 
 
-SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial  )
+SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial -lmpi_cxx )
 
 include_directories( /usr/include/hdf5/serial/ /usr/local/include/pcl-1.8/ )
 
