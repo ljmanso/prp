@@ -91,25 +91,33 @@ void SpecificWorker::findTheObject()
 {
 	std::string object = text_object->toPlainText().toStdString();
 	pose6D poseObj;
-	bool result=objectdetection_proxy->findTheObject(object, poseObj);
-	if(object!="")
+	bool result;
+	try
 	{
-		isObject->setVisible(true);
-		if(result)
+		result = objectdetection_proxy->findTheObject(object, poseObj);
+		if(object!="")
 		{
-			isObject->setText("El Objeto SI esta en la mesa.");
-			x_object->setText(QString::number(poseObj.tx));
-			y_object->setText(QString::number(poseObj.ty));
-			z_object->setText(QString::number(poseObj.tz));
-			rx_object->setText(QString::number(poseObj.rx));
-			ry_object->setText(QString::number(poseObj.ry));
-			rz_object->setText(QString::number(poseObj.rz));
+			isObject->setVisible(true);
+			if(result)
+			{
+				isObject->setText("El Objeto SI esta en la mesa.");
+				x_object->setText(QString::number(poseObj.tx));
+				y_object->setText(QString::number(poseObj.ty));
+				z_object->setText(QString::number(poseObj.tz));
+				rx_object->setText(QString::number(poseObj.rx));
+				ry_object->setText(QString::number(poseObj.ry));
+				rz_object->setText(QString::number(poseObj.rz));
+			}
+			else
+				isObject->setText("El Objeto NO esta en la mesa.");
 		}
 		else
-			isObject->setText("El Objeto NO esta en la mesa.");
+			isObject->setVisible(false);
 	}
-	else
-		isObject->setVisible(false);
+	catch(...)
+	{
+		QMessageBox::warning(this, "something went wrong", "something went wrong");
+	}
 }
 
 // void SpecificWorker::getPose()
