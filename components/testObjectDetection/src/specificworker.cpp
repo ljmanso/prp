@@ -33,7 +33,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	connect(pose, SIGNAL(clicked()), this, SLOT(getPose()));
 	connect(rotation, SIGNAL(clicked()), this, SLOT(getRotation()));
 	connect(reload, SIGNAL(clicked()), this, SLOT(reloadVFH()));
-	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
+ 	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
 }
 
 /**
@@ -46,12 +46,8 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-
-
-
-	
-	timer.start(Period);
-
+	reloadVFH();
+	timer.start(5000);
 	return true;
 }
 
@@ -69,13 +65,12 @@ void SpecificWorker::projectInliers()
 {
 	objectdetection_proxy->projectInliers("plane");
 }
-	
+
 void SpecificWorker::convexHull()
 {
 	objectdetection_proxy->convexHull("plane");
 }
 
-	
 void SpecificWorker::extractPolygon()
 {
 	objectdetection_proxy->extractPolygon("plane");
@@ -89,44 +84,99 @@ void SpecificWorker::euclideanExtract()
 
 void SpecificWorker::reloadVFH()
 {
-	objectdetection_proxy->reloadVFH("/home/robocomp/robocomp/components/prp/experimentFiles/vfhSignatures/");
+ 	objectdetection_proxy->reloadVFH("/home/robocomp/robocomp/components/prp/objects/");
 }
 
 void SpecificWorker::findTheObject()
 {
 	std::string object = text_object->toPlainText().toStdString();
-	objectdetection_proxy->findTheObject(object);
+	bool result=objectdetection_proxy->findTheObject(object);
+	if(object!="")
+	{
+		isObject->setVisible(true);
+		if(result)
+			isObject->setText("El Objeto SI esta en la mesa.");
+		else
+			isObject->setText("El Objeto NO esta en la mesa.");
+	}
+	else
+		isObject->setVisible(false);
 }
 
 void SpecificWorker::getPose()
 {
 	float x, y, z;
 	objectdetection_proxy->getPose(x, y, z);
+	x_object->setText(QString::number(x));
+	y_object->setText(QString::number(y));
+	z_object->setText(QString::number(z));
 }
 
 void SpecificWorker::getRotation()
 {
 	float rx, ry, rz;
 	objectdetection_proxy->getRotation(rx, ry, rz);
-}
-
-void SpecificWorker::getCanonicalPose()
-{
+// 	qDebug()<<rx<<", "<<ry<<", "<<rz;
+	rx_object->setText(QString::number(rx));
+	ry_object->setText(QString::number(ry));
+	rz_object->setText(QString::number(rz));
 	
 }
+
+// void SpecificWorker::getCanonicalPose()
+// {
+// 	
+// }
+
+void SpecificWorker::fullRun()
+{
+	string label=label_le->text().toStdString();
+	char *c;
+	pose6D tags[9],guess;
+	int numOfClusters = 0;
+	objectdetection_proxy->grabThePointCloud("image.png", "rgbd.pcd");
+	objectdetection_proxy->ransac("plane");
+	objectdetection_proxy->projectInliers("plane");
+	objectdetection_proxy->convexHull("plane");
+	objectdetection_proxy->extractPolygon("plane");
+	objectdetection_proxy->euclideanClustering(numOfClusters);
+	for(int i=0; i<9; i++)
+	{
+		tags[i].tx=0;
+		tags[i].ty=0;
+		tags[i].tz=0;
+		
+		tags[i].rx=0;
+		tags[i].ry=0;
+		tags[i].rz=0;
+	}
+	string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
+	c= &s[0u];
+	
+	system(c);
+	if(canonPoseRb->isChecked())
+		objectdetection_proxy->saveCanonPose(label,ob_to_save->value(),tags[0],tags[1],tags[2],tags[3],tags[4],tags[5],tags[6],tags[7],tags[8]);
+	if(regularPose->isChecked())
+		objectdetection_proxy->saveRegPose(label,ob_to_save->value(),tags[0],tags[1],tags[2],tags[3],tags[4],tags[5],tags[6],tags[7],tags[8]);
+	if(ObtainPose->isChecked())
+		objectdetection_proxy->guessPose(label,guess);
+// 	std::cout<<guess.tx<<endl;
+// 	std::cout<<guess.ty<<endl;
+// 	std::cout<<guess.tz<<endl;
+// 	std::cout<<guess.rx<<endl;
+// 	std::cout<<guess.ry<<endl;
+// 	std::cout<<guess.tz<<endl;
+}
+
 
 void SpecificWorker::compute()
 {
 // 	try
 // 	{
-// 		camera_proxy->getYImage(0,img, cState, bState);
-// 		memcpy(image_gray.data, &img[0], m_width*m_height*sizeof(uchar));
-// 		searchTags(image_gray);
+// 		fullRun();
+// 		findTheObject();
 // 	}
-// 	catch(const Ice::Exception &e)
-// 	{
-// 		std::cout << "Error reading from Camera" << e << std::endl;
-// 	}
+// 	catch(...){}
 }
 
 

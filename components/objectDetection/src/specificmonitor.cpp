@@ -85,18 +85,54 @@ bool SpecificMonitor::sendParamsToWorker(RoboCompCommonBehavior::ParameterList p
 ///We need to supply a list of accepted values to each call
 void SpecificMonitor::readConfig(RoboCompCommonBehavior::ParameterList &params )
 {
-// 	RoboCompCommonBehavior::Parameter aux;
-// 	aux.editable = true;
-// 	string name = PROGRAM_NAME;
-// 	
-// 	configGetString(name+".param_name", aux.value, "default");
-// 	//Check valid ranges
-// 	if( aux.value != "val1" and aux.value != "val2")
-// 	{
-// 		std::cout << __FUNCTION__ << "Warning. Wrong XXX value. Using default xxx" << std::endl;
-// 		params[name+".param_name"] = "xxx";
-// 	}
-// 	params[name+".param_name"] = aux;
+	RoboCompCommonBehavior::Parameter aux;
+	aux.editable = true;
+	string name = PROGRAM_NAME;
+	
+	configGetString(name,"innermodel", aux.value, "default");
+	//Check valid ranges
+	if( aux.value =="default")
+	{
+		std::cout << __FUNCTION__ << name<<".innermodel value is default" << std::endl;
+		exit(-1);
+	}
+	params[name+".innermodel"] = aux;
+// 	----------------------------------
+	configGetString(name,"id_robot", aux.value, "default");
+	//Check valid ranges
+	if( aux.value =="default")
+	{
+		std::cout << __FUNCTION__ << name<<".id_robot value is default" << std::endl;
+		aux.value="robot";	
+	}
+	params[name+".id_robot"] = aux;
+// 	----------------------------------	
+	configGetString(name,"id_camera_transform", aux.value, "default");
+	//Check valid ranges
+	if( aux.value =="default")
+	{
+		std::cout << __FUNCTION__ << name<<".id_camera_transform value is default" << std::endl;
+		aux.value="rgbd_transform";
+	}
+	params[name+".id_camera_transform"] = aux;
+// 	----------------------------------
+	configGetString(name,"id_camera", aux.value, "default");
+	//Check valid ranges
+	if( aux.value =="default")
+	{
+		std::cout << __FUNCTION__ << name<<".id_camera value is default" << std::endl;
+		aux.value="rgbd";
+	}
+	params[name+".id_camera"] = aux;
+// 	----------------------------------
+	configGetString(name,"type_features", aux.value, "default");
+	//Check valid ranges
+	if( aux.value =="default"||(aux.value !="VFH"&&aux.value !="CVFH"&&aux.value !="OUR-CVFH"))
+	{
+		std::cout << __FUNCTION__ << name<<".type_features value is default" << std::endl;
+		aux.value="VFH";	
+	}
+	params[name+".type_features"] = aux;
 }
 
 //comprueba que los parametros sean correctos y los transforma a la estructura del worker

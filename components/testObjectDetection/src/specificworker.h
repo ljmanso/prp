@@ -41,8 +41,6 @@ public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
-
-
 public slots:
 	void compute(); 
 	void grabThePointCloud();	
@@ -55,6 +53,7 @@ public slots:
 	void getPose();
 	void getRotation();
 	void reloadVFH();
+	void fullRun();
 private:
 	
 };
