@@ -65,8 +65,8 @@
 	#include "vfh/vfh.h"
 #endif
 
-#define DEBUG 0
-#define SAVE_DATA 0
+#define DEBUG 1
+#define SAVE_DATA 1
 #define THRESHOLD 0.75
 typedef pcl::PointXYZRGB PointT;
 
