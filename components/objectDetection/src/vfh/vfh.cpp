@@ -164,34 +164,34 @@ void VFH::readFilesAndComputeVFH (const boost::filesystem::path &base_dir)
 	}
 }
 
-void VFH::loadFeatureModels (const boost::filesystem::path &base_dir, const std::string &extension, 
+void VFH::loadFeatureModels (const boost::filesystem::path &base_dir, const boost::filesystem::path &original_base_dir, const std::string &extension, 
                    std::vector<vfh_model> &models)
 {
-  if (!boost::filesystem::exists (base_dir) && !boost::filesystem::is_directory (base_dir))
-    return;
+	if (!boost::filesystem::exists (base_dir) && !boost::filesystem::is_directory (base_dir))
+		return;
 
-  for (boost::filesystem::directory_iterator it (base_dir); it != boost::filesystem::directory_iterator (); ++it)
-  {
-    if (boost::filesystem::is_directory (it->status ()))
-    {
-      std::stringstream ss;
-      ss << it->path ();
-      pcl::console::print_highlight ("Loading %s (%lu models loaded so far).\n", ss.str ().c_str (), (unsigned long)models.size ());
-      loadFeatureModels (it->path (), extension, models);
-    }
-    if(boost::filesystem::is_regular_file (it->status ()))
+	for (boost::filesystem::directory_iterator it (base_dir); it != boost::filesystem::directory_iterator (); ++it)
+	{
+		if (boost::filesystem::is_directory (it->status ()))
+		{
+			std::stringstream ss;
+			ss << it->path ();
+			pcl::console::print_highlight ("Loading %s (%lu models loaded so far).\n", ss.str ().c_str (), (unsigned long)models.size ());
+			loadFeatureModels (it->path(), original_base_dir, extension, models);
+		}
+		
+		if(boost::filesystem::is_regular_file (it->status ()))
 			std::cout<<boost::filesystem::extension (it->path ())<<" "<<extension<<std::endl;
 		if(boost::filesystem::extension (it->path ()) == extension)
 			std::cout<<"YES"<<std::endl;
-		
-    if (boost::filesystem::is_regular_file (it->status ()) && boost::filesystem::extension (it->path ()) == extension)
-    {
-            std::cout<<"in"<<std::endl;
-      vfh_model m;
-      if (loadHist (base_dir / it->path ().filename (), m))
-        models.push_back (m);
-    }
-  }
+		if (base_dir.string().find("canon_pose")==std::string::npos and original_base_dir!=base_dir and  boost::filesystem::is_regular_file (it->status ()) && boost::filesystem::extension (it->path ()) == extension)
+		{
+			std::cout<<"in"<<std::endl;
+			vfh_model m;
+			if (loadHist (base_dir / it->path ().filename (), m))
+				models.push_back (m);
+		}
+	}
 }
 
 void VFH::reloadVFH(std::string path_to_dir)
@@ -206,7 +206,7 @@ void VFH::reloadVFH(std::string path_to_dir)
 	std::string model_directory (path_to_dir);
 	
 	// Load the model histograms
-	loadFeatureModels (model_directory, "."+h_extension, models);
+	loadFeatureModels (model_directory, model_directory, "."+h_extension, models);
 	
   pcl::console::print_highlight ("Loaded %d VFH models. Creating training data %s/%s.\n", 
       (int)models.size (), training_data_h5_file_name.c_str (), training_data_list_file_name.c_str ());

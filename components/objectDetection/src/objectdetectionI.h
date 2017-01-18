@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -46,7 +46,7 @@ public:
 	void passThrough(const Ice::Current&);
 	void surfHomography( listType  &guesses, const Ice::Current&);
 	void fitTheViewVFH(const Ice::Current&);
-	void saveRegPose(const string  &label, const int  numPoseToSave, const pose6D  &tag1, const pose6D  &tag2, const pose6D  &tag3, const pose6D  &tag4, const pose6D  &tag5, const pose6D  &tag6, const pose6D  &tag7, const pose6D  &tag8, const pose6D  &tag9, const Ice::Current&);
+	void saveRegPose(const string  &label, const int  numPoseToSave,  pose6D  &tag1,  pose6D  &tag2,  pose6D  &tag3,  pose6D  &tag4,  pose6D  &tag5,  pose6D  &tag6,  pose6D  &tag7,  pose6D  &tag8,  pose6D  &tag9, const Ice::Current&);
 	void showObject(const int  numObject, const Ice::Current&);
 	void convexHull(const string  &model, const Ice::Current&);
 	void mirrorPC(const Ice::Current&);
@@ -58,12 +58,13 @@ public:
 	void getInliers(const string  &model, const Ice::Current&);
 	void getPose( float  &x,  float  &y,  float  &z, const Ice::Current&);
 	void vfh( listType  &guesses, const Ice::Current&);
+	bool findObjects( listObject  &lObjects, const Ice::Current&);
 	void grabThePointCloud(const string  &image, const string  &pcd, const Ice::Current&);
 	void fitModel(const string  &model, const string  &method, const Ice::Current&);
 	void projectInliers(const string  &model, const Ice::Current&);
 	void guessPose(const string  &label,  pose6D  &guess, const Ice::Current&);
 	void extractPolygon(const string  &model, const Ice::Current&);
-	void saveCanonPose(const string  &label, const int  numPoseToSave, const pose6D  &tag1, const pose6D  &tag2, const pose6D  &tag3, const pose6D  &tag4, const pose6D  &tag5, const pose6D  &tag6, const pose6D  &tag7, const pose6D  &tag8, const pose6D  &tag9, const Ice::Current&);
+	void saveCanonPose(const string  &label, const int  numPoseToSave,  pose6D  &tag1,  pose6D  &tag2,  pose6D  &tag3,  pose6D  &tag4,  pose6D  &tag5,  pose6D  &tag6,  pose6D  &tag7,  pose6D  &tag8,  pose6D  &tag9, const Ice::Current&);
 
 private:
 

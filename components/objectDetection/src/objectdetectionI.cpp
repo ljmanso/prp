@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -88,7 +88,7 @@ void ObjectDetectionI::fitTheViewVFH(const Ice::Current&)
 	worker->fitTheViewVFH();
 }
 
-void ObjectDetectionI::saveRegPose(const string  &label, const int  numPoseToSave, const pose6D  &tag1, const pose6D  &tag2, const pose6D  &tag3, const pose6D  &tag4, const pose6D  &tag5, const pose6D  &tag6, const pose6D  &tag7, const pose6D  &tag8, const pose6D  &tag9, const Ice::Current&)
+void ObjectDetectionI::saveRegPose(const string  &label, const int  numPoseToSave,  pose6D  &tag1,  pose6D  &tag2,  pose6D  &tag3,  pose6D  &tag4,  pose6D  &tag5,  pose6D  &tag6,  pose6D  &tag7,  pose6D  &tag8,  pose6D  &tag9, const Ice::Current&)
 {
 	worker->saveRegPose(label, numPoseToSave, tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9);
 }
@@ -148,6 +148,11 @@ void ObjectDetectionI::vfh( listType  &guesses, const Ice::Current&)
 	worker->vfh(guesses);
 }
 
+bool ObjectDetectionI::findObjects( listObject  &lObjects, const Ice::Current&)
+{
+	return worker->findObjects(lObjects);
+}
+
 void ObjectDetectionI::grabThePointCloud(const string  &image, const string  &pcd, const Ice::Current&)
 {
 	worker->grabThePointCloud(image, pcd);
@@ -173,7 +178,7 @@ void ObjectDetectionI::extractPolygon(const string  &model, const Ice::Current&)
 	worker->extractPolygon(model);
 }
 
-void ObjectDetectionI::saveCanonPose(const string  &label, const int  numPoseToSave, const pose6D  &tag1, const pose6D  &tag2, const pose6D  &tag3, const pose6D  &tag4, const pose6D  &tag5, const pose6D  &tag6, const pose6D  &tag7, const pose6D  &tag8, const pose6D  &tag9, const Ice::Current&)
+void ObjectDetectionI::saveCanonPose(const string  &label, const int  numPoseToSave,  pose6D  &tag1,  pose6D  &tag2,  pose6D  &tag3,  pose6D  &tag4,  pose6D  &tag5,  pose6D  &tag6,  pose6D  &tag7,  pose6D  &tag8,  pose6D  &tag9, const Ice::Current&)
 {
 	worker->saveCanonPose(label, numPoseToSave, tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9);
 }

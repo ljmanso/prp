@@ -18,6 +18,8 @@ std::string feature;
 //Function that computes the Viewpoint Feature Histogram
 void computeVFHistogram(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, const boost::filesystem::path &filename)
 {
+	std::stringstream ss;
+	ss << filename.branch_path().string() << "/" << boost::filesystem::basename(filename) <<"." << ::feature;
 // 	pcl::console::print_highlight ("Computing VFH for %s.\n", filename.string().c_str());
 	//---compute normals---
 	pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
@@ -88,8 +90,6 @@ void computeVFHistogram(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, const boost::
 	}
 	//save them to file
 	pcl::PCDWriter writer;
-	std::stringstream ss;
-	ss << filename.branch_path().string() << "/" << boost::filesystem::basename(filename) <<"." << ::feature;
 // 	pcl::console::print_highlight ("writing %s\n", ss.str().c_str());
 	writer.write<pcl::VFHSignature308> (ss.str(), *vfhs, false);
 	
@@ -103,7 +103,7 @@ void readFilesAndComputeCVFH (const boost::filesystem::path &base_dir)
 	//Recursively read all files and compute VFH
 	for(boost::filesystem::directory_iterator it (base_dir); it!=boost::filesystem::directory_iterator (); ++it)
 	{
-		std::stringstream ss;
+		std::stringstream ss,outpath;
 		ss << it->path();
 		//if its a directory just call back the function
 		if (boost::filesystem::is_directory (it->status()))
@@ -113,8 +113,13 @@ void readFilesAndComputeCVFH (const boost::filesystem::path &base_dir)
 			readFilesAndComputeCVFH(it->path());
 		}
 		//if not, go ahead and read and process the file
-		if (boost::filesystem::is_regular_file (it->status()) && boost::filesystem::extension (it->path()) == FILES_EXTENSION )
+		if (boost::filesystem::is_regular_file (it->status()) && boost::filesystem::extension (it->path()) == FILES_EXTENSION)
 		{
+			boost::filesystem::path filename=*it;
+			outpath << filename.branch_path().string() << "/" << boost::filesystem::basename(filename) <<"." << ::feature;
+			if (boost::filesystem::exists(outpath.str()))
+				continue;
+			printf("%s doesn't exist: generating files...\n", outpath.str().c_str());
 			if(pcl::io::loadPCDFile<pcl::PointXYZ> (it->path().string(), *cloud) == -1)
 				PCL_ERROR ("Couldn't read the file %s.", it->path().string().c_str());
 			else

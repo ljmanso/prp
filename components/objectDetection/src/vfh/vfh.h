@@ -52,7 +52,7 @@ public:
 	void readFilesAndComputeVFH (const boost::filesystem::path &base_dir);
 	
 	//loads all vfh models in a directory
-	void loadFeatureModels (const boost::filesystem::path &base_dir, const std::string &extension, std::vector<vfh_model> &models);
+	void loadFeatureModels (const boost::filesystem::path &base_dir,const boost::filesystem::path &original_base_dir, const std::string &extension, std::vector<vfh_model> &models);
 	
 	//loads all vfh models found in a given directory
 	void reloadVFH(std::string path_to_dir);
