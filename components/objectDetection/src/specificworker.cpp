@@ -397,6 +397,7 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 	}
 	return false;
 }
+
 bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath)
 {
 	pcl::PointCloud<PointT>::Ptr cloud_output(cloud);
@@ -410,6 +411,7 @@ bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud
 	}
 // 	writer.write<PointT> (outputPath + ".pcd", cloud_output, false);
 }
+
 void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave)
 {
 	caputurePointCloudObjects();
@@ -900,8 +902,6 @@ bool SpecificWorker::findObjects(listObject& lObjects)
 	return true;
 }
 
-//todo again
-
 pose6D  SpecificWorker::getPose()
 {
 // 	Eigen::Vector4f centroid;
@@ -1014,18 +1014,28 @@ printf("%d\n", __LINE__);
 	QMat poseToViewR(4,4);
 	for (int c=0; c<4; c++)
 		for (int r=0; r<4; r++)
-			poseToViewR(r,c) = transformation(r, c);
-	qDebug()<<"poseToViewR = "<<poseToViewR.extractAnglesR_min();
-// 	vector<pcl::PointCloud< PointT >::Ptr>clouds;
-// 	clouds.push_back(scene);
-// 	clouds.push_back(object_aligned);
-// 	visualize(clouds);
+			poseToViewR(r,c) = transformation(r, c);	
+	
+	QVec poseToView = ccc(poseToViewR);
+	poseToView(0)=poseToView(0)*1000;
+	poseToView(1)=poseToView(1)*1000;
+	poseToView(2)=poseToView(2)*1000;
+	poseToViewR= RTMat(poseToView(3), poseToView(4), poseToView(5), poseToView(0), poseToView(1), poseToView(2));
+	ccc(poseToViewR).print("poseToViewR in mm");
+	
 	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
 	node_name=node_name.substr(node_name.find_last_of("/")+1);
 	InnerModel inner(pathxml);
 	QMat canonToPoseR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
+	
 	static QMat april = RTMat(0,0,0,M_PI_2, 0, 0);
+// 	ccc(april*canonToPoseR).print("canonToPoseR in mm");
+// 	
+// 	ccc(poseToViewR).print("poseToViewR");
+	
 	QMat objR = april * (poseToViewR * canonToPoseR).invert();
+// 	objR.print("obj");
+	
 	QVec pose = ccc(objR);
 	pose.print("pose");
 	pose6D poseObj;
@@ -1037,7 +1047,6 @@ printf("%d\n", __LINE__);
 	poseObj.rz=pose(5);
 	return poseObj;
 }
-//todo again
 
 void SpecificWorker::newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState)
 {
