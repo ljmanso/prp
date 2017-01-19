@@ -133,6 +133,10 @@ void SpecificMonitor::readConfig(RoboCompCommonBehavior::ParameterList &params )
 		aux.value="VFH";	
 	}
 	params[name+".type_features"] = aux;
+	
+	configGetString(name,"pathLoadDescriptors", aux.value, "default");
+	//Check valid ranges
+	params[name+".pathLoadDescriptors"] = aux;
 }
 
 //comprueba que los parametros sean correctos y los transforma a la estructura del worker

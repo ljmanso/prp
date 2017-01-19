@@ -184,7 +184,7 @@ void VFH::loadFeatureModels (const boost::filesystem::path &base_dir, const boos
 			std::cout<<boost::filesystem::extension (it->path ())<<" "<<extension<<std::endl;
 		if(boost::filesystem::extension (it->path ()) == extension)
 			std::cout<<"YES"<<std::endl;
-		if (base_dir.string().find("canon_pose")==std::string::npos and original_base_dir!=base_dir and  boost::filesystem::is_regular_file (it->status ()) && boost::filesystem::extension (it->path ()) == extension)
+		if (original_base_dir!=base_dir and  boost::filesystem::is_regular_file (it->status ()) && boost::filesystem::extension (it->path ()) == extension)
 		{
 			std::cout<<"in"<<std::endl;
 			vfh_model m;

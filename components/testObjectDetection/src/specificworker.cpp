@@ -46,7 +46,6 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-	reloadVFH();
 	timer.start(5000);
 	return true;
 }
@@ -84,7 +83,14 @@ void SpecificWorker::euclideanExtract()
 
 void SpecificWorker::reloadVFH()
 {
- 	objectdetection_proxy->reloadVFH("/home/robocomp/robocomp/components/prp/objects/");
+	try
+	{
+		objectdetection_proxy->reloadVFH();
+	}
+	catch(...)
+	{
+		QMessageBox::warning(this, "something went wrong", "something went wrong");
+	}
 }
 
 void SpecificWorker::findTheObject()
@@ -119,7 +125,7 @@ void SpecificWorker::findTheObject()
 		QMessageBox::warning(this, "something went wrong", "something went wrong");
 	}
 }
-
+/*
 // void SpecificWorker::getPose()
 // {
 // 	pose6D poseObj;
@@ -147,46 +153,31 @@ void SpecificWorker::findTheObject()
 // // {
 // // 	
 // // }
-
+*/
 void SpecificWorker::fullRun()
 {
 	string label=label_le->text().toStdString();
 	char *c;
 	pose6D guess;
-// 	int numOfClusters = 0;
-// 	objectdetection_proxy->grabThePointCloud("image.png", "rgbd.pcd");
-// 	objectdetection_proxy->ransac("plane");
-// 	objectdetection_proxy->projectInliers("plane");
-// 	objectdetection_proxy->convexHull("plane");
-// 	objectdetection_proxy->extractPolygon("plane");
-// 	objectdetection_proxy->euclideanClustering(numOfClusters);
 	string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
 	c= &s[0u];
-	
-	system(c);
-	if(canonPoseRb->isChecked())
-		objectdetection_proxy->saveCanonPose(label,ob_to_save->value());
-	if(regularPose->isChecked())
-		objectdetection_proxy->saveRegPose(label,ob_to_save->value());
-// 	if(ObtainPose->isChecked())
-// 		objectdetection_proxy->guessPose(label,guess);
-// 	std::cout<<guess.tx<<endl;
-// 	std::cout<<guess.ty<<endl;
-// 	std::cout<<guess.tz<<endl;
-// 	std::cout<<guess.rx<<endl;
-// 	std::cout<<guess.ry<<endl;
-// 	std::cout<<guess.tz<<endl;
+	try
+	{
+		system(c);
+		if(canonPoseRb->isChecked())
+			objectdetection_proxy->initSaveObject(label,ob_to_save->value());
+		if(regularPose->isChecked())
+			objectdetection_proxy->saveRegPose(label,ob_to_save->value());
+	}
+	catch(...)
+	{
+		QMessageBox::warning(this, "something went wrong", "something went wrong");
+	}
 }
 
 
 void SpecificWorker::compute()
 {
-// 	try
-// 	{
-// 		fullRun();
-// 		findTheObject();
-// 	}
-// 	catch(...){}
 }
 
 

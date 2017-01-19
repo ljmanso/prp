@@ -65,8 +65,8 @@
 	#include "vfh/vfh.h"
 #endif
 
-#define DEBUG 1
-#define SAVE_DATA 1
+#define DEBUG 0
+#define SAVE_DATA 0 
 #define THRESHOLD 0.75
 typedef pcl::PointXYZRGB PointT;
 
@@ -74,7 +74,7 @@ typedef pcl::PointXYZRGB PointT;
 class SpecificWorker : public GenericWorker
 {
 	QString id_robot, id_camera,id_camera_transform;
-	string descriptors_extension;
+	string descriptors_extension, pathLoadDescriptors;
 	InnerModel *innermodel;
 	QGraphicsPixmapItem* item_pixmap;
 	vector<QGraphicsTextItem*> V_text_item;
@@ -140,8 +140,8 @@ public:
 	bool findObjects(listObject &lObjects);
 	void saveRegPose(const string &label, const int numPoseToSave);
 	bool findTheObject(const string &objectTofind, pose6D &pose);
-	void saveCanonPose(const string &label, const int numPoseToSave);
-	void reloadVFH(const string &pathToSet);
+	void initSaveObject(const string &label, const int numPoseToSave);
+	void reloadVFH();
 	void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState);
 	void newAprilTag(const tagsList &tags);
 	//--------------
@@ -171,7 +171,7 @@ private:
 	bool aprilSeen(pose6D &offset);
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
-	bool transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath);
+// 	bool transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath);
 	void caputurePointCloudObjects();
 };
 

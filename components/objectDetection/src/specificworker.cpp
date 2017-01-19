@@ -43,6 +43,8 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	graphic->show();
 	item_pixmap=new QGraphicsPixmapItem();
 	scene.addItem(item_pixmap);
+	boost::filesystem::remove("training_data.h5");
+	boost::filesystem::remove("training_data.list");
 }
 
 /**
@@ -50,22 +52,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 */
 SpecificWorker::~SpecificWorker()
 {
-	
-}
 
-void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
-{
-    rgb_image = cv::imread(image);
-    
-    if(! rgb_image.data )                              // Check for invalid inpute
-    {
-        cout <<  "Could not open or find the image " << image << std::endl ;
-    }
-    
-    if (pcl::io::loadPCDFile<PointT> (pcd, *cloud) == -1) //* load the file
-    {
-        PCL_ERROR ("Couldn't read file pcd.pcd \n");
-    }
 }
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
@@ -76,6 +63,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
     id_robot=QString::fromStdString(params[name+".id_robot"].value);
 	id_camera=QString::fromStdString(params[name+".id_camera"].value);
 	id_camera_transform=QString::fromStdString(params[name+".id_camera_transform"].value);
+	pathLoadDescriptors = params[name+".pathLoadDescriptors"].value;
 	viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
 	vfh_matcher->set_type_feature(params[name+".type_features"].value);
 	if(params[name+".type_features"].value=="VFH")
@@ -85,6 +73,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	else if(params[name+".type_features"].value=="OUR-CVFH")
 		descriptors_extension="ourcvfh";
 	std::cout<<params[name+".type_features"].value<<" " <<descriptors_extension<<std::endl;
+	reloadVFH();
 	timer.start(500);
 
 	return true;
@@ -183,13 +172,13 @@ void SpecificWorker::segmentImage()
 }
 
 
-void SpecificWorker::reloadVFH(const string &pathToSet)
+void SpecificWorker::reloadVFH()
 {
-	string s="./bin/createDescriptors "+pathToSet +" "+ descriptors_extension;
+	string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
 	char *cstr = &s[0u];
 	if (system(cstr)==0)
 	{
-		vfh_matcher->reloadVFH(pathToSet);
+		vfh_matcher->reloadVFH(pathLoadDescriptors);
 		vfh_matcher->loadTrainingData();
 	}
 }
@@ -255,7 +244,9 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 			
 		//save the cloud at 
 		cluster_clouds.push_back(cloud_cluster);
-        std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
+#if DEBUG
+		std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
+#endif
 		#if SAVE_DATA	
 			std::stringstream ss;
 			ss <<"/home/robocomp/robocomp/components/prp/scene/"<<num_scene<<"_capture_object_" << j;
@@ -263,7 +254,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
                 /////save /*rgbd*/ 
 
 			cv::Mat M(480,640,CV_8UC1, cv::Scalar::all(0));
-			for (int i = 0; i<cloud_cluster->points.size(); i++)
+			for (unsigned int i = 0; i<cloud_cluster->points.size(); i++)
 			{
 				InnerModelCamera *camera = innermodel->getCamera(id_camera);
 				
@@ -349,6 +340,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 		#endif
 		j++;
 	}
+	qDebug()<<"Clouds of points captured: "<< cluster_clouds.size();
 	num_scene++;
 
 }
@@ -373,60 +365,72 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 {
 	QMutexLocker locker(&april_mutex);
 	static InnerModel tabletags("/home/robocomp/robocomp/components/robocomp-shelly/files/tabletags.xml");
-	QMat transformM,cameratoapril5M;
-	RTMat cameratoaprilseeM;
+	QMat transformM,cameratoapril5M, cameratorobot, cameratoaprilseeM;
 	for (auto ap : tags)
 	{
 		if(ap.id < 10 and ap.id > 0)
 		{
 			cameratoaprilseeM = RTMat(ap.rx, ap.ry, ap.rz, ap.tx, ap.ty, ap.tz);
-			ccc(cameratoaprilseeM).print(QString("marca vista ")+QString::number(ap.id));
-			tabletags.transform6D(QString("tag")+QString::number(ap.id),"tag5").print(QString("5 from ")+QString::number(ap.id));
 			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id),"tag5");
-			ccc(transformM).print("transformacion");
-			cameratoapril5M = transformM * cameratoaprilseeM;
-			QVec ret = ccc(cameratoapril5M);
-			ret.print("la 5 desde la camara");
-			innermodel->transform6D("root",id_camera).print("camara a suelo");
-			innermodel->transform6D("root",id_robot).print("robot a suelo");
+			cameratorobot = innermodel->getTransformationMatrix(id_robot,id_camera);
 			
-			ret= innermodel->transform6D(id_robot,ret,id_camera);
-			qDebug() << "8-->5";
-			ret.print("5");
+			cameratoapril5M = cameratorobot * cameratoaprilseeM * transformM;
+			
+			QVec ret = ccc(cameratoapril5M);;
+			ret.print("tag5 from robot");
 			offset.tx = ret(0);
 			offset.ty = ret(1);
 			offset.tz = ret(2);
 			offset.rx = ret(3); 
 			offset.ry = ret(4);
 			offset.rz = ret(5);
+			
+// // 			ccc(cameratoaprilseeM).print(QString("marca vista ")+QString::number(ap.id));
+// 			tabletags.transform6D(QString("tag")+QString::number(ap.id),"tag5").print(QString("5 from ")+QString::number(ap.id));
+// // 			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id),"tag5");
+// // 			ccc(transformM).print("transformacion");
+// // 			cameratoapril5M = transformM * cameratoaprilseeM;
+// 			QVec ret = ccc(cameratoapril5M);
+// // 			ret.print("la 5 desde la camara");
+// 			ret= innermodel->transform6D(id_robot,ret,id_camera);
+// 			qDebug() << "8-->5";
+// 			ret.print("5");
+// 			offset.tx = ret(0);
+// 			offset.ty = ret(1);
+// 			offset.tz = ret(2);
+// 			offset.rx = ret(3); 
+// 			offset.ry = ret(4);
+// 			offset.rz = ret(5);
 			return true;
 		}
 	}
 	return false;
 }
 
-bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath)
-{
-	pcl::PointCloud<PointT>::Ptr cloud_output(cloud);
-	InnerModelCamera *camera = innermodel->getCamera(id_camera);
-	for(unsigned int i=0;i<cloud->points.size();i++)
-	{
-		QVec xyz = innermodel->transform(id_camera, QVec::vec3(cloud->points[i].x, cloud->points[i].y, cloud->points[i].z),id_robot);
-		cloud_output->points[i].x=xyz(0);
-		cloud_output->points[i].y=xyz(1);
-		cloud_output->points[i].z=xyz(2);
-	}
-// 	writer.write<PointT> (outputPath + ".pcd", cloud_output, false);
-}
+// bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath)
+// {
+// 	pcl::PointCloud<PointT>::Ptr cloud_output(cloud);
+// 	InnerModelCamera *camera = innermodel->getCamera(id_camera);
+// 	for(unsigned int i=0;i<cloud->points.size();i++)
+// 	{
+// 		QVec xyz = innermodel->transform(id_camera, QVec::vec3(cloud->points[i].x, cloud->points[i].y, cloud->points[i].z),id_robot);
+// 		cloud_output->points[i].x=xyz(0);
+// 		cloud_output->points[i].y=xyz(1);
+// 		cloud_output->points[i].z=xyz(2);
+// 	}
+// 	writer.write<PointT> (outputPath + ".pcd", *cloud_output, false);
+// }
 
-void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave)
+void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
 {
 	caputurePointCloudObjects();
 	qDebug()<<__FUNCTION__;
-	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
+	boost::filesystem::path path=boost::filesystem::path("/home/robocomp/robocomp/components/prp/objects/"+label+"/");
+	if(!boost::filesystem::exists(path))
+		boost::filesystem::create_directories(path);
 	poses_inner = new InnerModel();
 	 
-	int j = 0;
+// 	int j = 0;
 	num_pose = 0;
 // 	for(std::vector<pcl::PointCloud<PointT>::Ptr>::const_iterator it = cluster_clouds.begin(); it != cluster_clouds.end(); ++it)
 // 	{
@@ -459,7 +463,7 @@ void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave)
 // 		}
 // 		j++;
 // 	}
-	std::string inner_name = path+label + ".xml";
+	std::string inner_name = path.string()+label + ".xml";
 	poses_inner->save(QString(inner_name.c_str()));
 	delete (poses_inner);
 	qDebug()<<"End "<<__FUNCTION__;
@@ -519,6 +523,7 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 	delete (poses_inner);	
 	qDebug()<<"End "<<__FUNCTION__;
 }
+
 /*
 // void SpecificWorker::guessPose(const string &label, pose6D &guess)
 // {
@@ -529,7 +534,7 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 // 	//change vfh extension to pcd
 // 	std::string view_to_load = file_view_mathing;
 // 	
-// 	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) //* load the file
+// 	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) // load the file
 // 	{
 // 		printf ("Couldn't read file test_pcd.pcd \n");
 // 	}
@@ -635,6 +640,7 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 // 	
 // }
 */
+
 void SpecificWorker::passThrough()
 {
         pcl::PassThrough<PointT> pass;
@@ -673,40 +679,11 @@ void SpecificWorker::convexHull(const string &model)
 		string pcdname =  "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + "laositafira.pcd";
 		printf("<%s>\n", pcdname.c_str());
 		writer.write<PointT> ( pcdname, *projected_plane, false);
-#endif
-		
+#endif	
 	table->board_convex_hull(projected_plane, cloud_hull);
-// 		  // Load in the point cloud
-// 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in (new pcl::PointCloud<pcl::PointXYZ> ());
-// 	if (pcl::io::loadPCDFile (pcdname, *cloud_in) != 0)
-// 	{
-// 		cout<<"putaaaaaaaaa"<<endl;
-// 	}
-// 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_out (new pcl::PointCloud<pcl::PointXYZ> ());
-// 	pcl::ConcaveHull<pcl::PointXYZ> chull;
-// // 	cout<<"Mecagoentodolavirgen!!: "<<cloud_in->points.size()<<endl;
-// // 	pcl::PolygonMesh mesh_out;
-// //     chull.setInputCloud (cloud_in);
-// //     chull.reconstruct (mesh_out);
-// 
-// 	printf ("This is line %d of file \"%s\".\n",
-//             __LINE__, __FILE__);
-// // 	pcl::ConcaveHull<PointT> chull;
-// 	printf ("This is line %d of file \"%s\".\n",
-//             __LINE__, __FILE__);
-// 	chull.setInputCloud (cloud_in);
-// 	printf ("This is line %d of file \"%s\".\n",
-//             __LINE__, __FILE__);
-// 	chull.setAlpha (0.1);
-// 	printf ("This is line %d of file \"%s\".\n",
-//             __LINE__, __FILE__);
-// 	chull.reconstruct (*cloud_out);
-// 	printf ("This is line %d of file \"%s\".\n",
-//             __LINE__, __FILE__);
-// //     table->board_convex_hull(projected_plane, cloud_hull);
-// //     #if DEBUG
+#if DEBUG
     std::cout<<"Cloud hull size joder: "<<cloud_hull->points.size()<<std::endl;
-// //     #endif
+#endif
 }
 
 
@@ -736,7 +713,7 @@ void SpecificWorker::vfh(listType &guesses)
 
 void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 {
-	cout<<__FUNCTION__<<endl;
+// 	cout<<__FUNCTION__<<endl;
 	try
 	{
 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
@@ -761,17 +738,11 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 	
 	cloud->points.resize(points_kinect.size());
 	
-	
 	for (unsigned int i=0; i<points_kinect.size(); i++)
 	{
-// 		memcpy(&cloud->points[i], &points_kinect[i],3*sizeof(float));
+		QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
 		
-		QVec p1 = QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1);
-//  	QVec p2 = PP * p1;
- 		QVec p22 = (PP * p1).fromHomogeneousCoordinates();
-// 		QVec p22 = p1.fromHomogeneousCoordinates();
-		
-		memcpy(&cloud->points[i],p22.data(),3*sizeof(float));
+		memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
 		
 		cloud->points[i].r=rgbMatrix[i].red;
 		cloud->points[i].g=rgbMatrix[i].green;
@@ -799,6 +770,21 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 
 }
 
+void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
+{
+    rgb_image = cv::imread(image);
+    
+    if(! rgb_image.data )                              // Check for invalid inpute
+    {
+        cout <<  "Could not open or find the image " << image << std::endl ;
+    }
+    
+    if (pcl::io::loadPCDFile<PointT> (pcd, *cloud) == -1) //* load the file
+    {
+        PCL_ERROR ("Couldn't read file pcd.pcd \n");
+    }
+}
+
 void SpecificWorker::projectInliers(const string &model)
 {
 	table->project_board_inliers(this->cloud, ransac_inliers, projected_plane);
@@ -816,10 +802,9 @@ void SpecificWorker::extractPolygon(const string &model)
 	cout<<"CloudHull size: "<<cloud_hull->points.size()<<endl;
 	cout<<"Cloud size: "<<cloud->points.size()<<endl;
 
-	table->extract_table_polygon(this->cloud, cloud_hull, QVec::vec3(viewpoint_transform(0,3), viewpoint_transform(1,3), viewpoint_transform(2,3)) , 20, 1500, prism_indices, this->cloud);
-	QVec::vec3(viewpoint_transform(0,3), viewpoint_transform(1,3), viewpoint_transform(2,3)).print("Viewpoint: ");
-//  table->extract_table_polygon(this->cloud, cloud_hull, QVec::vec3(0,0,1320) , 20, 1500, prism_indices, this->cloud);        
-		
+	table->extract_table_polygon(this->cloud, cloud_hull, QVec::vec3(viewpoint_transform(0,3), viewpoint_transform(1,3),
+									viewpoint_transform(2,3)), 20, 1500, prism_indices, this->cloud);
+	QVec::vec3(viewpoint_transform(0,3), viewpoint_transform(1,3), viewpoint_transform(2,3)).print("Viewpoint: ");		
 	cout<<"Prism size: "<<prism_indices->indices.size()<<endl;
 	cout<<"Point Cloud size: "<<this->cloud->points.size()<<endl;
 #if DEBUG
