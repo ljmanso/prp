@@ -979,13 +979,21 @@ pose6D  SpecificWorker::getPose()
 	// Estimate features
 	pcl::console::print_highlight ("Estimating features...\n");
 	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
+printf("%d\n", __LINE__);
 	fest.setRadiusSearch (0.025);
+printf("%d\n", __LINE__);
 	fest.setInputCloud (object);
+printf("%d\n", __LINE__);
 	fest.setInputNormals (object_normals);
+printf("%d\n", __LINE__);
 	fest.compute (*object_features);
+printf("%d\n", __LINE__);
 	fest.setInputCloud (scene);
+printf("%d\n", __LINE__);
 	fest.setInputNormals (scene_normals);
+printf("%d\n", __LINE__);
 	fest.compute (*scene_features);
+printf("%d\n", __LINE__);
 	
 	// Perform alignment
 	pcl::console::print_highlight ("Starting alignment...\n");
