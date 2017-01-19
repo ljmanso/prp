@@ -33,7 +33,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 // 	connect(pose, SIGNAL(clicked()), this, SLOT(getPose()));
 // 	connect(rotation, SIGNAL(clicked()), this, SLOT(getRotation()));
 	connect(reload, SIGNAL(clicked()), this, SLOT(reloadVFH()));
-//  	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
+ 	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
 }
 
 /**

@@ -85,7 +85,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	else if(params[name+".type_features"].value=="OUR-CVFH")
 		descriptors_extension="ourcvfh";
 	std::cout<<params[name+".type_features"].value<<" " <<descriptors_extension<<std::endl;
-	timer.start(Period);
+	timer.start(500);
 
 	return true;
 }
@@ -353,7 +353,6 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 
 }
 
-
 QVec ccc(QMat M)
 {
 	QVec initVec = QVec::vec6(0,0,0,0,0,0);
@@ -369,6 +368,7 @@ QVec ccc(QMat M)
 	ret(5) = b(2);
 	return ret;
 }
+
 bool SpecificWorker::aprilSeen(pose6D &offset)
 {
 	QMutexLocker locker(&april_mutex);
@@ -380,9 +380,16 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 		if(ap.id < 10 and ap.id > 0)
 		{
 			cameratoaprilseeM = RTMat(ap.rx, ap.ry, ap.rz, ap.tx, ap.ty, ap.tz);
-			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id), "tag5");
+			ccc(cameratoaprilseeM).print(QString("marca vista ")+QString::number(ap.id));
+			tabletags.transform6D(QString("tag")+QString::number(ap.id),"tag5").print(QString("5 from ")+QString::number(ap.id));
+			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id),"tag5");
+			ccc(transformM).print("transformacion");
 			cameratoapril5M = transformM * cameratoaprilseeM;
 			QVec ret = ccc(cameratoapril5M);
+			ret.print("la 5 desde la camara");
+			innermodel->transform6D("root",id_camera).print("camara a suelo");
+			innermodel->transform6D("root",id_robot).print("robot a suelo");
+			
 			ret= innermodel->transform6D(id_robot,ret,id_camera);
 			qDebug() << "8-->5";
 			ret.print("5");
@@ -421,37 +428,37 @@ void SpecificWorker::saveCanonPose(const string &label, const int numPoseToSave)
 	 
 	int j = 0;
 	num_pose = 0;
-	for(std::vector<pcl::PointCloud<PointT>::Ptr>::const_iterator it = cluster_clouds.begin(); it != cluster_clouds.end(); ++it)
-	{
-		if(j==numPoseToSave)
-		{
-			//check if appril seen
-			pose6D offset;
-			if(aprilSeen(offset))
-			{
-				QVec poseoffset =QVec::vec6(offset.tx, offset.ty, offset.tz, offset.rx, offset.ry, offset.rz);
-				poseoffset = innermodel->transform6D(id_robot, poseoffset, id_camera_transform);
-				
-				InnerModelNode *root_node = poses_inner->getRoot();
-				InnerModelTransform *node = poses_inner->newTransform("canon_pose", "static", root_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
-				root_node->addChild(node);
-				
-				//save the cloud 
-				std::cout << "PointCloud representing the Cluster: " << (*it)->points.size() << " data points." << std::endl;
-		
-				std::stringstream ss;
-				ss <<path<<"canon_pose_" << label;
-		
-				writer.write<PointT> (ss.str () + ".pcd", **it, false);
-// 				visualize(*it);
-			}
-			else
-			{
-				qFatal("CAN'T SEE ANY APRIL!");
-			}
-		}
-		j++;
-	}
+// 	for(std::vector<pcl::PointCloud<PointT>::Ptr>::const_iterator it = cluster_clouds.begin(); it != cluster_clouds.end(); ++it)
+// 	{
+// 		if(j==numPoseToSave)
+// 		{
+// 			//check if appril seen
+// 			pose6D offset;
+// 			if(aprilSeen(offset))
+// 			{
+// 				QVec poseoffset =QVec::vec6(offset.tx, offset.ty, offset.tz, offset.rx, offset.ry, offset.rz);
+// 				poseoffset = innermodel->transform6D(id_robot, poseoffset, id_camera_transform);
+// 				
+// 				InnerModelNode *root_node = poses_inner->getRoot();
+// 				InnerModelTransform *node = poses_inner->newTransform("canon_pose", "static", root_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
+// 				root_node->addChild(node);
+// 				
+// 				//save the cloud 
+// 				std::cout << "PointCloud representing the Cluster: " << (*it)->points.size() << " data points." << std::endl;
+// 		
+// 				std::stringstream ss;
+// 				ss <<path<<"canon_pose_" << label;
+// 		
+// 				writer.write<PointT> (ss.str () + ".pcd", **it, false);
+// // 				visualize(*it);
+// 			}
+// 			else
+// 			{
+// 				qFatal("CAN'T SEE ANY APRIL!");
+// 			}
+// 		}
+// 		j++;
+// 	}
 	std::string inner_name = path+label + ".xml";
 	poses_inner->save(QString(inner_name.c_str()));
 	delete (poses_inner);
@@ -512,7 +519,7 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 	delete (poses_inner);	
 	qDebug()<<"End "<<__FUNCTION__;
 }
-
+/*
 // void SpecificWorker::guessPose(const string &label, pose6D &guess)
 // {
 // 	qDebug()<<__FUNCTION__;
@@ -627,7 +634,7 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 // 	guess.rz = transform_to_canon.getRzValue();
 // 	
 // }
-
+*/
 void SpecificWorker::passThrough()
 {
         pcl::PassThrough<PointT> pass;
@@ -861,7 +868,7 @@ bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 	}
 	if((guessgan!=""&&guessgan==objectTofind))
 	{
-		paintcloud(cluster_clouds[num_object_found]);
+// 		paintcloud(cluster_clouds[num_object_found]);
 		settexttocloud(guessgan,cluster_clouds[num_object_found]);
 		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
 		pose=getPose();
@@ -904,11 +911,10 @@ bool SpecificWorker::findObjects(listObject& lObjects)
 
 pose6D  SpecificWorker::getPose()
 {
-// 	Eigen::Vector4f centroid;
-// 	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
-// 	x = centroid[0];
-// 	y = centroid[1];
-// 	z = centroid[2];
+	Eigen::Vector4f centroid;
+	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
+	QVec centroidpose = QVec::vec3(centroid[0],centroid[1],centroid[2]);
+	centroidpose.print("centroid vista atual");
 	
 	// Point clouds
 	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
@@ -923,6 +929,9 @@ pose6D  SpecificWorker::getPose()
 	{
 		printf ("Couldn't read file test_pcd.pcd \n");
 	}
+	pcl::compute3DCentroid (*object, centroid); 
+	centroidpose = QVec::vec3(centroid[0],centroid[1],centroid[2]);
+	centroidpose.print("centroid vista guardada");
 	for(unsigned int i =0;i<object->points.size();i++)
 	{
 		object->points[i].x=object->points[i].x/1000.;
@@ -995,8 +1004,20 @@ pose6D  SpecificWorker::getPose()
 		pcl::ScopeTime t("Alignment");
 		align.align (*object_aligned);
 	}
-	
-	
+	for(unsigned int i =0;i<object_aligned->points.size();i++)
+	{
+		object_aligned->points[i].x=object_aligned->points[i].x*1000.;
+		object_aligned->points[i].y=object_aligned->points[i].y*1000.;
+		object_aligned->points[i].z=object_aligned->points[i].z*1000.;
+	}
+	for(unsigned int i =0;i<scene->points.size();i++)
+	{
+		scene->points[i].x=scene->points[i].x*1000.;
+		scene->points[i].y=scene->points[i].y*1000.;
+		scene->points[i].z=scene->points[i].z*1000.;
+	}
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
 	Eigen::Matrix4f transformation = align.getFinalTransformation ();
 // 	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
 // 	qDebug()<<"Rotation"<<ea(0)<<", "<<ea(1)<<", "<<ea(2);
@@ -1013,19 +1034,22 @@ pose6D  SpecificWorker::getPose()
 	poseToView(1)=poseToView(1)*1000;
 	poseToView(2)=poseToView(2)*1000;
 	poseToViewR= RTMat(poseToView(3), poseToView(4), poseToView(5), poseToView(0), poseToView(1), poseToView(2));
-	ccc(poseToViewR).print("poseToViewR in mm");
+// 	ccc(poseToViewR).print("poseToViewR in mm");
 	
 	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
 	node_name=node_name.substr(node_name.find_last_of("/")+1);
 	InnerModel inner(pathxml);
 	QMat canonToPoseR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
 	
-	static QMat april = RTMat(0,0,0,M_PI_2, 0, 0);
+	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
 // 	ccc(april*canonToPoseR).print("canonToPoseR in mm");
 // 	
 // 	ccc(poseToViewR).print("poseToViewR");
-	
-	QMat objR = april * (poseToViewR * canonToPoseR).invert();
+// 	ccc(canonToPoseR * poseToViewR).print("(canonToPoseR * poseToViewR)");
+	ccc((april * canonToPoseR * poseToViewR).invert()).print("(canonToPoseR * poseToViewR * april).inv()");
+	ccc((april * canonToPoseR * poseToViewR)         ).print("(canonToPoseR * poseToViewR * april)");
+// // 	QMat objR = april * (canonToPoseR * poseToViewR).invert();
+	QMat objR = (april * canonToPoseR * poseToViewR).invert();
 // 	objR.print("obj");
 	
 	QVec pose = ccc(objR);
@@ -1048,6 +1072,9 @@ void SpecificWorker::newAprilTagAndPose(const tagsList &tags, const RoboCompGene
 void SpecificWorker::newAprilTag(const tagsList &tags)
 {
 	QMutexLocker locker(&april_mutex);
+	if(tags.size()==0)
+		return;
+	qDebug()<<"Found tags :"<<tags.size();
 	this->tags = tags;
 }
 
@@ -1105,7 +1132,7 @@ void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
 		{
 // 		M.at<uchar> ((int)xy(1), (int)xy(0)) = 255;
 			unsigned int color=(cloud->points[i].z - min) * -254 / (max - min)-254;
-			image.setPixel(x-15,y+10,qRgb(color, 0, 0));
+			image.setPixel(x,y,qRgb(color, 0, 0));
 		}
 		else if (not (isinf(xy(1)) or isinf(xy(0))))
 		{
