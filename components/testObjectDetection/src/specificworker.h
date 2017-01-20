@@ -41,20 +41,17 @@ public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
-	QLineEdit* x[9]={x1,x2,x3,x4,x5,x6,x7,x8,x9};
-	QLineEdit* y[9]={y1,y2,y3,y4,y5,y6,y7,y8,y9};
-	QLineEdit* z[9]={z1,z2,z3,z4,z5,z6,z7,z8,z9};
 public slots:
 	void compute(); 
-	void grabThePointCloud();	
-	void ransac();
-	void projectInliers();
-	void convexHull();
-	void extractPolygon();
-	void euclideanExtract();
+// 	void grabThePointCloud();	
+// 	void ransac();
+// 	void projectInliers();
+// 	void convexHull();
+// 	void extractPolygon();
+// 	void euclideanExtract();
 	void findTheObject();
-	void getPose();
-	void getRotation();
+// 	void getPose();
+// 	void getRotation();
 	void reloadVFH();
 	void fullRun();
 private:

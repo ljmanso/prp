@@ -39,7 +39,7 @@
  #include <pcl/filters/passthrough.h>
  #include <pcl/segmentation/extract_clusters.h>
  #include <pcl/filters/statistical_outlier_removal.h>
- #include <pcl/io/pcd_io.h>
+ #include <pcl/io/io.h>
  #include <pcl/conversions.h>
  #include <pcl/point_types_conversion.h>
  #include <opencv2/core/core.hpp>
@@ -51,6 +51,7 @@
  #include <pcl/registration/sample_consensus_prerejective.h>
  #include <pcl/features/fpfh_omp.h>
  #include <pcl/common/time.h>
+//  #include <pcl/visualization/cloud_viewer.h>
 #endif
 
 #include <genericworker.h>
@@ -65,15 +66,19 @@
 #endif
 
 #define DEBUG 0
-#define SAVE_DATA 0
+#define SAVE_DATA 0 
+#define THRESHOLD 0.75
 typedef pcl::PointXYZRGB PointT;
 
 
 class SpecificWorker : public GenericWorker
 {
-	
+	QString id_robot, id_camera,id_camera_transform;
+	string descriptors_extension, pathLoadDescriptors;
 	InnerModel *innermodel;
-	
+	QGraphicsPixmapItem* item_pixmap;
+	vector<QGraphicsTextItem*> V_text_item;
+	vector<QGraphicsPixmapItem*> V_pixmap_item;
 	//for poses calculation respect to the canonical one
 	InnerModel *poses_inner;
 	tagsList tags;
@@ -115,11 +120,11 @@ class SpecificWorker : public GenericWorker
 	//euclidean clustering
 	std::vector<pcl::PointIndices> cluster_indices;
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
-        
+    
         
 	//VFH
 	boost::shared_ptr<VFH> vfh_matcher;
-	std::vector<string> vfh_guesses;
+	std::vector<VFH::file_dist_t> vfh_guesses;
         
 	boost::shared_ptr<Table> table;
 	QGraphicsScene scene;
@@ -129,53 +134,45 @@ public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
-	void grabThePointCloud(const string &image, const string &pcd);
-	void readThePointCloud(const string &image, const string &pcd);
 	
-	
-	void grabTheAR();
-	void aprilFitModel(const string &model);
-	void segmentImage();
-	void mindTheGapPC();
-	void getPose(float &x, float &y, float &z, float &rx, float &ry, float &rz);
-	void centroidBasedPose(float &x, float &y, float &theta);
-	void reloadVFH(const string &pathToSet);
-	void ransac(const string &model);
-	void euclideanClustering(int &numCluseters);
-	void passThrough();
-	void surfHomography(listType &guesses);
-	void fitTheViewVFH();
-	void showObject(const int numObject);
-	void convexHull(const string &model);
-	void mirrorPC();
-	void statisticalOutliersRemoval();
-	void loadTrainedVFH();
-	void reset();
-	void normalSegmentation(const string &model);
-	void getInliers(const string &model);
-	void vfh(listType &guesses);
-	void fitModel(const string &model, const string &method);
-	void setContinousMode(const bool &mode);
-	void projectInliers(const string &model);
-	void extractPolygon(const string &model);
-	void newAprilTag(const tagsList &tags);
+	//--------------
+	pose6D getPose();
+	bool findObjects(listObject &lObjects);
+	void saveRegPose(const string &label, const int numPoseToSave);
+	bool findTheObject(const string &objectTofind, pose6D &pose);
+	void initSaveObject(const string &label, const int numPoseToSave);
+	void reloadVFH();
 	void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState);
-	bool findTheObject(const string &objectTofind);
-	void getRotation(float &rx, float &ry, float &rz);
-	void getPose(float &x, float &y, float &z);
-	bool aprilSeen(pose6D &offset, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
-// 	save a file canon_pose_label.pcd and label.xml
-	void saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
-// 	save a files pose_num_pose_label.pcd
-	void saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9);
-// 	
-	void guessPose(const string &label, pose6D &guess);
+	void newAprilTag(const tagsList &tags);
+	//--------------
+	
+	
+	
+// 	void guessPose(const string &label, pose6D &guess);
 
 public slots:
 	void compute(); 	
 
 private:
-	void visualize(pcl::PointCloud<PointT>::Ptr cloud);
+	void grabThePointCloud(const string &image, const string &pcd);
+	void readThePointCloud(const string &image, const string &pcd);
+	void updatergbd();
+	void updateinner();
+	void segmentImage();
+	void ransac(const string &model);
+	void euclideanClustering(int &numCluseters);
+	void passThrough();
+	void convexHull(const string &model);
+	void statisticalOutliersRemoval();
+	void loadTrainedVFH();
+	void vfh(listType &guesses);
+	void projectInliers(const string &model);
+	void extractPolygon(const string &model);
+	bool aprilSeen(pose6D &offset);
+	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
+	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
+// 	bool transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath);
+	void caputurePointCloudObjects();
 };
 
 #endif

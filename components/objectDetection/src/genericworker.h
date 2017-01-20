@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -35,6 +35,7 @@
 #include <RGBD.h>
 #include <JointMotor.h>
 #include <GenericBase.h>
+#include <JointMotor.h>
 
 #define CHECK_PERIOD 5000
 #define BASIC_PERIOD 100
@@ -71,37 +72,14 @@ public:
 	
 
 	RGBDPrx rgbd_proxy;
+	JointMotorPrx jointmotor_proxy;
 
-	virtual void grabTheAR() = 0;
-	virtual void aprilFitModel(const string &model) = 0;
-	virtual void segmentImage() = 0;
-	virtual void mindTheGapPC() = 0;
-	virtual void getRotation(float &rx, float &ry, float &rz) = 0;
-	virtual void centroidBasedPose(float &x, float &y, float &theta) = 0;
-	virtual void reloadVFH(const string &pathToSet) = 0;
-	virtual void ransac(const string &model) = 0;
-	virtual void euclideanClustering(int &numCluseters) = 0;
-	virtual void passThrough() = 0;
-	virtual void surfHomography(listType &guesses) = 0;
-	virtual void fitTheViewVFH() = 0;
-	virtual void saveRegPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9) = 0;
-	virtual void showObject(const int numObject) = 0;
-	virtual void convexHull(const string &model) = 0;
-	virtual void mirrorPC() = 0;
-	virtual bool findTheObject(const string &objectTofind) = 0;
-	virtual void statisticalOutliersRemoval() = 0;
-	virtual void loadTrainedVFH() = 0;
-	virtual void reset() = 0;
-	virtual void normalSegmentation(const string &model) = 0;
-	virtual void getInliers(const string &model) = 0;
-	virtual void getPose(float &x, float &y, float &z) = 0;
-	virtual void vfh(listType &guesses) = 0;
-	virtual void grabThePointCloud(const string &image, const string &pcd) = 0;
-	virtual void fitModel(const string &model, const string &method) = 0;
-	virtual void projectInliers(const string &model) = 0;
-	virtual void guessPose(const string &label, pose6D &guess) = 0;
-	virtual void extractPolygon(const string &model) = 0;
-	virtual void saveCanonPose(const string &label, const int numPoseToSave, const pose6D &tag1, const pose6D &tag2, const pose6D &tag3, const pose6D &tag4, const pose6D &tag5, const pose6D &tag6, const pose6D &tag7, const pose6D &tag8, const pose6D &tag9) = 0;
+	virtual pose6D getPose() = 0;
+	virtual bool findObjects(listObject &lObjects) = 0;
+	virtual void saveRegPose(const string &label, const int numPoseToSave) = 0;
+	virtual bool findTheObject(const string &objectTofind, pose6D &pose) = 0;
+	virtual void initSaveObject(const string &label, const int numPoseToSave) = 0;
+	virtual void reloadVFH() = 0;
 	virtual void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState) = 0;
 	virtual void newAprilTag(const tagsList &tags) = 0;
 
