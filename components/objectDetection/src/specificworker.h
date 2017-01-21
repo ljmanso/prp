@@ -173,6 +173,11 @@ private:
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
 // 	bool transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath);
 	void caputurePointCloudObjects();
+	void removeAllpixmap();
+	pcl::PointCloud< PointT >::Ptr PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud);
+	pcl::PointCloud< PointT >::Ptr PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud);
+
+
 };
 
 #endif

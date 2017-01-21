@@ -384,43 +384,26 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 			offset.rx = ret(3); 
 			offset.ry = ret(4);
 			offset.rz = ret(5);
-			
-// // 			ccc(cameratoaprilseeM).print(QString("marca vista ")+QString::number(ap.id));
-// 			tabletags.transform6D(QString("tag")+QString::number(ap.id),"tag5").print(QString("5 from ")+QString::number(ap.id));
-// // 			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id),"tag5");
-// // 			ccc(transformM).print("transformacion");
-// // 			cameratoapril5M = transformM * cameratoaprilseeM;
-// 			QVec ret = ccc(cameratoapril5M);
-// // 			ret.print("la 5 desde la camara");
-// 			ret= innermodel->transform6D(id_robot,ret,id_camera);
-// 			qDebug() << "8-->5";
-// 			ret.print("5");
-// 			offset.tx = ret(0);
-// 			offset.ty = ret(1);
-// 			offset.tz = ret(2);
-// 			offset.rx = ret(3); 
-// 			offset.ry = ret(4);
-// 			offset.rz = ret(5);
 			return true;
 		}
 	}
 	return false;
 }
-
-// bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath)
-// {
-// 	pcl::PointCloud<PointT>::Ptr cloud_output(cloud);
-// 	InnerModelCamera *camera = innermodel->getCamera(id_camera);
-// 	for(unsigned int i=0;i<cloud->points.size();i++)
-// 	{
-// 		QVec xyz = innermodel->transform(id_camera, QVec::vec3(cloud->points[i].x, cloud->points[i].y, cloud->points[i].z),id_robot);
-// 		cloud_output->points[i].x=xyz(0);
-// 		cloud_output->points[i].y=xyz(1);
-// 		cloud_output->points[i].z=xyz(2);
-// 	}
-// 	writer.write<PointT> (outputPath + ".pcd", *cloud_output, false);
-// }
-
+/*
+bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath)
+{
+	pcl::PointCloud<PointT>::Ptr cloud_output(cloud);
+	InnerModelCamera *camera = innermodel->getCamera(id_camera);
+	for(unsigned int i=0;i<cloud->points.size();i++)
+	{
+		QVec xyz = innermodel->transform(id_camera, QVec::vec3(cloud->points[i].x, cloud->points[i].y, cloud->points[i].z),id_robot);
+		cloud_output->points[i].x=xyz(0);
+		cloud_output->points[i].y=xyz(1);
+		cloud_output->points[i].z=xyz(2);
+	}
+	writer.write<PointT> (outputPath + ".pcd", *cloud_output, false);
+}
+*/
 void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
 {
 	caputurePointCloudObjects();
@@ -854,7 +837,7 @@ bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 	if((guessgan!=""&&guessgan==objectTofind))
 	{
 // 		paintcloud(cluster_clouds[num_object_found]);
-		settexttocloud(guessgan,cluster_clouds[num_object_found]);
+// 		settexttocloud(guessgan,cluster_clouds[num_object_found]);
 		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
 		pose=getPose();
 		return true;
@@ -896,39 +879,42 @@ bool SpecificWorker::findObjects(listObject& lObjects)
 
 pose6D  SpecificWorker::getPose()
 {
+	removeAllpixmap();
+	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
+	
+	//Print centroide
 	Eigen::Vector4f centroid;
 	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
 	QVec centroidpose = QVec::vec3(centroid[0],centroid[1],centroid[2]);
 	centroidpose.print("centroid vista atual");
 	
+	
+	InnerModelCamera *camera = innermodel->getCamera(id_camera);
+	centroidpose= camera->project(id_robot,QVec::vec3(centroidpose.x(),centroidpose.y(),centroidpose.z()));
+	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
+	image.fill(Qt::transparent);
+	for (int x =centroidpose.x()-4;x<centroidpose.x()+4;x++)
+		for (int y =centroidpose.y()-4;y<centroidpose.y()+4;y++)
+			image.setPixel(x,y,qRgb(0, 255, 0));
+	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
+	SpecificWorker::scene.addItem(V_pixmap_item.back());
+	
 	// Point clouds
 	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
 	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
 	string pathxml="/home/robocomp/robocomp/components/prp/objects/"+guessgan+"/"+guessgan+".xml";
-	pcl::PointCloud<PointT>::Ptr object (new pcl::PointCloud<PointT>);
+	pcl::PointCloud<PointT>::Ptr scene (new pcl::PointCloud<PointT>);
 	//change vfh extension to pcd
 	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
 	view_to_load = view_to_load + ".pcd"; 
-	pcl::PointCloud<PointT>::Ptr scene(cluster_clouds[num_object_found]);
-	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) //* load the file
+	pcl::PointCloud<PointT>::Ptr object(cluster_clouds[num_object_found]);
+	if (pcl::io::loadPCDFile<PointT> (view_to_load, *scene) == -1) //* load the file
 	{
 		printf ("Couldn't read file test_pcd.pcd \n");
 	}
-	pcl::compute3DCentroid (*object, centroid); 
-	centroidpose = QVec::vec3(centroid[0],centroid[1],centroid[2]);
-	centroidpose.print("centroid vista guardada");
-	for(unsigned int i =0;i<object->points.size();i++)
-	{
-		object->points[i].x=object->points[i].x/1000.;
-		object->points[i].y=object->points[i].y/1000.;
-		object->points[i].z=object->points[i].z/1000.;
-	}
-	for(unsigned int i =0;i<scene->points.size();i++)
-	{
-		scene->points[i].x=scene->points[i].x/1000.;
-		scene->points[i].y=scene->points[i].y/1000.;
-		scene->points[i].z=scene->points[i].z/1000.;
-	}
+	//convert pointcloud to mm
+	scene=PointCloudfrom_Meter_to_mm(scene);
+	object=PointCloudfrom_Meter_to_mm(object);
 	
 	writer.write<PointT> ("seen.pcd", *scene, false);
 	writer.write<PointT> ("saved.pcd", *object, false);
@@ -964,21 +950,21 @@ pose6D  SpecificWorker::getPose()
 	// Estimate features
 	pcl::console::print_highlight ("Estimating features...\n");
 	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
-printf("%d\n", __LINE__);
+// printf("%d\n", __LINE__);
 	fest.setRadiusSearch (0.025);
-printf("%d\n", __LINE__);
+// printf("%d\n", __LINE__);
 	fest.setInputCloud (object);
-printf("%d\n", __LINE__);
+// printf("%d\n", __LINE__);
 	fest.setInputNormals (object_normals);
-printf("%d\n", __LINE__);
+// printf("%d\n", __LINE__);
 	fest.compute (*object_features);
-printf("%d\n", __LINE__);
+// printf("%d\n", __LINE__);
 	fest.setInputCloud (scene);
-printf("%d\n", __LINE__);
+// printf("%d\n", __LINE__);
 	fest.setInputNormals (scene_normals);
-printf("%d\n", __LINE__);
+// printf("%d\n", __LINE__);
 	fest.compute (*scene_features);
-printf("%d\n", __LINE__);
+// printf("%d\n", __LINE__);
 	
 	// Perform alignment
 	pcl::console::print_highlight ("Starting alignment...\n");
@@ -987,7 +973,7 @@ printf("%d\n", __LINE__);
 	align.setSourceFeatures (object_features);
 	align.setInputTarget (scene);
 	align.setTargetFeatures (scene_features);
-	align.setMaximumIterations (50000); // Number of RANSAC iterations
+	align.setMaximumIterations (100000); // Number of RANSAC iterations
 	align.setNumberOfSamples (3); // Number of points to sample for generating/prerejecting a pose
 	align.setCorrespondenceRandomness (5); // Number of nearest features to use
 	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
@@ -997,63 +983,60 @@ printf("%d\n", __LINE__);
 		pcl::ScopeTime t("Alignment");
 		align.align (*object_aligned);
 	}
-	for(unsigned int i =0;i<object_aligned->points.size();i++)
-	{
-		object_aligned->points[i].x=object_aligned->points[i].x*1000.;
-		object_aligned->points[i].y=object_aligned->points[i].y*1000.;
-		object_aligned->points[i].z=object_aligned->points[i].z*1000.;
-	}
-	for(unsigned int i =0;i<scene->points.size();i++)
-	{
-		scene->points[i].x=scene->points[i].x*1000.;
-		scene->points[i].y=scene->points[i].y*1000.;
-		scene->points[i].z=scene->points[i].z*1000.;
-	}
+	//convert pointcloud to meters
+	object_aligned=PointCloudfrom_mm_to_Meters(object_aligned);
+	scene=PointCloudfrom_mm_to_Meters(scene);
+	
 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
 	Eigen::Matrix4f transformation = align.getFinalTransformation ();
-// 	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
-// 	qDebug()<<"Rotation"<<ea(0)<<", "<<ea(1)<<", "<<ea(2);
-// 	rx = ea(0);
-// 	ry = ea(1);
-// 	rz = ea(2);
-	QMat poseToViewR(4,4);
+	QMat saveToViewR(4,4);
 	for (int c=0; c<4; c++)
 		for (int r=0; r<4; r++)
-			poseToViewR(r,c) = transformation(r, c);	
-	
-	QVec poseToView = ccc(poseToViewR);
-	poseToView(0)=poseToView(0)*1000;
-	poseToView(1)=poseToView(1)*1000;
-	poseToView(2)=poseToView(2)*1000;
-	poseToViewR= RTMat(poseToView(3), poseToView(4), poseToView(5), poseToView(0), poseToView(1), poseToView(2));
-// 	ccc(poseToViewR).print("poseToViewR in mm");
+			saveToViewR(r,c) = transformation(r, c);	
 	
 	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
 	node_name=node_name.substr(node_name.find_last_of("/")+1);
 	InnerModel inner(pathxml);
-	QMat canonToPoseR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
+	QMat PoseSavetoRootR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
+// 	convert m to mm
+	QVec saveToView = ccc(saveToViewR);
+	saveToView(0)=saveToView(0)*1000;
+	saveToView(1)=saveToView(1)*1000;
+	saveToView(2)=saveToView(2)*1000;
+	saveToViewR= RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2));
 	
-	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
-// 	ccc(april*canonToPoseR).print("canonToPoseR in mm");
-// 	
-// 	ccc(poseToViewR).print("poseToViewR");
-// 	ccc(canonToPoseR * poseToViewR).print("(canonToPoseR * poseToViewR)");
-	ccc((april * canonToPoseR * poseToViewR).invert()).print("(canonToPoseR * poseToViewR * april).inv()");
-	ccc((april * canonToPoseR * poseToViewR)         ).print("(canonToPoseR * poseToViewR * april)");
-// // 	QMat objR = april * (canonToPoseR * poseToViewR).invert();
-	QMat objR = (april * canonToPoseR * poseToViewR).invert();
-// 	objR.print("obj");
+	saveToView.print("saveToView");
+	ccc(saveToViewR.invert()).print("ViewTosave");
+	saveToViewR=saveToViewR.invert();
+	/*
+	ccc(saveToViewR*canonToPoseR).print("saveToViewR*canonToPoseR");
 	
-	QVec pose = ccc(objR);
+	ccc((saveToViewR*canonToPoseR)*april).print("saveToViewR*canonToPoseR*april");*/
+// 	--------------------------
+	QMat poseObjR =saveToViewR*PoseSavetoRootR/**april*/;
+// 	QVec angles_obj=ccc((april*poseObjR));
+	QVec pose=ccc(poseObjR);
+// 	pose(3)=angles_obj.rx();
+// 	pose(4)=angles_obj.ry();
+// 	pose(5)=angles_obj.rz();
 	pose.print("pose");
 	pose6D poseObj;
-	poseObj.tx=pose(0);
-	poseObj.ty=pose(1);
-	poseObj.tz=pose(2);
-	poseObj.rx=pose(3);
-	poseObj.ry=pose(4);
-	poseObj.rz=pose(5);
+	poseObj.tx=pose.x();
+	poseObj.ty=pose.y();
+	poseObj.tz=pose.z();
+	poseObj.rx=pose.rx();
+	poseObj.ry=pose.ry();
+	poseObj.rz=pose.rz();
+// 	InnerModelCamera *camera = innermodel->getCamera(id_camera);	
+	pose= camera->project(id_robot,QVec::vec3(pose.x(),pose.y(),pose.z()));
+// 	image(640,480,QImage::Format_ARGB32_Premultiplied);
+	image.fill(Qt::transparent);
+	for (int x =pose.x()-4;x<pose.x()+4;x++)
+		for (int y =pose.y()-4;y<pose.y()+4;y++)
+			image.setPixel(x,y,qRgb(255, 0, 0));
+	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
+	SpecificWorker::scene.addItem(V_pixmap_item.back());
 	return poseObj;
 }
 
@@ -1097,13 +1080,18 @@ void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr 
 	V_text_item.push_back(text);
 }
 
-void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
+void SpecificWorker::removeAllpixmap()
 {
 	while(!V_pixmap_item.empty())
 	{
 		scene.removeItem(V_pixmap_item.back());
 		V_pixmap_item.pop_back();
 	}
+}
+
+void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
+{
+	removeAllpixmap();
 	InnerModelCamera *camera = innermodel->getCamera(id_camera);
 	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
 	image.fill(Qt::transparent);
@@ -1145,6 +1133,29 @@ void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
 	scene.addItem(V_pixmap_item.back());
 }
 
+pcl::PointCloud< PointT >::Ptr SpecificWorker::PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud)
+{
+	pcl::PointCloud< PointT >::Ptr output(cloud);
+	for(unsigned int i =0;i<cloud->points.size();i++)
+	{
+		output->points[i].x=cloud->points[i].x/1000.;
+		output->points[i].y=cloud->points[i].y/1000.;
+		output->points[i].z=cloud->points[i].z/1000.;
+	}
+	return output;
+}
+
+pcl::PointCloud< PointT >::Ptr SpecificWorker::PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud)
+{
+	pcl::PointCloud< PointT >::Ptr output(cloud);
+	for(unsigned int i =0;i<cloud->points.size();i++)
+	{
+		output->points[i].x=cloud->points[i].x*1000.;
+		output->points[i].y=cloud->points[i].y*1000.;
+		output->points[i].z=cloud->points[i].z*1000.;
+	}
+	return output;
+}
 
 
 
