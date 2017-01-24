@@ -137,6 +137,10 @@ void SpecificMonitor::readConfig(RoboCompCommonBehavior::ParameterList &params )
 	configGetString(name,"pathLoadDescriptors", aux.value, "default");
 	//Check valid ranges
 	params[name+".pathLoadDescriptors"] = aux;
+	
+	configGetString(name,"test", aux.value, "default");
+	//Check valid ranges
+	params[name+".test"] = aux;
 }
 
 //comprueba que los parametros sean correctos y los transforma a la estructura del worker

@@ -73,6 +73,11 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	else if(params[name+".type_features"].value=="OUR-CVFH")
 		descriptors_extension="ourcvfh";
 	std::cout<<params[name+".type_features"].value<<" " <<descriptors_extension<<std::endl;
+// 	if(params[name+".test"].value=="1")
+// 	{
+// 		std::cout<<"Modo test activo"<<std::endl;
+// 		#define TEST
+// 	}
 	reloadVFH();
 	timer.start(500);
 
@@ -81,21 +86,18 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::updateinner()
 {
-// 	try
-// 	{
-// 		MotorList motors;
-// 		motors.push_back("head_yaw_joint");
-// 		motors.push_back("head_pitch_joint");
-// 		MotorStateMap motors_states = jointmotor_proxy->getMotorStateMap(motors);
-// 		for(auto motor:motors)
-// 		{
-// 			innermodel->updateJointValue(QString::fromStdString(motor),motors_states[motor].pos);
-// 		}
-// 	}
-// 	catch(...)
-// 	{
+#if defined(TEST)
 		innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
-// 	}
+#else
+		MotorList motors;
+		motors.push_back("head_yaw_joint");
+		motors.push_back("head_pitch_joint");
+		MotorStateMap motors_states = jointmotor_proxy->getMotorStateMap(motors);
+		for(auto motor:motors)
+		{
+			innermodel->updateJointValue(QString::fromStdString(motor),motors_states[motor].pos);
+		}
+#endif
 }
 
 void SpecificWorker::updatergbd()
@@ -106,27 +108,22 @@ void SpecificWorker::updatergbd()
 	RoboCompJointMotor::MotorStateMap h;
 	RoboCompGenericBase::TBaseState b;
 	cv::Mat rgb_image(480,640, CV_8UC3, cv::Scalar::all(0));
-// 	try
-// 	{
-// 		rgbd_proxy->getRGB(rgbMatrix,h,b);
-// // 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
-// 		for(unsigned int i=0; i<rgbMatrix.size(); i++)
-// 		{
-// 			int row = (i/640), column = i-(row*640);
-// 			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
-// 		}
-// 	}
-// 	catch(...)
-// 	{
-		rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
+#if defined(TEST)
+	rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
 
-		if(! rgb_image.data )                              // Check for invalid inpute
-		{
-			cout <<  "Could not open or find the image rgb.png" << std::endl ;
-		}
-// 	}
-	
-	
+	if(! rgb_image.data )                              // Check for invalid inpute
+	{
+		cout <<  "Could not open or find the image rgb.png" << std::endl ;
+	}	
+#else
+	rgbd_proxy->getRGB(rgbMatrix,h,b);
+// 	rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
+	for(unsigned int i=0; i<rgbMatrix.size(); i++)
+	{
+		int row = (i/640), column = i-(row*640);
+		rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+	}
+#endif
 	cv::Mat dest;
 	cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
 	QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
@@ -389,6 +386,7 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 	}
 	return false;
 }
+
 /*
 bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath)
 {
@@ -404,6 +402,7 @@ bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud
 	writer.write<PointT> (outputPath + ".pcd", *cloud_output, false);
 }
 */
+
 void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
 {
 	caputurePointCloudObjects();
@@ -1056,8 +1055,11 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 
 void SpecificWorker::caputurePointCloudObjects()
 {
-// 	grabThePointCloud("image.png", "rgbd.pcd");
+#if  defined(TEST)
 	readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
+#else
+	grabThePointCloud("image.png", "rgbd.pcd");
+#endif
 	ransac("plane");
 	projectInliers("plane");
 	convexHull("plane");

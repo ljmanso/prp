@@ -67,6 +67,7 @@
 
 #define DEBUG 0
 #define SAVE_DATA 0 
+// #define TEST
 #define THRESHOLD 0.75
 typedef pcl::PointXYZRGB PointT;
 
