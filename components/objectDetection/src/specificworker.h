@@ -67,13 +67,14 @@
 
 #define DEBUG 0
 #define SAVE_DATA 0 
-// #define TEST
+#define TEST
 #define THRESHOLD 0.75
 typedef pcl::PointXYZRGB PointT;
 
 
 class SpecificWorker : public GenericWorker
 {
+	bool test=false;
 	QString id_robot, id_camera,id_camera_transform;
 	string descriptors_extension, pathLoadDescriptors;
 	InnerModel *innermodel;

@@ -73,11 +73,11 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	else if(params[name+".type_features"].value=="OUR-CVFH")
 		descriptors_extension="ourcvfh";
 	std::cout<<params[name+".type_features"].value<<" " <<descriptors_extension<<std::endl;
-// 	if(params[name+".test"].value=="1")
-// 	{
-// 		std::cout<<"Modo test activo"<<std::endl;
-// 		#define TEST
-// 	}
+	if(params[name+".test"].value=="1")
+	{
+		std::cout<<"Modo test activo"<<std::endl;
+		test=true;
+	}
 	reloadVFH();
 	timer.start(500);
 
@@ -86,9 +86,10 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::updateinner()
 {
-#if defined(TEST)
-		innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
-#else
+	if(test)
+			innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
+	else
+	{
 		MotorList motors;
 		motors.push_back("head_yaw_joint");
 		motors.push_back("head_pitch_joint");
@@ -97,33 +98,33 @@ void SpecificWorker::updateinner()
 		{
 			innermodel->updateJointValue(QString::fromStdString(motor),motors_states[motor].pos);
 		}
-#endif
+	}
 }
 
 void SpecificWorker::updatergbd()
 {
-	RoboCompRGBD::ColorSeq rgbMatrix;	
-// 	RoboCompRGBD::depthType distanceMatrix;
-// 	RoboCompRGBD::PointSeq points_kinect;
+	RoboCompRGBD::ColorSeq rgbMatrix;
 	RoboCompJointMotor::MotorStateMap h;
 	RoboCompGenericBase::TBaseState b;
 	cv::Mat rgb_image(480,640, CV_8UC3, cv::Scalar::all(0));
-#if defined(TEST)
-	rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
+	if(test)
+	{
+		rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
 
-	if(! rgb_image.data )                              // Check for invalid inpute
-	{
-		cout <<  "Could not open or find the image rgb.png" << std::endl ;
-	}	
-#else
-	rgbd_proxy->getRGB(rgbMatrix,h,b);
-// 	rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
-	for(unsigned int i=0; i<rgbMatrix.size(); i++)
-	{
-		int row = (i/640), column = i-(row*640);
-		rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+		if(! rgb_image.data )
+		{
+			cout <<  "Could not open or find the image rgb.png" << std::endl ;
+		}	
 	}
-#endif
+	else
+	{
+		rgbd_proxy->getRGB(rgbMatrix,h,b);
+		for(unsigned int i=0; i<rgbMatrix.size(); i++)
+		{
+			int row = (i/640), column = i-(row*640);
+			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+		}
+	}
 	cv::Mat dest;
 	cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
 	QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
@@ -370,10 +371,8 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 			cameratoaprilseeM = RTMat(ap.rx, ap.ry, ap.rz, ap.tx, ap.ty, ap.tz);
 			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id),"tag5");
 			cameratorobot = innermodel->getTransformationMatrix(id_robot,id_camera);
-			
 			cameratoapril5M = cameratorobot * cameratoaprilseeM * transformM;
-			
-			QVec ret = ccc(cameratoapril5M);;
+			QVec ret = ccc(cameratoapril5M);
 			ret.print("tag5 from robot");
 			offset.tx = ret(0);
 			offset.ty = ret(1);
@@ -386,22 +385,6 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 	}
 	return false;
 }
-
-/*
-bool SpecificWorker::transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath)
-{
-	pcl::PointCloud<PointT>::Ptr cloud_output(cloud);
-	InnerModelCamera *camera = innermodel->getCamera(id_camera);
-	for(unsigned int i=0;i<cloud->points.size();i++)
-	{
-		QVec xyz = innermodel->transform(id_camera, QVec::vec3(cloud->points[i].x, cloud->points[i].y, cloud->points[i].z),id_robot);
-		cloud_output->points[i].x=xyz(0);
-		cloud_output->points[i].y=xyz(1);
-		cloud_output->points[i].z=xyz(2);
-	}
-	writer.write<PointT> (outputPath + ".pcd", *cloud_output, false);
-}
-*/
 
 void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
 {
@@ -472,7 +455,7 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 			{
 				//add the pose to innermodel
 				QVec poseoffset =QVec::vec6(offset.tx, offset.ty, offset.tz, offset.rx, offset.ry, offset.rz);
-				poseoffset = innermodel->transform6D(id_robot, poseoffset, id_camera_transform);
+// 				poseoffset = innermodel->transform6D(id_robot, poseoffset, id_camera_transform);
 				
 				
 				InnerModelNode *parent_node = poses_inner->getTransform("root");
@@ -887,7 +870,6 @@ pose6D  SpecificWorker::getPose()
 	QVec centroidpose = QVec::vec3(centroid[0],centroid[1],centroid[2]);
 	centroidpose.print("centroid vista atual");
 	
-	
 	InnerModelCamera *camera = innermodel->getCamera(id_camera);
 	centroidpose= camera->project(id_robot,QVec::vec3(centroidpose.x(),centroidpose.y(),centroidpose.z()));
 	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
@@ -915,11 +897,10 @@ pose6D  SpecificWorker::getPose()
 	scene=PointCloudfrom_Meter_to_mm(scene);
 	object=PointCloudfrom_Meter_to_mm(object);
 	
-	writer.write<PointT> ("seen.pcd", *scene, false);
-	writer.write<PointT> ("saved.pcd", *object, false);
+// 	writer.write<PointT> ("seen.pcd", *scene, false);
+// 	writer.write<PointT> ("saved.pcd", *object, false);
 
 	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
-
 	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
 	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
 	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
@@ -986,8 +967,8 @@ pose6D  SpecificWorker::getPose()
 	object_aligned=PointCloudfrom_mm_to_Meters(object_aligned);
 	scene=PointCloudfrom_mm_to_Meters(scene);
 	
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
+// 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
+// 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
 	Eigen::Matrix4f transformation = align.getFinalTransformation ();
 	QMat saveToViewR(4,4);
 	for (int c=0; c<4; c++)
@@ -1003,22 +984,10 @@ pose6D  SpecificWorker::getPose()
 	saveToView(0)=saveToView(0)*1000;
 	saveToView(1)=saveToView(1)*1000;
 	saveToView(2)=saveToView(2)*1000;
-	saveToViewR= RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2));
-	
-	saveToView.print("saveToView");
-	ccc(saveToViewR.invert()).print("ViewTosave");
-	saveToViewR=saveToViewR.invert();
-	/*
-	ccc(saveToViewR*canonToPoseR).print("saveToViewR*canonToPoseR");
-	
-	ccc((saveToViewR*canonToPoseR)*april).print("saveToViewR*canonToPoseR*april");*/
-// 	--------------------------
+	saveToViewR= (RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2))).invert();
+
 	QMat poseObjR =saveToViewR*PoseSavetoRootR/**april*/;
-// 	QVec angles_obj=ccc((april*poseObjR));
 	QVec pose=ccc(poseObjR);
-// 	pose(3)=angles_obj.rx();
-// 	pose(4)=angles_obj.ry();
-// 	pose(5)=angles_obj.rz();
 	pose.print("pose");
 	pose6D poseObj;
 	poseObj.tx=pose.x();
@@ -1027,9 +996,8 @@ pose6D  SpecificWorker::getPose()
 	poseObj.rx=pose.rx();
 	poseObj.ry=pose.ry();
 	poseObj.rz=pose.rz();
-// 	InnerModelCamera *camera = innermodel->getCamera(id_camera);	
+// 	Print tag5
 	pose= camera->project(id_robot,QVec::vec3(pose.x(),pose.y(),pose.z()));
-// 	image(640,480,QImage::Format_ARGB32_Premultiplied);
 	image.fill(Qt::transparent);
 	for (int x =pose.x()-4;x<pose.x()+4;x++)
 		for (int y =pose.y()-4;y<pose.y()+4;y++)
@@ -1055,11 +1023,10 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 
 void SpecificWorker::caputurePointCloudObjects()
 {
-#if  defined(TEST)
-	readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
-#else
-	grabThePointCloud("image.png", "rgbd.pcd");
-#endif
+	if(test)
+		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
+	else
+		grabThePointCloud("image.png", "rgbd.pcd");
 	ransac("plane");
 	projectInliers("plane");
 	convexHull("plane");

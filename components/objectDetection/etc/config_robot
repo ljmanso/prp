@@ -16,8 +16,8 @@ JointMotorProxy = jointmotor:tcp -h 10.0.30.11 -p 20000
 Ice.MessageSizeMax=2000480
 
 
-# This property is used by the clients to connect to IceStorm.-h 10.0.30.11
-TopicManager.Proxy=IceStorm/TopicManager:default  -p 9999
+# This property is used by the clients to connect to IceStorm.
+TopicManager.Proxy=IceStorm/TopicManager:default -h 10.0.30.11 -p 9999
 
 Ice.Warn.Connections=0
 Ice.Trace.Network=0
@@ -28,4 +28,4 @@ Ice.ACM.Server=10
 objectDetectionComp.innermodel = /home/robocomp/robocomp/components/robocomp-shelly/etc/shelly.xml
 objectDetectionComp.type_features=VFH
 objectDetectionComp.pathLoadDescriptors = /home/robocomp/robocomp/components/prp/objects/
-objectDetectionComp.test = 1
+objectDetectionComp.test = 0
