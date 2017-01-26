@@ -22,12 +22,6 @@
        @author authorname
 */
 
-
-
-
-
-
-
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
@@ -51,11 +45,9 @@
  #include <pcl/registration/sample_consensus_prerejective.h>
  #include <pcl/features/fpfh_omp.h>
  #include <pcl/common/time.h>
-//  #include <pcl/visualization/cloud_viewer.h>
 #endif
 
 #include <genericworker.h>
-
 
 #ifndef Q_MOC_RUN
 	#include <innermodel/innermodel.h>
@@ -86,14 +78,14 @@ class SpecificWorker : public GenericWorker
 	tagsList tags;
 	QMutex april_mutex;
 	int num_pose;
-	
+
 	int num_object_found;
 	std::string file_view_mathing;
 
 	int num_scene;
 	
 	pcl::PCDWriter writer;
-	
+
 	float marca_tx, marca_ty, marca_tz, marca_rx, marca_ry, marca_rz;
         
 	//Cloud of the current points for pcl
@@ -106,8 +98,7 @@ class SpecificWorker : public GenericWorker
 	//Image of the current view for opencv
 	cv::Mat rgb_image;
 	cv::Mat color_segmented;
-        
-	RTMat viewpoint_transform;
+    RTMat viewpoint_transform;
 	
 	//Point cloud grabing
 	RoboCompRGBD::ColorSeq rgbMatrix;	
@@ -117,17 +108,15 @@ class SpecificWorker : public GenericWorker
 	RoboCompGenericBase::TBaseState b;
 	
 	//color Segmentator
- 	Segmentator segmentator;
+	Segmentator segmentator;
 	
 	//euclidean clustering
 	std::vector<pcl::PointIndices> cluster_indices;
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
     
-        
 	//VFH
 	boost::shared_ptr<VFH> vfh_matcher;
 	std::vector<VFH::file_dist_t> vfh_guesses;
-        
 	boost::shared_ptr<Table> table;
 	QGraphicsScene scene;
   
@@ -136,8 +125,6 @@ public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
-	
-	//--------------
 	pose6D getPose();
 	bool findObjects(listObject &lObjects);
 	void saveRegPose(const string &label, const int numPoseToSave);
@@ -147,14 +134,9 @@ public:
 	void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState);
 	void newAprilTag(const tagsList &tags);
 	//--------------
-	
-	
-	
 // 	void guessPose(const string &label, pose6D &guess);
-
 public slots:
 	void compute(); 	
-
 private:
 	void grabThePointCloud(const string &image, const string &pcd);
 	void readThePointCloud(const string &image, const string &pcd);
@@ -173,13 +155,10 @@ private:
 	bool aprilSeen(pose6D &offset);
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
-// 	bool transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath);
 	void caputurePointCloudObjects();
 	void removeAllpixmap();
 	pcl::PointCloud< PointT >::Ptr PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud);
 	pcl::PointCloud< PointT >::Ptr PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud);
-
-
 };
 
 #endif

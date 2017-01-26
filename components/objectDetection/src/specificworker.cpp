@@ -31,7 +31,6 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 ,color_segmented(480,640, CV_8UC3, cv::Scalar::all(0))
 ,table(new Table())
 ,vfh_matcher(new VFH())
-
 {
 	//let's set the sizes
 	table->set_board_size(500,30,500);
@@ -39,10 +38,12 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	
 	num_object_found = 0;
 	num_scene = 15;
+#ifdef USE_QTGUI
 	graphic->setScene(&scene);
 	graphic->show();
 	item_pixmap=new QGraphicsPixmapItem();
 	scene.addItem(item_pixmap);
+#endif
 	boost::filesystem::remove("training_data.h5");
 	boost::filesystem::remove("training_data.list");
 }
@@ -50,6 +51,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 /**
 * \brief Default destructor
 */
+
 SpecificWorker::~SpecificWorker()
 {
 
@@ -168,7 +170,6 @@ void SpecificWorker::segmentImage()
 	cv::imwrite("green.png",green);
 #endif
 }
-
 
 void SpecificWorker::reloadVFH()
 {
@@ -343,7 +344,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 
 }
 
-QVec ccc(QMat M)
+QVec extraerposefromTM(QMat M)
 {
 	QVec initVec = QVec::vec6(0,0,0,0,0,0);
 	const QVec a = (M * initVec.subVector(0,2).toHomogeneousCoordinates()).fromHomogeneousCoordinates();
@@ -372,7 +373,7 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id),"tag5");
 			cameratorobot = innermodel->getTransformationMatrix(id_robot,id_camera);
 			cameratoapril5M = cameratorobot * cameratoaprilseeM * transformM;
-			QVec ret = ccc(cameratoapril5M);
+			QVec ret = extraerposefromTM(cameratoapril5M);
 			ret.print("tag5 from robot");
 			offset.tx = ret(0);
 			offset.ty = ret(1);
@@ -651,7 +652,6 @@ void SpecificWorker::convexHull(const string &model)
 #endif
 }
 
-
 void SpecificWorker::statisticalOutliersRemoval()
 {
   pcl::StatisticalOutlierRemoval<PointT> sor;
@@ -869,7 +869,7 @@ pose6D  SpecificWorker::getPose()
 	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
 	QVec centroidpose = QVec::vec3(centroid[0],centroid[1],centroid[2]);
 	centroidpose.print("centroid vista atual");
-	
+#ifdef USE_QTGUI
 	InnerModelCamera *camera = innermodel->getCamera(id_camera);
 	centroidpose= camera->project(id_robot,QVec::vec3(centroidpose.x(),centroidpose.y(),centroidpose.z()));
 	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
@@ -879,7 +879,7 @@ pose6D  SpecificWorker::getPose()
 			image.setPixel(x,y,qRgb(0, 255, 0));
 	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
 	SpecificWorker::scene.addItem(V_pixmap_item.back());
-	
+#endif
 	// Point clouds
 	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
 	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
@@ -980,14 +980,14 @@ pose6D  SpecificWorker::getPose()
 	InnerModel inner(pathxml);
 	QMat PoseSavetoRootR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
 // 	convert m to mm
-	QVec saveToView = ccc(saveToViewR);
+	QVec saveToView = extraerposefromTM(saveToViewR);
 	saveToView(0)=saveToView(0)*1000;
 	saveToView(1)=saveToView(1)*1000;
 	saveToView(2)=saveToView(2)*1000;
 	saveToViewR= (RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2))).invert();
 
 	QMat poseObjR =saveToViewR*PoseSavetoRootR/**april*/;
-	QVec pose=ccc(poseObjR);
+	QVec pose=extraerposefromTM(poseObjR);
 	pose.print("pose");
 	pose6D poseObj;
 	poseObj.tx=pose.x();
@@ -997,6 +997,7 @@ pose6D  SpecificWorker::getPose()
 	poseObj.ry=pose.ry();
 	poseObj.rz=pose.rz();
 // 	Print tag5
+#ifdef USE_QTGUI
 	pose= camera->project(id_robot,QVec::vec3(pose.x(),pose.y(),pose.z()));
 	image.fill(Qt::transparent);
 	for (int x =pose.x()-4;x<pose.x()+4;x++)
@@ -1004,6 +1005,7 @@ pose6D  SpecificWorker::getPose()
 			image.setPixel(x,y,qRgb(255, 0, 0));
 	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
 	SpecificWorker::scene.addItem(V_pixmap_item.back());
+#endif
 	return poseObj;
 }
 
@@ -1037,6 +1039,7 @@ void SpecificWorker::caputurePointCloudObjects()
 
 void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr cloud)
 {
+#ifdef USE_QTGUI
 	QGraphicsTextItem *text=new QGraphicsTextItem(QString::fromStdString(name));
 	QFont serifFont("Times", 25, QFont::Bold);
 	text->setFont(serifFont);
@@ -1047,19 +1050,23 @@ void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr 
 	text->setPos(xyfrist(0)-30,(int)(xy(1)+xyfrist(1))/2);
 	scene.addItem(text);
 	V_text_item.push_back(text);
+#endif
 }
 
 void SpecificWorker::removeAllpixmap()
 {
+#ifdef USE_QTGUI
 	while(!V_pixmap_item.empty())
 	{
 		scene.removeItem(V_pixmap_item.back());
 		V_pixmap_item.pop_back();
 	}
+#endif
 }
 
 void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
 {
+#ifdef USE_QTGUI
 	removeAllpixmap();
 	InnerModelCamera *camera = innermodel->getCamera(id_camera);
 	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
@@ -1100,6 +1107,7 @@ void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
 //     QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
 	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
 	scene.addItem(V_pixmap_item.back());
+#endif
 }
 
 pcl::PointCloud< PointT >::Ptr SpecificWorker::PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud)
@@ -1125,6 +1133,3 @@ pcl::PointCloud< PointT >::Ptr SpecificWorker::PointCloudfrom_mm_to_Meters(pcl::
 	}
 	return output;
 }
-
-
-
