@@ -100,6 +100,7 @@ void SpecificWorker::findTheObject()
 	bool result;
 	try
 	{
+// 		listObject lobject;
 		result = objectdetection_proxy->findTheObject(object, poseObj);
 		if(object!="")
 		{

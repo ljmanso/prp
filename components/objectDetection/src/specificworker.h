@@ -45,6 +45,7 @@
  #include <pcl/registration/sample_consensus_prerejective.h>
  #include <pcl/features/fpfh_omp.h>
  #include <pcl/common/time.h>
+ #include <pcl/visualization/cloud_viewer.h>
 #endif
 
 #include <genericworker.h>
@@ -90,6 +91,7 @@ class SpecificWorker : public GenericWorker
         
 	//Cloud of the current points for pcl
 	pcl::PointCloud<PointT>::Ptr cloud;
+	pcl::PointCloud<PointT>::Ptr whole_cloud;
 	pcl::PointIndices::Ptr ransac_inliers;
 	pcl::PointCloud<PointT>::Ptr projected_plane;
 	pcl::PointCloud<PointT>::Ptr cloud_hull;
@@ -119,6 +121,7 @@ class SpecificWorker : public GenericWorker
 	std::vector<VFH::file_dist_t> vfh_guesses;
 	boost::shared_ptr<Table> table;
 	QGraphicsScene scene;
+	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
   
 Q_OBJECT
 public:
@@ -136,7 +139,7 @@ public:
 	//--------------
 // 	void guessPose(const string &label, pose6D &guess);
 public slots:
-	void compute(); 	
+	void compute();
 private:
 	void grabThePointCloud(const string &image, const string &pcd);
 	void readThePointCloud(const string &image, const string &pcd);
@@ -159,6 +162,8 @@ private:
 	void removeAllpixmap();
 	pcl::PointCloud< PointT >::Ptr PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud);
 	pcl::PointCloud< PointT >::Ptr PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud);
+	void visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds,vector<int> size);
+	pcl::PointCloud< PointT >::Ptr changecloorcloud(pcl::PointCloud< PointT >::Ptr cloud, int red, int green, int blue);
 };
 
 #endif

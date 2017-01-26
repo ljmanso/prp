@@ -23,6 +23,7 @@
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 ,cloud(new pcl::PointCloud<PointT>)
+,whole_cloud(new pcl::PointCloud<PointT>)
 ,ransac_inliers (new pcl::PointIndices)
 ,projected_plane(new pcl::PointCloud<PointT>)
 ,cloud_hull(new pcl::PointCloud<PointT>)
@@ -43,6 +44,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	graphic->show();
 	item_pixmap=new QGraphicsPixmapItem();
 	scene.addItem(item_pixmap);
+	viewer=NULL;
 #endif
 	boost::filesystem::remove("training_data.h5");
 	boost::filesystem::remove("training_data.list");
@@ -81,7 +83,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		test=true;
 	}
 	reloadVFH();
-	timer.start(500);
+	timer.start(10);
 
 	return true;
 }
@@ -139,6 +141,8 @@ void SpecificWorker::compute()
 // // 	qDebug()<<"entro";
 	updateinner();
 	updatergbd();
+	if(viewer!=NULL)
+		viewer->spinOnce (10);
 }
 
 void SpecificWorker::segmentImage()
@@ -1005,6 +1009,7 @@ pose6D  SpecificWorker::getPose()
 			image.setPixel(x,y,qRgb(255, 0, 0));
 	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
 	SpecificWorker::scene.addItem(V_pixmap_item.back());
+	viewer->addCoordinateSystem(100.,pose.x()/1000,pose.y()/1000,pose.z()/1000,0);
 #endif
 	return poseObj;
 }
@@ -1029,12 +1034,25 @@ void SpecificWorker::caputurePointCloudObjects()
 		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
 	else
 		grabThePointCloud("image.png", "rgbd.pcd");
+	vector<pcl::PointCloud< PointT >::Ptr> clouds;
+	vector<int>size;
+
+	*whole_cloud = pcl::PointCloud< PointT >(*cloud);
+	clouds.push_back(whole_cloud);
+	size.push_back(1);
 	ransac("plane");
 	projectInliers("plane");
 	convexHull("plane");
 	extractPolygon("plane");
 	int n;
 	euclideanClustering(n);
+
+// 	for(int i=0;i<cluster_clouds.size();i++)
+// 	{
+// 		clouds.push_back(changecloorcloud((pcl::PointCloud< PointT >::Ptr)cluster_clouds[i],255,0,0));
+// 		size.push_back(5);
+// 	}
+	visualize(clouds,size);
 }
 
 void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr cloud)
@@ -1132,4 +1150,77 @@ pcl::PointCloud< PointT >::Ptr SpecificWorker::PointCloudfrom_mm_to_Meters(pcl::
 		output->points[i].z=cloud->points[i].z*1000.;
 	}
 	return output;
+}
+
+unsigned int text_id = 0;
+void keyboardEventOccurred (const pcl::visualization::KeyboardEvent &event,void* viewer_void)
+{
+	pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
+	if (event.getKeySym () == "r" && event.keyDown ())
+	{
+		//     std::cout << "r was pressed => removing all text" << std::endl;
+
+		char str[512];
+		for (unsigned int i = 0; i < text_id; ++i)
+		{
+			sprintf (str, "text#%03d", i);
+			viewer->removeShape (str);
+		}
+		text_id = 0;
+	}
+}
+
+void mouseEventOccurred (const pcl::visualization::MouseEvent &event,void* viewer_void)
+{
+	pcl::visualization::PCLVisualizer *viewer = static_cast<pcl::visualization::PCLVisualizer *> (viewer_void);
+	if (event.getButton () == pcl::visualization::MouseEvent::LeftButton &&
+		event.getType () == pcl::visualization::MouseEvent::MouseButtonRelease)
+	{
+		//     std::cout << "Left mouse button released at position (" << event.getX () << ", " << event.getY () << ")" << std::endl;
+
+		char str[512];
+		sprintf (str, "text#%03d", text_id ++);
+		//     viewer->addText ("clicked here", event.getX (), event.getY (), str);
+	}
+}
+
+pcl::PointCloud< PointT >::Ptr SpecificWorker::changecloorcloud(pcl::PointCloud< PointT >::Ptr cloud, int red, int green, int blue)
+{
+	pcl::PointCloud< PointT >::Ptr output(cloud);
+	for(unsigned int i =0;i<output->points.size();i++)
+	{
+		output->points[i].r=red;
+		output->points[i].g=green;
+		output->points[i].b=blue;
+	}
+	return output;
+}
+
+void SpecificWorker::visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds, vector<int> size)
+{
+	unsigned int id=0;
+	viewer=boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer ("3D Viewer"));
+	viewer->setBackgroundColor (0, 0, 0);
+	int i=0;
+	for(auto cloud:clouds)
+	{
+		pcl::PointCloud< PointT >::Ptr out = PointCloudfrom_mm_to_Meters(cloud);
+		pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(out);
+		viewer->addPointCloud<pcl::PointXYZRGB> (out, rgb, QString::number(id).toStdString());
+		viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, size[i], QString::number(id).toStdString());
+		out = PointCloudfrom_Meter_to_mm(cloud);
+		id++;
+	}
+	viewer->addCoordinateSystem (1.0);
+	viewer->initCameraParameters ();
+	viewer->registerKeyboardCallback (keyboardEventOccurred, (void*)viewer.get ());
+	viewer->registerMouseCallback (mouseEventOccurred, (void*)viewer.get ());
+	
+// 	if (!viewer->wasStopped ())
+// 	{
+		
+// 		boost::this_thread::sleep (boost::posix_time::microseconds (100000));
+// 	}
+// 	HWND hWnd = (HWND)viewer->getRenderWindow()->GetGenericWindowId(); 
+// 	viewer->getRenderWindow()
 }
