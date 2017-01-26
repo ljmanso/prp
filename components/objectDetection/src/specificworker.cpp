@@ -1009,7 +1009,9 @@ pose6D  SpecificWorker::getPose()
 			image.setPixel(x,y,qRgb(255, 0, 0));
 	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
 	SpecificWorker::scene.addItem(V_pixmap_item.back());
-	viewer->addCoordinateSystem(100.,pose.x()/1000,pose.y()/1000,pose.z()/1000,0);
+	Affine3f t;
+	t.fromPositionRotationScale(Eigen::Vector3f(pose.x()/1000,pose.y()/1000,pose.z()/1000), Eigen::Vector3f(0,0,0), Vector3f::Ones());
+	viewer->addCoordinateSystem(100.,t,0);
 #endif
 	return poseObj;
 }
