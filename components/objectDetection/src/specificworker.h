@@ -91,7 +91,6 @@ class SpecificWorker : public GenericWorker
         
 	//Cloud of the current points for pcl
 	pcl::PointCloud<PointT>::Ptr cloud;
-	pcl::PointCloud<PointT>::Ptr whole_cloud;
 	pcl::PointIndices::Ptr ransac_inliers;
 	pcl::PointCloud<PointT>::Ptr projected_plane;
 	pcl::PointCloud<PointT>::Ptr cloud_hull;
@@ -162,8 +161,14 @@ private:
 	void removeAllpixmap();
 	pcl::PointCloud< PointT >::Ptr PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud);
 	pcl::PointCloud< PointT >::Ptr PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud);
-	void visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds,vector<int> size);
 	pcl::PointCloud< PointT >::Ptr changecloorcloud(pcl::PointCloud< PointT >::Ptr cloud, int red, int green, int blue);
+	pcl::PointCloud< PointT >::Ptr copy_pointcloud(pcl::PointCloud< PointT >::Ptr cloud);
+	void addCoordinateSystem(float x,float y, float z, string id);
+	void addPointCloud(pcl::PointCloud< PointT >::Ptr cloud, string id, int size);
+	void updatePointCloud(pcl::PointCloud< PointT >::Ptr cloud, string id);
+	void removePointCloud(string id);
+	void removeCoordinateSystem(string id);
+	void initViewer();
 };
 
 #endif

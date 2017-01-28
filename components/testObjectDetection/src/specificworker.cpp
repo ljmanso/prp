@@ -102,6 +102,7 @@ void SpecificWorker::findTheObject()
 	{
 // 		listObject lobject;
 		result = objectdetection_proxy->findTheObject(object, poseObj);
+// 		result = objectdetection_proxy->findObjects(lobject);
 		if(object!="")
 		{
 			isObject->setVisible(true);

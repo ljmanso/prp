@@ -23,7 +23,6 @@
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 ,cloud(new pcl::PointCloud<PointT>)
-,whole_cloud(new pcl::PointCloud<PointT>)
 ,ransac_inliers (new pcl::PointIndices)
 ,projected_plane(new pcl::PointCloud<PointT>)
 ,cloud_hull(new pcl::PointCloud<PointT>)
@@ -48,6 +47,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 #endif
 	boost::filesystem::remove("training_data.h5");
 	boost::filesystem::remove("training_data.list");
+	initViewer();
 }
 
 /**
@@ -122,12 +122,35 @@ void SpecificWorker::updatergbd()
 	}
 	else
 	{
-		rgbd_proxy->getRGB(rgbMatrix,h,b);
+		pcl::PointCloud<PointT>::Ptr scene(new pcl::PointCloud<PointT>);
+		RoboCompRGBD::ColorSeq rgbMatrix;	
+		RoboCompRGBD::depthType distanceMatrix;
+		RoboCompRGBD::PointSeq points_kinect;
+		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
 		for(unsigned int i=0; i<rgbMatrix.size(); i++)
 		{
 			int row = (i/640), column = i-(row*640);
 			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
 		}
+		QMat PP = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
+		
+		scene->points.resize(points_kinect.size());
+		
+		for (unsigned int i=0; i<points_kinect.size(); i++)
+		{
+			QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
+			
+			memcpy(&scene->points[i],p1.data(),3*sizeof(float));
+			
+			scene->points[i].r=rgbMatrix[i].red;
+			scene->points[i].g=rgbMatrix[i].green;
+			scene->points[i].b=rgbMatrix[i].blue;
+		}
+		scene->width = 1;
+		scene->height = points_kinect.size();
+		std::vector< int > index;
+		removeNaNFromPointCloud (*scene, *scene, index);
+		
 	}
 	cv::Mat dest;
 	cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
@@ -686,43 +709,35 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 	try
 	{
 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
-	}
-	catch(Ice::Exception e)
-	{
-		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
-		return;
-	}
-
 #if DEBUG
 		cout<<"SpecificWorker::grabThePointcloud rgbMatrix.size(): "<<rgbMatrix.size()<<endl;
 #endif
-	
-	for(unsigned int i=0; i<rgbMatrix.size(); i++)
-	{
-		int row = (i/640), column = i-(row*640);
-		rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
-	}
-	viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
-	QMat PP = viewpoint_transform;
-	
-	cloud->points.resize(points_kinect.size());
-	
-	for (unsigned int i=0; i<points_kinect.size(); i++)
-	{
-		QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
+		for(unsigned int i=0; i<rgbMatrix.size(); i++)
+		{
+			int row = (i/640), column = i-(row*640);
+			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+		}
+		viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
+		QMat PP = viewpoint_transform;
 		
-		memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
+		cloud->points.resize(points_kinect.size());
 		
-		cloud->points[i].r=rgbMatrix[i].red;
-		cloud->points[i].g=rgbMatrix[i].green;
-		cloud->points[i].b=rgbMatrix[i].blue;
-	}
-	cloud->width = 1;
-	cloud->height = points_kinect.size();
+		for (unsigned int i=0; i<points_kinect.size(); i++)
+		{
+			QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
+			
+			memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
+			
+			cloud->points[i].r=rgbMatrix[i].red;
+			cloud->points[i].g=rgbMatrix[i].green;
+			cloud->points[i].b=rgbMatrix[i].blue;
+		}
+		cloud->width = 1;
+		cloud->height = points_kinect.size();
 
-	
-	std::vector< int > index;
-	removeNaNFromPointCloud (*cloud, *cloud, index);
+		
+		std::vector< int > index;
+		removeNaNFromPointCloud (*cloud, *cloud, index);
 	
 #if DEBUG
 		timespec ts;
@@ -736,6 +751,13 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 		string imagename = "/home/robocomp/robocomp/components/prp/objects/" + QString::number(ts.tv_sec).toStdString() + ".png";
 		cv::imwrite( imagename ,rgb_image);
 #endif
+	}
+	catch(Ice::Exception e)
+	{
+		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
+		return;
+	}
+
 
 }
 
@@ -898,8 +920,8 @@ pose6D  SpecificWorker::getPose()
 		printf ("Couldn't read file test_pcd.pcd \n");
 	}
 	//convert pointcloud to mm
-	scene=PointCloudfrom_Meter_to_mm(scene);
-	object=PointCloudfrom_Meter_to_mm(object);
+	scene=PointCloudfrom_mm_to_Meters(scene);
+	object=PointCloudfrom_mm_to_Meters(object);
 	
 // 	writer.write<PointT> ("seen.pcd", *scene, false);
 // 	writer.write<PointT> ("saved.pcd", *object, false);
@@ -968,8 +990,8 @@ pose6D  SpecificWorker::getPose()
 		align.align (*object_aligned);
 	}
 	//convert pointcloud to meters
-	object_aligned=PointCloudfrom_mm_to_Meters(object_aligned);
-	scene=PointCloudfrom_mm_to_Meters(scene);
+	object_aligned=PointCloudfrom_Meter_to_mm(object_aligned);
+	scene=PointCloudfrom_Meter_to_mm(scene);
 	
 // 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
 // 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
@@ -1009,9 +1031,8 @@ pose6D  SpecificWorker::getPose()
 			image.setPixel(x,y,qRgb(255, 0, 0));
 	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
 	SpecificWorker::scene.addItem(V_pixmap_item.back());
-	Affine3f t;
-	t.fromPositionRotationScale(Eigen::Vector3f(pose.x()/1000,pose.y()/1000,pose.z()/1000), Eigen::Vector3f(0,0,0), Vector3f::Ones());
-	viewer->addCoordinateSystem(100.,t,0);
+	removeCoordinateSystem("poseobject");
+	addCoordinateSystem(poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000,"poseobject");
 #endif
 	return poseObj;
 }
@@ -1032,29 +1053,32 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 
 void SpecificWorker::caputurePointCloudObjects()
 {
+	static vector<string> id_objects;
+	while(!id_objects.empty())
+	{
+		removePointCloud(id_objects.back());
+		id_objects.pop_back();
+	}
 	if(test)
+	{
+		removePointCloud("scene");
 		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
+		addPointCloud(cloud,"scene",1);
+	}
 	else
 		grabThePointCloud("image.png", "rgbd.pcd");
-	vector<pcl::PointCloud< PointT >::Ptr> clouds;
-	vector<int>size;
-
-	*whole_cloud = pcl::PointCloud< PointT >(*cloud);
-	clouds.push_back(whole_cloud);
-	size.push_back(1);
 	ransac("plane");
 	projectInliers("plane");
 	convexHull("plane");
 	extractPolygon("plane");
 	int n;
 	euclideanClustering(n);
-
-// 	for(int i=0;i<cluster_clouds.size();i++)
-// 	{
-// 		clouds.push_back(changecloorcloud((pcl::PointCloud< PointT >::Ptr)cluster_clouds[i],255,0,0));
-// 		size.push_back(5);
-// 	}
-	visualize(clouds,size);
+	for(unsigned int i=0;i<cluster_clouds.size();i++)
+	{
+		pcl::PointCloud< PointT >::Ptr object=changecloorcloud(copy_pointcloud(cluster_clouds[i]),255,0,0);
+		addPointCloud(object,QString::number(i).toStdString(),1);
+		id_objects.push_back(QString::number(i).toStdString());
+	}
 }
 
 void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr cloud)
@@ -1132,24 +1156,24 @@ void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
 
 pcl::PointCloud< PointT >::Ptr SpecificWorker::PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud)
 {
-	pcl::PointCloud< PointT >::Ptr output(cloud);
-	for(unsigned int i =0;i<cloud->points.size();i++)
+	pcl::PointCloud< PointT >::Ptr output=copy_pointcloud(cloud);
+	for(unsigned int i =0;i<output->points.size();i++)
 	{
-		output->points[i].x=cloud->points[i].x/1000.;
-		output->points[i].y=cloud->points[i].y/1000.;
-		output->points[i].z=cloud->points[i].z/1000.;
+		output->points[i].x=cloud->points[i].x*1000.;
+		output->points[i].y=cloud->points[i].y*1000.;
+		output->points[i].z=cloud->points[i].z*1000.;
 	}
 	return output;
 }
 
 pcl::PointCloud< PointT >::Ptr SpecificWorker::PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud)
 {
-	pcl::PointCloud< PointT >::Ptr output(cloud);
+	pcl::PointCloud< PointT >::Ptr output=copy_pointcloud(cloud);
 	for(unsigned int i =0;i<cloud->points.size();i++)
 	{
-		output->points[i].x=cloud->points[i].x*1000.;
-		output->points[i].y=cloud->points[i].y*1000.;
-		output->points[i].z=cloud->points[i].z*1000.;
+		output->points[i].x=cloud->points[i].x/1000.;
+		output->points[i].y=cloud->points[i].y/1000.;
+		output->points[i].z=cloud->points[i].z/1000.;
 	}
 	return output;
 }
@@ -1198,31 +1222,57 @@ pcl::PointCloud< PointT >::Ptr SpecificWorker::changecloorcloud(pcl::PointCloud<
 	return output;
 }
 
-void SpecificWorker::visualize(vector<pcl::PointCloud< PointT >::Ptr> clouds, vector<int> size)
+void SpecificWorker::addCoordinateSystem(float x,float y, float z, string id)
 {
-	unsigned int id=0;
+#ifdef USE_QTGUI
+	viewer->addCoordinateSystem(1,x,y,z,id,0);
+#endif
+}
+
+void SpecificWorker::addPointCloud(pcl::PointCloud< PointT >::Ptr cloud, string id, int size)
+{
+#ifdef USE_QTGUI
+	pcl::PointCloud< PointT >::Ptr out = PointCloudfrom_mm_to_Meters(cloud);
+	pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(out);
+	viewer->addPointCloud<pcl::PointXYZRGB> (out, rgb, id);
+	viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, size, id);
+#endif
+}
+
+void SpecificWorker::updatePointCloud(pcl::PointCloud< PointT >::Ptr cloud, string id)
+{
+#ifdef USE_QTGUI
+	viewer->updatePointCloud(cloud, id);
+#endif
+}
+
+void SpecificWorker::removePointCloud(string id)
+{
+#ifdef USE_QTGUI
+	viewer->removePointCloud(id,0);
+#endif
+}
+
+void SpecificWorker::removeCoordinateSystem(string id)
+{
+#ifdef USE_QTGUI
+	viewer->removeCoordinateSystem(id,0);
+#endif	
+}
+
+void SpecificWorker::initViewer()
+{
 	viewer=boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer ("3D Viewer"));
 	viewer->setBackgroundColor (0, 0, 0);
-	int i=0;
-	for(auto cloud:clouds)
-	{
-		pcl::PointCloud< PointT >::Ptr out = PointCloudfrom_mm_to_Meters(cloud);
-		pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(out);
-		viewer->addPointCloud<pcl::PointXYZRGB> (out, rgb, QString::number(id).toStdString());
-		viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, size[i], QString::number(id).toStdString());
-		out = PointCloudfrom_Meter_to_mm(cloud);
-		id++;
-	}
-	viewer->addCoordinateSystem (1.0);
 	viewer->initCameraParameters ();
+	viewer->addCoordinateSystem (1.0);
 	viewer->registerKeyboardCallback (keyboardEventOccurred, (void*)viewer.get ());
 	viewer->registerMouseCallback (mouseEventOccurred, (void*)viewer.get ());
-	
-// 	if (!viewer->wasStopped ())
-// 	{
-		
-// 		boost::this_thread::sleep (boost::posix_time::microseconds (100000));
-// 	}
-// 	HWND hWnd = (HWND)viewer->getRenderWindow()->GetGenericWindowId(); 
-// 	viewer->getRenderWindow()
 }
+
+pcl::PointCloud< PointT >::Ptr SpecificWorker::copy_pointcloud(pcl::PointCloud< PointT >::Ptr cloud)
+{
+	pcl::PointCloud< PointT >::Ptr copy_cloud(new pcl::PointCloud<PointT>(*cloud));
+	return copy_cloud;
+}
+
