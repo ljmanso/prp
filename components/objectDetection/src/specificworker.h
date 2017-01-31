@@ -164,6 +164,7 @@ private:
 	pcl::PointCloud< PointT >::Ptr changecloorcloud(pcl::PointCloud< PointT >::Ptr cloud, int red, int green, int blue);
 	pcl::PointCloud< PointT >::Ptr copy_pointcloud(pcl::PointCloud< PointT >::Ptr cloud);
 	void addCoordinateSystem(float x,float y, float z, string id);
+	void addCoordinateSystem(QMat tr, string id);
 	void addPointCloud(pcl::PointCloud< PointT >::Ptr cloud, string id, int size);
 	void updatePointCloud(pcl::PointCloud< PointT >::Ptr cloud, string id);
 	void removePointCloud(string id);
