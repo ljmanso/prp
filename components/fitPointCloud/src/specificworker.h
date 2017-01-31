@@ -26,9 +26,23 @@
 
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
-
+#include <Eigen/Core>
+#include <pcl/point_types.h>
+#include <pcl/point_cloud.h>
+#include <pcl/common/time.h>
+#include <pcl/console/print.h>
+#include <pcl/features/normal_3d_omp.h>
+#include <pcl/features/fpfh_omp.h>
+#include <pcl/filters/filter.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/registration/icp.h>
+#include <pcl/registration/sample_consensus_prerejective.h>
+#include <pcl/segmentation/sac_segmentation.h>
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
+
+typedef pcl::PointXYZRGB PointT;
 
 class SpecificWorker : public GenericWorker
 {
@@ -43,8 +57,12 @@ public slots:
 	void compute();
 
 private:
+
 	InnerModel *innerModel;
-	
+	pcl::PCDWriter writer;
+
+	pcl::PointCloud<PointT>::Ptr readThePointCloud(const string &pcd);
+	void fiting(pcl::PointCloud<PointT>::Ptr object, pcl::PointCloud<PointT>::Ptr scene);
 };
 
 #endif

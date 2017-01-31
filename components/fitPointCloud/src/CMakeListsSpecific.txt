@@ -11,5 +11,17 @@ SET ( HEADERS
   specificmonitor.h
 )
 
+# artoolkit
+INCLUDE( $ENV{ROBOCOMP}/cmake/modules/artoolkit.cmake )
+# pcl
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
+# opencv2
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+
+SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial -lmpi_cxx )
+
+include_directories( /usr/include/hdf5/serial/ /usr/local/include/pcl-1.8/ )
+
+SET ( LIBS ${LIBS} )
 ADD_DEFINITIONS( -std=c++11 )
 
