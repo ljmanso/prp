@@ -46,6 +46,7 @@
  #include <pcl/features/fpfh_omp.h>
  #include <pcl/common/time.h>
  #include <pcl/visualization/cloud_viewer.h>
+ #include <pcl/registration/icp.h>
 #endif
 
 #include <genericworker.h>
@@ -61,7 +62,7 @@
 #define DEBUG 0
 #define SAVE_DATA 0 
 #define TEST
-#define THRESHOLD 0.75
+#define THRESHOLD 0.8
 typedef pcl::PointXYZRGB PointT;
 
 
@@ -170,6 +171,10 @@ private:
 	void removePointCloud(string id);
 	void removeCoordinateSystem(string id);
 	void initViewer();
+	void moveToZero(pcl::PointCloud< PointT >::Ptr cloud, double &xMean, double &yMean, double &zMean);
+	Eigen::Matrix4f fitingICP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned);
+	Eigen::Matrix4f fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned);
+
 };
 
 #endif

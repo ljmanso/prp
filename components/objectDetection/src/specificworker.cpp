@@ -934,68 +934,18 @@ pose6D  SpecificWorker::getPose()
 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/seen.pcd", *scene, false);
 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/saved.pcd", *object, false);
 
-	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
-	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
-	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
-	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
-	pcl::PointCloud<pcl::FPFHSignature33>::Ptr scene_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+// 	-------------------------------------------------------------------
 	
-	std::cout<<object->size()<<std::endl;
-	std::cout<<scene->size()<<std::endl;
-	// Downsample
-	pcl::console::print_highlight ("Downsampling...\n");
-	pcl::VoxelGrid<PointT> grid;
-	const float leaf = 0.003f;
-	grid.setLeafSize (leaf, leaf, leaf);
-	grid.setInputCloud (object);
-	grid.filter (*object);
-	grid.setInputCloud (scene);
-	grid.filter (*scene);
-	
-	// Estimate normals for scene
-	pcl::console::print_highlight ("Estimating scene normals...\n");
-	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
-	nest.setRadiusSearch (0.01);
-	nest.setInputCloud (object);
-	nest.compute (*object_normals);
-	nest.setInputCloud (scene);
-	nest.compute (*scene_normals);
-	
-	// Estimate features
-	pcl::console::print_highlight ("Estimating features...\n");
-	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
-	fest.setRadiusSearch (0.025);
-	fest.setInputCloud (object);
-	fest.setInputNormals (object_normals);
-	fest.compute (*object_features);
-	fest.setInputCloud (scene);
-	fest.setInputNormals (scene_normals);
-	fest.compute (*scene_features);
-	
-	// Perform alignment
-	pcl::console::print_highlight ("Starting alignment...\n");
-	pcl::SampleConsensusPrerejective<PointT, PointT, pcl::FPFHSignature33> align;
-	align.setInputSource (object);
-	align.setSourceFeatures (object_features);
-	align.setInputTarget (scene);
-	align.setTargetFeatures (scene_features);
-	align.setMaximumIterations (100000); // Number of RANSAC iterations
-	align.setNumberOfSamples (3); // Number of points to sample for generating/prerejecting a pose
-	align.setCorrespondenceRandomness (5); // Number of nearest features to use
-	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
-	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
-	align.setInlierFraction (0.25f); // Required inlier fraction for accepting a pose hypothesis
-	{	
-		pcl::ScopeTime t("Alignment");
-		align.align (*object_aligned);
-	}
+	pcl::PointCloud<PointT>::Ptr object_aligned(new pcl::PointCloud<PointT>);
+// 	Eigen::Matrix4f transformation = fitingICP(object,scene,object_aligned);
+	Eigen::Matrix4f transformation = fitingSCP(object,scene,object_aligned);
 	//convert pointcloud to meters
-	object_aligned=PointCloudfrom_Meter_to_mm(object_aligned);
-	scene=PointCloudfrom_Meter_to_mm(scene);
+	object_aligned = PointCloudfrom_Meter_to_mm(object_aligned);
+	scene = PointCloudfrom_Meter_to_mm(scene);
 	
- 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
- 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
-	Eigen::Matrix4f transformation = align.getFinalTransformation ();
+//  	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
+//  	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
+	
 	QMat saveToViewR(4,4);
 	for (int c=0; c<4; c++)
 		for (int r=0; r<4; r++)
@@ -1012,7 +962,7 @@ pose6D  SpecificWorker::getPose()
 	saveToView(2)=saveToView(2)*1000;
 	saveToViewR= (RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2))).invert();
 
-	QMat poseObjR =saveToViewR*PoseSavetoRootR/**april*/;
+	QMat poseObjR =saveToViewR*PoseSavetoRootR*april;
 	QVec pose=extraerposefromTM(poseObjR);
 	pose.print("pose");
 	pose6D poseObj;
@@ -1296,3 +1246,133 @@ pcl::PointCloud< PointT >::Ptr SpecificWorker::copy_pointcloud(pcl::PointCloud< 
 	return copy_cloud;
 }
 
+Eigen::Matrix4f SpecificWorker::fitingICP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned)
+{
+	double xmean1,ymean1, zmean1, xmean2,ymean2, zmean2;
+	moveToZero(object,xmean1,ymean1, zmean1);
+	moveToZero(reference,xmean2,ymean2, zmean2);
+	cout<<xmean1<<" "<<ymean1<<" "<<zmean1<<endl;
+	cout<<xmean2<<" "<<ymean2<<" "<<zmean2<<endl;
+	pcl::PointCloud< PointT >::Ptr object_copy    = copy_pointcloud(object);
+	pcl::PointCloud< PointT >::Ptr reference_copy = copy_pointcloud(reference);
+
+	
+	pcl::IterativeClosestPoint<pcl::PointXYZRGB, pcl::PointXYZRGB> icp;
+	icp.setInputCloud(object_copy);
+	icp.setInputTarget(reference_copy);
+	icp.setTransformationEpsilon (1e-12);
+	icp.setEuclideanFitnessEpsilon (1e-12);
+	icp.setMaxCorrespondenceDistance (0.05);
+	icp.setMaximumIterations(500);
+	icp.align(*aligned);
+	std::cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << std::endl;
+	std::cout << icp.getFinalTransformation() << std::endl;
+	Eigen::Matrix4f t2=icp.getFinalTransformation();
+	t2(0,3)+=xmean2-xmean1;
+	t2(1,3)+=ymean2-ymean1;
+	t2(2,3)+=zmean2-zmean1;
+	return t2;
+}
+
+Eigen::Matrix4f SpecificWorker::fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned)
+{
+	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
+	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
+	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
+	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+	pcl::PointCloud<pcl::FPFHSignature33>::Ptr scene_features (new pcl::PointCloud<pcl::FPFHSignature33>);
+	
+	std::cout<<object->size()<<std::endl;
+	std::cout<<reference->size()<<std::endl;
+	// Downsample
+	pcl::console::print_highlight ("Downsampling...\n");
+	pcl::VoxelGrid<PointT> grid;
+	const float leaf = 0.005f;
+	grid.setLeafSize (leaf, leaf, leaf);
+	grid.setInputCloud (object);
+	grid.filter (*object);
+	grid.setInputCloud (reference);
+	grid.filter (*reference);
+	
+	// Estimate normals for scene
+	pcl::console::print_highlight ("Estimating scene normals...\n");
+	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
+	nest.setRadiusSearch (0.01);
+	nest.setInputCloud (object);
+	nest.compute (*object_normals);
+	nest.setInputCloud (reference);
+	nest.compute (*scene_normals);
+	
+	// Estimate features
+	pcl::console::print_highlight ("Estimating features...\n");
+	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
+	fest.setRadiusSearch (0.025);
+	fest.setInputCloud (object);
+	fest.setInputNormals (object_normals);
+	fest.compute (*object_features);
+	fest.setInputCloud (reference);
+	fest.setInputNormals (scene_normals);
+	fest.compute (*scene_features);
+	
+	// Perform alignment
+	pcl::console::print_highlight ("Starting alignment...\n");
+	pcl::SampleConsensusPrerejective<PointT, PointT, pcl::FPFHSignature33> align;
+	align.setInputSource (object);
+	align.setSourceFeatures (object_features);
+	align.setInputTarget (reference);
+	align.setTargetFeatures (scene_features);
+	align.setMaximumIterations (100000); // Number of RANSAC iterations
+	align.setNumberOfSamples (3); // Number of points to sample for generating/prerejecting a pose
+	align.setCorrespondenceRandomness (5); // Number of nearest features to use
+	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
+	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
+	align.setInlierFraction (0.25f); // Required inlier fraction for accepting a pose hypothesis
+	{	
+		pcl::ScopeTime t("Alignment");
+		align.align (*object_aligned);
+	}
+	std::cout << "has converged:" << align.hasConverged() << " score: " << align.getFitnessScore() << std::endl;
+	std::cout << align.getFinalTransformation() << std::endl;
+	return align.getFinalTransformation();
+}
+
+
+void SpecificWorker::moveToZero(pcl::PointCloud< PointT >::Ptr cloud, double &xMean, double &yMean, double &zMean)
+{
+// printf("%d\n", __LINE__);
+	double xAcc=0, yAcc=0, zAcc=0;
+	int acc=0;
+
+// printf("%d\n", __LINE__);
+	for (size_t i=0; i<cloud->points.size(); ++i)
+	{
+// printf("%d\n", __LINE__);
+		if (isnan(cloud->points[i].x) or isnan(cloud->points[i].y) or isnan(cloud->points[i].z) )
+			continue;
+// printf("%d\n", __LINE__);
+		acc  += 1;
+		xAcc += cloud->points[i].x;
+		yAcc += cloud->points[i].y;
+		zAcc += cloud->points[i].z;
+// printf("%d\n", __LINE__);
+	}
+	
+// printf("%d\n", __LINE__);
+	xMean = xAcc / double(acc);
+	yMean = yAcc / double(acc);
+	zMean = zAcc / double(acc);
+// printf("%d\n", __LINE__);
+
+	for (size_t i=0; i<cloud->points.size(); ++i)
+	{
+// printf("%d\n", __LINE__);
+		if (isnan(cloud->points[i].x) or isnan(cloud->points[i].y) or isnan(cloud->points[i].z) )
+			continue;
+// printf("%d\n", __LINE__);
+		cloud->points[i].x -= xMean;
+		cloud->points[i].y -= yMean;
+		cloud->points[i].z -= zMean;
+// printf("%d\n", __LINE__);
+	}
+// printf("%d\n", __LINE__);
+}

@@ -58,15 +58,11 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 void SpecificWorker::compute()
 {
 	QMutexLocker locker(mutex);
-	qDebug()<<__LINE__;
 	pcl::PointCloud<PointT>::Ptr object, scene;
-	qDebug()<<__LINE__;
 	object = readThePointCloud("/home/robocomp/robocomp/components/prp/objects/seen.pcd");
-	qDebug()<<__LINE__;
 	scene = readThePointCloud("/home/robocomp/robocomp/components/prp/objects/saved.pcd");
-	qDebug()<<__LINE__;
 	for (int i=0; i<10;i++)
-		fiting(object,scene);
+		fitingICP(object,scene);
 }
 
 pcl::PointCloud<PointT>::Ptr SpecificWorker::readThePointCloud(const string &pcd)
@@ -145,7 +141,19 @@ void SpecificWorker::fiting(pcl::PointCloud< PointT >::Ptr object, pcl::PointClo
 	i++;
 }
 
-
+void SpecificWorker::fitingICP(pcl::PointCloud< PointT >::Ptr object, pcl::PointCloud< PointT >::Ptr reference)
+{
+	static int i=0;
+	pcl::PointCloud<PointT>::Ptr aligned(new pcl::PointCloud<PointT>);
+	pcl::IterativeClosestPoint<PointT, PointT> icp;
+	icp.setInputCloud(object);
+	icp.setInputTarget(reference);
+	icp.align(*aligned);
+	std::cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << std::endl;
+	std::cout << icp.getFinalTransformation() << std::endl;
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/testfiting/objectalingICP_"+QString::number(i).toStdString()+".pcd", *aligned, false);
+	i++;
+}
 
 
 

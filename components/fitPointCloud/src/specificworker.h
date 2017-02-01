@@ -63,6 +63,8 @@ private:
 
 	pcl::PointCloud<PointT>::Ptr readThePointCloud(const string &pcd);
 	void fiting(pcl::PointCloud<PointT>::Ptr object, pcl::PointCloud<PointT>::Ptr scene);
+	void fitingICP(pcl::PointCloud< PointT >::Ptr object, pcl::PointCloud< PointT >::Ptr reference);
+	
 };
 
 #endif
