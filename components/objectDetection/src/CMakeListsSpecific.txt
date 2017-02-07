@@ -14,12 +14,16 @@ SET ( SOURCES
   geometry/plane.cpp
   shapes/table.cpp
   vfh/vfh.cpp
+  viewer/viewer.cpp
+  pointcloud/pointcloud.cpp
 )
 
 # Headers set
 SET ( HEADERS
   specificworker.h
   specificmonitor.h
+  /usr/include/time.h
+#  viewer/viewer.h
 #  $ENV{ROBOCOMP}/classes/agmInner/agmInner.h
 )
 

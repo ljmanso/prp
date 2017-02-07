@@ -29,11 +29,9 @@
  #include <pcl/point_cloud.h>
  #include <pcl/pcl_base.h>
  #include <pcl/point_types.h>
- #include <pcl/io/pcd_io.h>
  #include <pcl/filters/passthrough.h>
  #include <pcl/segmentation/extract_clusters.h>
  #include <pcl/filters/statistical_outlier_removal.h>
- #include <pcl/io/io.h>
  #include <pcl/conversions.h>
  #include <pcl/point_types_conversion.h>
  #include <opencv2/core/core.hpp>
@@ -41,12 +39,6 @@
  #include <opencv2/imgproc/imgproc.hpp>
  #include <pcl/surface/convex_hull.h>
  #include <pcl/surface/concave_hull.h>
- #include <pcl/filters/voxel_grid.h>
- #include <pcl/registration/sample_consensus_prerejective.h>
- #include <pcl/features/fpfh_omp.h>
- #include <pcl/common/time.h>
- #include <pcl/visualization/cloud_viewer.h>
- #include <pcl/registration/icp.h>
 #endif
 
 #include <genericworker.h>
@@ -57,14 +49,31 @@
 	#include "color_segmentation/Segmentator.h"
 	#include "shapes/table.h"
 	#include "vfh/vfh.h"
+	#include "viewer/viewer.h"
+	#include "pointcloud/pointcloud.h"
+	#include "time.h"
 #endif
 
 #define DEBUG 0
 #define SAVE_DATA 0 
-#define TEST
 #define THRESHOLD 0.8
+#define MEDIDA 1.
+
+#define SUB(dst, src1, src2) \
+  { \
+    if ((src2)->tv_nsec > (src1)->tv_nsec) { \
+      (dst)->tv_sec = (src1)->tv_sec - (src2)->tv_sec - 1; \
+      (dst)->tv_nsec = ((src1)->tv_nsec - (src2)->tv_nsec) + 1000000000; \
+    } \
+    else { \
+      (dst)->tv_sec = (src1)->tv_sec - (src2)->tv_sec; \
+      (dst)->tv_nsec = (src1)->tv_nsec - (src2)->tv_nsec; \
+    } \
+  }
+
 typedef pcl::PointXYZRGB PointT;
 
+using namespace computepointcloud;
 
 class SpecificWorker : public GenericWorker
 {
@@ -121,7 +130,10 @@ class SpecificWorker : public GenericWorker
 	std::vector<VFH::file_dist_t> vfh_guesses;
 	boost::shared_ptr<Table> table;
 	QGraphicsScene scene;
-	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+	boost::shared_ptr<Viewer> viewer;
+	
+	pcl::PointCloud< PointT >::Ptr copy_scene;
+	
   
 Q_OBJECT
 public:
@@ -143,38 +155,28 @@ public slots:
 private:
 	void grabThePointCloud(const string &image, const string &pcd);
 	void readThePointCloud(const string &image, const string &pcd);
+	void ransac(const string &model);
+	void projectInliers(const string &model);
+	void convexHull(const string &model);
+	void extractPolygon(const string &model);
+	void euclideanClustering(int &numCluseters);
+
+	void caputurePointCloudObjects();
+
 	void updatergbd();
 	void updateinner();
-	void segmentImage();
-	void ransac(const string &model);
-	void euclideanClustering(int &numCluseters);
-	void passThrough();
-	void convexHull(const string &model);
-	void statisticalOutliersRemoval();
+	
+// 	void segmentImage();
+// 	void passThrough();
+// 	void statisticalOutliersRemoval();
+	
 	void loadTrainedVFH();
 	void vfh(listType &guesses);
-	void projectInliers(const string &model);
-	void extractPolygon(const string &model);
 	bool aprilSeen(pose6D &offset);
+	
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
-	void caputurePointCloudObjects();
 	void removeAllpixmap();
-	pcl::PointCloud< PointT >::Ptr PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud);
-	pcl::PointCloud< PointT >::Ptr PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud);
-	pcl::PointCloud< PointT >::Ptr changecloorcloud(pcl::PointCloud< PointT >::Ptr cloud, int red, int green, int blue);
-	pcl::PointCloud< PointT >::Ptr copy_pointcloud(pcl::PointCloud< PointT >::Ptr cloud);
-	void addCoordinateSystem(float x,float y, float z, string id);
-	void addCoordinateSystem(QMat tr, string id);
-	void addPointCloud(pcl::PointCloud< PointT >::Ptr cloud, string id, int size);
-	void updatePointCloud(pcl::PointCloud< PointT >::Ptr cloud, string id);
-	void removePointCloud(string id);
-	void removeCoordinateSystem(string id);
-	void initViewer();
-	void moveToZero(pcl::PointCloud< PointT >::Ptr cloud, double &xMean, double &yMean, double &zMean);
-	Eigen::Matrix4f fitingICP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned);
-	Eigen::Matrix4f fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned);
-
 };
 
 #endif

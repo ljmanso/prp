@@ -26,6 +26,7 @@ Ice.ACM.Client=10
 Ice.ACM.Server=10
 
 objectDetectionComp.innermodel = /home/robocomp/robocomp/components/robocomp-shelly/etc/shelly.xml
-objectDetectionComp.type_features=VFH
+objectDetectionComp.type_features=CVFH
 objectDetectionComp.pathLoadDescriptors = /home/robocomp/robocomp/components/prp/objects/
 objectDetectionComp.test = 0
+

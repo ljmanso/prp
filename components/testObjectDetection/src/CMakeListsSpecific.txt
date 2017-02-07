@@ -9,9 +9,9 @@ SET ( SOURCES
 SET ( HEADERS
   specificworker.h
   specificmonitor.h
+  /usr/include/time.h
 )
 
 INCLUDE($ENV{ROBOCOMP}/cmake/modules/ipp.cmake)
-
 ADD_DEFINITIONS( -std=c++11 )
 

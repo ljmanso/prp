@@ -101,7 +101,11 @@ void SpecificWorker::findTheObject()
 	try
 	{
 // 		listObject lobject;
+		struct timespec Inicio, Fin;
+		clock_gettime(CLOCK_REALTIME, &Inicio);
 		result = objectdetection_proxy->findTheObject(object, poseObj);
+		clock_gettime(CLOCK_REALTIME, &Fin);
+		qDebug()<<Fin.tv_sec-Inicio.tv_sec<<"s "<<Fin.tv_nsec-Inicio.tv_nsec<<"ns";
 // 		result = objectdetection_proxy->findObjects(lobject);
 		if(object!="")
 		{
