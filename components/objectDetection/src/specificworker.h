@@ -31,6 +31,7 @@
  #include <pcl/point_types.h>
  #include <pcl/filters/passthrough.h>
  #include <pcl/segmentation/extract_clusters.h>
+//  #include <pcl/cuda/common/eigen.h>
  #include <pcl/filters/statistical_outlier_removal.h>
  #include <pcl/conversions.h>
  #include <pcl/point_types_conversion.h>
@@ -55,7 +56,7 @@
 #endif
 
 #define DEBUG 0
-#define SAVE_DATA 0 
+#define SAVE_DATA 0
 #define THRESHOLD 0.8
 #define MEDIDA 1.
 
@@ -81,9 +82,7 @@ class SpecificWorker : public GenericWorker
 	QString id_robot, id_camera,id_camera_transform;
 	string descriptors_extension, pathLoadDescriptors;
 	InnerModel *innermodel;
-	QGraphicsPixmapItem* item_pixmap;
-	vector<QGraphicsTextItem*> V_text_item;
-	vector<QGraphicsPixmapItem*> V_pixmap_item;
+	
 	//for poses calculation respect to the canonical one
 	InnerModel *poses_inner;
 	tagsList tags;
@@ -129,9 +128,16 @@ class SpecificWorker : public GenericWorker
 	boost::shared_ptr<VFH> vfh_matcher;
 	std::vector<VFH::file_dist_t> vfh_guesses;
 	boost::shared_ptr<Table> table;
-	QGraphicsScene scene;
-	boost::shared_ptr<Viewer> viewer;
 	
+#ifdef USE_QTGUI
+	QGraphicsPixmapItem* item_pixmap;
+	vector<QGraphicsTextItem*> V_text_item;
+	vector<QGraphicsPixmapItem*> V_pixmap_item;
+	
+	QGraphicsScene scene;
+
+	boost::shared_ptr<Viewer> viewer;
+#endif
 	pcl::PointCloud< PointT >::Ptr copy_scene;
 	
   

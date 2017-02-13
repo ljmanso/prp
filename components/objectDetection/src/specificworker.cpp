@@ -31,10 +31,12 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 ,color_segmented(480,640, CV_8UC3, cv::Scalar::all(0))
 ,table(new Table())
 ,vfh_matcher(new VFH())
+#ifdef USE_QTGUI
 ,viewer(new Viewer(MEDIDA))
+#endif
 {
 	//let's set the sizes
-	table->set_board_size(500/*/MEDIDA*/,30/*/MEDIDA*/,500/*/MEDIDA*/);
+	table->set_board_size(500/MEDIDA,30/MEDIDA,500/MEDIDA);
 	marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
 	
 	num_object_found = 0;
@@ -45,11 +47,10 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	item_pixmap=new QGraphicsPixmapItem();
 	scene.addItem(item_pixmap);
 // 	viewer=NULL;
+	viewer->addPointCloud(cloud,"scene",1,0,0,0);
 #endif
 	boost::filesystem::remove("training_data.h5");
-	boost::filesystem::remove("training_data.list");
-	
-	viewer->addPointCloud(cloud,"scene",1,0,0,0);
+	boost::filesystem::remove("training_data.list");	
 }
 
 /**
@@ -58,7 +59,6 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 
 SpecificWorker::~SpecificWorker()
 {
-
 }
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
@@ -107,6 +107,7 @@ void SpecificWorker::updateinner()
 
 void SpecificWorker::updatergbd()
 {
+#ifdef USE_QTGUI
 	RoboCompRGBD::ColorSeq rgbMatrix;
 	RoboCompJointMotor::MotorStateMap h;
 	RoboCompGenericBase::TBaseState b;
@@ -164,15 +165,19 @@ void SpecificWorker::updatergbd()
 	QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
 	item_pixmap->setPixmap(QPixmap::fromImage(image));
 	scene.update();
+#endif
 }
 
 void SpecificWorker::compute()
 {
 // 	qDebug()<<"entro";
 	updateinner();
+#ifdef USE_QTGUI
 	updatergbd();
 	viewer->update();
+#endif
 }
+
 /*
 void SpecificWorker::segmentImage()
 {
@@ -204,6 +209,7 @@ void SpecificWorker::segmentImage()
 #endif
 }
 */
+
 void SpecificWorker::reloadVFH()
 {
 	string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
@@ -362,122 +368,6 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 }
 
 /*
-// void SpecificWorker::guessPose(const string &label, pose6D &guess)
-// {
-// 	qDebug()<<__FUNCTION__;
-// 	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
-// 	//Load mathing view and find transform to real point cloud
-// 	pcl::PointCloud<PointT>::Ptr object (new pcl::PointCloud<PointT>);
-// 	//change vfh extension to pcd
-// 	std::string view_to_load = file_view_mathing;
-// 	
-// 	if (pcl::io::loadPCDFile<PointT> (view_to_load, *object) == -1) // load the file
-// 	{
-// 		printf ("Couldn't read file test_pcd.pcd \n");
-// 	}
-// 	
-// 	pcl::PointCloud<PointT>::Ptr scene = cluster_clouds[num_object_found];
-// 	pcl::PointCloud<PointT>::Ptr object_aligned (new pcl::PointCloud<PointT>);
-// 
-// 	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
-// 	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
-// 	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
-// 	pcl::PointCloud<pcl::FPFHSignature33>::Ptr scene_features (new pcl::PointCloud<pcl::FPFHSignature33>);
-// 	
-// 	std::cout<<object->size()<<std::endl;
-// 	std::cout<<scene->size()<<std::endl;
-// 	// Downsample
-// 	pcl::console::print_highlight ("Downsampling...\n");
-// 	pcl::VoxelGrid<PointT> grid;
-// 	const float leaf = 5;
-// 	grid.setLeafSize (leaf, leaf, leaf);
-// 	grid.setInputCloud (object);
-// 	grid.filter (*object);
-// 	grid.setInputCloud (scene);
-// 	grid.filter (*scene);
-// 	
-// 	// Estimate normals for scene
-// 	pcl::console::print_highlight ("Estimating scene normals...\n");
-// 	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
-// 	nest.setRadiusSearch (10);
-// 	nest.setInputCloud (object);
-// 	nest.compute (*object_normals);
-// 	nest.setInputCloud (scene);
-// 	nest.compute (*scene_normals);
-// 	
-// 	// Estimate features
-// 	pcl::console::print_highlight ("Estimating features...\n");
-// 	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
-// 	fest.setRadiusSearch (25);
-// 	fest.setInputCloud (object);
-// 	fest.setInputNormals (object_normals);
-// 	fest.compute (*object_features);
-// 	fest.setInputCloud (scene);
-// 	fest.setInputNormals (scene_normals);
-// 	fest.compute (*scene_features);
-// 	
-// 	// Perform alignment
-// 	pcl::console::print_highlight ("Starting alignment...\n");
-// 	pcl::SampleConsensusPrerejective<PointT, PointT, pcl::FPFHSignature33> align;
-// 	align.setInputSource (object);
-// 	align.setSourceFeatures (object_features);
-// 	align.setInputTarget (scene);
-// 	align.setTargetFeatures (scene_features);
-// 	align.setMaximumIterations (50000); // Number of RANSAC iterations
-// 	align.setNumberOfSamples (2); // Number of points to sample for generating/prerejecting a pose
-// 	align.setCorrespondenceRandomness (5); // Number of nearest features to use
-// 	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
-// 	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
-// 	align.setInlierFraction (0.25f); // Required inlier fraction for accepting a pose hypothesis
-// 	{	
-// 		pcl::ScopeTime t("Alignment");
-// 		align.align (*object_aligned);
-// 	}
-// 	
-// 	Eigen::Matrix4f transformation = align.getFinalTransformation ();
-// 	Eigen::Vector3f ea = transformation.block<3,3>(1,1).eulerAngles(0, 1, 2);
-// 	
-// 	float tx, ty, tz, rx, ry, rz;
-// 	tx = transformation(3,0);
-// 	ty = transformation(3,1);
-// 	tz = transformation(3,2);
-// 	rx = ea(0);
-// 	ry = ea(1);
-// 	rz = ea(2);
-// 	
-// #if DEBUG
-// 	std::cout<<"Ransac Translation: "<<tx<<" "<<ty<<" "<<tz<<std::endl;
-// 	std::cout<<"Ransac Rotation: "<<rx<<" "<<ry<<" "<<rz<<std::endl;
-// #endif
-// 	
-// 	
-// 	//load innermodel and calculate translation respect root
-// 	poses_inner = new InnerModel();
-// 	std::string inner_name = path + label + ".xml";
-// 	poses_inner->open(inner_name);
-// 	
-// 	//get transform name (same as pcd file name)
-// 	std::string node_name = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
-// 	node_name = node_name.substr(file_view_mathing.find_last_of("/")+1);
-// 	std::cout<<node_name<<endl;
-// 	//parent node will be the matching view
-// 	InnerModelNode *parent_node = poses_inner->getTransform(node_name.c_str());
-// 	InnerModelTransform *node = poses_inner->newTransform("current_live_view", "static", parent_node, tx, ty, tz, rx, ry, rz);
-// 	parent_node->addChild(node);
-// 	
-// 	//calculate transform to canon pose
-// 	RTMat transform_to_canon = poses_inner->getTransformationMatrix("canon_pose", "current_live_vew");
-// 	
-// 	guess.tx = transform_to_canon.getTr()[0];
-// 	guess.ty = transform_to_canon.getTr()[1];
-// 	guess.tz = transform_to_canon.getTr()[2];
-// 	guess.rx = transform_to_canon.getRxValue();
-// 	guess.ry = transform_to_canon.getRyValue();
-// 	guess.rz = transform_to_canon.getRzValue();
-// 	
-// }
-*/
-/*
 void SpecificWorker::passThrough()
 {
         pcl::PassThrough<PointT> pass;
@@ -533,7 +423,6 @@ void SpecificWorker::vfh(listType &guesses)
 
 void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 {
-// 	cout<<__FUNCTION__<<endl;
 	try
 	{
 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
@@ -563,11 +452,12 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 		cloud->width = 1;
 		cloud->height = points_kinect.size();
 // 		Convert cloud from mm to m
-		if(MEDIDA==1000)
+		if(MEDIDA==1000.)
 			cloud = PointCloudfrom_mm_to_Meters(cloud);
-		
+
 		std::vector< int > index;
 		removeNaNFromPointCloud (*cloud, *cloud, index);
+		cloud->is_dense = false;
 	
 #if DEBUG
 		timespec ts;
@@ -587,8 +477,6 @@ void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
 		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
 		return;
 	}
-
-
 }
 
 void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
@@ -604,7 +492,7 @@ void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
     {
         PCL_ERROR ("Couldn't read file pcd.pcd \n");
     }
-    if (MEDIDA==1000)
+    if (MEDIDA==1000.)
 		cloud = PointCloudfrom_mm_to_Meters(cloud);
 }
 
@@ -662,7 +550,8 @@ void SpecificWorker::extractPolygon(const string &model)
 
 void SpecificWorker::euclideanClustering(int &numCluseters)
 {
-  
+// 	pcl::cuda::OrganizedRadiusSearch<PointT>  ors(this->cloud);
+// 	ors->
 	pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT>);
 	tree->setInputCloud (this->cloud);
 	cluster_indices.clear();
@@ -676,6 +565,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 	
 	ec.setInputCloud (this->cloud);
 	ec.extract (cluster_indices);
+	int j = 0;
 	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
 	{
 		pcl::PointCloud<PointT>::Ptr cloud_cluster (new pcl::PointCloud<PointT>);
@@ -757,6 +647,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 				/////save rgbd end
 			writer.write<PointT> (ss.str () + ".pcd", *cloud_cluster, false); 
 #endif
+			j++;
 	}
 	qDebug()<<"Clouds of points captured: "<< cluster_clouds.size();
 	num_scene++;
@@ -766,13 +657,15 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 {
 	caputurePointCloudObjects();
-	
+
 	std::string guessgan="";
+#ifdef USE_QTGUI
 	while(!V_text_item.empty())
 	{
 		scene.removeItem(V_text_item.back());
 		V_text_item.pop_back();
 	}
+#endif
 	struct timespec Inicio, Fin, resta;
 	clock_gettime(CLOCK_REALTIME, &Inicio);
 	float dist=3.40e38;
@@ -803,8 +696,6 @@ bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 	}
 	if((guessgan!=""&&guessgan==objectTofind))
 	{
-// 		paintcloud(cluster_clouds[num_object_found]);
-// 		settexttocloud(guessgan,cluster_clouds[num_object_found]);
 		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
 		clock_gettime(CLOCK_REALTIME, &Fin);
 		SUB(&resta, &Fin, &Inicio);
@@ -826,21 +717,38 @@ bool SpecificWorker::findObjects(listObject& lObjects)
 	for(unsigned int i=0; i<cluster_clouds.size();i++)
 	{
 		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
-		
+
 		VFH::file_dist_t second;
 		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
 		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
 
-		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
-			guessgan=vfh_guesses[0].label;
-		else
-			guessgan="unknown";
-		num_object_found = i;
-		file_view_mathing = vfh_guesses[0].file;
 		pose6D p;
-		p.label=vfh_guesses[0].label;
-		p=getPose();
-// 		getRotation(p.rx,p.ry,p.rz);
+		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
+		{
+			guessgan=vfh_guesses[0].label;
+			num_object_found = i;
+			file_view_mathing = vfh_guesses[0].file;
+			p.label=guessgan;
+			p=getPose();
+		}
+		else
+		{
+			Eigen::Vector4f centroid;
+			pcl::compute3DCentroid (*cluster_clouds[i], centroid);
+			p.label="unknown";
+			if(MEDIDA==1000.)
+			{
+				p.tx = centroid[0]*MEDIDA;
+				p.ty = centroid[1]*MEDIDA;
+				p.tz = centroid[2]*MEDIDA;
+			}
+			else
+			{
+				p.tx = centroid[0];
+				p.ty = centroid[1];
+				p.tz = centroid[2];
+			}
+		}
 		lObjects.push_back(p);
 		guessgan="";
 	}
@@ -897,7 +805,6 @@ pose6D  SpecificWorker::getPose()
 	pcl::PointCloud<PointT>::Ptr object_aligned(new pcl::PointCloud<PointT>);
 	QMat saveToViewR = fitingSCP(object,scene,object_aligned);
 // 	QMat saveToViewR2 = fitingICP(object_aligned,object,object_aligned);
-
 
 	//convert pointcloud to meters
 // 	object_aligned = PointCloudfrom_Meter_to_mm(object_aligned);
@@ -970,25 +877,25 @@ void SpecificWorker::newAprilTag(const tagsList &tags)
 void SpecificWorker::caputurePointCloudObjects()
 {
 	static vector<string> id_objects;
+#ifdef USE_QTGUI
 	while(!id_objects.empty())
 	{
 		viewer->removePointCloud(id_objects.back());
 		id_objects.pop_back();
 	}
+#endif
 	if(test)
-	{
 		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
-		viewer->updatePointCloud(cloud,"scene");
-	}
 	else
-	{
 		grabThePointCloud("image.png", "rgbd.pcd");
-		viewer->updatePointCloud(cloud,"scene");
-	}
+#ifdef USE_QTGUI
+	viewer->updatePointCloud(cloud,"scene");
+#endif
 	struct timespec Inicio, Fin, resta;
 	clock_gettime(CLOCK_REALTIME, &Inicio);
 	copy_scene=copy_pointcloud(cloud);
-	cloud = VoxelGrid_filter(cloud, 5/MEDIDA, 5/MEDIDA, 5/MEDIDA);
+	cloud = VoxelGrid_filter(cloud, 3/MEDIDA, 3/MEDIDA, 3/MEDIDA);
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/VoxelGrid_filter.pcd", *cloud, false);
 	ransac("plane");
 	projectInliers("plane");
 	convexHull("plane");
@@ -998,11 +905,13 @@ void SpecificWorker::caputurePointCloudObjects()
 	clock_gettime(CLOCK_REALTIME, &Fin);
 	SUB(&resta, &Fin, &Inicio);
 	qDebug()<<"Captured: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
+#ifdef USE_QTGUI
 	for(unsigned int i=0;i<cluster_clouds.size();i++)
 	{
 		viewer->addPointCloud(cluster_clouds[i],QString::number(i).toStdString(),1,255,0,0);
 		id_objects.push_back(QString::number(i).toStdString());
 	}
+#endif
 	
 	
 }
