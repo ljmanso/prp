@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -24,38 +24,46 @@
 
 
 
-
-
-
-
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
-
+#include <Eigen/Core>
+#include <pcl/point_types.h>
+#include <pcl/point_cloud.h>
+#include <pcl/common/time.h>
+#include <pcl/console/print.h>
+#include <pcl/features/normal_3d_omp.h>
+#include <pcl/features/fpfh_omp.h>
+#include <pcl/filters/filter.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/registration/icp.h>
+#include <pcl/registration/sample_consensus_prerejective.h>
+#include <pcl/segmentation/sac_segmentation.h>
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
-#include "time.h"
+
+typedef pcl::PointXYZRGB PointT;
 
 class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
 public:
-	SpecificWorker(MapPrx& mprx);	
+	SpecificWorker(MapPrx& mprx);
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
+
+
 public slots:
-	void compute(); 
-// 	void grabThePointCloud();	
-// 	void ransac();
-// 	void projectInliers();
-// 	void convexHull();
-// 	void extractPolygon();
-// 	void euclideanExtract();
-	void findTheObject();
-// 	void getPose();
-// 	void getRotation();
-	void reloadVFH();
-	void fullRun();
+	void compute();
+
 private:
+
+	InnerModel *innerModel;
+	pcl::PCDWriter writer;
+
+	pcl::PointCloud<PointT>::Ptr readThePointCloud(const string &pcd);
+	void fiting(pcl::PointCloud<PointT>::Ptr object, pcl::PointCloud<PointT>::Ptr scene);
+	void fitingICP(pcl::PointCloud< PointT >::Ptr object, pcl::PointCloud< PointT >::Ptr reference);
 	
 };
 

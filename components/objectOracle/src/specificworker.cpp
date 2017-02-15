@@ -748,23 +748,33 @@ void SpecificWorker::showTablesOnInterface()
 	
 	table1_qmat = QMap<std::string, double>(table1);
 	mapmodel_1.setMap(&table1_qmat);
-	tableView_1->setModel(&mapmodel_1);
+	filtermodel_1.setSourceModel( &mapmodel_1 );
+	tableView_1->setModel(&filtermodel_1);
+	tableView_1->setSortingEnabled(true);
 	
 	table2_qmat = QMap<std::string, double>(table2);
 	mapmodel_2.setMap(&table2_qmat);
-	tableView_2->setModel(&mapmodel_2);
+	filtermodel_2.setSourceModel( &mapmodel_2 );
+	tableView_2->setModel(&filtermodel_2);
+	tableView_2->setSortingEnabled(true);
 	
 	table3_qmat = QMap<std::string, double>(table3);
 	mapmodel_3.setMap(&table3_qmat);
-	tableView_3->setModel(&mapmodel_3);
+	filtermodel_3.setSourceModel( &mapmodel_3 );
+	tableView_3->setModel(&filtermodel_3);
+	tableView_3->setSortingEnabled(true);
 	
 	table4_qmat = QMap<std::string, double>(table4);
 	mapmodel_4.setMap(&table4_qmat);
-	tableView_4->setModel(&mapmodel_4);
+	filtermodel_4.setSourceModel( &mapmodel_4 );
+	tableView_4->setModel(&filtermodel_4);
+	tableView_4->setSortingEnabled(true);
 	
 	table5_qmat = QMap<std::string, double>(table5);
 	mapmodel_5.setMap(&table5_qmat );
-	tableView_5->setModel(&mapmodel_5);
+	filtermodel_5.setSourceModel( &mapmodel_5 );
+	tableView_5->setModel(&filtermodel_5);
+	tableView_5->setSortingEnabled(true);
 	
 }
 

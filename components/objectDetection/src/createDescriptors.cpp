@@ -96,7 +96,7 @@ void computeVFHistogram(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, const boost::
 }
 
 //Function that recursively reads all files and computes the VFH for them
-void readFilesAndComputeCVFH (const boost::filesystem::path &base_dir)
+void readFilesAndComputeCVFH (const boost::filesystem::path &base_dir, const boost::filesystem::path &original_dir)
 {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
 
@@ -110,14 +110,14 @@ void readFilesAndComputeCVFH (const boost::filesystem::path &base_dir)
 		{
 			pcl::console::print_highlight ("Entering directory %s.\n", ss.str().c_str());
 			//call rescursively our function
-			readFilesAndComputeCVFH(it->path());
+			readFilesAndComputeCVFH(it->path(), original_dir);
 		}
 		//if not, go ahead and read and process the file
 		if (boost::filesystem::is_regular_file (it->status()) && boost::filesystem::extension (it->path()) == FILES_EXTENSION)
 		{
 			boost::filesystem::path filename=*it;
 			outpath << filename.branch_path().string() << "/" << boost::filesystem::basename(filename) <<"." << ::feature;
-			if (boost::filesystem::exists(outpath.str()))
+			if (boost::filesystem::exists(outpath.str()) or original_dir==base_dir)
 				continue;
 			printf("%s doesn't exist: generating files...\n", outpath.str().c_str());
 			if(pcl::io::loadPCDFile<pcl::PointXYZ> (it->path().string(), *cloud) == -1)
@@ -162,7 +162,7 @@ int main (int argc, char *argv[] )
 	}
 	
 	//get into the directory and compute VFHs.
-	readFilesAndComputeCVFH(argv[1]);
+	readFilesAndComputeCVFH(argv[1],argv[1]);
 
 	//done ;)
 	return 0;

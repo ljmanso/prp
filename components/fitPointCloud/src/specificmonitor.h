@@ -1,5 +1,6 @@
+
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2010 by RoboLab - University of Extremadura
  *
  *    This file is part of RoboComp
  *
@@ -16,48 +17,31 @@
  *    You should have received a copy of the GNU General Public License
  *    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef SPECIFICMONITOR_H
+#define SPECIFICMONITOR_H
+
+#include "genericmonitor.h"
 
 /**
        \brief
        @author authorname
 */
-
-
-
-
-
-
-
-#ifndef SPECIFICWORKER_H
-#define SPECIFICWORKER_H
-
-#include <genericworker.h>
-#include <innermodel/innermodel.h>
-#include "time.h"
-
-class SpecificWorker : public GenericWorker
+class SpecificMonitor : public GenericMonitor
 {
-Q_OBJECT
-public:
-	SpecificWorker(MapPrx& mprx);	
-	~SpecificWorker();
-	bool setParams(RoboCompCommonBehavior::ParameterList params);
-public slots:
-	void compute(); 
-// 	void grabThePointCloud();	
-// 	void ransac();
-// 	void projectInliers();
-// 	void convexHull();
-// 	void extractPolygon();
-// 	void euclideanExtract();
-	void findTheObject();
-// 	void getPose();
-// 	void getRotation();
-	void reloadVFH();
-	void fullRun();
-private:
+  Q_OBJECT
+  
+  public:
+	SpecificMonitor(GenericWorker *_worker, Ice::CommunicatorPtr _communicator);
+	~SpecificMonitor();
 	
+	void readConfig(RoboCompCommonBehavior::ParameterList &params );
+	void run();
+	void initialize();
+    
+	bool sendParamsToWorker(RoboCompCommonBehavior::ParameterList params);
+	bool checkParams(RoboCompCommonBehavior::ParameterList l);
+	
+	bool ready;
 };
 
-#endif
-
+#endif // GENERICMONITOR_H
