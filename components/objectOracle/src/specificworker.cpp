@@ -286,7 +286,9 @@ void SpecificWorker::calculate_salesman()
 void SpecificWorker::compute()
 {
 	static bool first=true;
-// 	printf("ACTION: %s\n", action.c_str());
+ 	printf("ACTION: %s\n", action.c_str());
+	std::string plan = params["plan"].value;
+	printf("PLAN: %s\n", plan.c_str());
 	
 	boost::algorithm::to_lower(action);
 	
@@ -322,14 +324,15 @@ void SpecificWorker::compute()
 
 	try
 	{
+		cout<<"Checking if oracle is used"<<endl;
 		worldModel->getEdge(symbols["robot"], symbols["status"], "usedOracle");
 	}
 	catch(...)
 	{
 		cout<<" ************************************ ORACLE NOT USED"<<endl;	
 		//check if need to imaginemostlikelymuginposition
-		std::string plan = params["plan"].value;
-
+		
+		
 		if(plan.find("imagineMostLikelyMugInPosition") != std::string::npos)
 		{
 			action_imagineMostLikelyMugInPosition();
@@ -1556,6 +1559,7 @@ std::string SpecificWorker::lookForObject(std::string label)
 	if ( table_to_visit_number!=-1 )
 		visited_table[table_to_visit_number]=true;
 	
+	current_table="table2";
 	return current_table;
 	
 }
@@ -1709,7 +1713,7 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 	{
 		try
 		{
-			AGMMisc::publishModification(newModel, agmexecutive_proxy, std::string( "humanAgent"));
+			AGMMisc::publishModification(newModel, agmexecutive_proxy, std::string( "oracleAgent"));
 			return;
 		}
 		catch(const RoboCompAGMExecutive::Locked &e)
@@ -1746,7 +1750,7 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	// Create new symbols and the edges which are independent from the container
 	AGMModelSymbol::SPtr objSSt = newModel->newSymbol("objectSt");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	AGMModelSymbol::SPtr objS   = newModel->newSymbol("protoObject");
+	AGMModelSymbol::SPtr objS   = newModel->newSymbol("object");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(objS, objSSt, objectType);
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
@@ -1758,7 +1762,7 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	auto symbols = newModel->getSymbolsMap(params, "robot", "status", "table", "room");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	newModel->addEdge(symbols["robot"], objS, "know");
+	newModel->addEdge(symbols["robot"], objS, "imagine");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	try{
 	  newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
@@ -1770,7 +1774,7 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	
 	printf("about to call the look for object thing\n");
 	//Locate objS
-	std::string table = lookForObject_salesman(objectType);
+	std::string table = lookForObject(objectType);
 	cout<<endl<<table<<endl<<endl;
 	int id = -1;
 	int room_id = -1;
