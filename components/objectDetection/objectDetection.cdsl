@@ -13,4 +13,5 @@ Component objectDetectionComp
 	};
 	language Cpp;
 	gui Qt(QWidget);
+	useQt qt5;
 };

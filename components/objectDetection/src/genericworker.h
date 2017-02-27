@@ -71,8 +71,8 @@ public:
 	QMutex *mutex;
 	
 
-	RGBDPrx rgbd_proxy;
 	JointMotorPrx jointmotor_proxy;
+	RGBDPrx rgbd_proxy;
 
 	virtual pose6D getPose() = 0;
 	virtual bool findObjects(listObject &lObjects) = 0;

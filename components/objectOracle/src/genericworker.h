@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -87,9 +87,9 @@ public:
 	bool isActive() { return active; }
 	
 
-	SemanticSimilarityPrx semanticsimilarity_proxy;
-	RGBDPrx rgbd_proxy;
 	LoggerPrx logger_proxy;
+	RGBDPrx rgbd_proxy;
+	SemanticSimilarityPrx semanticsimilarity_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 
 	virtual bool reloadConfigAgent() = 0;

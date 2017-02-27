@@ -8,7 +8,7 @@
 #include <pcl/point_types.h>
 #include <pcl/visualization/cloud_viewer.h>
 #include <boost/filesystem.hpp>
-#include <Qt/qtimer.h>
+#include <QTimer>
 #include <qmat/qmat.h>
 #include "config.h"
 #include "pointcloud/pointcloud.h"

@@ -28,8 +28,8 @@ QObject()
 #endif
 
 {
-	jointmotor_proxy = (*(JointMotorPrx*)mprx["JointMotorProxy"]);
 	rgbd_proxy = (*(RGBDPrx*)mprx["RGBDProxy"]);
+	jointmotor_proxy = (*(JointMotorPrx*)mprx["JointMotorProxy"]);
 
 	mutex = new QMutex(QMutex::Recursive);
 

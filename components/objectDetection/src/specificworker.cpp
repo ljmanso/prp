@@ -35,6 +35,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 ,viewer(new Viewer(MEDIDA))
 #endif
 {
+	test=false;
 	//let's set the sizes
 	table->set_board_size(500/MEDIDA,30/MEDIDA,500/MEDIDA);
 	marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;

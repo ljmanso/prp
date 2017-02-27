@@ -78,7 +78,7 @@ using namespace computepointcloud;
 
 class SpecificWorker : public GenericWorker
 {
-	bool test=false;
+	bool test;
 	QString id_robot, id_camera,id_camera_transform;
 	string descriptors_extension, pathLoadDescriptors;
 	InnerModel *innermodel;

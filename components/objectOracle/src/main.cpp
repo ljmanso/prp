@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2016 by YOUR NAME HERE
+ *    Copyright (C) 2017 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -71,6 +71,7 @@
 #include <Ice/Application.h>
 
 #include <rapplication/rapplication.h>
+#include <sigwatch/sigwatch.h>
 #include <qlog/qlog.h>
 
 #include "config.h"
@@ -137,7 +138,10 @@ int ::objectoracle::run(int argc, char* argv[])
 	sigaddset(&sigs, SIGTERM);
 	sigprocmask(SIG_UNBLOCK, &sigs, 0);
 
-
+	UnixSignalWatcher sigwatch;
+	sigwatch.watchForSignal(SIGINT);
+	sigwatch.watchForSignal(SIGTERM);
+	QObject::connect(&sigwatch, SIGNAL(unixSignal(int)), &a, SLOT(quit()));
 
 	int status=EXIT_SUCCESS;
 
@@ -322,6 +326,10 @@ int ::objectoracle::run(int argc, char* argv[])
 #endif
 		// Run QT Application Event Loop
 		a.exec();
+		
+		std::cout << "Unsubscribing topic: agmexecutivetopic " <<std::endl;
+		agmexecutivetopic_topic->unsubscribe( agmexecutivetopic );
+		
 		status = EXIT_SUCCESS;
 	}
 	catch(const Ice::Exception& ex)
