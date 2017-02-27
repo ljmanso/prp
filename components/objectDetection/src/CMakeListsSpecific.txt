@@ -14,12 +14,16 @@ SET ( SOURCES
   geometry/plane.cpp
   shapes/table.cpp
   vfh/vfh.cpp
+  viewer/viewer.cpp
+  pointcloud/pointcloud.cpp
 )
 
 # Headers set
 SET ( HEADERS
   specificworker.h
   specificmonitor.h
+  /usr/include/time.h
+#  viewer/viewer.h
 #  $ENV{ROBOCOMP}/classes/agmInner/agmInner.h
 )
 
@@ -29,10 +33,10 @@ INCLUDE( $ENV{ROBOCOMP}/cmake/modules/artoolkit.cmake )
 # pcl
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
 # opencv2
-INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 
 
-SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial  )
+SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial -lmpi_cxx )
 
 include_directories( /usr/include/hdf5/serial/ /usr/local/include/pcl-1.8/ )
 
@@ -43,5 +47,7 @@ ADD_DEFINITIONS( -std=c++11 )
 add_executable(createDescriptors createDescriptors.cpp)
 target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
 
-add_executable(fiting fiting.cpp)
-target_link_libraries (fiting ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
+#add_executable(fiting fiting.cpp)
+#target_link_libraries (fiting ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
+
+

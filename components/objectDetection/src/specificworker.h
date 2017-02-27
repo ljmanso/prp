@@ -22,12 +22,6 @@
        @author authorname
 */
 
-
-
-
-
-
-
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
@@ -35,11 +29,10 @@
  #include <pcl/point_cloud.h>
  #include <pcl/pcl_base.h>
  #include <pcl/point_types.h>
- #include <pcl/io/pcd_io.h>
  #include <pcl/filters/passthrough.h>
  #include <pcl/segmentation/extract_clusters.h>
+//  #include <pcl/cuda/common/eigen.h>
  #include <pcl/filters/statistical_outlier_removal.h>
- #include <pcl/io/io.h>
  #include <pcl/conversions.h>
  #include <pcl/point_types_conversion.h>
  #include <opencv2/core/core.hpp>
@@ -47,15 +40,9 @@
  #include <opencv2/imgproc/imgproc.hpp>
  #include <pcl/surface/convex_hull.h>
  #include <pcl/surface/concave_hull.h>
- #include <pcl/filters/voxel_grid.h>
- #include <pcl/registration/sample_consensus_prerejective.h>
- #include <pcl/features/fpfh_omp.h>
- #include <pcl/common/time.h>
- #include <pcl/visualization/cloud_viewer.h>
 #endif
 
 #include <genericworker.h>
-
 
 #ifndef Q_MOC_RUN
 	#include <innermodel/innermodel.h>
@@ -63,35 +50,52 @@
 	#include "color_segmentation/Segmentator.h"
 	#include "shapes/table.h"
 	#include "vfh/vfh.h"
+	#include "viewer/viewer.h"
+	#include "pointcloud/pointcloud.h"
+	#include "time.h"
 #endif
 
 #define DEBUG 0
 #define SAVE_DATA 0
-#define THRESHOLD 0.75
+#define THRESHOLD 0.8
+#define MEDIDA 1.
+
+#define SUB(dst, src1, src2) \
+  { \
+    if ((src2)->tv_nsec > (src1)->tv_nsec) { \
+      (dst)->tv_sec = (src1)->tv_sec - (src2)->tv_sec - 1; \
+      (dst)->tv_nsec = ((src1)->tv_nsec - (src2)->tv_nsec) + 1000000000; \
+    } \
+    else { \
+      (dst)->tv_sec = (src1)->tv_sec - (src2)->tv_sec; \
+      (dst)->tv_nsec = (src1)->tv_nsec - (src2)->tv_nsec; \
+    } \
+  }
+
 typedef pcl::PointXYZRGB PointT;
 
+using namespace computepointcloud;
 
 class SpecificWorker : public GenericWorker
 {
+	bool test=false;
 	QString id_robot, id_camera,id_camera_transform;
-	string descriptors_extension;
+	string descriptors_extension, pathLoadDescriptors;
 	InnerModel *innermodel;
-	QGraphicsPixmapItem* item_pixmap;
-	vector<QGraphicsTextItem*> V_text_item;
-	vector<QGraphicsPixmapItem*> V_pixmap_item;
+	
 	//for poses calculation respect to the canonical one
 	InnerModel *poses_inner;
 	tagsList tags;
 	QMutex april_mutex;
 	int num_pose;
-	
+
 	int num_object_found;
 	std::string file_view_mathing;
 
 	int num_scene;
 	
 	pcl::PCDWriter writer;
-	
+
 	float marca_tx, marca_ty, marca_tz, marca_rx, marca_ry, marca_rz;
         
 	//Cloud of the current points for pcl
@@ -104,8 +108,7 @@ class SpecificWorker : public GenericWorker
 	//Image of the current view for opencv
 	cv::Mat rgb_image;
 	cv::Mat color_segmented;
-        
-	RTMat viewpoint_transform;
+    RTMat viewpoint_transform;
 	
 	//Point cloud grabing
 	RoboCompRGBD::ColorSeq rgbMatrix;	
@@ -115,64 +118,71 @@ class SpecificWorker : public GenericWorker
 	RoboCompGenericBase::TBaseState b;
 	
 	//color Segmentator
- 	Segmentator segmentator;
+	Segmentator segmentator;
 	
 	//euclidean clustering
 	std::vector<pcl::PointIndices> cluster_indices;
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
     
-        
 	//VFH
 	boost::shared_ptr<VFH> vfh_matcher;
 	std::vector<VFH::file_dist_t> vfh_guesses;
-        
 	boost::shared_ptr<Table> table;
+	
+#ifdef USE_QTGUI
+	QGraphicsPixmapItem* item_pixmap;
+	vector<QGraphicsTextItem*> V_text_item;
+	vector<QGraphicsPixmapItem*> V_pixmap_item;
+	
 	QGraphicsScene scene;
+
+	boost::shared_ptr<Viewer> viewer;
+#endif
+	pcl::PointCloud< PointT >::Ptr copy_scene;
+	
   
 Q_OBJECT
 public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
-	
-	//--------------
 	pose6D getPose();
 	bool findObjects(listObject &lObjects);
 	void saveRegPose(const string &label, const int numPoseToSave);
 	bool findTheObject(const string &objectTofind, pose6D &pose);
-	void saveCanonPose(const string &label, const int numPoseToSave);
-	void reloadVFH(const string &pathToSet);
+	void initSaveObject(const string &label, const int numPoseToSave);
+	void reloadVFH();
 	void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState);
 	void newAprilTag(const tagsList &tags);
 	//--------------
-	
-	
-	
 // 	void guessPose(const string &label, pose6D &guess);
-
 public slots:
-	void compute(); 	
-
+	void compute();
 private:
 	void grabThePointCloud(const string &image, const string &pcd);
 	void readThePointCloud(const string &image, const string &pcd);
+	void ransac(const string &model);
+	void projectInliers(const string &model);
+	void convexHull(const string &model);
+	void extractPolygon(const string &model);
+	void euclideanClustering(int &numCluseters);
+
+	void caputurePointCloudObjects();
+
 	void updatergbd();
 	void updateinner();
-	void segmentImage();
-	void ransac(const string &model);
-	void euclideanClustering(int &numCluseters);
-	void passThrough();
-	void convexHull(const string &model);
-	void statisticalOutliersRemoval();
+	
+// 	void segmentImage();
+// 	void passThrough();
+// 	void statisticalOutliersRemoval();
+	
 	void loadTrainedVFH();
 	void vfh(listType &guesses);
-	void projectInliers(const string &model);
-	void extractPolygon(const string &model);
 	bool aprilSeen(pose6D &offset);
+	
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
-	bool transformfromRobottoCameraandSavePointCloud(pcl::PointCloud<PointT>::Ptr cloud, string outputPath);
-	void caputurePointCloudObjects();
+	void removeAllpixmap();
 };
 
 #endif

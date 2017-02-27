@@ -48,14 +48,14 @@ bool ObjectDetectionI::findTheObject(const string  &objectTofind,  pose6D  &pose
 	return worker->findTheObject(objectTofind, pose);
 }
 
-void ObjectDetectionI::saveCanonPose(const string  &label, const int  numPoseToSave, const Ice::Current&)
+void ObjectDetectionI::initSaveObject(const string  &label, const int  numPoseToSave, const Ice::Current&)
 {
-	worker->saveCanonPose(label, numPoseToSave);
+	worker->initSaveObject(label, numPoseToSave);
 }
 
-void ObjectDetectionI::reloadVFH(const string  &pathToSet, const Ice::Current&)
+void ObjectDetectionI::reloadVFH(const Ice::Current&)
 {
-	worker->reloadVFH(pathToSet);
+	worker->reloadVFH();
 }
 
 

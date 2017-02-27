@@ -33,7 +33,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 // 	connect(pose, SIGNAL(clicked()), this, SLOT(getPose()));
 // 	connect(rotation, SIGNAL(clicked()), this, SLOT(getRotation()));
 	connect(reload, SIGNAL(clicked()), this, SLOT(reloadVFH()));
-//  	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
+ 	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
 }
 
 /**
@@ -46,7 +46,6 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-	reloadVFH();
 	timer.start(5000);
 	return true;
 }
@@ -84,34 +83,55 @@ void SpecificWorker::euclideanExtract()
 
 void SpecificWorker::reloadVFH()
 {
- 	objectdetection_proxy->reloadVFH("/home/robocomp/robocomp/components/prp/objects/");
+	try
+	{
+		objectdetection_proxy->reloadVFH();
+	}
+	catch(...)
+	{
+		QMessageBox::warning(this, "something went wrong", "something went wrong");
+	}
 }
 
 void SpecificWorker::findTheObject()
 {
 	std::string object = text_object->toPlainText().toStdString();
 	pose6D poseObj;
-	bool result=objectdetection_proxy->findTheObject(object, poseObj);
-	if(object!="")
+	bool result;
+	try
 	{
-		isObject->setVisible(true);
-		if(result)
+// 		listObject lobject;
+		struct timespec Inicio, Fin;
+		clock_gettime(CLOCK_REALTIME, &Inicio);
+		result = objectdetection_proxy->findTheObject(object, poseObj);
+		clock_gettime(CLOCK_REALTIME, &Fin);
+		qDebug()<<Fin.tv_sec-Inicio.tv_sec<<"s "<<Fin.tv_nsec-Inicio.tv_nsec<<"ns";
+// 		result = objectdetection_proxy->findObjects(lobject);
+		if(object!="")
 		{
-			isObject->setText("El Objeto SI esta en la mesa.");
-			x_object->setText(QString::number(poseObj.tx));
-			y_object->setText(QString::number(poseObj.ty));
-			z_object->setText(QString::number(poseObj.tz));
-			rx_object->setText(QString::number(poseObj.rx));
-			ry_object->setText(QString::number(poseObj.ry));
-			rz_object->setText(QString::number(poseObj.rz));
+			isObject->setVisible(true);
+			if(result)
+			{
+				isObject->setText("El Objeto SI esta en la mesa.");
+				x_object->setText(QString::number(poseObj.tx));
+				y_object->setText(QString::number(poseObj.ty));
+				z_object->setText(QString::number(poseObj.tz));
+				rx_object->setText(QString::number(poseObj.rx));
+				ry_object->setText(QString::number(poseObj.ry));
+				rz_object->setText(QString::number(poseObj.rz));
+			}
+			else
+				isObject->setText("El Objeto NO esta en la mesa.");
 		}
 		else
-			isObject->setText("El Objeto NO esta en la mesa.");
+			isObject->setVisible(false);
 	}
-	else
-		isObject->setVisible(false);
+	catch(...)
+	{
+		QMessageBox::warning(this, "something went wrong", "something went wrong");
+	}
 }
-
+/*
 // void SpecificWorker::getPose()
 // {
 // 	pose6D poseObj;
@@ -139,46 +159,31 @@ void SpecificWorker::findTheObject()
 // // {
 // // 	
 // // }
-
+*/
 void SpecificWorker::fullRun()
 {
 	string label=label_le->text().toStdString();
 	char *c;
 	pose6D guess;
-// 	int numOfClusters = 0;
-// 	objectdetection_proxy->grabThePointCloud("image.png", "rgbd.pcd");
-// 	objectdetection_proxy->ransac("plane");
-// 	objectdetection_proxy->projectInliers("plane");
-// 	objectdetection_proxy->convexHull("plane");
-// 	objectdetection_proxy->extractPolygon("plane");
-// 	objectdetection_proxy->euclideanClustering(numOfClusters);
 	string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
 	c= &s[0u];
-	
-	system(c);
-	if(canonPoseRb->isChecked())
-		objectdetection_proxy->saveCanonPose(label,ob_to_save->value());
-	if(regularPose->isChecked())
-		objectdetection_proxy->saveRegPose(label,ob_to_save->value());
-// 	if(ObtainPose->isChecked())
-// 		objectdetection_proxy->guessPose(label,guess);
-// 	std::cout<<guess.tx<<endl;
-// 	std::cout<<guess.ty<<endl;
-// 	std::cout<<guess.tz<<endl;
-// 	std::cout<<guess.rx<<endl;
-// 	std::cout<<guess.ry<<endl;
-// 	std::cout<<guess.tz<<endl;
+	try
+	{
+		system(c);
+		if(canonPoseRb->isChecked())
+			objectdetection_proxy->initSaveObject(label,ob_to_save->value());
+		if(regularPose->isChecked())
+			objectdetection_proxy->saveRegPose(label,ob_to_save->value());
+	}
+	catch(...)
+	{
+		QMessageBox::warning(this, "something went wrong", "something went wrong");
+	}
 }
 
 
 void SpecificWorker::compute()
 {
-// 	try
-// 	{
-// 		fullRun();
-// 		findTheObject();
-// 	}
-// 	catch(...){}
 }
 
 

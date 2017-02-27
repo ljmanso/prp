@@ -286,7 +286,9 @@ void SpecificWorker::calculate_salesman()
 void SpecificWorker::compute()
 {
 	static bool first=true;
-// 	printf("ACTION: %s\n", action.c_str());
+ 	printf("ACTION: %s\n", action.c_str());
+	std::string plan = params["plan"].value;
+	printf("PLAN: %s\n", plan.c_str());
 	
 	boost::algorithm::to_lower(action);
 	
@@ -322,14 +324,15 @@ void SpecificWorker::compute()
 
 	try
 	{
+		cout<<"Checking if oracle is used"<<endl;
 		worldModel->getEdge(symbols["robot"], symbols["status"], "usedOracle");
 	}
 	catch(...)
 	{
 		cout<<" ************************************ ORACLE NOT USED"<<endl;	
 		//check if need to imaginemostlikelymuginposition
-		std::string plan = params["plan"].value;
-
+		
+		
 		if(plan.find("imagineMostLikelyMugInPosition") != std::string::npos)
 		{
 			action_imagineMostLikelyMugInPosition();
@@ -748,23 +751,33 @@ void SpecificWorker::showTablesOnInterface()
 	
 	table1_qmat = QMap<std::string, double>(table1);
 	mapmodel_1.setMap(&table1_qmat);
-	tableView_1->setModel(&mapmodel_1);
+	filtermodel_1.setSourceModel( &mapmodel_1 );
+	tableView_1->setModel(&filtermodel_1);
+	tableView_1->setSortingEnabled(true);
 	
 	table2_qmat = QMap<std::string, double>(table2);
 	mapmodel_2.setMap(&table2_qmat);
-	tableView_2->setModel(&mapmodel_2);
+	filtermodel_2.setSourceModel( &mapmodel_2 );
+	tableView_2->setModel(&filtermodel_2);
+	tableView_2->setSortingEnabled(true);
 	
 	table3_qmat = QMap<std::string, double>(table3);
 	mapmodel_3.setMap(&table3_qmat);
-	tableView_3->setModel(&mapmodel_3);
+	filtermodel_3.setSourceModel( &mapmodel_3 );
+	tableView_3->setModel(&filtermodel_3);
+	tableView_3->setSortingEnabled(true);
 	
 	table4_qmat = QMap<std::string, double>(table4);
 	mapmodel_4.setMap(&table4_qmat);
-	tableView_4->setModel(&mapmodel_4);
+	filtermodel_4.setSourceModel( &mapmodel_4 );
+	tableView_4->setModel(&filtermodel_4);
+	tableView_4->setSortingEnabled(true);
 	
 	table5_qmat = QMap<std::string, double>(table5);
 	mapmodel_5.setMap(&table5_qmat );
-	tableView_5->setModel(&mapmodel_5);
+	filtermodel_5.setSourceModel( &mapmodel_5 );
+	tableView_5->setModel(&filtermodel_5);
+	tableView_5->setSortingEnabled(true);
 	
 }
 
@@ -1546,6 +1559,7 @@ std::string SpecificWorker::lookForObject(std::string label)
 	if ( table_to_visit_number!=-1 )
 		visited_table[table_to_visit_number]=true;
 	
+	current_table="table2";
 	return current_table;
 	
 }
@@ -1699,7 +1713,7 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 	{
 		try
 		{
-			AGMMisc::publishModification(newModel, agmexecutive_proxy, std::string( "humanAgent"));
+			AGMMisc::publishModification(newModel, agmexecutive_proxy, std::string( "oracleAgent"));
 			return;
 		}
 		catch(const RoboCompAGMExecutive::Locked &e)
@@ -1736,7 +1750,7 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	// Create new symbols and the edges which are independent from the container
 	AGMModelSymbol::SPtr objSSt = newModel->newSymbol("objectSt");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	AGMModelSymbol::SPtr objS   = newModel->newSymbol("protoObject");
+	AGMModelSymbol::SPtr objS   = newModel->newSymbol("object");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(objS, objSSt, objectType);
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
@@ -1748,7 +1762,7 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	auto symbols = newModel->getSymbolsMap(params, "robot", "status", "table", "room");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	newModel->addEdge(symbols["robot"], objS, "know");
+	newModel->addEdge(symbols["robot"], objS, "imagine");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	try{
 	  newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
@@ -1760,7 +1774,7 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	
 	printf("about to call the look for object thing\n");
 	//Locate objS
-	std::string table = lookForObject_salesman(objectType);
+	std::string table = lookForObject(objectType);
 	cout<<endl<<table<<endl<<endl;
 	int id = -1;
 	int room_id = -1;
