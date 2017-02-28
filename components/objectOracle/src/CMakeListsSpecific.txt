@@ -72,7 +72,7 @@ SET ( HEADERS
 )
 
 # opencv2
-INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/caffe.cmake )
 
 #find_package(PCL 1.7 REQUIRED COMPONENTS io )

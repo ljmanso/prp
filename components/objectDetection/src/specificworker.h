@@ -55,6 +55,8 @@
 	#include "time.h"
 #endif
 
+#include <QGraphicsPixmapItem>
+
 #define DEBUG 0
 #define SAVE_DATA 0
 #define THRESHOLD 0.8
