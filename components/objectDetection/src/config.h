@@ -4,7 +4,7 @@
 // Comment out this line if your application has a QtGui
 #define USE_QTGUI
 
-#define DEBUG
+//#define DEBUG
 
 #define PROGRAM_NAME    "objectDetectionComp"
 #define SERVER_FULL_NAME   "RoboComp objectDetectionComp:: objectDetectionComp"
