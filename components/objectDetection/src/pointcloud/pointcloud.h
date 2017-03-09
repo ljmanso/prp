@@ -12,6 +12,7 @@
 #include <pcl/io/io.h>
 #include <pcl/registration/icp.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/passthrough.h>
 #include <pcl/registration/sample_consensus_prerejective.h>
 #include <pcl/registration/transformation_estimation_svd.h>
 #include <pcl/common/time.h>
@@ -32,6 +33,7 @@ namespace computepointcloud
 	QMat fitingICP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned);	
 	pcl::PointCloud< PointT >::Ptr VoxelGrid_filter(pcl::PointCloud< PointT >::Ptr cloud,float lx, float ly, float lz);
 // 	void recuperateObjects(pcl::PointCloud< PointT >::Ptr scene, std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds)
+	pcl::PointCloud< PointT >::Ptr Filter_in_axis(pcl::PointCloud< PointT >::Ptr cloud, string axi, float min, float max, bool negative);
 
 };
 

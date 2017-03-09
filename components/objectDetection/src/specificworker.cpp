@@ -905,6 +905,7 @@ void SpecificWorker::caputurePointCloudObjects()
 		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
 	else
 		grabThePointCloud("image.png", "rgbd.pcd");
+	cloud = Filter_in_axis(cloud, "y", -100/MEDIDA, 700/MEDIDA, true);
 #ifdef USE_QTGUI
 	viewer->updatePointCloud(cloud,"scene");
 #endif
@@ -929,8 +930,6 @@ void SpecificWorker::caputurePointCloudObjects()
 		id_objects.push_back(QString::number(i).toStdString());
 	}
 #endif
-	
-	
 }
 
 void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr cloud)

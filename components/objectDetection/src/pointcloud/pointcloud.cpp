@@ -178,6 +178,18 @@ pcl::PointCloud< PointT >::Ptr computepointcloud::VoxelGrid_filter(pcl::PointClo
 	return output;
 }
 
+pcl::PointCloud< PointT >::Ptr computepointcloud::Filter_in_axis(pcl::PointCloud< PointT >::Ptr cloud, string axi, float min, float max, bool negative)
+{
+	pcl::PointCloud< PointT >::Ptr output=copy_pointcloud(cloud);
+	pcl::PassThrough<PointT> pass;
+	pass.setInputCloud (output);
+	pass.setFilterFieldName (axi);
+	pass.setFilterLimits (min, max);
+	pass.setFilterLimitsNegative (negative);
+	pass.filter (*output);
+	return output;
+}
+
 // void computepointcloud::recuperateObjects(pcl::PointCloud< PointT >::Ptr scene, std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds)
 // {
 // 	
