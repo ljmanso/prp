@@ -541,7 +541,7 @@ void SpecificWorker::ransac(const string &model)
 {
 	//remove the floor before the ransac
 	// Create the filtering object
-	string pcdname =  "/home/robocomp/robocomp/components/perception/beforePASSTHROUGH.pcd";
+/*	string pcdname =  "/home/robocomp/robocomp/components/perception/beforePASSTHROUGH.pcd";
 	printf("<%s>\n", pcdname.c_str());
 	writer.write<PointT> ( pcdname, *cloud, false);
 	pcl::PassThrough<PointT> pass;
@@ -553,7 +553,7 @@ void SpecificWorker::ransac(const string &model)
 	pcdname =  "/home/robocomp/robocomp/components/perception/beforeRANSAC.pcd";
 	printf("<%s>\n", pcdname.c_str());
 	writer.write<PointT> ( pcdname, *cloud, false);
-	
+*/	
 	
 	table->fit_board_with_RANSAC( cloud, ransac_inliers, 15/MEDIDA);
 	cout<<"RANSAC INLIERS: "<<ransac_inliers->indices.size()<<endl;
