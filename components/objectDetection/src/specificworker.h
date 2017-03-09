@@ -147,20 +147,29 @@ Q_OBJECT
 public:
 	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
+	
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
-	pose6D getPose();
-	bool findObjects(listObject &lObjects);
-	void saveRegPose(const string &label, const int numPoseToSave);
-	bool findTheObject(const string &objectTofind, pose6D &pose);
-	void initSaveObject(const string &label, const int numPoseToSave);
+/*
+ * Method of Interface ObjectDetection.ice
+ */
 	void reloadVFH();
+	bool findTheObject(const string &objectTofind, pose6D &pose);
+	bool findObjects(listObject &lObjects);
+	pose6D getPose();
+	void initSaveObject(const string &label, const int numPoseToSave);
+	void saveRegPose(const string &label, const int numPoseToSave);
+
+/*
+ * Method of Interface AprilTags.ice
+ */
 	void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState);
 	void newAprilTag(const tagsList &tags);
-	//--------------
-// 	void guessPose(const string &label, pose6D &guess);
+
 public slots:
 	void compute();
+	
 private:
+	QVec extraerposefromTM(QMat M);
 	void grabThePointCloud(const string &image, const string &pcd);
 	void readThePointCloud(const string &image, const string &pcd);
 	void ransac(const string &model);
@@ -173,11 +182,6 @@ private:
 
 	void updatergbd();
 	void updateinner();
-	
-// 	void segmentImage();
-// 	void passThrough();
-// 	void statisticalOutliersRemoval();
-	
 	void loadTrainedVFH();
 	void vfh(listType &guesses);
 	bool aprilSeen(pose6D &offset);
@@ -185,6 +189,12 @@ private:
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
 	void removeAllpixmap();
+
+// 	void segmentImage();
+// 	void passThrough();
+// 	void statisticalOutliersRemoval();
+	
+
 };
 
 #endif

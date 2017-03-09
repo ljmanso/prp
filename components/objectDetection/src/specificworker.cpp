@@ -89,86 +89,6 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	return true;
 }
 
-void SpecificWorker::updateinner()
-{
-	if(test)
-			innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
-	else
-	{
-		MotorList motors;
-		motors.push_back("head_yaw_joint");
-		motors.push_back("head_pitch_joint");
-		MotorStateMap motors_states = jointmotor_proxy->getMotorStateMap(motors);
-		for(auto motor:motors)
-		{
-			innermodel->updateJointValue(QString::fromStdString(motor),motors_states[motor].pos);
-		}
-	}
-}
-
-void SpecificWorker::updatergbd()
-{
-#ifdef USE_QTGUI
-	RoboCompRGBD::ColorSeq rgbMatrix;
-	RoboCompJointMotor::MotorStateMap h;
-	RoboCompGenericBase::TBaseState b;
-	cv::Mat rgb_image(480,640, CV_8UC3, cv::Scalar::all(0));
-	if(test)
-	{
-		rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
-
-		if(! rgb_image.data )
-		{
-			cout <<  "Could not open or find the image rgb.png" << std::endl ;
-		}	
-	}
-	else
-	{
-		rgbd_proxy->getRGB(rgbMatrix,h,b);
-		for(unsigned int i=0; i<rgbMatrix.size(); i++)
-		{
-			int row = (i/640), column = i-(row*640);
-			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
-		}
-// 		pcl::PointCloud<PointT>::Ptr scene(new pcl::PointCloud<PointT>);
-// 		RoboCompRGBD::ColorSeq rgbMatrix;	
-// 		RoboCompRGBD::depthType distanceMatrix;
-// 		RoboCompRGBD::PointSeq points_kinect;
-// 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
-// 		for(unsigned int i=0; i<rgbMatrix.size(); i++)
-// 		{
-// 			int row = (i/640), column = i-(row*640);
-// 			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
-// 		}
-// 		QMat PP = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
-// 		
-// 		scene->points.resize(points_kinect.size());
-// 		
-// 		for (unsigned int i=0; i<points_kinect.size(); i++)
-// 		{
-// 			QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
-// 			
-// 			memcpy(&scene->points[i],p1.data(),3*sizeof(float));
-// 			
-// 			scene->points[i].r=rgbMatrix[i].red;
-// 			scene->points[i].g=rgbMatrix[i].green;
-// 			scene->points[i].b=rgbMatrix[i].blue;
-// 		}
-// 		scene->width = 1;
-// 		scene->height = points_kinect.size();
-// 		std::vector< int > index;
-// 		removeNaNFromPointCloud (*scene, *scene, index);
-// 		updatePointCloud(scene,"scene");
-	}
-	
-	cv::Mat dest;
-	cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
-	QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
-	item_pixmap->setPixmap(QPixmap::fromImage(image));
-	scene.update();
-#endif
-}
-
 void SpecificWorker::compute()
 {
 // 	qDebug()<<"entro";
@@ -180,36 +100,8 @@ void SpecificWorker::compute()
 }
 
 /*
-void SpecificWorker::segmentImage()
-{
-#if DEBUG
-	cv::imwrite("nosegmentada.png",rgb_image);
-	std::cout<<"setting image"<<std::endl;
-#endif
-	
-	segmentator.set_image(&rgb_image);
-	
-#if DEBUG
-	std::cout<<"Segmenting image"<<std::endl;
-#endif
-	
-	
-	segmentator.set_tresholds(100, 150);
-	color_segmented = segmentator.segment();
-	
-#if DEBUG
-	std::cout<<"Segmented"<<std::endl;
-	cv::imwrite("Segmentada.png",color_segmented);
-	cv::Mat yellow, pink, green;
-	cv::inRange(color_segmented, cv::Scalar(0, 150, 150), cv::Scalar(80, 255, 255), yellow);
-	cv::imwrite("yellow.png",yellow);
-	cv::inRange(color_segmented, cv::Scalar(65, 15, 125), cv::Scalar(150, 100, 255), pink);
-	cv::imwrite("pink.png",pink);
-	cv::inRange(color_segmented, cv::Scalar(25, 75, 50), cv::Scalar(106, 255, 150), green);
-	cv::imwrite("green.png",green);
-#endif
-}
-*/
+ * Method of interface ObjectDetection.ice
+ */
 
 void SpecificWorker::reloadVFH()
 {
@@ -222,47 +114,210 @@ void SpecificWorker::reloadVFH()
 	}
 }
 
-QVec extraerposefromTM(QMat M)
+bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 {
-	QVec initVec = QVec::vec6(0,0,0,0,0,0);
-	const QVec a = (M * initVec.subVector(0,2).toHomogeneousCoordinates()).fromHomogeneousCoordinates();
-	const Rot3D R(initVec(3), initVec(4), initVec(5));
-	const QVec b = (M.getSubmatrix(0,2,0,2)*R).extractAnglesR_min();
-	QVec ret(6);
-	ret(0) = a(0);
-	ret(1) = a(1);
-	ret(2) = a(2);
-	ret(3) = b(0);
-	ret(4) = b(1);
-	ret(5) = b(2);
-	return ret;
-}
+	caputurePointCloudObjects();
 
-bool SpecificWorker::aprilSeen(pose6D &offset)
-{
-	QMutexLocker locker(&april_mutex);
-	static InnerModel tabletags("/home/robocomp/robocomp/components/robocomp-shelly/files/tabletags.xml");
-	QMat transformM,cameratoapril5M, cameratorobot, cameratoaprilseeM;
-	for (auto ap : tags)
+	std::string guessgan="";
+#ifdef USE_QTGUI
+	while(!V_text_item.empty())
 	{
-		if(ap.id < 10 and ap.id > 0)
+		scene.removeItem(V_text_item.back());
+		V_text_item.pop_back();
+	}
+#endif
+	struct timespec Inicio, Fin, resta;
+	clock_gettime(CLOCK_REALTIME, &Inicio);
+	float dist=3.40e38;
+	for(unsigned int i=0; i<cluster_clouds.size();i++)
+	{
+		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
+		
+		VFH::file_dist_t second;
+		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
+		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
+
+		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
 		{
-			cameratoaprilseeM = RTMat(ap.rx, ap.ry, ap.rz, ap.tx, ap.ty, ap.tz);
-			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id),"tag5");
-			cameratorobot = innermodel->getTransformationMatrix(id_robot,id_camera);
-			cameratoapril5M = cameratorobot * cameratoaprilseeM * transformM;
-			QVec ret = extraerposefromTM(cameratoapril5M);
-			ret.print("tag5 from robot");
-			offset.tx = ret(0);
-			offset.ty = ret(1);
-			offset.tz = ret(2);
-			offset.rx = ret(3); 
-			offset.ry = ret(4);
-			offset.rz = ret(5);
-			return true;
+			if(dist>vfh_guesses[0].dist && (vfh_guesses[0].label==objectTofind||objectTofind==""))
+			{
+				guessgan=vfh_guesses[0].label;
+				dist=vfh_guesses[0].dist;
+				num_object_found = i;
+				file_view_mathing = vfh_guesses[0].file;
+			}
+			if(objectTofind=="")
+			{
+				settexttocloud(guessgan,cluster_clouds[i]);
+				dist=3.40e38;
+				guessgan="";
+			}
 		}
 	}
+	if((guessgan!=""&&guessgan==objectTofind))
+	{
+		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
+		clock_gettime(CLOCK_REALTIME, &Fin);
+		SUB(&resta, &Fin, &Inicio);
+		qDebug()<<"Recognition VFH: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
+		clock_gettime(CLOCK_REALTIME, &Inicio);
+		pose=getPose();
+		clock_gettime(CLOCK_REALTIME, &Fin);
+		SUB(&resta, &Fin, &Inicio);
+		qDebug()<<"Fitting PCD: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
+		return true;
+	}
 	return false;
+}
+
+bool SpecificWorker::findObjects(listObject& lObjects)
+{
+	caputurePointCloudObjects();
+	std::string guessgan="";
+	for(unsigned int i=0; i<cluster_clouds.size();i++)
+	{
+		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
+
+		VFH::file_dist_t second;
+		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
+		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
+
+		pose6D p;
+		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
+		{
+			guessgan=vfh_guesses[0].label;
+			num_object_found = i;
+			file_view_mathing = vfh_guesses[0].file;
+			p.label=guessgan;
+			p=getPose();
+		}
+		else
+		{
+			Eigen::Vector4f centroid;
+			pcl::compute3DCentroid (*cluster_clouds[i], centroid);
+			p.label="unknown";
+			if(MEDIDA==1000.)
+			{
+				p.tx = centroid[0]*MEDIDA;
+				p.ty = centroid[1]*MEDIDA;
+				p.tz = centroid[2]*MEDIDA;
+			}
+			else
+			{
+				p.tx = centroid[0];
+				p.ty = centroid[1];
+				p.tz = centroid[2];
+			}
+		}
+		lObjects.push_back(p);
+		guessgan="";
+	}
+	num_object_found=0;
+	file_view_mathing="";
+	if(cluster_clouds.size()==0)
+		return false;
+	return true;
+}
+
+pose6D  SpecificWorker::getPose()
+{
+	removeAllpixmap();
+	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
+	
+	//Print centroide
+	Eigen::Vector4f centroid;
+	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
+	QVec centroidpose = QVec::vec3(centroid[0]/MEDIDA,centroid[1]/MEDIDA,centroid[2]/MEDIDA);
+	centroidpose.print("centroid vista atual");
+#ifdef USE_QTGUI
+	InnerModelCamera *camera = innermodel->getCamera(id_camera);
+	centroidpose= camera->project(id_robot,QVec::vec3(centroidpose.x(),centroidpose.y(),centroidpose.z()));
+	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
+	image.fill(Qt::transparent);
+	for (int x =centroidpose.x()-4;x<centroidpose.x()+4;x++)
+		for (int y =centroidpose.y()-4;y<centroidpose.y()+4;y++)
+			image.setPixel(x,y,qRgb(0, 255, 0));
+	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
+	SpecificWorker::scene.addItem(V_pixmap_item.back());
+#endif
+	// Point clouds
+	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
+	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
+	string pathxml="/home/robocomp/robocomp/components/prp/objects/"+guessgan+"/"+guessgan+".xml";
+	pcl::PointCloud<PointT>::Ptr scene (new pcl::PointCloud<PointT>);
+	//change vfh extension to pcd
+	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
+	view_to_load = view_to_load + ".pcd"; 
+	pcl::PointCloud<PointT>::Ptr object(cluster_clouds[num_object_found]);
+	if (pcl::io::loadPCDFile<PointT> (view_to_load, *scene) == -1) //* load the file
+	{
+		printf ("Couldn't read file test_pcd.pcd \n");
+	}
+	//convert pointcloud to mm
+	scene=PointCloudfrom_mm_to_Meters(scene);
+	object=PointCloudfrom_mm_to_Meters(object);
+	
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/seen.pcd", *scene, false);
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/saved.pcd", *object, false);
+
+// 	-------------------------------------------------------------------
+
+	pcl::PointCloud<PointT>::Ptr object_aligned(new pcl::PointCloud<PointT>);
+	QMat saveToViewR = fitingSCP(object,scene,object_aligned);
+// 	QMat saveToViewR2 = fitingICP(object_aligned,object,object_aligned);
+
+	//convert pointcloud to meters
+// 	object_aligned = PointCloudfrom_Meter_to_mm(object_aligned);
+// 	scene = PointCloudfrom_Meter_to_mm(scene);
+
+ 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
+ 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
+
+	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
+	node_name=node_name.substr(node_name.find_last_of("/")+1);
+	InnerModel inner(pathxml);
+	QMat PoseSavetoRootR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
+
+// 	convert m to mm
+	QVec saveToView = extraerposefromTM(saveToViewR);
+	saveToView(0)=saveToView(0)*1000;
+	saveToView(1)=saveToView(1)*1000;
+	saveToView(2)=saveToView(2)*1000;
+	saveToViewR= (RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2))).invert();
+
+// 	QVec saveToView2 = extraerposefromTM(saveToViewR2);
+// 	saveToView2(0)=saveToView2(0)*1000;
+// 	saveToView2(1)=saveToView2(1)*1000;
+// 	saveToView2(2)=saveToView2(2)*1000;
+// 	saveToViewR2= (RTMat(saveToView2(3), saveToView2(4), saveToView2(5), saveToView2(0), saveToView2(1), saveToView2(2)))/*.invert()*/;
+
+	QMat poseObjR =/*saveToViewR2**/saveToViewR*PoseSavetoRootR*april;
+	QVec pose=extraerposefromTM(poseObjR);
+	pose.print("pose");
+	pose6D poseObj;
+	poseObj.tx=pose.x();
+	poseObj.ty=pose.y()+125;
+	poseObj.tz=pose.z();
+	poseObj.rx=pose.rx();
+	poseObj.ry=pose.ry();
+	poseObj.rz=pose.rz();
+// 	Print tag5
+#ifdef USE_QTGUI
+	pose= camera->project(id_robot,QVec::vec3(pose.x(),pose.y(),pose.z()));
+	image.fill(Qt::transparent);
+	for (int x =pose.x()-4;x<pose.x()+4;x++)
+		for (int y =pose.y()-4;y<pose.y()+4;y++)
+			image.setPixel(x,y,qRgb(255, 0, 0));
+	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
+	SpecificWorker::scene.addItem(V_pixmap_item.back());
+// 	removeCoordinateSystem("poseobject");
+	viewer->removeCoordinateSystem("poseobjectR");
+// 	addCoordinateSystem(poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000,"poseobject");
+	poseObjR=RTMat(poseObj.rx,poseObj.ry,poseObj.rz,poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000);
+	viewer->addCoordinateSystem(poseObjR,"poseobjectR");
+	
+#endif
+	return poseObj;
 }
 
 void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
@@ -368,58 +423,43 @@ void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 	qDebug()<<"End "<<__FUNCTION__;
 }
 
+
 /*
-void SpecificWorker::passThrough()
+ * Method of interface AprilTags
+ */
+
+void SpecificWorker::newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState)
 {
-        pcl::PassThrough<PointT> pass;
-        pass.setInputCloud (this->cloud);
-        pass.setFilterFieldName ("z");
-        pass.setFilterLimits (marca_tz, marca_tz + 1000);
-  //pass.setFilterLimitsNegative (true);
-        
-        pass.filter (*this->cloud);
-	pass.setInputCloud (this->cloud);
-        pass.setFilterFieldName ("x");
-        pass.setFilterLimits (marca_tx, marca_tx + 1000);
-        pass.setInputCloud (this->cloud);
-	pass.filter (*this->cloud);
-	pass.setFilterFieldName ("y");
-	pass.setFilterLimits (marca_ty-200, marca_ty+1000);
-	pass.setInputCloud (this->cloud);
-	pass.filter (*this->cloud);
-#if DEBUG
-        timespec ts;
-	clock_gettime(CLOCK_REALTIME, &ts);
-	string pcdname =  "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + "_passThrough.pcd";
-	printf("<%s>\n", pcdname.c_str());
-	writer.write<PointT> ( pcdname, *cloud, false);
-#endif
-        
-        
+	
 }
 
-void SpecificWorker::statisticalOutliersRemoval()
+void SpecificWorker::newAprilTag(const tagsList &tags)
 {
-  pcl::StatisticalOutlierRemoval<PointT> sor;
-  sor.setInputCloud (this->cloud);
-  sor.setMeanK (50);
-  sor.setStddevMulThresh (1.0);
-  sor.filter (*(this->cloud));
-}*/
-
-void SpecificWorker::loadTrainedVFH()
-{
-	vfh_matcher->loadTrainingData();
-	std::cout<<"Training data loaded"<<std::endl;
+	QMutexLocker locker(&april_mutex);
+	if(tags.size()==0)
+		return;
+	qDebug()<<"Found tags :"<<tags.size();
+	this->tags = tags;
 }
 
-void SpecificWorker::vfh(listType &guesses)
+/**
+ * Method Private of This Class
+ */
+
+QVec SpecificWorker::extraerposefromTM(QMat M)
 {
-    int object__to_show = 0;
-    vfh_matcher->doTheGuess(cluster_clouds[object__to_show], vfh_guesses);
-	for(auto a:vfh_guesses)
-		guesses.push_back(a.file);
-// 	guesses = vfh_guesses;
+	QVec initVec = QVec::vec6(0,0,0,0,0,0);
+	const QVec a = (M * initVec.subVector(0,2).toHomogeneousCoordinates()).fromHomogeneousCoordinates();
+	const Rot3D R(initVec(3), initVec(4), initVec(5));
+	const QVec b = (M.getSubmatrix(0,2,0,2)*R).extractAnglesR_min();
+	QVec ret(6);
+	ret(0) = a(0);
+	ret(1) = a(1);
+	ret(2) = a(2);
+	ret(3) = b(0);
+	ret(4) = b(1);
+	ret(5) = b(2);
+	return ret;
 }
 
 void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
@@ -671,226 +711,6 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 
 }
 
-bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
-{
-	caputurePointCloudObjects();
-
-	std::string guessgan="";
-#ifdef USE_QTGUI
-	while(!V_text_item.empty())
-	{
-		scene.removeItem(V_text_item.back());
-		V_text_item.pop_back();
-	}
-#endif
-	struct timespec Inicio, Fin, resta;
-	clock_gettime(CLOCK_REALTIME, &Inicio);
-	float dist=3.40e38;
-	for(unsigned int i=0; i<cluster_clouds.size();i++)
-	{
-		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
-		
-		VFH::file_dist_t second;
-		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
-		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
-
-		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
-		{
-			if(dist>vfh_guesses[0].dist && (vfh_guesses[0].label==objectTofind||objectTofind==""))
-			{
-				guessgan=vfh_guesses[0].label;
-				dist=vfh_guesses[0].dist;
-				num_object_found = i;
-				file_view_mathing = vfh_guesses[0].file;
-			}
-			if(objectTofind=="")
-			{
-				settexttocloud(guessgan,cluster_clouds[i]);
-				dist=3.40e38;
-				guessgan="";
-			}
-		}
-	}
-	if((guessgan!=""&&guessgan==objectTofind))
-	{
-		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
-		clock_gettime(CLOCK_REALTIME, &Fin);
-		SUB(&resta, &Fin, &Inicio);
-		qDebug()<<"Recognition VFH: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
-		clock_gettime(CLOCK_REALTIME, &Inicio);
-		pose=getPose();
-		clock_gettime(CLOCK_REALTIME, &Fin);
-		SUB(&resta, &Fin, &Inicio);
-		qDebug()<<"Fitting PCD: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
-		return true;
-	}
-	return false;
-}
-
-bool SpecificWorker::findObjects(listObject& lObjects)
-{
-	caputurePointCloudObjects();
-	std::string guessgan="";
-	for(unsigned int i=0; i<cluster_clouds.size();i++)
-	{
-		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
-
-		VFH::file_dist_t second;
-		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
-		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
-
-		pose6D p;
-		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
-		{
-			guessgan=vfh_guesses[0].label;
-			num_object_found = i;
-			file_view_mathing = vfh_guesses[0].file;
-			p.label=guessgan;
-			p=getPose();
-		}
-		else
-		{
-			Eigen::Vector4f centroid;
-			pcl::compute3DCentroid (*cluster_clouds[i], centroid);
-			p.label="unknown";
-			if(MEDIDA==1000.)
-			{
-				p.tx = centroid[0]*MEDIDA;
-				p.ty = centroid[1]*MEDIDA;
-				p.tz = centroid[2]*MEDIDA;
-			}
-			else
-			{
-				p.tx = centroid[0];
-				p.ty = centroid[1];
-				p.tz = centroid[2];
-			}
-		}
-		lObjects.push_back(p);
-		guessgan="";
-	}
-	num_object_found=0;
-	file_view_mathing="";
-	if(cluster_clouds.size()==0)
-		return false;
-	return true;
-}
-
-pose6D  SpecificWorker::getPose()
-{
-	removeAllpixmap();
-	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
-	
-	//Print centroide
-	Eigen::Vector4f centroid;
-	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
-	QVec centroidpose = QVec::vec3(centroid[0]/MEDIDA,centroid[1]/MEDIDA,centroid[2]/MEDIDA);
-	centroidpose.print("centroid vista atual");
-#ifdef USE_QTGUI
-	InnerModelCamera *camera = innermodel->getCamera(id_camera);
-	centroidpose= camera->project(id_robot,QVec::vec3(centroidpose.x(),centroidpose.y(),centroidpose.z()));
-	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
-	image.fill(Qt::transparent);
-	for (int x =centroidpose.x()-4;x<centroidpose.x()+4;x++)
-		for (int y =centroidpose.y()-4;y<centroidpose.y()+4;y++)
-			image.setPixel(x,y,qRgb(0, 255, 0));
-	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
-	SpecificWorker::scene.addItem(V_pixmap_item.back());
-#endif
-	// Point clouds
-	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
-	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
-	string pathxml="/home/robocomp/robocomp/components/prp/objects/"+guessgan+"/"+guessgan+".xml";
-	pcl::PointCloud<PointT>::Ptr scene (new pcl::PointCloud<PointT>);
-	//change vfh extension to pcd
-	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
-	view_to_load = view_to_load + ".pcd"; 
-	pcl::PointCloud<PointT>::Ptr object(cluster_clouds[num_object_found]);
-	if (pcl::io::loadPCDFile<PointT> (view_to_load, *scene) == -1) //* load the file
-	{
-		printf ("Couldn't read file test_pcd.pcd \n");
-	}
-	//convert pointcloud to mm
-	scene=PointCloudfrom_mm_to_Meters(scene);
-	object=PointCloudfrom_mm_to_Meters(object);
-	
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/seen.pcd", *scene, false);
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/saved.pcd", *object, false);
-
-// 	-------------------------------------------------------------------
-
-	pcl::PointCloud<PointT>::Ptr object_aligned(new pcl::PointCloud<PointT>);
-	QMat saveToViewR = fitingSCP(object,scene,object_aligned);
-// 	QMat saveToViewR2 = fitingICP(object_aligned,object,object_aligned);
-
-	//convert pointcloud to meters
-// 	object_aligned = PointCloudfrom_Meter_to_mm(object_aligned);
-// 	scene = PointCloudfrom_Meter_to_mm(scene);
-
- 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
- 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
-
-	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
-	node_name=node_name.substr(node_name.find_last_of("/")+1);
-	InnerModel inner(pathxml);
-	QMat PoseSavetoRootR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
-
-// 	convert m to mm
-	QVec saveToView = extraerposefromTM(saveToViewR);
-	saveToView(0)=saveToView(0)*1000;
-	saveToView(1)=saveToView(1)*1000;
-	saveToView(2)=saveToView(2)*1000;
-	saveToViewR= (RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2))).invert();
-
-// 	QVec saveToView2 = extraerposefromTM(saveToViewR2);
-// 	saveToView2(0)=saveToView2(0)*1000;
-// 	saveToView2(1)=saveToView2(1)*1000;
-// 	saveToView2(2)=saveToView2(2)*1000;
-// 	saveToViewR2= (RTMat(saveToView2(3), saveToView2(4), saveToView2(5), saveToView2(0), saveToView2(1), saveToView2(2)))/*.invert()*/;
-
-	QMat poseObjR =/*saveToViewR2**/saveToViewR*PoseSavetoRootR*april;
-	QVec pose=extraerposefromTM(poseObjR);
-	pose.print("pose");
-	pose6D poseObj;
-	poseObj.tx=pose.x();
-	poseObj.ty=pose.y()+125;
-	poseObj.tz=pose.z();
-	poseObj.rx=pose.rx();
-	poseObj.ry=pose.ry();
-	poseObj.rz=pose.rz();
-// 	Print tag5
-#ifdef USE_QTGUI
-	pose= camera->project(id_robot,QVec::vec3(pose.x(),pose.y(),pose.z()));
-	image.fill(Qt::transparent);
-	for (int x =pose.x()-4;x<pose.x()+4;x++)
-		for (int y =pose.y()-4;y<pose.y()+4;y++)
-			image.setPixel(x,y,qRgb(255, 0, 0));
-	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
-	SpecificWorker::scene.addItem(V_pixmap_item.back());
-// 	removeCoordinateSystem("poseobject");
-	viewer->removeCoordinateSystem("poseobjectR");
-// 	addCoordinateSystem(poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000,"poseobject");
-	poseObjR=RTMat(poseObj.rx,poseObj.ry,poseObj.rz,poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000);
-	viewer->addCoordinateSystem(poseObjR,"poseobjectR");
-	
-#endif
-	return poseObj;
-}
-
-void SpecificWorker::newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState)
-{
-	
-}
-
-void SpecificWorker::newAprilTag(const tagsList &tags)
-{
-	QMutexLocker locker(&april_mutex);
-	if(tags.size()==0)
-		return;
-	qDebug()<<"Found tags :"<<tags.size();
-	this->tags = tags;
-}
-
 void SpecificWorker::caputurePointCloudObjects()
 {
 	static vector<string> id_objects;
@@ -932,6 +752,128 @@ void SpecificWorker::caputurePointCloudObjects()
 #endif
 }
 
+void SpecificWorker::updateinner()
+{
+	if(test)
+			innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
+	else
+	{
+		MotorList motors;
+		motors.push_back("head_yaw_joint");
+		motors.push_back("head_pitch_joint");
+		MotorStateMap motors_states = jointmotor_proxy->getMotorStateMap(motors);
+		for(auto motor:motors)
+		{
+			innermodel->updateJointValue(QString::fromStdString(motor),motors_states[motor].pos);
+		}
+	}
+}
+
+void SpecificWorker::updatergbd()
+{
+#ifdef USE_QTGUI
+	RoboCompRGBD::ColorSeq rgbMatrix;
+	RoboCompJointMotor::MotorStateMap h;
+	RoboCompGenericBase::TBaseState b;
+	cv::Mat rgb_image(480,640, CV_8UC3, cv::Scalar::all(0));
+	if(test)
+	{
+		rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
+
+		if(! rgb_image.data )
+		{
+			cout <<  "Could not open or find the image rgb.png" << std::endl ;
+		}	
+	}
+	else
+	{
+		rgbd_proxy->getRGB(rgbMatrix,h,b);
+		for(unsigned int i=0; i<rgbMatrix.size(); i++)
+		{
+			int row = (i/640), column = i-(row*640);
+			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+		}
+// 		pcl::PointCloud<PointT>::Ptr scene(new pcl::PointCloud<PointT>);
+// 		RoboCompRGBD::ColorSeq rgbMatrix;	
+// 		RoboCompRGBD::depthType distanceMatrix;
+// 		RoboCompRGBD::PointSeq points_kinect;
+// 		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
+// 		for(unsigned int i=0; i<rgbMatrix.size(); i++)
+// 		{
+// 			int row = (i/640), column = i-(row*640);
+// 			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+// 		}
+// 		QMat PP = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
+// 		
+// 		scene->points.resize(points_kinect.size());
+// 		
+// 		for (unsigned int i=0; i<points_kinect.size(); i++)
+// 		{
+// 			QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
+// 			
+// 			memcpy(&scene->points[i],p1.data(),3*sizeof(float));
+// 			
+// 			scene->points[i].r=rgbMatrix[i].red;
+// 			scene->points[i].g=rgbMatrix[i].green;
+// 			scene->points[i].b=rgbMatrix[i].blue;
+// 		}
+// 		scene->width = 1;
+// 		scene->height = points_kinect.size();
+// 		std::vector< int > index;
+// 		removeNaNFromPointCloud (*scene, *scene, index);
+// 		updatePointCloud(scene,"scene");
+	}
+	
+	cv::Mat dest;
+	cv::cvtColor(rgb_image, dest,CV_BGR2RGB);
+	QImage image((uchar*)dest.data, dest.cols, dest.rows,QImage::Format_RGB888);
+	item_pixmap->setPixmap(QPixmap::fromImage(image));
+	scene.update();
+#endif
+}
+
+void SpecificWorker::loadTrainedVFH()
+{
+	vfh_matcher->loadTrainingData();
+	std::cout<<"Training data loaded"<<std::endl;
+}
+
+void SpecificWorker::vfh(listType &guesses)
+{
+    int object__to_show = 0;
+    vfh_matcher->doTheGuess(cluster_clouds[object__to_show], vfh_guesses);
+	for(auto a:vfh_guesses)
+		guesses.push_back(a.file);
+// 	guesses = vfh_guesses;
+}
+
+bool SpecificWorker::aprilSeen(pose6D &offset)
+{
+	QMutexLocker locker(&april_mutex);
+	static InnerModel tabletags("/home/robocomp/robocomp/components/robocomp-shelly/files/tabletags.xml");
+	QMat transformM,cameratoapril5M, cameratorobot, cameratoaprilseeM;
+	for (auto ap : tags)
+	{
+		if(ap.id < 10 and ap.id > 0)
+		{
+			cameratoaprilseeM = RTMat(ap.rx, ap.ry, ap.rz, ap.tx, ap.ty, ap.tz);
+			transformM =tabletags.getTransformationMatrix(QString("tag")+QString::number(ap.id),"tag5");
+			cameratorobot = innermodel->getTransformationMatrix(id_robot,id_camera);
+			cameratoapril5M = cameratorobot * cameratoaprilseeM * transformM;
+			QVec ret = extraerposefromTM(cameratoapril5M);
+			ret.print("tag5 from robot");
+			offset.tx = ret(0);
+			offset.ty = ret(1);
+			offset.tz = ret(2);
+			offset.rx = ret(3); 
+			offset.ry = ret(4);
+			offset.rz = ret(5);
+			return true;
+		}
+	}
+	return false;
+}
+
 void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr cloud)
 {
 #ifdef USE_QTGUI
@@ -945,17 +887,6 @@ void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr 
 	text->setPos(xyfrist(0)-30,(int)(xy(1)+xyfrist(1))/2);
 	scene.addItem(text);
 	V_text_item.push_back(text);
-#endif
-}
-
-void SpecificWorker::removeAllpixmap()
-{
-#ifdef USE_QTGUI
-	while(!V_pixmap_item.empty())
-	{
-		scene.removeItem(V_pixmap_item.back());
-		V_pixmap_item.pop_back();
-	}
 #endif
 }
 
@@ -1004,3 +935,90 @@ void SpecificWorker::paintcloud(pcl::PointCloud< PointT >::Ptr cloud)
 	scene.addItem(V_pixmap_item.back());
 #endif
 }
+
+void SpecificWorker::removeAllpixmap()
+{
+#ifdef USE_QTGUI
+	while(!V_pixmap_item.empty())
+	{
+		scene.removeItem(V_pixmap_item.back());
+		V_pixmap_item.pop_back();
+	}
+#endif
+}
+
+/*
+void SpecificWorker::passThrough()
+{
+        pcl::PassThrough<PointT> pass;
+        pass.setInputCloud (this->cloud);
+        pass.setFilterFieldName ("z");
+        pass.setFilterLimits (marca_tz, marca_tz + 1000);
+  //pass.setFilterLimitsNegative (true);
+        
+        pass.filter (*this->cloud);
+	pass.setInputCloud (this->cloud);
+        pass.setFilterFieldName ("x");
+        pass.setFilterLimits (marca_tx, marca_tx + 1000);
+        pass.setInputCloud (this->cloud);
+	pass.filter (*this->cloud);
+	pass.setFilterFieldName ("y");
+	pass.setFilterLimits (marca_ty-200, marca_ty+1000);
+	pass.setInputCloud (this->cloud);
+	pass.filter (*this->cloud);
+#if DEBUG
+        timespec ts;
+	clock_gettime(CLOCK_REALTIME, &ts);
+	string pcdname =  "/home/robocomp/robocomp/components/perception/" + QString::number(ts.tv_sec).toStdString() + "_passThrough.pcd";
+	printf("<%s>\n", pcdname.c_str());
+	writer.write<PointT> ( pcdname, *cloud, false);
+#endif
+        
+        
+}
+
+void SpecificWorker::statisticalOutliersRemoval()
+{
+  pcl::StatisticalOutlierRemoval<PointT> sor;
+  sor.setInputCloud (this->cloud);
+  sor.setMeanK (50);
+  sor.setStddevMulThresh (1.0);
+  sor.filter (*(this->cloud));
+}
+*/
+
+/*
+void SpecificWorker::segmentImage()
+{
+#if DEBUG
+	cv::imwrite("nosegmentada.png",rgb_image);
+	std::cout<<"setting image"<<std::endl;
+#endif
+	
+	segmentator.set_image(&rgb_image);
+	
+#if DEBUG
+	std::cout<<"Segmenting image"<<std::endl;
+#endif
+	
+	
+	segmentator.set_tresholds(100, 150);
+	color_segmented = segmentator.segment();
+	
+#if DEBUG
+	std::cout<<"Segmented"<<std::endl;
+	cv::imwrite("Segmentada.png",color_segmented);
+	cv::Mat yellow, pink, green;
+	cv::inRange(color_segmented, cv::Scalar(0, 150, 150), cv::Scalar(80, 255, 255), yellow);
+	cv::imwrite("yellow.png",yellow);
+	cv::inRange(color_segmented, cv::Scalar(65, 15, 125), cv::Scalar(150, 100, 255), pink);
+	cv::imwrite("pink.png",pink);
+	cv::inRange(color_segmented, cv::Scalar(25, 75, 50), cv::Scalar(106, 255, 150), green);
+	cv::imwrite("green.png",green);
+#endif
+}
+*/
+
+
+
+
