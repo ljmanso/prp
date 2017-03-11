@@ -31,7 +31,6 @@
  #include <pcl/point_types.h>
  #include <pcl/filters/passthrough.h>
  #include <pcl/segmentation/extract_clusters.h>
-//  #include <pcl/cuda/common/eigen.h>
  #include <pcl/filters/statistical_outlier_removal.h>
  #include <pcl/conversions.h>
  #include <pcl/point_types_conversion.h>
@@ -50,17 +49,20 @@
 	#include "color_segmentation/Segmentator.h"
 	#include "shapes/table.h"
 	#include "vfh/vfh.h"
-	#include "viewer/viewer.h"
+	#ifdef USE_QTGUI
+		#include "viewer/viewer.h"
+		#include <QGraphicsPixmapItem>
+	#endif
 	#include "pointcloud/pointcloud.h"
 	#include "time.h"
 #endif
 
-#include <QGraphicsPixmapItem>
 
 #define DEBUG 0
 #define SAVE_DATA 0
 #define THRESHOLD 0.8
 #define MEDIDA 1.
+#define offset_object 125
 
 #define SUB(dst, src1, src2) \
   { \
@@ -167,6 +169,11 @@ public:
 
 public slots:
 	void compute();
+#ifdef USE_QTGUI
+	void findTheObject_Button();
+	void reloadVFH_Button();
+	void fullRun_Button();
+#endif
 	
 private:
 	QVec extraerposefromTM(QMat M);
@@ -180,20 +187,21 @@ private:
 
 	void caputurePointCloudObjects();
 
-	void updatergbd();
 	void updateinner();
 	void loadTrainedVFH();
 	void vfh(listType &guesses);
 	bool aprilSeen(pose6D &offset);
 	
+#ifdef USE_QTGUI
+	void updatergbd();
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
 	void removeAllpixmap();
+#endif
 
 // 	void segmentImage();
 // 	void passThrough();
 // 	void statisticalOutliersRemoval();
-	
 
 };
 
