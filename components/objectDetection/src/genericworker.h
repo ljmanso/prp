@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <qlog/qlog.h>
 
+#include <ui_mainUI.h>
 
 #include <CommonBehavior.h>
 
@@ -53,7 +54,11 @@ using namespace RoboCompJointMotor;
 
 
 class GenericWorker : 
+#ifdef USE_QTGUI
+public QWidget, public Ui_guiDlg
+#else
 public QObject
+#endif
 {
 Q_OBJECT
 public:
@@ -66,8 +71,8 @@ public:
 	QMutex *mutex;
 	
 
-	JointMotorPrx jointmotor_proxy;
 	RGBDPrx rgbd_proxy;
+	JointMotorPrx jointmotor_proxy;
 
 	virtual pose6D getPose() = 0;
 	virtual bool findObjects(listObject &lObjects) = 0;
