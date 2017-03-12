@@ -154,12 +154,8 @@ public:
 /*
  * Method of Interface ObjectDetection.ice
  */
-	void reloadVFH();
 	bool findTheObject(const string &objectTofind, pose6D &pose);
 	bool findObjects(listObject &lObjects);
-	pose6D getPose();
-	void initSaveObject(const string &label, const int numPoseToSave);
-	void saveRegPose(const string &label, const int numPoseToSave);
 
 /*
  * Method of Interface AprilTags.ice
@@ -177,12 +173,12 @@ public slots:
 	
 private:
 	QVec extraerposefromTM(QMat M);
-	void grabThePointCloud(const string &image, const string &pcd);
+	void grabThePointCloud();
 	void readThePointCloud(const string &image, const string &pcd);
-	void ransac(const string &model);
-	void projectInliers(const string &model);
-	void convexHull(const string &model);
-	void extractPolygon(const string &model);
+	void ransac();
+	void projectInliers();
+	void convexHull();
+	void extractPolygon();
 	void euclideanClustering(int &numCluseters);
 
 	void caputurePointCloudObjects();
@@ -190,7 +186,12 @@ private:
 	void updateinner();
 	void loadTrainedVFH();
 	void vfh(listType &guesses);
-	bool aprilSeen(pose6D &offset);
+	bool aprilSeen(QVec &offset);
+	
+	void reloadVFH();
+	pose6D getPose();
+	void initSaveObject(const string &label, const int numPoseToSave);
+	QVec saveRegPose(const string &label, const int numPoseToSave);
 	
 #ifdef USE_QTGUI
 	void updatergbd();

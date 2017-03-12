@@ -28,34 +28,14 @@ ObjectDetectionI::~ObjectDetectionI()
 {
 }
 
-pose6D ObjectDetectionI::getPose(const Ice::Current&)
-{
-	return worker->getPose();
-}
-
 bool ObjectDetectionI::findObjects( listObject  &lObjects, const Ice::Current&)
 {
 	return worker->findObjects(lObjects);
 }
 
-void ObjectDetectionI::saveRegPose(const string  &label, const int  numPoseToSave, const Ice::Current&)
-{
-	worker->saveRegPose(label, numPoseToSave);
-}
-
 bool ObjectDetectionI::findTheObject(const string  &objectTofind,  pose6D  &pose, const Ice::Current&)
 {
 	return worker->findTheObject(objectTofind, pose);
-}
-
-void ObjectDetectionI::initSaveObject(const string  &label, const int  numPoseToSave, const Ice::Current&)
-{
-	worker->initSaveObject(label, numPoseToSave);
-}
-
-void ObjectDetectionI::reloadVFH(const Ice::Current&)
-{
-	worker->reloadVFH();
 }
 
 

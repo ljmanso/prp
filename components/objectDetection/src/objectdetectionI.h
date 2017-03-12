@@ -34,12 +34,8 @@ public:
 	ObjectDetectionI(GenericWorker *_worker);
 	~ObjectDetectionI();
 	
-	pose6D getPose(const Ice::Current&);
 	bool findObjects( listObject  &lObjects, const Ice::Current&);
-	void saveRegPose(const string  &label, const int  numPoseToSave, const Ice::Current&);
 	bool findTheObject(const string  &objectTofind,  pose6D  &pose, const Ice::Current&);
-	void initSaveObject(const string  &label, const int  numPoseToSave, const Ice::Current&);
-	void reloadVFH(const Ice::Current&);
 
 private:
 

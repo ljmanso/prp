@@ -74,12 +74,8 @@ public:
 	RGBDPrx rgbd_proxy;
 	JointMotorPrx jointmotor_proxy;
 
-	virtual pose6D getPose() = 0;
 	virtual bool findObjects(listObject &lObjects) = 0;
-	virtual void saveRegPose(const string &label, const int numPoseToSave) = 0;
 	virtual bool findTheObject(const string &objectTofind, pose6D &pose) = 0;
-	virtual void initSaveObject(const string &label, const int numPoseToSave) = 0;
-	virtual void reloadVFH() = 0;
 	virtual void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState) = 0;
 	virtual void newAprilTag(const tagsList &tags) = 0;
 

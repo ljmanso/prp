@@ -104,17 +104,6 @@ void SpecificWorker::compute()
  * Method of interface ObjectDetection.ice
  */
 
-void SpecificWorker::reloadVFH()
-{
-	string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
-	char *cstr = &s[0u];
-	if (system(cstr)==0)
-	{
-		vfh_matcher->reloadVFH(pathLoadDescriptors);
-		vfh_matcher->loadTrainingData();
-	}
-}
-
 bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 {
 	caputurePointCloudObjects();
@@ -221,160 +210,6 @@ bool SpecificWorker::findObjects(listObject& lObjects)
 	return true;
 }
 
-pose6D  SpecificWorker::getPose()
-{
-	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
-	
-	//Print centroide
-	Eigen::Vector4f centroid;
-	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
-	QVec centroidpose = QVec::vec3(centroid[0]/MEDIDA,centroid[1]/MEDIDA,centroid[2]/MEDIDA);
-	centroidpose.print("centroid vista atual");
-#ifdef USE_QTGUI
-	removeAllpixmap();
-	InnerModelCamera *camera = innermodel->getCamera(id_camera);
-	centroidpose= camera->project(id_robot,QVec::vec3(centroidpose.x(),centroidpose.y(),centroidpose.z()));
-	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
-	image.fill(Qt::transparent);
-	for (int x =centroidpose.x()-4;x<centroidpose.x()+4;x++)
-		for (int y =centroidpose.y()-4;y<centroidpose.y()+4;y++)
-			image.setPixel(x,y,qRgb(0, 255, 0));
-	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
-	SpecificWorker::scene.addItem(V_pixmap_item.back());
-#endif
-	// Point clouds
-	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
-	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
-	string pathxml="/home/robocomp/robocomp/components/prp/objects/"+guessgan+"/"+guessgan+".xml";
-	pcl::PointCloud<PointT>::Ptr scene (new pcl::PointCloud<PointT>);
-	//change vfh extension to pcd
-	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
-	view_to_load = view_to_load + ".pcd"; 
-	pcl::PointCloud<PointT>::Ptr object(cluster_clouds[num_object_found]);
-	if (pcl::io::loadPCDFile<PointT> (view_to_load, *scene) == -1) //* load the file
-	{
-		printf ("Couldn't read file test_pcd.pcd \n");
-	}
-	//convert pointcloud to mm
-	scene=PointCloudfrom_mm_to_Meters(scene);
-	object=PointCloudfrom_mm_to_Meters(object);
-#if DEBUG
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/seen.pcd", *scene, false);
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/saved.pcd", *object, false);
-#endif
-// 	-------------------------------------------------------------------
-
-	pcl::PointCloud<PointT>::Ptr object_aligned(new pcl::PointCloud<PointT>);
-	QMat saveToViewR = fitingSCP(object,scene,object_aligned);
-#if DEBUG
- 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
- 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
-#endif
-	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
-	node_name=node_name.substr(node_name.find_last_of("/")+1);
-	InnerModel inner(pathxml);
-	QMat PoseSavetoRootR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
-
-// 	convert m to mm
-	QVec saveToView = extraerposefromTM(saveToViewR);
-	saveToView(0)=saveToView(0)*1000;
-	saveToView(1)=saveToView(1)*1000;
-	saveToView(2)=saveToView(2)*1000;
-	saveToViewR= (RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2))).invert();
-
-	QMat poseObjR = saveToViewR*PoseSavetoRootR*april;
-	QVec pose = extraerposefromTM(poseObjR);
-	pose.print("pose");
-	pose6D poseObj;
-	poseObj.tx=pose.x();
-	poseObj.ty=pose.y() + offset_object;
-	poseObj.tz=pose.z();
-	poseObj.rx=pose.rx();
-	poseObj.ry=pose.ry();
-	poseObj.rz=pose.rz();
-// 	Print tag5
-#ifdef USE_QTGUI
-	pose= camera->project(id_robot,QVec::vec3(pose.x(),pose.y(),pose.z()));
-	image.fill(Qt::transparent);
-	for (int x =pose.x()-4;x<pose.x()+4;x++)
-		for (int y =pose.y()-4;y<pose.y()+4;y++)
-			image.setPixel(x,y,qRgb(255, 0, 0));
-	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
-	SpecificWorker::scene.addItem(V_pixmap_item.back());
-	viewer->removeCoordinateSystem("poseobjectR");
-	poseObjR=RTMat(poseObj.rx,poseObj.ry,poseObj.rz,poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000);
-	viewer->addCoordinateSystem(poseObjR,"poseobjectR");
-#endif
-	return poseObj;
-}
-
-void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
-{
-	caputurePointCloudObjects();
-	qDebug()<<__FUNCTION__;
-	boost::filesystem::path path=boost::filesystem::path("/home/robocomp/robocomp/components/prp/objects/"+label+"/");
-	if(!boost::filesystem::exists(path))
-		boost::filesystem::create_directories(path);
-	poses_inner = new InnerModel();
-	num_pose = 0;
-	std::string inner_name = path.string()+label + ".xml";
-	poses_inner->save(QString(inner_name.c_str()));
-	delete (poses_inner);
-	qDebug()<<"End "<<__FUNCTION__;
-} 
-
-void SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
-{
-	caputurePointCloudObjects();
-	qDebug()<<__FUNCTION__;
-	poses_inner = new InnerModel();
-	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
-
-	std::string inner_name = path+label + ".xml";
-	poses_inner->open(inner_name);
-	int j = 0;
-	
-	for(std::vector<pcl::PointCloud<PointT>::Ptr>::const_iterator it = cluster_clouds.begin(); it != cluster_clouds.end(); ++it)
-	{
-		if(j==numPoseToSave)
-		{
-			//check if appril seen
-			pose6D offset;
-			if(aprilSeen(offset))
-			{
-				QVec poseoffset =QVec::vec6(offset.tx, offset.ty, offset.tz, offset.rx, offset.ry, offset.rz);
-				
-				InnerModelNode *parent_node = poses_inner->getTransform("root");
-				std::stringstream ss;
-				ss <<"pose_"<<num_pose<<"_"<< label;
-				
-				InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
-				parent_node->addChild(node);
-				
-				//save the cloud 
-				std::cout << "PointCloud representing the Cluster: " << (*it)->points.size() << " data points." << std::endl;
-				
-				std::stringstream ss1;
-				ss1 <<path<<"pose_"<<num_pose<<"_"<< label;
-				std::cout <<ss1.str()<<endl;
-				writer.write<PointT> (ss1.str () + ".pcd", **it, false);
-			}
-			else
-			{
-				qFatal("CAN'T SEE ANY APRIL!");
-			}
-		}
-		j++;
-	}
-	string imagename = path +"pose_" + QString::number(num_pose).toStdString() + "_" + label + ".png";
-	cv::imwrite( imagename ,rgb_image);
-	num_pose++;
-	poses_inner->save(QString(inner_name.c_str()));
-	delete (poses_inner);	
-	qDebug()<<"End "<<__FUNCTION__;
-}
-
-
 /*
  * Method of interface AprilTags
  */
@@ -413,7 +248,7 @@ QVec SpecificWorker::extraerposefromTM(QMat M)
 	return ret;
 }
 
-void SpecificWorker::grabThePointCloud(const string &image, const string &pcd)
+void SpecificWorker::grabThePointCloud()
 {
 	try
 	{
@@ -488,13 +323,13 @@ void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
 		cloud = PointCloudfrom_mm_to_Meters(cloud);
 }
 
-void SpecificWorker::ransac(const string &model)
+void SpecificWorker::ransac()
 {
 	table->fit_board_with_RANSAC( cloud, ransac_inliers, 15/MEDIDA);
 	cout<<"RANSAC INLIERS: "<<ransac_inliers->indices.size()<<endl;
 }
 
-void SpecificWorker::projectInliers(const string &model)
+void SpecificWorker::projectInliers()
 {
 	table->project_board_inliers(this->cloud, ransac_inliers, projected_plane);
 #if DEBUG
@@ -506,7 +341,7 @@ void SpecificWorker::projectInliers(const string &model)
 #endif
 }
 
-void SpecificWorker::convexHull(const string &model)
+void SpecificWorker::convexHull()
 {
 	
 #if DEBUG
@@ -522,7 +357,7 @@ void SpecificWorker::convexHull(const string &model)
 #endif
 }
 
-void SpecificWorker::extractPolygon(const string &model)
+void SpecificWorker::extractPolygon()
 {
 	cout<<"CloudHull size: "<<cloud_hull->points.size()<<endl;
 	cout<<"Cloud size: "<<cloud->points.size()<<endl;
@@ -647,7 +482,7 @@ void SpecificWorker::caputurePointCloudObjects()
 	if(test)
 		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
 	else
-		grabThePointCloud("image.png", "rgbd.pcd");
+		grabThePointCloud();
 	cloud = Filter_in_axis(cloud, "y", -100/MEDIDA, 700/MEDIDA, true);
 #ifdef USE_QTGUI
 	viewer->updatePointCloud(cloud,"scene");
@@ -657,10 +492,10 @@ void SpecificWorker::caputurePointCloudObjects()
 	copy_scene=copy_pointcloud(cloud);
 	cloud = VoxelGrid_filter(cloud, 3/MEDIDA, 3/MEDIDA, 3/MEDIDA);
 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/VoxelGrid_filter.pcd", *cloud, false);
-	ransac("plane");
-	projectInliers("plane");
-	convexHull("plane");
-	extractPolygon("plane");
+	ransac();
+	projectInliers();
+	convexHull();
+	extractPolygon();
 	int n;
 	euclideanClustering(n);
 	clock_gettime(CLOCK_REALTIME, &Fin);
@@ -707,7 +542,7 @@ void SpecificWorker::vfh(listType &guesses)
 // 	guesses = vfh_guesses;
 }
 
-bool SpecificWorker::aprilSeen(pose6D &offset)
+bool SpecificWorker::aprilSeen(QVec &offset)
 {
 	QMutexLocker locker(&april_mutex);
 	static InnerModel tabletags("/home/robocomp/robocomp/components/robocomp-shelly/files/tabletags.xml");
@@ -722,16 +557,170 @@ bool SpecificWorker::aprilSeen(pose6D &offset)
 			cameratoapril5M = cameratorobot * cameratoaprilseeM * transformM;
 			QVec ret = extraerposefromTM(cameratoapril5M);
 			ret.print("tag5 from robot");
-			offset.tx = ret(0);
-			offset.ty = ret(1);
-			offset.tz = ret(2);
-			offset.rx = ret(3); 
-			offset.ry = ret(4);
-			offset.rz = ret(5);
+			offset = ret;
 			return true;
 		}
 	}
 	return false;
+}
+
+void SpecificWorker::reloadVFH()
+{
+	string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
+	char *cstr = &s[0u];
+	if (system(cstr)==0)
+	{
+		vfh_matcher->reloadVFH(pathLoadDescriptors);
+		vfh_matcher->loadTrainingData();
+	}
+}
+
+pose6D  SpecificWorker::getPose()
+{
+	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
+	
+	//Print centroide
+	Eigen::Vector4f centroid;
+	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid); 
+	QVec centroidpose = QVec::vec3(centroid[0]/MEDIDA,centroid[1]/MEDIDA,centroid[2]/MEDIDA);
+	centroidpose.print("centroid vista atual");
+#ifdef USE_QTGUI
+	removeAllpixmap();
+	InnerModelCamera *camera = innermodel->getCamera(id_camera);
+	centroidpose= camera->project(id_robot,QVec::vec3(centroidpose.x(),centroidpose.y(),centroidpose.z()));
+	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
+	image.fill(Qt::transparent);
+	for (int x =centroidpose.x()-4;x<centroidpose.x()+4;x++)
+		for (int y =centroidpose.y()-4;y<centroidpose.y()+4;y++)
+			image.setPixel(x,y,qRgb(0, 255, 0));
+	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
+	SpecificWorker::scene.addItem(V_pixmap_item.back());
+#endif
+	// Point clouds
+	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
+	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
+	string pathxml="/home/robocomp/robocomp/components/prp/objects/"+guessgan+"/"+guessgan+".xml";
+	pcl::PointCloud<PointT>::Ptr scene (new pcl::PointCloud<PointT>);
+	//change vfh extension to pcd
+	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
+	view_to_load = view_to_load + ".pcd"; 
+	pcl::PointCloud<PointT>::Ptr object(cluster_clouds[num_object_found]);
+	if (pcl::io::loadPCDFile<PointT> (view_to_load, *scene) == -1) //* load the file
+	{
+		printf ("Couldn't read file test_pcd.pcd \n");
+	}
+	//convert pointcloud to mm
+	scene=PointCloudfrom_mm_to_Meters(scene);
+	object=PointCloudfrom_mm_to_Meters(object);
+#if DEBUG
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/seen.pcd", *scene, false);
+	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/saved.pcd", *object, false);
+#endif
+// 	-------------------------------------------------------------------
+
+	pcl::PointCloud<PointT>::Ptr object_aligned(new pcl::PointCloud<PointT>);
+	QMat saveToViewR = fitingSCP(object,scene,object_aligned);
+#if DEBUG
+ 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
+ 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
+#endif
+	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
+	node_name=node_name.substr(node_name.find_last_of("/")+1);
+	InnerModel inner(pathxml);
+	QMat PoseSavetoRootR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
+
+// 	convert m to mm
+	QVec saveToView = extraerposefromTM(saveToViewR);
+	saveToView(0)=saveToView(0)*1000;
+	saveToView(1)=saveToView(1)*1000;
+	saveToView(2)=saveToView(2)*1000;
+	saveToViewR= (RTMat(saveToView(3), saveToView(4), saveToView(5), saveToView(0), saveToView(1), saveToView(2))).invert();
+
+	QMat poseObjR = saveToViewR*PoseSavetoRootR*april;
+	QVec pose = extraerposefromTM(poseObjR);
+	pose.print("pose");
+	pose6D poseObj;
+	poseObj.tx=pose.x();
+	poseObj.ty=pose.y() + offset_object;
+	poseObj.tz=pose.z();
+	poseObj.rx=pose.rx();
+	poseObj.ry=pose.ry();
+	poseObj.rz=pose.rz();
+// 	Print tag5
+#ifdef USE_QTGUI
+	pose= camera->project(id_robot,QVec::vec3(pose.x(),pose.y(),pose.z()));
+	image.fill(Qt::transparent);
+	for (int x =pose.x()-4;x<pose.x()+4;x++)
+		for (int y =pose.y()-4;y<pose.y()+4;y++)
+			image.setPixel(x,y,qRgb(255, 0, 0));
+	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
+	SpecificWorker::scene.addItem(V_pixmap_item.back());
+	viewer->removeCoordinateSystem("poseobjectR");
+	poseObjR=RTMat(poseObj.rx,poseObj.ry,poseObj.rz,poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000);
+	viewer->addCoordinateSystem(poseObjR,"poseobjectR");
+#endif
+	return poseObj;
+}
+
+void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
+{
+	caputurePointCloudObjects();
+	
+	//Create the directory that contains the object info
+	boost::filesystem::path path=boost::filesystem::path("/home/robocomp/robocomp/components/prp/objects/"+label+"/");
+	if(!boost::filesystem::exists(path))
+		boost::filesystem::create_directories(path);
+	
+	//Creates the XML of the object to save
+	poses_inner = new InnerModel();
+	num_pose = 0;
+	std::string inner_name = path.string()+label + ".xml";
+	poses_inner->save(QString(inner_name.c_str()));
+	
+	delete (poses_inner);
+} 
+
+QVec SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
+{
+	caputurePointCloudObjects();
+	//check if appril seen
+	QVec poseoffset = QVec::zeros(6);
+	if(aprilSeen(poseoffset))
+	{
+		//Open the object XML
+		poses_inner = new InnerModel();
+		string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
+		std::string inner_name = path+label + ".xml";
+		poses_inner->open(inner_name);
+		
+		//Create the new node
+		InnerModelNode *parent_node = poses_inner->getTransform("root");
+		std::stringstream ss;
+		ss <<"pose_"<<num_pose<<"_"<< label;
+		InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
+		parent_node->addChild(node);
+		
+		//Save the object cloud
+		std::stringstream ss1;
+		ss1 <<path<<"pose_"<<num_pose<<"_"<< label;
+		std::cout <<ss1.str()<<endl;
+		writer.write<PointT> (ss1.str () + ".pcd", *cluster_clouds[numPoseToSave], false);
+		
+		//Save the object image
+		string imagename = path +"pose_" + QString::number(num_pose).toStdString() + "_" + label + ".png";
+		cv::imwrite( imagename ,rgb_image);
+		
+		//Save the object XML
+		num_pose++;
+		poses_inner->save(QString(inner_name.c_str()));
+		
+		delete (poses_inner);
+	}
+	else
+	{
+		qFatal("CAN'T SEE ANY APRIL!");
+	}
+	return poseoffset;
 }
 
 #ifdef USE_QTGUI
@@ -880,10 +869,9 @@ void SpecificWorker::findTheObject_Button()
 
 void SpecificWorker::fullRun_Button()
 {
-	qDebug()<<__FUNCTION__;
 	string label=label_le->text().toStdString();
 	char *c;
-	pose6D guess;
+	QVec guess;
 	string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
 	c= &s[0u];
 	try
@@ -892,13 +880,24 @@ void SpecificWorker::fullRun_Button()
 		if(InitPose->isChecked())
 			initSaveObject(label,ob_to_save->value());
 		if(regularPose->isChecked())
-			saveRegPose(label,ob_to_save->value());
+		{
+			guess = saveRegPose(label,ob_to_save->value());
+			if(guess !=QVec::zeros(6))
+				isObject->setText("Objeto Guardado.");
+			else
+				isObject->setText("Objeto NO Guardado.");
+			x_object->setText(QString::number(guess.x()));
+			y_object->setText(QString::number(guess.y()));
+			z_object->setText(QString::number(guess.z()));
+			rx_object->setText(QString::number(guess.rx()));
+			ry_object->setText(QString::number(guess.ry()));
+			rz_object->setText(QString::number(guess.rz()));
+		}
 	}
 	catch(...)
 	{
 		QMessageBox::warning(this, "something went wrong", "something went wrong");
 	}
 }
-
 #endif
 
