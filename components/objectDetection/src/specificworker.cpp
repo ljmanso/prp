@@ -662,6 +662,7 @@ pose6D  SpecificWorker::getPose()
 	return poseObj;
 }
 
+#ifdef USE_QTGUI
 void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
 {
 	caputurePointCloudObjects();
@@ -723,7 +724,6 @@ QVec SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 	return poseoffset;
 }
 
-#ifdef USE_QTGUI
 void SpecificWorker::updatergbd()
 {
 	RoboCompRGBD::ColorSeq rgbMatrix;

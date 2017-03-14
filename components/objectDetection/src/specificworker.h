@@ -190,10 +190,10 @@ private:
 	
 	void reloadVFH();
 	pose6D getPose();
+#ifdef USE_QTGUI
 	void initSaveObject(const string &label, const int numPoseToSave);
 	QVec saveRegPose(const string &label, const int numPoseToSave);
 	
-#ifdef USE_QTGUI
 	void updatergbd();
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
