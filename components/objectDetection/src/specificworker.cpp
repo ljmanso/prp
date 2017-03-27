@@ -263,9 +263,7 @@ void SpecificWorker::grabThePointCloud()
 		}
 		viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
 		QMat PP = viewpoint_transform;
-		
 		cloud->points.resize(points_kinect.size());
-		
 		for (unsigned int i=0; i<points_kinect.size(); i++)
 		{
 			QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
@@ -547,6 +545,7 @@ bool SpecificWorker::aprilSeen(QVec &offset)
 	QMutexLocker locker(&april_mutex);
 	static InnerModel tabletags("/home/robocomp/robocomp/components/robocomp-shelly/files/tabletags.xml");
 	QMat transformM,cameratoapril5M, cameratorobot, cameratoaprilseeM;
+	std::vector<QVec> poses;
 	for (auto ap : tags)
 	{
 		if(ap.id < 10 and ap.id > 0)
@@ -557,8 +556,24 @@ bool SpecificWorker::aprilSeen(QVec &offset)
 			cameratoapril5M = cameratorobot * cameratoaprilseeM * transformM;
 			QVec ret = extraerposefromTM(cameratoapril5M);
 			ret.print("tag5 from robot");
-			offset = ret;
-			return true;
+			poses.push_back(ret);
+		}
+	}
+	if(!poses.empty())
+	{
+		int cout = 0;
+		for (int i=0;i<poses.size();i++)
+		{
+			for (int j=0; j<poses.size(); j++)
+			{
+				if(30>(poses[i]-poses[j]).norm2())
+					count++;
+			}
+			if(count>3)
+			{
+				offset = poses[i];
+				return true;
+			}
 		}
 	}
 	return false;
