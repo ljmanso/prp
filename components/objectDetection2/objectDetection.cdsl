@@ -1,0 +1,17 @@
+import "/robocomp/interfaces/IDSLs/ObjectDetection.idsl";
+import "/robocomp/interfaces/IDSLs/AprilTags.idsl";
+import "/robocomp/interfaces/IDSLs/RGBDBus.idsl";
+import "/robocomp/interfaces/IDSLs/JointMotor.idsl";
+
+Component objectDetectionComp
+{
+	Communications
+	{
+		implements ObjectDetection;
+		requires RGBDBus, JointMotor;
+		subscribesTo AprilTags;
+	};
+	language Cpp;
+	gui Qt(QWidget);
+	useQt qt4;
+};
