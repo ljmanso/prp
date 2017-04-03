@@ -51,6 +51,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	connect(reloadButton, SIGNAL(clicked()), this, SLOT(reloadVFH_Button()));
 	connect(goButton, SIGNAL(clicked()), this, SLOT(fullRun_Button()));
 	connect(findObjectButton, SIGNAL(clicked()), this, SLOT(findTheObject_Button()));
+	connect(saveViewButton, SIGNAL(clicked()), this, SLOT(saveView()));
 #endif
 	boost::filesystem::remove("training_data.h5");
 	boost::filesystem::remove("training_data.list");
@@ -556,15 +557,17 @@ bool SpecificWorker::aprilSeen(QVec &offset)
 			cameratoapril5M = cameratorobot * cameratoaprilseeM * transformM;
 			QVec ret = extraerposefromTM(cameratoapril5M);
 			ret.print("tag5 from robot");
+// 			offset=ret;
 			poses.push_back(ret);
+// 			return true;
 		}
 	}
 	if(!poses.empty())
 	{
-		int cout = 0;
-		for (int i=0;i<poses.size();i++)
+		int count = 0;
+		for (unsigned int i=0;i<poses.size();i++)
 		{
-			for (int j=0; j<poses.size(); j++)
+			for (unsigned int j=0; j<poses.size(); j++)
 			{
 				if(30>(poses[i]-poses[j]).norm2())
 					count++;
@@ -678,6 +681,40 @@ pose6D  SpecificWorker::getPose()
 }
 
 #ifdef USE_QTGUI
+void SpecificWorker::saveView()
+{
+	
+	string label=label_le->text().toStdString();
+	//Open the object XML
+	poses_inner = new InnerModel();
+	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
+	std::string inner_name = path+label + ".xml";
+	poses_inner->open(inner_name);
+	
+	//Create the new node
+	InnerModelNode *parent_node = poses_inner->getTransform("root");
+	std::stringstream ss;
+	ss <<"pose_"<<num_pose<<"_"<< label;
+	InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
+	parent_node->addChild(node);
+	
+	//Save the object cloud
+	std::stringstream ss1;
+	ss1 <<path<<"pose_"<<num_pose<<"_"<< label;
+	std::cout <<ss1.str()<<endl;
+	writer.write<PointT> (ss1.str () + ".pcd", *cluster_clouds[ob_to_save->value()], false);
+	
+	//Save the object image
+	string imagename = path +"pose_" + QString::number(num_pose).toStdString() + "_" + label + ".png";
+	cv::imwrite( imagename ,rgb_image);
+	
+	//Save the object XML
+	num_pose++;
+	poses_inner->save(QString(inner_name.c_str()));
+	
+	delete (poses_inner);
+}
+
 void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
 {
 	caputurePointCloudObjects();
@@ -700,37 +737,37 @@ QVec SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 {
 	caputurePointCloudObjects();
 	//check if appril seen
-	QVec poseoffset = QVec::zeros(6);
+	poseoffset = QVec::zeros(6);
 	if(aprilSeen(poseoffset))
 	{
-		//Open the object XML
-		poses_inner = new InnerModel();
-		string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
-		std::string inner_name = path+label + ".xml";
-		poses_inner->open(inner_name);
-		
-		//Create the new node
-		InnerModelNode *parent_node = poses_inner->getTransform("root");
-		std::stringstream ss;
-		ss <<"pose_"<<num_pose<<"_"<< label;
-		InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
-		parent_node->addChild(node);
-		
-		//Save the object cloud
-		std::stringstream ss1;
-		ss1 <<path<<"pose_"<<num_pose<<"_"<< label;
-		std::cout <<ss1.str()<<endl;
-		writer.write<PointT> (ss1.str () + ".pcd", *cluster_clouds[numPoseToSave], false);
-		
-		//Save the object image
-		string imagename = path +"pose_" + QString::number(num_pose).toStdString() + "_" + label + ".png";
-		cv::imwrite( imagename ,rgb_image);
-		
-		//Save the object XML
-		num_pose++;
-		poses_inner->save(QString(inner_name.c_str()));
-		
-		delete (poses_inner);
+// 		//Open the object XML
+// 		poses_inner = new InnerModel();
+// 		string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
+// 		std::string inner_name = path+label + ".xml";
+// 		poses_inner->open(inner_name);
+// 		
+// 		//Create the new node
+// 		InnerModelNode *parent_node = poses_inner->getTransform("root");
+// 		std::stringstream ss;
+// 		ss <<"pose_"<<num_pose<<"_"<< label;
+// 		InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
+// 		parent_node->addChild(node);
+// 		
+// 		//Save the object cloud
+// 		std::stringstream ss1;
+// 		ss1 <<path<<"pose_"<<num_pose<<"_"<< label;
+// 		std::cout <<ss1.str()<<endl;
+// 		writer.write<PointT> (ss1.str () + ".pcd", *cluster_clouds[numPoseToSave], false);
+// 		
+// 		//Save the object image
+// 		string imagename = path +"pose_" + QString::number(num_pose).toStdString() + "_" + label + ".png";
+// 		cv::imwrite( imagename ,rgb_image);
+// 		
+// 		//Save the object XML
+// 		num_pose++;
+// 		poses_inner->save(QString(inner_name.c_str()));
+// 		
+// 		delete (poses_inner);
 	}
 	else
 	{
@@ -907,6 +944,9 @@ void SpecificWorker::fullRun_Button()
 			rx_object->setText(QString::number(guess.rx()));
 			ry_object->setText(QString::number(guess.ry()));
 			rz_object->setText(QString::number(guess.rz()));
+			viewer->removeCoordinateSystem("poseobject");
+			QMat poseObjR=RTMat(guess.rx(),guess.ry(),guess.rz(),guess.x()/1000.,guess.y()/1000.,guess.z()/1000.);
+			viewer->addCoordinateSystem(poseObjR,"poseobject");
 		}
 	}
 	catch(...)

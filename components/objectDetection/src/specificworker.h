@@ -141,6 +141,7 @@ class SpecificWorker : public GenericWorker
 	QGraphicsScene scene;
 
 	boost::shared_ptr<Viewer> viewer;
+	QVec poseoffset;
 #endif
 	pcl::PointCloud< PointT >::Ptr copy_scene;
 	
@@ -166,6 +167,7 @@ public:
 public slots:
 	void compute();
 #ifdef USE_QTGUI
+	void saveView();
 	void findTheObject_Button();
 	void reloadVFH_Button();
 	void fullRun_Button();

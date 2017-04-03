@@ -375,6 +375,13 @@
               </layout>
              </item>
              <item>
+              <widget class="QPushButton" name="saveViewButton">
+               <property name="text">
+                <string>save</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="goButton">
                <property name="maximumSize">
                 <size>
@@ -421,9 +428,6 @@
     </widget>
    </item>
   </layout>
-  <zorder>graphic</zorder>
-  <zorder>goButton</zorder>
-  <zorder>frame_2</zorder>
  </widget>
  <resources/>
  <connections/>
