@@ -18,11 +18,11 @@
  */
 
 
-/** \mainpage RoboComp::objectoracle
+/** \mainpage RoboComp::objectDetectionComp
  *
  * \section intro_sec Introduction
  *
- * The objectoracle component...
+ * The objectDetectionComp component...
  *
  * \section interface_sec Interface
  *
@@ -34,7 +34,7 @@
  * ...
  *
  * \subsection install2_ssec Compile and install
- * cd objectoracle
+ * cd objectDetectionComp
  * <br>
  * cmake . && make
  * <br>
@@ -52,7 +52,7 @@
  *
  * \subsection execution_ssec Execution
  *
- * Just: "${PATH_TO_BINARY}/objectoracle --Ice.Config=${PATH_TO_CONFIG_FILE}"
+ * Just: "${PATH_TO_BINARY}/objectDetectionComp --Ice.Config=${PATH_TO_CONFIG_FILE}"
  *
  * \subsection running_ssec Once running
  *
@@ -81,19 +81,15 @@
 #include "specificmonitor.h"
 #include "commonbehaviorI.h"
 
-#include <agmcommonbehaviorI.h>
-#include <objectoracleI.h>
-#include <agmexecutivetopicI.h>
+#include <objectdetectionI.h>
+#include <apriltagsI.h>
 
-#include <ObjectOracle.h>
-#include <RGBD.h>
-#include <JointMotor.h>
+#include <ObjectDetection.h>
+#include <AprilTags.h>
 #include <GenericBase.h>
-#include <Logger.h>
-#include <RGBD.h>
 #include <JointMotor.h>
-#include <GenericBase.h>
-#include <SemanticSimilarity.h>
+#include <RGBDBus.h>
+#include <JointMotor.h>
 
 
 // User includes here
@@ -102,10 +98,10 @@
 using namespace std;
 using namespace RoboCompCommonBehavior;
 
-class objectoracle : public RoboComp::Application
+class objectDetectionComp : public RoboComp::Application
 {
 public:
-	objectoracle (QString prfx) { prefix = prfx.toStdString(); }
+	objectDetectionComp (QString prfx) { prefix = prfx.toStdString(); }
 private:
 	void initialize();
 	std::string prefix;
@@ -115,14 +111,14 @@ public:
 	virtual int run(int, char*[]);
 };
 
-void ::objectoracle::initialize()
+void ::objectDetectionComp::initialize()
 {
 	// Config file properties read example
 	// configGetString( PROPERTY_NAME_1, property1_holder, PROPERTY_1_DEFAULT_VALUE );
 	// configGetInt( PROPERTY_NAME_2, property1_holder, PROPERTY_2_DEFAULT_VALUE );
 }
 
-int ::objectoracle::run(int argc, char* argv[])
+int ::objectDetectionComp::run(int argc, char* argv[])
 {
 #ifdef USE_QTGUI
 	QApplication a(argc, argv);  // GUI application
@@ -145,89 +141,64 @@ int ::objectoracle::run(int argc, char* argv[])
 
 	int status=EXIT_SUCCESS;
 
-	SemanticSimilarityPrx semanticsimilarity_proxy;
-	LoggerPrx logger_proxy;
-	RGBDPrx rgbd_proxy;
-	AGMExecutivePrx agmexecutive_proxy;
+	JointMotorPrx jointmotor_proxy;
+	RGBDBusPrx rgbdbus_proxy;
 
 	string proxy, tmp;
+	printf("%d\n", __LINE__);
 	initialize();
+	printf("%d\n", __LINE__);
 
 
 	try
 	{
-		if (not GenericMonitor::configGetString(communicator(), prefix, "SemanticSimilarityProxy", proxy, ""))
+		if (not GenericMonitor::configGetString(communicator(), prefix, "JointMotorProxy", proxy, ""))
 		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy SemanticSimilarityProxy\n";
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy JointMotorProxy\n";
 		}
-		semanticsimilarity_proxy = SemanticSimilarityPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+		jointmotor_proxy = JointMotorPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
 	}
 	catch(const Ice::Exception& ex)
 	{
 		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
 		return EXIT_FAILURE;
 	}
-	rInfo("SemanticSimilarityProxy initialized Ok!");
-	mprx["SemanticSimilarityProxy"] = (::IceProxy::Ice::Object*)(&semanticsimilarity_proxy);//Remote server proxy creation example
+	printf("%d\n", __LINE__);
+	rInfo("JointMotorProxy initialized Ok!");
+	mprx["JointMotorProxy"] = (::IceProxy::Ice::Object*)(&jointmotor_proxy);//Remote server proxy creation example
 
 
 	try
 	{
-		if (not GenericMonitor::configGetString(communicator(), prefix, "RGBDProxy", proxy, ""))
+		if (not GenericMonitor::configGetString(communicator(), prefix, "RGBDBusProxy", proxy, ""))
 		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy RGBDProxy\n";
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy RGBDBusProxy\n";
 		}
-		rgbd_proxy = RGBDPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+		rgbdbus_proxy = RGBDBusPrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
 	}
 	catch(const Ice::Exception& ex)
 	{
 		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
 		return EXIT_FAILURE;
 	}
-	rInfo("RGBDProxy initialized Ok!");
-	mprx["RGBDProxy"] = (::IceProxy::Ice::Object*)(&rgbd_proxy);//Remote server proxy creation example
+	printf("%d\n", __LINE__);
+	rInfo("RGBDBusProxy initialized Ok!");
+	mprx["RGBDBusProxy"] = (::IceProxy::Ice::Object*)(&rgbdbus_proxy);//Remote server proxy creation example
 
-
+	printf("%d\n", __LINE__);
+	IceStorm::TopicManagerPrx topicManager;
 	try
 	{
-		if (not GenericMonitor::configGetString(communicator(), prefix, "AGMExecutiveProxy", proxy, ""))
-		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AGMExecutiveProxy\n";
-		}
-		agmexecutive_proxy = AGMExecutivePrx::uncheckedCast( communicator()->stringToProxy( proxy ) );
+		printf("%d\n", __LINE__);
+		topicManager = IceStorm::TopicManagerPrx::checkedCast(communicator()->propertyToProxy("TopicManager.Proxy"));
+		printf("%d\n", __LINE__);
 	}
-	catch(const Ice::Exception& ex)
+	catch (const Ice::Exception &ex)
 	{
-		cout << "[" << PROGRAM_NAME << "]: Exception: " << ex;
+		cout << "[" << PROGRAM_NAME << "]: Exception: STORM not running: " << ex << endl;
 		return EXIT_FAILURE;
 	}
-	rInfo("AGMExecutiveProxy initialized Ok!");
-	mprx["AGMExecutiveProxy"] = (::IceProxy::Ice::Object*)(&agmexecutive_proxy);//Remote server proxy creation example
-
-	IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(communicator()->propertyToProxy("TopicManager.Proxy"));
-
-	IceStorm::TopicPrx logger_topic;
-	while (!logger_topic)
-	{
-		try
-		{
-			logger_topic = topicManager->retrieve("Logger");
-		}
-		catch (const IceStorm::NoSuchTopic&)
-		{
-			try
-			{
-				logger_topic = topicManager->create("Logger");
-			}
-			catch (const IceStorm::TopicExists&){
-				// Another client created the topic.
-			}
-		}
-	}
-	Ice::ObjectPrx logger_pub = logger_topic->getPublisher()->ice_oneway();
-	LoggerPrx logger = LoggerPrx::uncheckedCast(logger_pub);
-	mprx["LoggerPub"] = (::IceProxy::Ice::Object*)(&logger);
-
+	printf("%d\n", __LINE__);
 
 
 	SpecificWorker *worker = new SpecificWorker(mprx);
@@ -239,12 +210,12 @@ int ::objectoracle::run(int argc, char* argv[])
 
 	if ( !monitor->isRunning() )
 		return status;
-	
+
 	while (!monitor->ready)
 	{
 		usleep(10000);
 	}
-	
+
 	try
 	{
 		// Server adapter creation and publication
@@ -261,49 +232,37 @@ int ::objectoracle::run(int argc, char* argv[])
 
 
 		// Server adapter creation and publication
-		if (not GenericMonitor::configGetString(communicator(), prefix, "AGMCommonBehavior.Endpoints", tmp, ""))
+		if (not GenericMonitor::configGetString(communicator(), prefix, "ObjectDetection.Endpoints", tmp, ""))
 		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AGMCommonBehavior";
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy ObjectDetection";
 		}
-		Ice::ObjectAdapterPtr adapterAGMCommonBehavior = communicator()->createObjectAdapterWithEndpoints("AGMCommonBehavior", tmp);
-		AGMCommonBehaviorI *agmcommonbehavior = new AGMCommonBehaviorI(worker);
-		adapterAGMCommonBehavior->add(agmcommonbehavior, communicator()->stringToIdentity("agmcommonbehavior"));
-		adapterAGMCommonBehavior->activate();
-		cout << "[" << PROGRAM_NAME << "]: AGMCommonBehavior adapter created in port " << tmp << endl;
-
-
-		// Server adapter creation and publication
-		if (not GenericMonitor::configGetString(communicator(), prefix, "ObjectOracle.Endpoints", tmp, ""))
-		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy ObjectOracle";
-		}
-		Ice::ObjectAdapterPtr adapterObjectOracle = communicator()->createObjectAdapterWithEndpoints("ObjectOracle", tmp);
-		ObjectOracleI *objectoracle = new ObjectOracleI(worker);
-		adapterObjectOracle->add(objectoracle, communicator()->stringToIdentity("objectoracle"));
-		adapterObjectOracle->activate();
-		cout << "[" << PROGRAM_NAME << "]: ObjectOracle adapter created in port " << tmp << endl;
+		Ice::ObjectAdapterPtr adapterObjectDetection = communicator()->createObjectAdapterWithEndpoints("ObjectDetection", tmp);
+		ObjectDetectionI *objectdetection = new ObjectDetectionI(worker);
+		adapterObjectDetection->add(objectdetection, communicator()->stringToIdentity("objectdetection"));
+		adapterObjectDetection->activate();
+		cout << "[" << PROGRAM_NAME << "]: ObjectDetection adapter created in port " << tmp << endl;
 
 
 
 
 
 		// Server adapter creation and publication
-		if (not GenericMonitor::configGetString(communicator(), prefix, "AGMExecutiveTopicTopic.Endpoints", tmp, ""))
+		if (not GenericMonitor::configGetString(communicator(), prefix, "AprilTagsTopic.Endpoints", tmp, ""))
 		{
-			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AGMExecutiveTopicProxy";
+			cout << "[" << PROGRAM_NAME << "]: Can't read configuration for proxy AprilTagsProxy";
 		}
-		Ice::ObjectAdapterPtr AGMExecutiveTopic_adapter = communicator()->createObjectAdapterWithEndpoints("agmexecutivetopic", tmp);
-		AGMExecutiveTopicPtr agmexecutivetopicI_ = new AGMExecutiveTopicI(worker);
-		Ice::ObjectPrx agmexecutivetopic = AGMExecutiveTopic_adapter->addWithUUID(agmexecutivetopicI_)->ice_oneway();
-		IceStorm::TopicPrx agmexecutivetopic_topic;
-		if(!agmexecutivetopic_topic){
+		Ice::ObjectAdapterPtr AprilTags_adapter = communicator()->createObjectAdapterWithEndpoints("apriltags", tmp);
+		AprilTagsPtr apriltagsI_ = new AprilTagsI(worker);
+		Ice::ObjectPrx apriltags = AprilTags_adapter->addWithUUID(apriltagsI_)->ice_oneway();
+		IceStorm::TopicPrx apriltags_topic;
+		if(!apriltags_topic){
 		try {
-			agmexecutivetopic_topic = topicManager->create("AGMExecutiveTopic");
+			apriltags_topic = topicManager->create("AprilTags");
 		}
 		catch (const IceStorm::TopicExists&) {
 		//Another client created the topic
 		try{
-			agmexecutivetopic_topic = topicManager->retrieve("AGMExecutiveTopic");
+			apriltags_topic = topicManager->retrieve("AprilTags");
 		}
 		catch(const IceStorm::NoSuchTopic&)
 		{
@@ -311,9 +270,9 @@ int ::objectoracle::run(int argc, char* argv[])
 			}
 		}
 		IceStorm::QoS qos;
-		agmexecutivetopic_topic->subscribeAndGetPublisher(qos, agmexecutivetopic);
+		apriltags_topic->subscribeAndGetPublisher(qos, apriltags);
 		}
-		AGMExecutiveTopic_adapter->activate();
+		AprilTags_adapter->activate();
 
 		// Server adapter creation and publication
 		cout << SERVER_FULL_NAME " started" << endl;
@@ -326,10 +285,10 @@ int ::objectoracle::run(int argc, char* argv[])
 #endif
 		// Run QT Application Event Loop
 		a.exec();
-		
-		std::cout << "Unsubscribing topic: agmexecutivetopic " <<std::endl;
-		agmexecutivetopic_topic->unsubscribe( agmexecutivetopic );
-		
+
+		std::cout << "Unsubscribing topic: apriltags " <<std::endl;
+		apriltags_topic->unsubscribe( apriltags );
+
 		status = EXIT_SUCCESS;
 	}
 	catch(const Ice::Exception& ex)
@@ -382,8 +341,7 @@ int main(int argc, char* argv[])
 			printf("Configuration prefix: <%s>\n", prefix.toStdString().c_str());
 		}
 	}
-	::objectoracle app(prefix);
+	::objectDetectionComp app(prefix);
 
 	return app.main(argc, argv, configFile.c_str());
 }
-

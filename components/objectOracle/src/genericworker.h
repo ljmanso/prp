@@ -87,8 +87,8 @@ public:
 	bool isActive() { return active; }
 	
 
-	LoggerPrx logger_proxy;
 	RGBDPrx rgbd_proxy;
+	LoggerPrx logger_proxy;
 	SemanticSimilarityPrx semanticsimilarity_proxy;
 	AGMExecutivePrx agmexecutive_proxy;
 

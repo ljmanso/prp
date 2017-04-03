@@ -14,6 +14,6 @@ Component objectoracle
 	language Cpp;
 	gui Qt(QWidget);
 	options agmagent;
-	useQt qt5;
+	useQt qt4;
 };
 

@@ -1,0 +1,51 @@
+
+# Sources set
+SET ( SOURCES
+  specificworker.cpp
+  specificmonitor.cpp
+#  $ENV{ROBOCOMP}/classes/agmInner/agmInner.cpp
+  color_segmentation/BIP.cpp
+  color_segmentation/Canny.cpp
+  color_segmentation/Convolucion.cpp
+  color_segmentation/GaussKernel.cpp
+  color_segmentation/Imagen.cpp
+  color_segmentation/Segmentator.cpp
+  shapes/basic/rectprism.cpp
+  geometry/plane.cpp
+  shapes/table.cpp
+  vfh/vfh.cpp
+  viewer/viewer.cpp
+  pointcloud/pointcloud.cpp
+)
+
+# Headers set
+SET ( HEADERS
+  specificworker.h
+  specificmonitor.h
+  /usr/include/time.h
+#  viewer/viewer.h
+#  $ENV{ROBOCOMP}/classes/agmInner/agmInner.h
+)
+
+
+# pcl
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
+# opencv2
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+
+
+SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial -lmpi_cxx )
+
+include_directories( /usr/include/hdf5/serial/ /usr/local/include/pcl-1.8/ )
+
+SET ( LIBS ${LIBS}  )
+
+ADD_DEFINITIONS( -std=c++11 )
+
+add_executable(createDescriptors createDescriptors.cpp)
+target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
+
+#add_executable(fiting fiting.cpp)
+#target_link_libraries (fiting ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES} )
+
+
