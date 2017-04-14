@@ -7,9 +7,9 @@ Viewer::Viewer(float medida)
 #ifdef USE_QTGUI
 	MEDIDA=medida;
 	viewer=boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer ("3D Viewer"));
-	viewer->setBackgroundColor (0, 0, 0);
+	viewer->setBackgroundColor(0.2, 0.2, 0.2);
 	viewer->initCameraParameters ();
-	viewer->addCoordinateSystem (0.5);
+	viewer->addCoordinateSystem (1.);
 #endif
 }
 
@@ -76,12 +76,12 @@ void Viewer::removeCoordinateSystem(std::string id)
 {
 #ifdef USE_QTGUI
 	viewer->removeCoordinateSystem(id,0);
-#endif	
+#endif
 }
 
 void Viewer::update()
 {
 #ifdef USE_QTGUI
 	viewer->spinOnce (10);
-#endif	
+#endif
 }
