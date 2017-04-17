@@ -9,14 +9,14 @@ Viewer::Viewer(float medida)
 	viewer=boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer ("3D Viewer"));
 	viewer->setBackgroundColor(0.2, 0.2, 0.2);
 	viewer->initCameraParameters ();
-	viewer->addCoordinateSystem (1.);
+	viewer->addCoordinateSystem (0.4);
 #endif
 }
 
 void Viewer::addCoordinateSystem(float x,float y, float z, std::string id)
 {
 #ifdef USE_QTGUI
-	viewer->addCoordinateSystem(0.5,x,y,z,id,0);
+	viewer->addCoordinateSystem(0.25,x,y,z,id,0);
 #endif
 }
 
@@ -27,7 +27,7 @@ void Viewer::addCoordinateSystem(RMat::QMat tr, std::string id)
 	for (int c=0; c<4; c++)
 		for (int r=0; r<4; r++)
 			t(r,c) = tr(r,c);
-	viewer->addCoordinateSystem(0.3, t,id,0);
+	viewer->addCoordinateSystem(0.25, t,id,0);
 #endif
 }
 

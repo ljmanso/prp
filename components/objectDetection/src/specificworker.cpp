@@ -22,23 +22,24 @@
 * \brief Default constructor
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
-,cloud(new pcl::PointCloud<PointT>)
-,ransac_inliers (new pcl::PointIndices)
-,projected_plane(new pcl::PointCloud<PointT>)
-,cloud_hull(new pcl::PointCloud<PointT>)
-,prism_indices (new pcl::PointIndices)
-,rgb_image(480,640, CV_8UC3, cv::Scalar::all(0))
-,color_segmented(480,640, CV_8UC3, cv::Scalar::all(0))
-,table(new Table())
-,vfh_matcher(new VFH())
-#ifdef USE_QTGUI
-,viewer(new Viewer(MEDIDA))
-#endif
 {
+	cloud = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>());
+	ransac_inliers = pcl::PointIndices::Ptr(new pcl::PointIndices());
+	projected_plane = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>());
+	cloud_hull = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>());
+	prism_indices = pcl::PointIndices::Ptr(new pcl::PointIndices());
+	rgb_image = cv::Mat(480,640, CV_8UC3, cv::Scalar::all(0));
+	color_segmented = cv::Mat(480,640, CV_8UC3, cv::Scalar::all(0));
+	table = boost::shared_ptr<Table>(new Table());
+	descriptor_matcher = boost::shared_ptr<DESCRIPTORS>(new DESCRIPTORS());
+#ifdef USE_QTGUI
+	viewer = boost::shared_ptr<Viewer>(new Viewer(MEDIDA));
+#endif
+
+
 	test=false;
 	//let's set the sizes
 	table->set_board_size(500/MEDIDA,30/MEDIDA,500/MEDIDA);
-	marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
 
 	num_object_found = 0;
 	num_scene = 15;
@@ -48,7 +49,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	item_pixmap=new QGraphicsPixmapItem();
 	scene.addItem(item_pixmap);
 	viewer->addPointCloud(cloud,"scene",1,0,0,0);
-	connect(reloadButton, SIGNAL(clicked()), this, SLOT(reloadVFH_Button()));
+	connect(reloadButton, SIGNAL(clicked()), this, SLOT(reloadDESCRIPTORS_Button()));
 	connect(goButton, SIGNAL(clicked()), this, SLOT(fullRun_Button()));
 	connect(findObjectButton, SIGNAL(clicked()), this, SLOT(findTheObject_Button()));
 	connect(saveViewButton, SIGNAL(clicked()), this, SLOT(saveView()));
@@ -74,7 +75,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	id_camera_transform=QString::fromStdString(params[name+".id_camera_transform"].value);
 	pathLoadDescriptors = params[name+".pathLoadDescriptors"].value;
 	viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
-	vfh_matcher->set_type_feature(params[name+".type_features"].value);
+	descriptor_matcher->set_type_feature(params[name+".type_features"].value);
 	if(params[name+".type_features"].value=="VFH")
 		descriptors_extension="vfh";
 	else if(params[name+".type_features"].value=="CVFH")
@@ -87,10 +88,12 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		std::cout<<"Modo test activo"<<std::endl;
 		test=true;
 	}
-	reloadVFH();
+	reloadDESCRIPTORS();
 	timer.start(10);
 	return true;
 }
+
+
 
 void SpecificWorker::compute()
 {
@@ -99,7 +102,7 @@ void SpecificWorker::compute()
 	updatergbd();
 	try
 	{
-		viewer->update();
+			viewer->update();
 	}
 	catch(...){}
 #endif
@@ -125,20 +128,20 @@ bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 	float dist=3.40e38;
 	for(unsigned int i=0; i<cluster_clouds.size();i++)
 	{
-		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
+		descriptor_matcher->doTheGuess(cluster_clouds[i], descriptor_guesses);
 
-		VFH::file_dist_t second;
-		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
-		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
+		DESCRIPTORS::file_dist_t second;
+		for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
+		std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
 
-		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
+		if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
 		{
-			if(dist>vfh_guesses[0].dist && (vfh_guesses[0].label==objectTofind||objectTofind==""))
+			if(dist>descriptor_guesses[0].dist && (descriptor_guesses[0].label==objectTofind||objectTofind==""))
 			{
-				guessgan=vfh_guesses[0].label;
-				dist=vfh_guesses[0].dist;
+				guessgan=descriptor_guesses[0].label;
+				dist=descriptor_guesses[0].dist;
 				num_object_found = i;
-				file_view_mathing = vfh_guesses[0].file;
+				file_view_mathing = descriptor_guesses[0].file;
 			}
 			if(objectTofind=="")
 			{
@@ -172,18 +175,18 @@ bool SpecificWorker::findObjects(listObject& lObjects)
 	std::string guessgan="";
 	for(unsigned int i=0; i<cluster_clouds.size();i++)
 	{
-		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
+		descriptor_matcher->doTheGuess(cluster_clouds[i], descriptor_guesses);
 
-		VFH::file_dist_t second;
-		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
-		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
+		DESCRIPTORS::file_dist_t second;
+		for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
+		std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
 
 		pose6D p;
-		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
+		if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
 		{
-			guessgan=vfh_guesses[0].label;
+			guessgan=descriptor_guesses[0].label;
 			num_object_found = i;
-			file_view_mathing = vfh_guesses[0].file;
+			file_view_mathing = descriptor_guesses[0].file;
 			p.label=guessgan;
 			p=getPose();
 		}
@@ -553,8 +556,8 @@ void SpecificWorker::capturePointCloudObjects()
 	clock_gettime(CLOCK_REALTIME, &Inicio);
 	copy_scene=copy_pointcloud(cloud);
 	cloud = VoxelGrid_filter(cloud, 3/MEDIDA, 3/MEDIDA, 3/MEDIDA);
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/VoxelGrid_filter.pcd", *cloud, false);
-	ransac();
+// 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/VoxelGrid_filter.pcd", *cloud, false);
+	ransac();					//Calculo del plano de la mesa
 	projectInliers();
 	convexHull();
 	extractPolygon();
@@ -591,19 +594,19 @@ void SpecificWorker::updateinner()
 	}
 }
 
-void SpecificWorker::loadTrainedVFH()
+void SpecificWorker::loadTrainedDESCRIPTORS()
 {
-	vfh_matcher->loadTrainingData();
+	descriptor_matcher->loadTrainingData();
 	std::cout<<"Training data loaded"<<std::endl;
 }
 
-void SpecificWorker::vfh(listType &guesses)
+void SpecificWorker::descriptors(listType &guesses)
 {
     int object__to_show = 0;
-    vfh_matcher->doTheGuess(cluster_clouds[object__to_show], vfh_guesses);
-	for(auto a:vfh_guesses)
+    descriptor_matcher->doTheGuess(cluster_clouds[object__to_show], descriptor_guesses);
+	for(auto a:descriptor_guesses)
 		guesses.push_back(a.file);
-// 	guesses = vfh_guesses;
+// 	guesses = descriptor_guesses;
 }
 
 bool SpecificWorker::aprilSeen(QVec &offset)
@@ -647,15 +650,19 @@ bool SpecificWorker::aprilSeen(QVec &offset)
 	return false;
 }
 
-void SpecificWorker::reloadVFH()
+void SpecificWorker::reloadDESCRIPTORS()
 {
-	string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
-	char *cstr = &s[0u];
-	if (system(cstr)==0)
+	if(descriptor_matcher->readFilesAndComputeDESCRIPTORS(pathLoadDescriptors,pathLoadDescriptors))
 	{
-		vfh_matcher->reloadVFH(pathLoadDescriptors);
-		vfh_matcher->loadTrainingData();
+		descriptor_matcher->reloadDESCRIPTORS(pathLoadDescriptors);
+		descriptor_matcher->loadTrainingData();
 	}
+	// string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
+	// char *cstr = &s[0u];
+	// if (system(cstr)==0)
+	// {
+
+	// }
 }
 
 pose6D  SpecificWorker::getPose()
@@ -931,12 +938,12 @@ void SpecificWorker::removeAllpixmap()
 	}
 }
 
-void SpecificWorker::reloadVFH_Button()
+void SpecificWorker::reloadDESCRIPTORS_Button()
 {
 	qDebug()<<__FUNCTION__;
 	try
 	{
-		reloadVFH();
+		reloadDESCRIPTORS();
 	}
 	catch(...)
 	{

@@ -13,7 +13,7 @@ SET ( SOURCES
   shapes/basic/rectprism.cpp
   geometry/plane.cpp
   shapes/table.cpp
-  vfh/vfh.cpp
+  descriptors/descriptors.cpp
   viewer/viewer.cpp
   pointcloud/pointcloud.cpp
 )
@@ -42,8 +42,5 @@ SET ( LIBS ${LIBS}  )
 
 ADD_DEFINITIONS( -std=c++11 )
 
-add_executable(createDescriptors createDescriptors.cpp)
-target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
-
-#add_executable(fiting fiting.cpp)
-#target_link_libraries (fiting ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES} )
+#add_executable(createDescriptors createDescriptors.cpp)
+#target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
