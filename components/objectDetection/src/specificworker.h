@@ -58,8 +58,8 @@
 #endif
 
 
-#define DEBUG 0
-#define SAVE_DATA 0
+#define DEBUG 1
+#define SAVE_DATA 1
 #define THRESHOLD 0.8
 #define MEDIDA 1.
 #define offset_object 125
@@ -86,7 +86,7 @@ class SpecificWorker : public GenericWorker
 	QString id_robot, id_camera,id_camera_transform;
 	string descriptors_extension, pathLoadDescriptors;
 	InnerModel *innermodel;
-	
+
 	//for poses calculation respect to the canonical one
 	InnerModel *poses_inner;
 	tagsList tags;
@@ -97,60 +97,60 @@ class SpecificWorker : public GenericWorker
 	std::string file_view_mathing;
 
 	int num_scene;
-	
+
 	pcl::PCDWriter writer;
 
 	float marca_tx, marca_ty, marca_tz, marca_rx, marca_ry, marca_rz;
-        
+
 	//Cloud of the current points for pcl
 	pcl::PointCloud<PointT>::Ptr cloud;
 	pcl::PointIndices::Ptr ransac_inliers;
 	pcl::PointCloud<PointT>::Ptr projected_plane;
 	pcl::PointCloud<PointT>::Ptr cloud_hull;
 	pcl::PointIndices::Ptr prism_indices;
-	
+
 	//Image of the current view for opencv
 	cv::Mat rgb_image;
 	cv::Mat color_segmented;
     RTMat viewpoint_transform;
-	
+
 	//Point cloud grabing
-	RoboCompRGBD::ColorSeq rgbMatrix;	
+	RoboCompRGBD::ColorSeq rgbMatrix;
 	RoboCompRGBD::depthType distanceMatrix;
 	RoboCompRGBD::PointSeq points_kinect;
 	RoboCompJointMotor::MotorStateMap h;
 	RoboCompGenericBase::TBaseState b;
-	
+
 	//color Segmentator
 	Segmentator segmentator;
-	
+
 	//euclidean clustering
 	std::vector<pcl::PointIndices> cluster_indices;
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
-    
+
 	//VFH
 	boost::shared_ptr<VFH> vfh_matcher;
 	std::vector<VFH::file_dist_t> vfh_guesses;
 	boost::shared_ptr<Table> table;
-	
+
 #ifdef USE_QTGUI
 	QGraphicsPixmapItem* item_pixmap;
 	vector<QGraphicsTextItem*> V_text_item;
 	vector<QGraphicsPixmapItem*> V_pixmap_item;
-	
+
 	QGraphicsScene scene;
 
 	boost::shared_ptr<Viewer> viewer;
 	QVec poseoffset;
 #endif
 	pcl::PointCloud< PointT >::Ptr copy_scene;
-	
-  
+
+
 Q_OBJECT
 public:
-	SpecificWorker(MapPrx& mprx);	
+	SpecificWorker(MapPrx& mprx);
 	~SpecificWorker();
-	
+
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
 /*
  * Method of Interface ObjectDetection.ice
@@ -172,7 +172,7 @@ public slots:
 	void reloadVFH_Button();
 	void fullRun_Button();
 #endif
-	
+
 private:
 	QVec extraerposefromTM(QMat M);
 	void grabThePointCloud();
@@ -189,13 +189,13 @@ private:
 	void loadTrainedVFH();
 	void vfh(listType &guesses);
 	bool aprilSeen(QVec &offset);
-	
+
 	void reloadVFH();
 	pose6D getPose();
 #ifdef USE_QTGUI
 	void initSaveObject(const string &label, const int numPoseToSave);
 	QVec saveRegPose(const string &label, const int numPoseToSave);
-	
+
 	void updatergbd();
 	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
@@ -209,4 +209,3 @@ private:
 };
 
 #endif
-
