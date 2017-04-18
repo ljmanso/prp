@@ -72,7 +72,7 @@ SET ( HEADERS
 )
 
 # opencv2
-INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/caffe.cmake )
 
 #find_package(PCL 1.7 REQUIRED COMPONENTS io )
@@ -95,29 +95,5 @@ SET ( LIBS ${LIBS} -lpng -ljpeg -ldl -lgsl  ${PCL_LIBRARIES} ${Boost_LIBRARIES} 
 #SET( LIBS ${LIBS} -L/usr/local/lib64/ -losg -losgViewer -lglog -lblas -losgGA -losgText -losgDB -losgUtil -lcaffe )
 
 ADD_DEFINITIONS( -std=c++11 -fpermissive -D DEBUG -D HAVE_LIBPNG -D HAVE_LIBJPEG -D HAVE_AVCODEC -D HAVE_AVFORMAT -D HAVE_SWSCALE -D HAVE_SSE2 -D HAVE_GSL -D HAVE_CBLAS )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
