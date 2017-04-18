@@ -48,7 +48,7 @@
 	#include <innermodel/innermodelviewer.h>
 	#include "color_segmentation/Segmentator.h"
 	#include "shapes/table.h"
-	#include "vfh/vfh.h"
+	#include "descriptors/descriptors.h"
 	#ifdef USE_QTGUI
 		#include "viewer/viewer.h"
 		#include <QGraphicsPixmapItem>
@@ -58,8 +58,8 @@
 #endif
 
 
-#define DEBUG 1
-#define SAVE_DATA 1
+#define DEBUG 0
+#define SAVE_DATA 0
 #define THRESHOLD 0.8
 #define MEDIDA 1.
 #define offset_object 125
@@ -100,8 +100,6 @@ class SpecificWorker : public GenericWorker
 
 	pcl::PCDWriter writer;
 
-	float marca_tx, marca_ty, marca_tz, marca_rx, marca_ry, marca_rz;
-
 	//Cloud of the current points for pcl
 	pcl::PointCloud<PointT>::Ptr cloud;
 	pcl::PointIndices::Ptr ransac_inliers;
@@ -129,8 +127,8 @@ class SpecificWorker : public GenericWorker
 	std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds;
 
 	//VFH
-	boost::shared_ptr<VFH> vfh_matcher;
-	std::vector<VFH::file_dist_t> vfh_guesses;
+	boost::shared_ptr<DESCRIPTORS> descriptor_matcher;
+	std::vector<DESCRIPTORS::file_dist_t> descriptor_guesses;
 	boost::shared_ptr<Table> table;
 
 #ifdef USE_QTGUI
@@ -142,6 +140,7 @@ class SpecificWorker : public GenericWorker
 
 	boost::shared_ptr<Viewer> viewer;
 	QVec poseoffset;
+
 #endif
 	pcl::PointCloud< PointT >::Ptr copy_scene;
 
@@ -169,7 +168,7 @@ public slots:
 #ifdef USE_QTGUI
 	void saveView();
 	void findTheObject_Button();
-	void reloadVFH_Button();
+	void reloadDESCRIPTORS_Button();
 	void fullRun_Button();
 #endif
 
@@ -183,14 +182,14 @@ private:
 	void extractPolygon();
 	void euclideanClustering(int &numCluseters);
 
-	void caputurePointCloudObjects();
+	void capturePointCloudObjects();
 
 	void updateinner();
-	void loadTrainedVFH();
-	void vfh(listType &guesses);
+	void loadTrainedDESCRIPTORS();
+	void descriptors(listType &guesses);
 	bool aprilSeen(QVec &offset);
 
-	void reloadVFH();
+	void reloadDESCRIPTORS();
 	pose6D getPose();
 #ifdef USE_QTGUI
 	void initSaveObject(const string &label, const int numPoseToSave);

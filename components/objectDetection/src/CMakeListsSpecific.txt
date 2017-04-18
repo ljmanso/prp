@@ -13,7 +13,7 @@ SET ( SOURCES
   shapes/basic/rectprism.cpp
   geometry/plane.cpp
   shapes/table.cpp
-  vfh/vfh.cpp
+  descriptors/descriptors.cpp
   viewer/viewer.cpp
   pointcloud/pointcloud.cpp
 )
@@ -30,8 +30,8 @@ SET ( HEADERS
 
 # pcl
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
-# opencv2
-INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv2.cmake )
+# opencv3
+INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 
 
 SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial -lmpi_cxx )
@@ -42,10 +42,5 @@ SET ( LIBS ${LIBS}  )
 
 ADD_DEFINITIONS( -std=c++11 )
 
-add_executable(createDescriptors createDescriptors.cpp)
-target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
-
-#add_executable(fiting fiting.cpp)
-#target_link_libraries (fiting ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES} )
-
-
+#add_executable(createDescriptors createDescriptors.cpp)
+#target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})

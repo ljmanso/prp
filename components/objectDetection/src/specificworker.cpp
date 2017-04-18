@@ -22,23 +22,24 @@
 * \brief Default constructor
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
-,cloud(new pcl::PointCloud<PointT>)
-,ransac_inliers (new pcl::PointIndices)
-,projected_plane(new pcl::PointCloud<PointT>)
-,cloud_hull(new pcl::PointCloud<PointT>)
-,prism_indices (new pcl::PointIndices)
-,rgb_image(480,640, CV_8UC3, cv::Scalar::all(0))
-,color_segmented(480,640, CV_8UC3, cv::Scalar::all(0))
-,table(new Table())
-,vfh_matcher(new VFH())
-#ifdef USE_QTGUI
-,viewer(new Viewer(MEDIDA))
-#endif
 {
+	cloud = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>());
+	ransac_inliers = pcl::PointIndices::Ptr(new pcl::PointIndices());
+	projected_plane = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>());
+	cloud_hull = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>());
+	prism_indices = pcl::PointIndices::Ptr(new pcl::PointIndices());
+	rgb_image = cv::Mat(480,640, CV_8UC3, cv::Scalar::all(0));
+	color_segmented = cv::Mat(480,640, CV_8UC3, cv::Scalar::all(0));
+	table = boost::shared_ptr<Table>(new Table());
+	descriptor_matcher = boost::shared_ptr<DESCRIPTORS>(new DESCRIPTORS());
+#ifdef USE_QTGUI
+	viewer = boost::shared_ptr<Viewer>(new Viewer(MEDIDA));
+#endif
+
+
 	test=false;
 	//let's set the sizes
 	table->set_board_size(500/MEDIDA,30/MEDIDA,500/MEDIDA);
-	marca_tx = marca_ty = marca_tz = marca_rx = marca_ry = marca_rz = 0;
 
 	num_object_found = 0;
 	num_scene = 15;
@@ -47,8 +48,8 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	graphic->show();
 	item_pixmap=new QGraphicsPixmapItem();
 	scene.addItem(item_pixmap);
-//	viewer->addPointCloud(cloud,"scene",1,0,0,0);
-	connect(reloadButton, SIGNAL(clicked()), this, SLOT(reloadVFH_Button()));
+	viewer->addPointCloud(cloud,"scene",1,0,0,0);
+	connect(reloadButton, SIGNAL(clicked()), this, SLOT(reloadDESCRIPTORS_Button()));
 	connect(goButton, SIGNAL(clicked()), this, SLOT(fullRun_Button()));
 	connect(findObjectButton, SIGNAL(clicked()), this, SLOT(findTheObject_Button()));
 	connect(saveViewButton, SIGNAL(clicked()), this, SLOT(saveView()));
@@ -74,7 +75,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	id_camera_transform=QString::fromStdString(params[name+".id_camera_transform"].value);
 	pathLoadDescriptors = params[name+".pathLoadDescriptors"].value;
 	viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
-	vfh_matcher->set_type_feature(params[name+".type_features"].value);
+	descriptor_matcher->set_type_feature(params[name+".type_features"].value);
 	if(params[name+".type_features"].value=="VFH")
 		descriptors_extension="vfh";
 	else if(params[name+".type_features"].value=="CVFH")
@@ -87,17 +88,23 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		std::cout<<"Modo test activo"<<std::endl;
 		test=true;
 	}
-	reloadVFH();
+	reloadDESCRIPTORS();
 	timer.start(10);
 	return true;
 }
+
+
 
 void SpecificWorker::compute()
 {
 	updateinner();
 #ifdef USE_QTGUI
 	updatergbd();
-	//viewer->update();
+	try
+	{
+			viewer->update();
+	}
+	catch(...){}
 #endif
 }
 
@@ -107,9 +114,7 @@ void SpecificWorker::compute()
 
 bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 {
-	for(int b=0;b<10;b++)
-	{
-	caputurePointCloudObjects();
+	capturePointCloudObjects();
 	std::string guessgan="";
 #ifdef USE_QTGUI
 	while(!V_text_item.empty())
@@ -123,20 +128,20 @@ bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 	float dist=3.40e38;
 	for(unsigned int i=0; i<cluster_clouds.size();i++)
 	{
-		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
+		descriptor_matcher->doTheGuess(cluster_clouds[i], descriptor_guesses);
 
-		VFH::file_dist_t second;
-		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
-		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist<<"/"<<second.dist<<" = "<< vfh_guesses[0].dist/second.dist<<std::endl;
+		DESCRIPTORS::file_dist_t second;
+		for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
+		std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
 
-		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
+		if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
 		{
-			if(dist>vfh_guesses[0].dist && (vfh_guesses[0].label==objectTofind||objectTofind==""))
+			if(dist>descriptor_guesses[0].dist && (descriptor_guesses[0].label==objectTofind||objectTofind==""))
 			{
-				guessgan=vfh_guesses[0].label;
-				dist=vfh_guesses[0].dist;
+				guessgan=descriptor_guesses[0].label;
+				dist=descriptor_guesses[0].dist;
 				num_object_found = i;
-				file_view_mathing = vfh_guesses[0].file;
+				file_view_mathing = descriptor_guesses[0].file;
 			}
 			if(objectTofind=="")
 			{
@@ -161,28 +166,27 @@ bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
 		qDebug()<<"Fitting PCD: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
 		return true;
 	}
-	}
 	return false;
 }
 
 bool SpecificWorker::findObjects(listObject& lObjects)
 {
-	caputurePointCloudObjects();
+	capturePointCloudObjects();
 	std::string guessgan="";
 	for(unsigned int i=0; i<cluster_clouds.size();i++)
 	{
-		vfh_matcher->doTheGuess(cluster_clouds[i], vfh_guesses);
+		descriptor_matcher->doTheGuess(cluster_clouds[i], descriptor_guesses);
 
-		VFH::file_dist_t second;
-		for(auto dato:vfh_guesses)if(dato.label!=vfh_guesses[0].label){ second=dato; break;}
-		std::cout<<vfh_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< vfh_guesses[0].dist/second.dist<<std::endl;
+		DESCRIPTORS::file_dist_t second;
+		for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
+		std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
 
 		pose6D p;
-		if(vfh_guesses[0].dist/second.dist<THRESHOLD)
+		if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
 		{
-			guessgan=vfh_guesses[0].label;
+			guessgan=descriptor_guesses[0].label;
 			num_object_found = i;
-			file_view_mathing = vfh_guesses[0].file;
+			file_view_mathing = descriptor_guesses[0].file;
 			p.label=guessgan;
 			p=getPose();
 		}
@@ -252,6 +256,64 @@ QVec SpecificWorker::extraerposefromTM(QMat M)
 	return ret;
 }
 
+void SpecificWorker::grabThePointCloud() //con openni2pcl
+{
+	try
+	{
+		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
+		#if DEBUG
+				cout<<"SpecificWorker::grabThePointcloud rgbMatrix.size(): "<<rgbMatrix.size()<<endl;
+		#endif
+		for(unsigned int i=0; i<rgbMatrix.size(); i++)
+		{
+			int row = (i/640), column = i-(row*640);
+			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
+		}
+		qDebug()<<rgbMatrix.size()<<", "<< points_kinect.size();
+		cloud->points.resize(points_kinect.size());
+		viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
+		QMat PP = viewpoint_transform;
+		for (unsigned int i=0; i<points_kinect.size(); i++)
+		{
+			QVec p1 = (PP * QVec::vec4(points_kinect[i].x*1000., -points_kinect[i].y*1000., points_kinect[i].z*1000., 1)).fromHomogeneousCoordinates();
+			memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
+			cloud->points[i].r=rgbMatrix[i].red;
+			cloud->points[i].g=rgbMatrix[i].green;
+			cloud->points[i].b=rgbMatrix[i].blue;
+		}
+		cloud->width = 1;
+		cloud->height = points_kinect.size();
+
+		cloud->is_dense = false;
+
+		std::vector< int > index;
+		removeNaNFromPointCloud (*cloud, *cloud, index);
+// 		Convert cloud from m to mm
+
+		if(MEDIDA==1000.)
+			cloud = PointCloudfrom_mm_to_Meters(cloud);
+
+#if DEBUG
+		timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+		string pcdname =  "/home/robocomp/robocomp/components/prp/objects/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
+		printf("<%s>\n", pcdname.c_str());
+		writer.write<PointT> ( pcdname, *cloud, false);
+		pcdname = "/home/robocomp/robocomp/components/prp/scene/" + std::to_string(num_scene) + "_scene.pcd";
+		writer.write<PointT> ( pcdname , *cloud, false);
+
+		string imagename = "/home/robocomp/robocomp/components/prp/objects/" + QString::number(ts.tv_sec).toStdString() + ".png";
+		cv::imwrite( imagename ,rgb_image);
+#endif
+	}
+	catch(Ice::Exception e)
+	{
+		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
+		return;
+	}
+}
+
+/*
 void SpecificWorker::grabThePointCloud()
 {
 	try
@@ -270,7 +332,7 @@ void SpecificWorker::grabThePointCloud()
 		cloud->points.resize(points_kinect.size());
 		for (unsigned int i=0; i<points_kinect.size(); i++)
 		{
-			QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
+			QVec p1 = (PP * QVec::vec4(points_kinect[i].x*1000., points_kinect[i].y*-1000., points_kinect[i].z*1000., 1)).fromHomogeneousCoordinates();
 
 			memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
 
@@ -307,6 +369,7 @@ void SpecificWorker::grabThePointCloud()
 		return;
 	}
 }
+*/
 
 void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
 {
@@ -471,13 +534,13 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 	num_scene++;
 }
 
-void SpecificWorker::caputurePointCloudObjects()
+void SpecificWorker::capturePointCloudObjects()
 {
 	static vector<string> id_objects;
 #ifdef USE_QTGUI
 	while(!id_objects.empty())
 	{
-		//viewer->removePointCloud(id_objects.back());
+		viewer->removePointCloud(id_objects.back());
 		id_objects.pop_back();
 	}
 #endif
@@ -487,14 +550,14 @@ void SpecificWorker::caputurePointCloudObjects()
 		grabThePointCloud();
 	cloud = Filter_in_axis(cloud, "y", -100/MEDIDA, 700/MEDIDA, true);
 #ifdef USE_QTGUI
-	//viewer->updatePointCloud(cloud,"scene");
+	viewer->updatePointCloud(cloud,"scene");
 #endif
 	struct timespec Inicio, Fin, resta;
 	clock_gettime(CLOCK_REALTIME, &Inicio);
 	copy_scene=copy_pointcloud(cloud);
 	cloud = VoxelGrid_filter(cloud, 3/MEDIDA, 3/MEDIDA, 3/MEDIDA);
-	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/VoxelGrid_filter.pcd", *cloud, false);
-	ransac();
+// 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/VoxelGrid_filter.pcd", *cloud, false);
+	ransac();					//Calculo del plano de la mesa
 	projectInliers();
 	convexHull();
 	extractPolygon();
@@ -506,7 +569,7 @@ void SpecificWorker::caputurePointCloudObjects()
 #ifdef USE_QTGUI
 	for(unsigned int i=0;i<cluster_clouds.size();i++)
 	{
-		//viewer->addPointCloud(cluster_clouds[i],QString::number(i).toStdString(),1,255,0,0);
+		viewer->addPointCloud(cluster_clouds[i],QString::number(i).toStdString(),1,255,0,0);
 		id_objects.push_back(QString::number(i).toStdString());
 	}
 #endif
@@ -514,9 +577,11 @@ void SpecificWorker::caputurePointCloudObjects()
 
 void SpecificWorker::updateinner()
 {
-	if(test)
-			innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
-	else
+	try
+	{
+		innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
+	}
+	catch(...)
 	{
 		MotorList motors;
 		motors.push_back("head_yaw_joint");
@@ -529,19 +594,19 @@ void SpecificWorker::updateinner()
 	}
 }
 
-void SpecificWorker::loadTrainedVFH()
+void SpecificWorker::loadTrainedDESCRIPTORS()
 {
-	vfh_matcher->loadTrainingData();
+	descriptor_matcher->loadTrainingData();
 	std::cout<<"Training data loaded"<<std::endl;
 }
 
-void SpecificWorker::vfh(listType &guesses)
+void SpecificWorker::descriptors(listType &guesses)
 {
     int object__to_show = 0;
-    vfh_matcher->doTheGuess(cluster_clouds[object__to_show], vfh_guesses);
-	for(auto a:vfh_guesses)
+    descriptor_matcher->doTheGuess(cluster_clouds[object__to_show], descriptor_guesses);
+	for(auto a:descriptor_guesses)
 		guesses.push_back(a.file);
-// 	guesses = vfh_guesses;
+// 	guesses = descriptor_guesses;
 }
 
 bool SpecificWorker::aprilSeen(QVec &offset)
@@ -585,15 +650,19 @@ bool SpecificWorker::aprilSeen(QVec &offset)
 	return false;
 }
 
-void SpecificWorker::reloadVFH()
+void SpecificWorker::reloadDESCRIPTORS()
 {
-	string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
-	char *cstr = &s[0u];
-	if (system(cstr)==0)
+	if(descriptor_matcher->readFilesAndComputeDESCRIPTORS(pathLoadDescriptors,pathLoadDescriptors))
 	{
-		vfh_matcher->reloadVFH(pathLoadDescriptors);
-		vfh_matcher->loadTrainingData();
+		descriptor_matcher->reloadDESCRIPTORS(pathLoadDescriptors);
+		descriptor_matcher->loadTrainingData();
 	}
+	// string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
+	// char *cstr = &s[0u];
+	// if (system(cstr)==0)
+	// {
+
+	// }
 }
 
 pose6D  SpecificWorker::getPose()
@@ -676,9 +745,9 @@ pose6D  SpecificWorker::getPose()
 			image.setPixel(x,y,qRgb(255, 0, 0));
 	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
 	SpecificWorker::scene.addItem(V_pixmap_item.back());
-	//viewer->removeCoordinateSystem("poseobjectR");
+	viewer->removeCoordinateSystem("poseobjectR");
 	poseObjR=RTMat(poseObj.rx,poseObj.ry,poseObj.rz,poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000);
-	//viewer->addCoordinateSystem(poseObjR,"poseobjectR");
+	viewer->addCoordinateSystem(poseObjR,"poseobjectR");
 #endif
 	return poseObj;
 }
@@ -720,7 +789,7 @@ void SpecificWorker::saveView()
 
 void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave)
 {
-	caputurePointCloudObjects();
+	capturePointCloudObjects();
 
 	//Create the directory that contains the object info
 	boost::filesystem::path path=boost::filesystem::path("/home/robocomp/robocomp/components/prp/objects/"+label+"/");
@@ -738,7 +807,7 @@ void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave
 
 QVec SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 {
-	caputurePointCloudObjects();
+	capturePointCloudObjects();
 	//check if appril seen
 	poseoffset = QVec::zeros(6);
 	if(aprilSeen(poseoffset))
@@ -869,12 +938,12 @@ void SpecificWorker::removeAllpixmap()
 	}
 }
 
-void SpecificWorker::reloadVFH_Button()
+void SpecificWorker::reloadDESCRIPTORS_Button()
 {
 	qDebug()<<__FUNCTION__;
 	try
 	{
-		reloadVFH();
+		reloadDESCRIPTORS();
 	}
 	catch(...)
 	{
@@ -947,9 +1016,9 @@ void SpecificWorker::fullRun_Button()
 			rx_object->setText(QString::number(guess.rx()));
 			ry_object->setText(QString::number(guess.ry()));
 			rz_object->setText(QString::number(guess.rz()));
-			//viewer->removeCoordinateSystem("poseobject");
+			viewer->removeCoordinateSystem("poseobject");
 			QMat poseObjR=RTMat(guess.rx(),guess.ry(),guess.rz(),guess.x()/1000.,guess.y()/1000.,guess.z()/1000.);
-			//viewer->addCoordinateSystem(poseObjR,"poseobject");
+			viewer->addCoordinateSystem(poseObjR,"poseobject");
 		}
 	}
 	catch(...)
