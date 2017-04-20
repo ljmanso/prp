@@ -256,64 +256,6 @@ QVec SpecificWorker::extraerposefromTM(QMat M)
 	return ret;
 }
 
-void SpecificWorker::grabThePointCloud() //con openni2pcl
-{
-	try
-	{
-		rgbd_proxy->getImage(rgbMatrix, distanceMatrix, points_kinect,  h, b);
-		#if DEBUG
-				cout<<"SpecificWorker::grabThePointcloud rgbMatrix.size(): "<<rgbMatrix.size()<<endl;
-		#endif
-		for(unsigned int i=0; i<rgbMatrix.size(); i++)
-		{
-			int row = (i/640), column = i-(row*640);
-			rgb_image.at<cv::Vec3b>(row, column) = cv::Vec3b(rgbMatrix[i].blue, rgbMatrix[i].green, rgbMatrix[i].red);
-		}
-		qDebug()<<rgbMatrix.size()<<", "<< points_kinect.size();
-		cloud->points.resize(points_kinect.size());
-		viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
-		QMat PP = viewpoint_transform;
-		for (unsigned int i=0; i<points_kinect.size(); i++)
-		{
-			QVec p1 = (PP * QVec::vec4(points_kinect[i].x*1000., -points_kinect[i].y*1000., points_kinect[i].z*1000., 1)).fromHomogeneousCoordinates();
-			memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
-			cloud->points[i].r=rgbMatrix[i].red;
-			cloud->points[i].g=rgbMatrix[i].green;
-			cloud->points[i].b=rgbMatrix[i].blue;
-		}
-		cloud->width = 1;
-		cloud->height = points_kinect.size();
-
-		cloud->is_dense = false;
-
-		std::vector< int > index;
-		removeNaNFromPointCloud (*cloud, *cloud, index);
-// 		Convert cloud from m to mm
-
-		if(MEDIDA==1000.)
-			cloud = PointCloudfrom_mm_to_Meters(cloud);
-
-#if DEBUG
-		timespec ts;
-		clock_gettime(CLOCK_REALTIME, &ts);
-		string pcdname =  "/home/robocomp/robocomp/components/prp/objects/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
-		printf("<%s>\n", pcdname.c_str());
-		writer.write<PointT> ( pcdname, *cloud, false);
-		pcdname = "/home/robocomp/robocomp/components/prp/scene/" + std::to_string(num_scene) + "_scene.pcd";
-		writer.write<PointT> ( pcdname , *cloud, false);
-
-		string imagename = "/home/robocomp/robocomp/components/prp/objects/" + QString::number(ts.tv_sec).toStdString() + ".png";
-		cv::imwrite( imagename ,rgb_image);
-#endif
-	}
-	catch(Ice::Exception e)
-	{
-		qDebug()<<"Error talking to rgbd_proxy: "<<e.what();
-		return;
-	}
-}
-
-/*
 void SpecificWorker::grabThePointCloud()
 {
 	try
@@ -332,7 +274,7 @@ void SpecificWorker::grabThePointCloud()
 		cloud->points.resize(points_kinect.size());
 		for (unsigned int i=0; i<points_kinect.size(); i++)
 		{
-			QVec p1 = (PP * QVec::vec4(points_kinect[i].x*1000., points_kinect[i].y*-1000., points_kinect[i].z*1000., 1)).fromHomogeneousCoordinates();
+			QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
 
 			memcpy(&cloud->points[i],p1.data(),3*sizeof(float));
 
@@ -369,7 +311,6 @@ void SpecificWorker::grabThePointCloud()
 		return;
 	}
 }
-*/
 
 void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
 {
@@ -579,10 +520,6 @@ void SpecificWorker::updateinner()
 {
 	try
 	{
-		innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
-	}
-	catch(...)
-	{
 		MotorList motors;
 		motors.push_back("head_yaw_joint");
 		motors.push_back("head_pitch_joint");
@@ -591,6 +528,13 @@ void SpecificWorker::updateinner()
 		{
 			innermodel->updateJointValue(QString::fromStdString(motor),motors_states[motor].pos);
 		}
+	}
+	catch(...)
+	{
+		if (test)
+			innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
+		else
+			qFatal("Can't access motors");
 	}
 }
 
@@ -731,7 +675,8 @@ pose6D  SpecificWorker::getPose()
 	pose.print("pose");
 	pose6D poseObj;
 	poseObj.tx=pose.x();
-	poseObj.ty=pose.y() + offset_object;
+	// poseObj.ty=pose.y() + offset_object;
+	poseObj.ty=890.;
 	poseObj.tz=pose.z();
 	poseObj.rx=pose.rx();
 	poseObj.ry=pose.ry();

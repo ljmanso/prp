@@ -62,7 +62,7 @@
 #define SAVE_DATA 0
 #define THRESHOLD 0.8
 #define MEDIDA 1.
-#define offset_object 125
+#define offset_object 0.
 
 #define SUB(dst, src1, src2) \
   { \
