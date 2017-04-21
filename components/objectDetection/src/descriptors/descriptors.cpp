@@ -3,7 +3,7 @@
 void DESCRIPTORS::set_type_feature(std::__cxx11::string feature)
 {
 	type_feature=feature;
-	if(type_feature=="descriptors")
+	if(type_feature=="VFH")
 		h_extension="vfh";
 	else if(type_feature=="CVFH")
 		h_extension="cvfh";
@@ -151,7 +151,7 @@ bool DESCRIPTORS::readFilesAndComputeDESCRIPTORS (const boost::filesystem::path 
 		if (boost::filesystem::is_regular_file (it->status()) && boost::filesystem::extension (it->path()) == DESCRIPTORS_FILES_EXTENSION)
 		{
 			boost::filesystem::path filename=*it;
-			outpath << filename.branch_path().string() << "/" << boost::filesystem::basename(filename) <<"." << type_feature;
+			outpath << filename.branch_path().string() << "/" << boost::filesystem::basename(filename) <<"." << h_extension;
 			if (boost::filesystem::exists(outpath.str()) or original_dir==base_dir)
 				continue;
 			printf("%s doesn't exist: generating files...\n", outpath.str().c_str());
@@ -161,12 +161,9 @@ bool DESCRIPTORS::readFilesAndComputeDESCRIPTORS (const boost::filesystem::path 
 			{
 				//Finally compute the vfh and save it
 				computeDESCRIPTORShistogram(cloud, descriptors);
-				std::stringstream ss;
-				boost::filesystem::path filename = *it;
-				ss << filename.branch_path().string() << "/" << boost::filesystem::basename(filename) <<"." << type_feature;
 				pcl::PCDWriter writer;
 				// 	pcl::console::print_highlight ("writing %s\n", ss.str().c_str());
-				writer.write<pcl::VFHSignature308> (ss.str(), *descriptors, false);
+				writer.write<pcl::VFHSignature308> (outpath.str(), *descriptors, false);
 			}
 		}
 	}

@@ -601,6 +601,7 @@ void SpecificWorker::reloadDESCRIPTORS()
 		descriptor_matcher->reloadDESCRIPTORS(pathLoadDescriptors);
 		descriptor_matcher->loadTrainingData();
 	}
+	qDebug()<<__LINE__;
 	// string s="./bin/createDescriptors "+pathLoadDescriptors +" "+ descriptors_extension;
 	// char *cstr = &s[0u];
 	// if (system(cstr)==0)
