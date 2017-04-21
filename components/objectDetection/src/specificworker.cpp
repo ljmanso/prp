@@ -481,6 +481,7 @@ void SpecificWorker::capturePointCloudObjects()
 #ifdef USE_QTGUI
 	while(!id_objects.empty())
 	{
+		// viewer->removeShape(id_objects.back());
 		viewer->removePointCloud(id_objects.back());
 		id_objects.pop_back();
 	}
@@ -497,7 +498,7 @@ void SpecificWorker::capturePointCloudObjects()
 	clock_gettime(CLOCK_REALTIME, &Inicio);
 	copy_scene=copy_pointcloud(cloud);
 	cloud = VoxelGrid_filter(cloud, 3/MEDIDA, 3/MEDIDA, 3/MEDIDA);
-// 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/VoxelGrid_filter.pcd", *cloud, false);
+	// writer.write<PointT> ("/home/robocomp/robocomp/components/perception/VoxelGrid_filter.pcd", *cloud, false);
 	ransac();					//Calculo del plano de la mesa
 	projectInliers();
 	convexHull();
@@ -510,6 +511,7 @@ void SpecificWorker::capturePointCloudObjects()
 #ifdef USE_QTGUI
 	for(unsigned int i=0;i<cluster_clouds.size();i++)
 	{
+		// viewer->addCube(cluster_clouds[i], QString::number(i).toStdString());
 		viewer->addPointCloud(cluster_clouds[i],QString::number(i).toStdString(),1,255,0,0);
 		id_objects.push_back(QString::number(i).toStdString());
 	}
@@ -634,7 +636,7 @@ pose6D  SpecificWorker::getPose()
 	// Point clouds
 	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
 	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
-	string pathxml="/home/robocomp/robocomp/components/prp/objects/"+guessgan+"/"+guessgan+".xml";
+	string pathxml=pathLoadDescriptors+"/"+guessgan+"/"+guessgan+".xml";
 	pcl::PointCloud<PointT>::Ptr scene (new pcl::PointCloud<PointT>);
 	//change vfh extension to pcd
 	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
@@ -705,7 +707,7 @@ void SpecificWorker::saveView()
 	string label=label_le->text().toStdString();
 	//Open the object XML
 	poses_inner = new InnerModel();
-	string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
+	string path=pathLoadDescriptors+"/"+label+"/";
 	std::string inner_name = path+label + ".xml";
 	poses_inner->open(inner_name);
 
@@ -738,7 +740,7 @@ void SpecificWorker::initSaveObject(const string &label, const int numPoseToSave
 	capturePointCloudObjects();
 
 	//Create the directory that contains the object info
-	boost::filesystem::path path=boost::filesystem::path("/home/robocomp/robocomp/components/prp/objects/"+label+"/");
+	boost::filesystem::path path=boost::filesystem::path(pathLoadDescriptors+"/"+label+"/");
 	if(!boost::filesystem::exists(path))
 		boost::filesystem::create_directories(path);
 
@@ -942,7 +944,7 @@ void SpecificWorker::fullRun_Button()
 	string label=label_le->text().toStdString();
 	char *c;
 	QVec guess;
-	string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
+	string s="mkdir " + pathLoadDescriptors + "/" + label;
 	c= &s[0u];
 	try
 	{

@@ -12,6 +12,7 @@
 #include <qmat/qmat.h>
 #include "config.h"
 #include "pointcloud/pointcloud.h"
+#include <pcl/common/common.h>
 
 typedef pcl::PointXYZRGB PointT;
 
@@ -32,6 +33,9 @@ public:
 	void removePointCloud(std::string id);
 	void removeCoordinateSystem(std::string id);
 	void update();
+	void addCube(pcl::PointCloud< PointT >::Ptr cloud, std::string id);
+	void removeShape(std::string id);
+	void removeAllShapes();
 };
 
 

@@ -58,7 +58,7 @@
 #endif
 
 
-#define DEBUG 1
+#define DEBUG 0
 #define SAVE_DATA 0
 #define THRESHOLD 0.8
 #define MEDIDA 1.
