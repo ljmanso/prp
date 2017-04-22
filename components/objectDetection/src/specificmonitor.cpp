@@ -69,7 +69,7 @@ bool SpecificMonitor::sendParamsToWorker(RoboCompCommonBehavior::ParameterList p
 	if(checkParams(params))
 	{
 		//Set params to worker
-		if(worker->setParams(params)) 
+		if(worker->setParams(params))
 			return true;
 	}
 	else
@@ -88,7 +88,7 @@ void SpecificMonitor::readConfig(RoboCompCommonBehavior::ParameterList &params )
 	RoboCompCommonBehavior::Parameter aux;
 	aux.editable = true;
 	string name = PROGRAM_NAME;
-	
+
 	configGetString(name,"innermodel", aux.value, "default");
 	//Check valid ranges
 	if( aux.value =="default")
@@ -103,10 +103,10 @@ void SpecificMonitor::readConfig(RoboCompCommonBehavior::ParameterList &params )
 	if( aux.value =="default")
 	{
 		std::cout << __FUNCTION__ << name<<".id_robot value is default" << std::endl;
-		aux.value="robot";	
+		aux.value="robot";
 	}
 	params[name+".id_robot"] = aux;
-// 	----------------------------------	
+// 	----------------------------------
 	configGetString(name,"id_camera_transform", aux.value, "default");
 	//Check valid ranges
 	if( aux.value =="default")
@@ -125,19 +125,28 @@ void SpecificMonitor::readConfig(RoboCompCommonBehavior::ParameterList &params )
 	}
 	params[name+".id_camera"] = aux;
 // 	----------------------------------
-	configGetString(name,"type_features", aux.value, "default");
+	configGetString(name,"type_features", aux.value, "VFH");
 	//Check valid ranges
-	if( aux.value =="default"||(aux.value !="VFH"&&aux.value !="CVFH"&&aux.value !="OUR-CVFH"))
+	if(aux.value !="VFH"&&aux.value !="CVFH"&&aux.value !="OUR-CVFH")
 	{
 		std::cout << __FUNCTION__ << name<<".type_features value is default" << std::endl;
-		aux.value="VFH";	
+		aux.value="VFH";
 	}
 	params[name+".type_features"] = aux;
-	
+
+	configGetString(name,"type_fitting", aux.value, "ICP");
+	//Check valid ranges
+	if(aux.value !="ICP" && aux.value !="RSCP")
+	{
+		std::cout << __FUNCTION__ << name<<".type_features value is default" << std::endl;
+		aux.value="ICP";
+	}
+	params[name+".type_fitting"] = aux;
+
 	configGetString(name,"pathLoadDescriptors", aux.value, "default");
 	//Check valid ranges
 	params[name+".pathLoadDescriptors"] = aux;
-	
+
 	configGetString(name,"test", aux.value, "default");
 	//Check valid ranges
 	params[name+".test"] = aux;
@@ -149,4 +158,3 @@ bool SpecificMonitor::checkParams(RoboCompCommonBehavior::ParameterList l)
 	bool correct = true;
 	return correct;
 }
-

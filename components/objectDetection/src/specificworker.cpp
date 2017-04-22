@@ -76,6 +76,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	pathLoadDescriptors = params[name+".pathLoadDescriptors"].value;
 	viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
 	descriptor_matcher->set_type_feature(params[name+".type_features"].value);
+	type_fitting = params[name+".type_fitting"].value;
 	if(params[name+".type_features"].value=="VFH")
 		descriptors_extension="vfh";
 	else if(params[name+".type_features"].value=="CVFH")
@@ -656,7 +657,11 @@ pose6D  SpecificWorker::getPose()
 // 	-------------------------------------------------------------------
 
 	pcl::PointCloud<PointT>::Ptr object_aligned(new pcl::PointCloud<PointT>);
-	QMat saveToViewR = fitingSCP(object,scene,object_aligned);
+	QMat saveToViewR;
+	if(type_fitting == "RSCP")
+		saveToViewR = fittingRSCP(object,scene,object_aligned);
+	else if(type_fitting == "ICP")
+		saveToViewR = fittingICP(object,scene,object_aligned);
 #if DEBUG
  	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
  	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
@@ -678,8 +683,8 @@ pose6D  SpecificWorker::getPose()
 	pose.print("pose");
 	pose6D poseObj;
 	poseObj.tx=pose.x();
-	// poseObj.ty=pose.y() + offset_object;
-	poseObj.ty=890.;
+	poseObj.ty=pose.y() + offset_object;
+	// poseObj.ty=890.;
 	poseObj.tz=pose.z();
 	poseObj.rx=pose.rx();
 	poseObj.ry=pose.ry();

@@ -49,7 +49,7 @@ void computepointcloud::moveToZero(pcl::PointCloud< PointT >::Ptr cloud, double 
 		zAcc += cloud->points[i].z;
 // printf("%d\n", __LINE__);
 	}
-	
+
 // printf("%d\n", __LINE__);
 	xMean = xAcc / double(acc);
 	yMean = yAcc / double(acc);
@@ -70,7 +70,7 @@ void computepointcloud::moveToZero(pcl::PointCloud< PointT >::Ptr cloud, double 
 // printf("%d\n", __LINE__);
 }
 
-QMat computepointcloud::fitingICP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned)
+QMat computepointcloud::fittingICP(pcl::PointCloud<PointT>::Ptr object, pcl::PointCloud<PointT>::Ptr reference,pcl::PointCloud<PointT>::Ptr &aligned)
 {
 // 	double xmean1,ymean1, zmean1, xmean2,ymean2, zmean2;
 // 	moveToZero(object,xmean1,ymean1, zmean1);
@@ -80,8 +80,30 @@ QMat computepointcloud::fitingICP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object,
 	pcl::PointCloud< PointT >::Ptr object_copy    = copy_pointcloud(object);
 	pcl::PointCloud< PointT >::Ptr reference_copy = copy_pointcloud(reference);
 
-	
-	pcl::IterativeClosestPoint<pcl::PointXYZRGB, pcl::PointXYZRGB> icp;
+	Eigen::Vector4f centroid_object, centroid_reference;
+	pcl::compute3DCentroid (*object_copy, centroid_object);
+	pcl::compute3DCentroid (*reference_copy, centroid_reference);
+
+	for(unsigned int i = 0; i< reference_copy->points.size(); i++)
+	{
+		reference_copy->points[i].x+=centroid_object[0] - centroid_reference[0];
+		reference_copy->points[i].y+=centroid_object[1] - centroid_reference[1];
+		reference_copy->points[i].z+=centroid_object[2] - centroid_reference[2];
+	}
+	// boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+	// viewer=boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer ("3D Viewer"));
+	// viewer->setBackgroundColor(0.2, 0.2, 0.2);
+	// viewer->initCameraParameters ();
+	// viewer->addCoordinateSystem (0.4);
+	// pcl::visualization::PointCloudColorHandlerCustom<PointT> rgb1(reference_copy,0,254,0);
+	// viewer->addPointCloud<PointT> (reference_copy, rgb1, "reference_copy");
+	// pcl::visualization::PointCloudColorHandlerCustom<PointT> rgb(object_copy, 254,0,0);
+	// viewer->addPointCloud<PointT> (object_copy, rgb, "object_copy");
+	// while (!viewer->wasStopped()) {
+	// 	viewer->spinOnce (10);
+	// }
+	// viewer->close();
+	pcl::IterativeClosestPoint<PointT, PointT> icp;
 	icp.setInputCloud(object_copy);
 	icp.setInputTarget(reference_copy);
 	icp.setTransformationEpsilon (1e-12);
@@ -92,23 +114,23 @@ QMat computepointcloud::fitingICP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object,
 	std::cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << std::endl;
 	std::cout << icp.getFinalTransformation() << std::endl;
 	Eigen::Matrix4f t=icp.getFinalTransformation();
-// 	t(0,3)+=xmean2-xmean1;
-// 	t(1,3)+=ymean2-ymean1;
-// 	t(2,3)+=zmean2-zmean1;
+	t(0,3)+= - centroid_object[0] + centroid_reference[0];
+	t(1,3)+= - centroid_object[1] + centroid_reference[1];
+	t(2,3)+= - centroid_object[2] + centroid_reference[2];
 	QMat TM(4,4);
 	for (int c=0; c<4; c++)
 		for (int r=0; r<4; r++)
-			TM(r,c) = t(r, c);	
+			TM(r,c) = t(r, c);
 	return TM;
 }
 
-QMat computepointcloud::fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object, pcl::PointCloud<pcl::PointXYZRGB>::Ptr reference,pcl::PointCloud<pcl::PointXYZRGB>::Ptr &aligned)
+QMat computepointcloud::fittingRSCP(pcl::PointCloud<PointT>::Ptr object, pcl::PointCloud<PointT>::Ptr reference,pcl::PointCloud<PointT>::Ptr &aligned)
 {
 	pcl::PointCloud<pcl::Normal>::Ptr object_normals (new pcl::PointCloud<pcl::Normal>);
 	pcl::PointCloud<pcl::Normal>::Ptr scene_normals (new pcl::PointCloud<pcl::Normal>);
 	pcl::PointCloud<pcl::FPFHSignature33>::Ptr object_features (new pcl::PointCloud<pcl::FPFHSignature33>);
 	pcl::PointCloud<pcl::FPFHSignature33>::Ptr scene_features (new pcl::PointCloud<pcl::FPFHSignature33>);
-	
+
 	std::cout<<object->size()<<std::endl;
 	std::cout<<reference->size()<<std::endl;
 	// Downsample
@@ -120,7 +142,7 @@ QMat computepointcloud::fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object,
 	grid.filter (*object);
 	grid.setInputCloud (reference);
 	grid.filter (*reference);
-	
+
 	// Estimate normals for scene
 	pcl::console::print_highlight ("Estimating scene normals...\n");
 	pcl::NormalEstimationOMP< PointT ,pcl::Normal> nest;
@@ -129,7 +151,7 @@ QMat computepointcloud::fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object,
 	nest.compute (*object_normals);
 	nest.setInputCloud (reference);
 	nest.compute (*scene_normals);
-	
+
 	// Estimate features
 	pcl::console::print_highlight ("Estimating features...\n");
 	pcl::FPFHEstimationOMP<PointT,pcl::Normal, pcl::FPFHSignature33> fest;
@@ -140,7 +162,7 @@ QMat computepointcloud::fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object,
 	fest.setInputCloud (reference);
 	fest.setInputNormals (scene_normals);
 	fest.compute (*scene_features);
-	
+
 	// Perform alignment
 	pcl::console::print_highlight ("Starting alignment...\n");
 	pcl::SampleConsensusPrerejective<PointT, PointT, pcl::FPFHSignature33> align;
@@ -154,7 +176,7 @@ QMat computepointcloud::fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object,
 	align.setSimilarityThreshold (0.9f); // Polygonal edge length similarity threshold
 	align.setMaxCorrespondenceDistance (2.5f * leaf); // Inlier threshold
 	align.setInlierFraction (0.25f); // Required inlier fraction for accepting a pose hypothesis
-	{	
+	{
 		pcl::ScopeTime t("Alignment");
 		align.align (*aligned);
 	}
@@ -164,12 +186,12 @@ QMat computepointcloud::fitingSCP(pcl::PointCloud<pcl::PointXYZRGB>::Ptr object,
 	QMat TM(4,4);
 	for (int c=0; c<4; c++)
 		for (int r=0; r<4; r++)
-			TM(r,c) = t(r, c);	
+			TM(r,c) = t(r, c);
 	return TM;
 }
 
 pcl::PointCloud< PointT >::Ptr computepointcloud::VoxelGrid_filter(pcl::PointCloud< PointT >::Ptr cloud, float lx, float ly, float lz)
-{	
+{
 	pcl::PointCloud< PointT >::Ptr output=copy_pointcloud(cloud);
 	pcl::VoxelGrid<PointT> sor;
 	sor.setInputCloud (output);
@@ -192,5 +214,5 @@ pcl::PointCloud< PointT >::Ptr computepointcloud::Filter_in_axis(pcl::PointCloud
 
 // void computepointcloud::recuperateObjects(pcl::PointCloud< PointT >::Ptr scene, std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds)
 // {
-// 	
+//
 // }

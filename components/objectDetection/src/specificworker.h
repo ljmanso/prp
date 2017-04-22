@@ -84,7 +84,7 @@ class SpecificWorker : public GenericWorker
 {
 	bool test;
 	QString id_robot, id_camera,id_camera_transform;
-	string descriptors_extension, pathLoadDescriptors;
+	string descriptors_extension, pathLoadDescriptors, type_fitting;
 	InnerModel *innermodel;
 
 	//for poses calculation respect to the canonical one
