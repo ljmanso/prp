@@ -35,7 +35,12 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 #ifdef USE_QTGUI
 	viewer = boost::shared_ptr<Viewer>(new Viewer(MEDIDA));
 #endif
-
+	tx = 0;
+	ty = 0;
+	tz = 0;
+	rx = 0;
+	ry = 0;
+	rz = 0;
 
 	test=false;
 	//let's set the sizes
@@ -53,6 +58,8 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	connect(goButton, SIGNAL(clicked()), this, SLOT(fullRun_Button()));
 	connect(findObjectButton, SIGNAL(clicked()), this, SLOT(findTheObject_Button()));
 	connect(saveViewButton, SIGNAL(clicked()), this, SLOT(saveView()));
+	connect(ResetPoseButton, SIGNAL(clicked()), this, SLOT(ResetPose_Button()));
+	guess = QVec::zeros(6);
 #endif
 	boost::filesystem::remove("training_data.h5");
 	boost::filesystem::remove("training_data.list");
@@ -100,6 +107,17 @@ void SpecificWorker::compute()
 {
 	updateinner();
 #ifdef USE_QTGUI
+	if(guess != QVec::zeros(6))
+	{
+		tx = guess.x() + tx_Slider->value()/1.;
+		ty = guess.y() + ty_Slider->value()/1.;
+		tz = guess.z()/1000. + tz_Slider->value()/1000.;
+		rx = guess.rx();
+		ry = guess.ry();
+		rz = guess.rz();
+		QMat poseObjR=RTMat(rx/1000., ry/1000., rz/1000., tx, ty, tz);
+		viewer->updateCoordinateSystemPose(poseObjR,"poseobjectR");
+	}
 	updatergbd();
 	try
 	{
@@ -720,7 +738,7 @@ void SpecificWorker::saveView()
 	InnerModelNode *parent_node = poses_inner->getTransform("root");
 	std::stringstream ss;
 	ss <<"pose_"<<num_pose<<"_"<< label;
-	InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
+	InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, tx, ty, tz, rx, ry, rz);
 	parent_node->addChild(node);
 
 	//Save the object cloud
@@ -762,39 +780,8 @@ QVec SpecificWorker::saveRegPose(const string &label, const int numPoseToSave)
 {
 	capturePointCloudObjects();
 	//check if appril seen
-	poseoffset = QVec::zeros(6);
-	if(aprilSeen(poseoffset))
-	{
-// 		//Open the object XML
-// 		poses_inner = new InnerModel();
-// 		string path="/home/robocomp/robocomp/components/prp/objects/"+label+"/";
-// 		std::string inner_name = path+label + ".xml";
-// 		poses_inner->open(inner_name);
-//
-// 		//Create the new node
-// 		InnerModelNode *parent_node = poses_inner->getTransform("root");
-// 		std::stringstream ss;
-// 		ss <<"pose_"<<num_pose<<"_"<< label;
-// 		InnerModelTransform *node = poses_inner->newTransform(ss.str().c_str(), "static", parent_node, poseoffset.x(), poseoffset.y(), poseoffset.z(), poseoffset.rx(), poseoffset.ry(), poseoffset.rz());
-// 		parent_node->addChild(node);
-//
-// 		//Save the object cloud
-// 		std::stringstream ss1;
-// 		ss1 <<path<<"pose_"<<num_pose<<"_"<< label;
-// 		std::cout <<ss1.str()<<endl;
-// 		writer.write<PointT> (ss1.str () + ".pcd", *cluster_clouds[numPoseToSave], false);
-//
-// 		//Save the object image
-// 		string imagename = path +"pose_" + QString::number(num_pose).toStdString() + "_" + label + ".png";
-// 		cv::imwrite( imagename ,rgb_image);
-//
-// 		//Save the object XML
-// 		num_pose++;
-// 		poses_inner->save(QString(inner_name.c_str()));
-//
-// 		delete (poses_inner);
-	}
-	else
+	QVec poseoffset = QVec::zeros(6);
+	if(!aprilSeen(poseoffset))
 	{
 		qFatal("CAN'T SEE ANY APRIL!");
 	}
@@ -948,7 +935,6 @@ void SpecificWorker::fullRun_Button()
 {
 	string label=label_le->text().toStdString();
 	char *c;
-	QVec guess;
 	string s="mkdir " + pathLoadDescriptors + "/" + label;
 	c= &s[0u];
 	try
@@ -978,5 +964,11 @@ void SpecificWorker::fullRun_Button()
 	{
 		QMessageBox::warning(this, "something went wrong", "something went wrong");
 	}
+}
+
+void SpecificWorker::ResetPose_Button()
+{
+	viewer->removeCoordinateSystem("poseobject");
+	guess = QVec::zeros(6);
 }
 #endif

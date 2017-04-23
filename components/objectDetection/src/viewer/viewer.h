@@ -30,6 +30,7 @@ public:
 	void addCoordinateSystem(RMat::QMat tr, std::string id);
 	void addPointCloud(pcl::PointCloud< PointT >::Ptr cloud, std::string id, int size, int r, int g, int b);
 	void updatePointCloud(pcl::PointCloud< PointT >::Ptr cloud, std::string id);
+	void updateCoordinateSystemPose(RMat::QMat tr, std::string id);
 	void removePointCloud(std::string id);
 	void removeCoordinateSystem(std::string id);
 	void update();

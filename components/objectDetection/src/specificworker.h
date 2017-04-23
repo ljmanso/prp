@@ -82,6 +82,7 @@ using namespace computepointcloud;
 
 class SpecificWorker : public GenericWorker
 {
+  float tx, ty, tz, rx, ry, rz;
 	bool test;
 	QString id_robot, id_camera,id_camera_transform;
 	string descriptors_extension, pathLoadDescriptors, type_fitting;
@@ -139,7 +140,7 @@ class SpecificWorker : public GenericWorker
 	QGraphicsScene scene;
 
 	boost::shared_ptr<Viewer> viewer;
-	QVec poseoffset;
+  QVec guess;
 
 #endif
 	pcl::PointCloud< PointT >::Ptr copy_scene;
@@ -170,6 +171,7 @@ public slots:
 	void findTheObject_Button();
 	void reloadDESCRIPTORS_Button();
 	void fullRun_Button();
+  void ResetPose_Button();
 #endif
 
 private:

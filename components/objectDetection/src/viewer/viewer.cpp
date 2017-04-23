@@ -65,6 +65,17 @@ void Viewer::updatePointCloud(pcl::PointCloud< PointT >::Ptr cloud, std::string 
 #endif
 }
 
+void Viewer::updateCoordinateSystemPose(RMat::QMat tr, std::string id)
+{
+#ifdef USE_QTGUI
+	Eigen::Affine3f t;
+	for (int c=0; c<4; c++)
+		for (int r=0; r<4; r++)
+			t(r,c) = tr(r,c);
+	viewer->updateCoordinateSystemPose(id, t);
+#endif
+}
+
 void Viewer::removePointCloud(std::string id)
 {
 #ifdef USE_QTGUI
