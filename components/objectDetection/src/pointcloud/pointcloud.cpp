@@ -8,26 +8,24 @@ pcl::PointCloud< PointT >::Ptr computepointcloud::copy_pointcloud(pcl::PointClou
 
 pcl::PointCloud< PointT >::Ptr computepointcloud::PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud)
 {
-	pcl::PointCloud< PointT >::Ptr output=copy_pointcloud(cloud);
-	for(unsigned int i =0;i<output->points.size();i++)
+	for(unsigned int i =0;i<cloud->points.size();i++)
 	{
-		output->points[i].x=cloud->points[i].x*1000.;
-		output->points[i].y=cloud->points[i].y*1000.;
-		output->points[i].z=cloud->points[i].z*1000.;
+		cloud->points[i].x=cloud->points[i].x*1000.;
+		cloud->points[i].y=cloud->points[i].y*1000.;
+		cloud->points[i].z=cloud->points[i].z*1000.;
 	}
-	return output;
+	return cloud;
 }
 
 pcl::PointCloud< PointT >::Ptr computepointcloud::PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud)
 {
-	pcl::PointCloud< PointT >::Ptr output=copy_pointcloud(cloud);
 	for(unsigned int i =0;i<cloud->points.size();i++)
 	{
-		output->points[i].x=cloud->points[i].x/1000.;
-		output->points[i].y=cloud->points[i].y/1000.;
-		output->points[i].z=cloud->points[i].z/1000.;
+		cloud->points[i].x=cloud->points[i].x/1000.;
+		cloud->points[i].y=cloud->points[i].y/1000.;
+		cloud->points[i].z=cloud->points[i].z/1000.;
 	}
-	return output;
+	return cloud;
 }
 
 void computepointcloud::moveToZero(pcl::PointCloud< PointT >::Ptr cloud, double &xMean, double &yMean, double &zMean)
@@ -72,16 +70,10 @@ void computepointcloud::moveToZero(pcl::PointCloud< PointT >::Ptr cloud, double 
 
 QMat computepointcloud::fittingICP(pcl::PointCloud<PointT>::Ptr object, pcl::PointCloud<PointT>::Ptr reference,pcl::PointCloud<PointT>::Ptr &aligned)
 {
-// 	double xmean1,ymean1, zmean1, xmean2,ymean2, zmean2;
-// 	moveToZero(object,xmean1,ymean1, zmean1);
-// 	moveToZero(reference,xmean2,ymean2, zmean2);
-// 	cout<<xmean1<<" "<<ymean1<<" "<<zmean1<<endl;
-// 	cout<<xmean2<<" "<<ymean2<<" "<<zmean2<<endl;
-	pcl::PointCloud< PointT >::Ptr object_copy    = copy_pointcloud(object);
 	pcl::PointCloud< PointT >::Ptr reference_copy = copy_pointcloud(reference);
 
 	Eigen::Vector4f centroid_object, centroid_reference;
-	pcl::compute3DCentroid (*object_copy, centroid_object);
+	pcl::compute3DCentroid (*object, centroid_object);
 	pcl::compute3DCentroid (*reference_copy, centroid_reference);
 
 	for(unsigned int i = 0; i< reference_copy->points.size(); i++)
@@ -90,21 +82,8 @@ QMat computepointcloud::fittingICP(pcl::PointCloud<PointT>::Ptr object, pcl::Poi
 		reference_copy->points[i].y+=centroid_object[1] - centroid_reference[1];
 		reference_copy->points[i].z+=centroid_object[2] - centroid_reference[2];
 	}
-	// boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
-	// viewer=boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer ("3D Viewer"));
-	// viewer->setBackgroundColor(0.2, 0.2, 0.2);
-	// viewer->initCameraParameters ();
-	// viewer->addCoordinateSystem (0.4);
-	// pcl::visualization::PointCloudColorHandlerCustom<PointT> rgb1(reference_copy,0,254,0);
-	// viewer->addPointCloud<PointT> (reference_copy, rgb1, "reference_copy");
-	// pcl::visualization::PointCloudColorHandlerCustom<PointT> rgb(object_copy, 254,0,0);
-	// viewer->addPointCloud<PointT> (object_copy, rgb, "object_copy");
-	// while (!viewer->wasStopped()) {
-	// 	viewer->spinOnce (10);
-	// }
-	// viewer->close();
 	pcl::IterativeClosestPoint<PointT, PointT> icp;
-	icp.setInputCloud(object_copy);
+	icp.setInputCloud(object);
 	icp.setInputTarget(reference_copy);
 	icp.setTransformationEpsilon (1e-12);
 	icp.setEuclideanFitnessEpsilon (1e-12);
@@ -192,24 +171,22 @@ QMat computepointcloud::fittingRSCP(pcl::PointCloud<PointT>::Ptr object, pcl::Po
 
 pcl::PointCloud< PointT >::Ptr computepointcloud::VoxelGrid_filter(pcl::PointCloud< PointT >::Ptr cloud, float lx, float ly, float lz)
 {
-	pcl::PointCloud< PointT >::Ptr output=copy_pointcloud(cloud);
 	pcl::VoxelGrid<PointT> sor;
-	sor.setInputCloud (output);
+	sor.setInputCloud (cloud);
 	sor.setLeafSize (lx, ly, lz);
-	sor.filter (*output);
-	return output;
+	sor.filter (*cloud);
+	return cloud;
 }
 
 pcl::PointCloud< PointT >::Ptr computepointcloud::Filter_in_axis(pcl::PointCloud< PointT >::Ptr cloud, string axi, float min, float max, bool negative)
 {
-	pcl::PointCloud< PointT >::Ptr output=copy_pointcloud(cloud);
 	pcl::PassThrough<PointT> pass;
-	pass.setInputCloud (output);
+	pass.setInputCloud (cloud);
 	pass.setFilterFieldName (axi);
 	pass.setFilterLimits (min, max);
 	pass.setFilterLimitsNegative (negative);
-	pass.filter (*output);
-	return output;
+	pass.filter (*cloud);
+	return cloud;
 }
 
 void computepointcloud::getBoundingBox(pcl::PointCloud< PointT >::Ptr cloud, float &min_x, float &max_x, float &min_y, float &max_y, float &min_z, float &max_z)

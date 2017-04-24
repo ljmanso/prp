@@ -38,7 +38,7 @@ void Viewer::addPointCloud(pcl::PointCloud< PointT >::Ptr cloud, std::string id,
 	if(MEDIDA==1000.)
 		out = copy_pointcloud(cloud);
 	else
-		out = PointCloudfrom_mm_to_Meters(cloud);
+		out = PointCloudfrom_mm_to_Meters(copy_pointcloud(cloud));
 	if(r==0 and b==0 and g==0)
 	{
 		pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(out);
@@ -60,7 +60,7 @@ void Viewer::updatePointCloud(pcl::PointCloud< PointT >::Ptr cloud, std::string 
 	if(MEDIDA==1000.)
 		out = copy_pointcloud(cloud);
 	else
-		out = PointCloudfrom_mm_to_Meters(cloud);
+		out = PointCloudfrom_mm_to_Meters(copy_pointcloud(cloud));
 	viewer->updatePointCloud(out, id);
 #endif
 }
