@@ -34,8 +34,7 @@ public:
 	ObjectDetectionI(GenericWorker *_worker);
 	~ObjectDetectionI();
 	
-	bool findObjects( listObject  &lObjects, const Ice::Current&);
-	bool findTheObject(const string  &objectTofind,  pose6D  &pose, const Ice::Current&);
+	bool findObjects(const StringVector  &objectsTofind,  ObjectVector  &objects, const Ice::Current&);
 
 private:
 

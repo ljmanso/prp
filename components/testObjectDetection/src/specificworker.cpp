@@ -95,36 +95,25 @@ void SpecificWorker::reloadVFH()
 
 void SpecificWorker::findTheObject()
 {
-	std::string object = text_object->toPlainText().toStdString();
-	pose6D poseObj;
+	qDebug()<<__FUNCTION__;
+	ObjectVector lObjects;
+	StringVector lNameObjects;
 	bool result;
 	try
 	{
 // 		listObject lobject;
-		struct timespec Inicio, Fin;
-		clock_gettime(CLOCK_REALTIME, &Inicio);
-		result = objectdetection_proxy->findTheObject(object, poseObj);
-		clock_gettime(CLOCK_REALTIME, &Fin);
-		qDebug()<<Fin.tv_sec-Inicio.tv_sec<<"s "<<Fin.tv_nsec-Inicio.tv_nsec<<"ns";
-// 		result = objectdetection_proxy->findObjects(lobject);
-		if(object!="")
+		struct timespec Inicio_, Fin_, resta_;
+		clock_gettime(CLOCK_REALTIME, &Inicio_);
+		result = objectdetection_proxy->findObjects(lNameObjects, lObjects);
+		clock_gettime(CLOCK_REALTIME, &Fin_);
+		SUB(&resta_, &Fin_, &Inicio_);
+		qDebug()<<"-----"<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
+		for(auto obj:lObjects)
 		{
-			isObject->setVisible(true);
-			if(result)
-			{
-				isObject->setText("El Objeto SI esta en la mesa.");
-				x_object->setText(QString::number(poseObj.tx));
-				y_object->setText(QString::number(poseObj.ty));
-				z_object->setText(QString::number(poseObj.tz));
-				rx_object->setText(QString::number(poseObj.rx));
-				ry_object->setText(QString::number(poseObj.ry));
-				rz_object->setText(QString::number(poseObj.rz));
-			}
-			else
-				isObject->setText("El Objeto NO esta en la mesa.");
+			std::cout<<"Object: "<<obj.label<<std::endl;
+			std::cout<<"	Pose: "<<obj.tx<<", "<<obj.ty<<", "<<obj.tz<<", "<<obj.rx<<", "<<obj.ry<<", "<<obj.rz<<std::endl;
+			std::cout<<"	  BB: "<<obj.minx<<", "<<obj.miny<<", "<<obj.minz<<", "<<obj.maxx<<", "<<obj.maxy<<", "<<obj.maxz<<std::endl;
 		}
-		else
-			isObject->setVisible(false);
 	}
 	catch(...)
 	{

@@ -46,7 +46,6 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	//let's set the sizes
 	table->set_board_size(500/MEDIDA,30/MEDIDA,500/MEDIDA);
 
-	num_object_found = 0;
 	num_scene = 15;
 #ifdef USE_QTGUI
 	graphic->setScene(&scene);
@@ -131,111 +130,40 @@ void SpecificWorker::compute()
  * Method of interface ObjectDetection.ice
  */
 
-bool SpecificWorker::findTheObject(const string &objectTofind, pose6D &pose)
-{
-	capturePointCloudObjects();
-	std::string guessgan="";
-#ifdef USE_QTGUI
-	while(!V_text_item.empty())
-	{
-		scene.removeItem(V_text_item.back());
-		V_text_item.pop_back();
-	}
-#endif
-	struct timespec Inicio, Fin, resta;
-	clock_gettime(CLOCK_REALTIME, &Inicio);
-	float dist=3.40e38;
-	for(unsigned int i=0; i<cluster_clouds.size();i++)
-	{
-		descriptor_matcher->doTheGuess(cluster_clouds[i], descriptor_guesses);
+ bool SpecificWorker::findObjects(const StringVector &objectsTofind, ObjectVector &objects)
+ {
+ 	capturePointCloudObjects();
+	struct timespec Inicio_, Fin_, resta_;
+	clock_gettime(CLOCK_REALTIME, &Inicio_);
+ 	for(unsigned int i=0; i<cluster_clouds.size();i++)
+ 	{
+ 		descriptor_matcher->doTheGuess(cluster_clouds[i], descriptor_guesses);
 
-		DESCRIPTORS::file_dist_t second;
-		for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
-		std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
+ 		DESCRIPTORS::file_dist_t second;
+ 		for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
+ 		std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
 
-		if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
+ 		ObjectType Obj;
+ 		Obj.tx = Obj.ty = Obj.tz = Obj.rx = Obj.ry = Obj.rz = 0;
+ 		getBoundingBox(cluster_clouds[i], Obj.minx, Obj.maxx, Obj.miny, Obj.maxy, Obj.minz, Obj.maxz);
+ 		if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
+ 		{
+ 			Obj.label = descriptor_guesses[0].label;
+ 			getPose(Obj, descriptor_guesses[0].file, copy_pointcloud(cluster_clouds[i]));
+ 		}
+ 		else
 		{
-			if(dist>descriptor_guesses[0].dist && (descriptor_guesses[0].label==objectTofind||objectTofind==""))
-			{
-				guessgan=descriptor_guesses[0].label;
-				dist=descriptor_guesses[0].dist;
-				num_object_found = i;
-				file_view_mathing = descriptor_guesses[0].file;
-			}
-			if(objectTofind=="")
-			{
-#ifdef USE_QTGUI
-				settexttocloud(guessgan,cluster_clouds[i]);
-#endif
-				dist=3.40e38;
-				guessgan="";
-			}
+			Obj.label = "unknown";
 		}
-	}
-	if((guessgan!=""&&guessgan==objectTofind))
-	{
-		std::cout<<file_view_mathing<<guessgan<<" "<<dist<<" "<<num_object_found<<endl;
-		clock_gettime(CLOCK_REALTIME, &Fin);
-		SUB(&resta, &Fin, &Inicio);
-		qDebug()<<"Recognition VFH: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
-		clock_gettime(CLOCK_REALTIME, &Inicio);
-		pose=getPose();
-		clock_gettime(CLOCK_REALTIME, &Fin);
-		SUB(&resta, &Fin, &Inicio);
-		qDebug()<<"Fitting PCD: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
-		return true;
-	}
-	return false;
-}
-
-bool SpecificWorker::findObjects(listObject& lObjects)
-{
-	capturePointCloudObjects();
-	std::string guessgan="";
-	for(unsigned int i=0; i<cluster_clouds.size();i++)
-	{
-		descriptor_matcher->doTheGuess(cluster_clouds[i], descriptor_guesses);
-
-		DESCRIPTORS::file_dist_t second;
-		for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
-		std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
-
-		pose6D p;
-		if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
-		{
-			guessgan=descriptor_guesses[0].label;
-			num_object_found = i;
-			file_view_mathing = descriptor_guesses[0].file;
-			p.label=guessgan;
-			p=getPose();
-		}
-		else
-		{
-			Eigen::Vector4f centroid;
-			pcl::compute3DCentroid (*cluster_clouds[i], centroid);
-			p.label="unknown";
-			if(MEDIDA==1000.)
-			{
-				p.tx = centroid[0]*MEDIDA;
-				p.ty = centroid[1]*MEDIDA;
-				p.tz = centroid[2]*MEDIDA;
-			}
-			else
-			{
-				p.tx = centroid[0];
-				p.ty = centroid[1];
-				p.tz = centroid[2];
-			}
-		}
-		lObjects.push_back(p);
-		guessgan="";
-	}
-	num_object_found=0;
-	file_view_mathing="";
-	if(cluster_clouds.size()==0)
-		return false;
-	return true;
-}
+		objects.push_back(Obj);
+ 	}
+	clock_gettime(CLOCK_REALTIME, &Fin_);
+	SUB(&resta_, &Fin_, &Inicio_);
+	qDebug()<<"Tiempo Ejecucion findObjects:  "<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
+ 	if(cluster_clouds.size()==0)
+ 		return false;
+ 	return true;
+ }
 
 /*
  * Method of interface AprilTags
@@ -496,15 +424,7 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 
 void SpecificWorker::capturePointCloudObjects()
 {
-	static vector<string> id_objects;
-#ifdef USE_QTGUI
-	while(!id_objects.empty())
-	{
-		viewer->removeCube(id_objects.back());
-		// viewer->removePointCloud(id_objects.back());
-		id_objects.pop_back();
-	}
-#endif
+
 	if(test)
 		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
 	else
@@ -527,16 +447,6 @@ void SpecificWorker::capturePointCloudObjects()
 	clock_gettime(CLOCK_REALTIME, &Fin);
 	SUB(&resta, &Fin, &Inicio);
 	qDebug()<<"Captured: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
-#ifdef USE_QTGUI
-	for(unsigned int i=0;i<cluster_clouds.size();i++)
-	{
-		float min_x,max_x,min_y,max_y, min_z,max_z;
-		getBoundingBox(cluster_clouds[i],min_x,max_x,min_y,max_y, min_z,max_z);
-		viewer->addCube(min_x,max_x,min_y,max_y, min_z,max_z, QString::number(i).toStdString());
-		// viewer->addPointCloud(cluster_clouds[i],QString::number(i).toStdString(),1,255,0,0);
-		id_objects.push_back(QString::number(i).toStdString());
-	}
-#endif
 }
 
 void SpecificWorker::updateinner()
@@ -567,7 +477,7 @@ void SpecificWorker::loadTrainedDESCRIPTORS()
 	std::cout<<"Training data loaded"<<std::endl;
 }
 
-void SpecificWorker::descriptors(listType &guesses)
+void SpecificWorker::descriptors(StringVector &guesses)
 {
     int object__to_show = 0;
     descriptor_matcher->doTheGuess(cluster_clouds[object__to_show], descriptor_guesses);
@@ -633,27 +543,15 @@ void SpecificWorker::reloadDESCRIPTORS()
 	// }
 }
 
-pose6D  SpecificWorker::getPose()
+void  SpecificWorker::getPose(ObjectType &Obj, string file_view_mathing, 	pcl::PointCloud<PointT>::Ptr obj_scene)
 {
 	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
 
 	//Print centroide
 	Eigen::Vector4f centroid;
-	pcl::compute3DCentroid (*cluster_clouds[num_object_found], centroid);
+	pcl::compute3DCentroid (*obj_scene, centroid);
 	QVec centroidpose = QVec::vec3(centroid[0]/MEDIDA,centroid[1]/MEDIDA,centroid[2]/MEDIDA);
 	centroidpose.print("centroid vista atual");
-#ifdef USE_QTGUI
-	removeAllpixmap();
-	InnerModelCamera *camera = innermodel->getCamera(id_camera);
-	centroidpose= camera->project(id_robot,QVec::vec3(centroidpose.x(),centroidpose.y(),centroidpose.z()));
-	QImage image(640,480,QImage::Format_ARGB32_Premultiplied);
-	image.fill(Qt::transparent);
-	for (int x =centroidpose.x()-4;x<centroidpose.x()+4;x++)
-		for (int y =centroidpose.y()-4;y<centroidpose.y()+4;y++)
-			image.setPixel(x,y,qRgb(0, 255, 0));
-	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
-	SpecificWorker::scene.addItem(V_pixmap_item.back());
-#endif
 	// Point clouds
 	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
 	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
@@ -662,7 +560,7 @@ pose6D  SpecificWorker::getPose()
 	//change vfh extension to pcd
 	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
 	view_to_load = view_to_load + ".pcd";
-	pcl::PointCloud<PointT>::Ptr object(cluster_clouds[num_object_found]);
+	pcl::PointCloud<PointT>::Ptr object(obj_scene);
 	if (pcl::io::loadPCDFile<PointT> (view_to_load, *scene) == -1) //* load the file
 	{
 		printf ("Couldn't read file test_pcd.pcd \n");
@@ -701,28 +599,13 @@ pose6D  SpecificWorker::getPose()
 	QMat poseObjR = saveToViewR*PoseSavetoRootR*april;
 	QVec pose = extraerposefromTM(poseObjR);
 	pose.print("pose");
-	pose6D poseObj;
-	poseObj.tx=pose.x();
-	poseObj.ty=pose.y() + offset_object;
+	Obj.tx=pose.x();
+	Obj.ty=pose.y() + offset_object;
 	// poseObj.ty=890.;
-	poseObj.tz=pose.z();
-	poseObj.rx=pose.rx();
-	poseObj.ry=pose.ry();
-	poseObj.rz=pose.rz();
-// 	Print tag5
-#ifdef USE_QTGUI
-	pose= camera->project(id_robot,QVec::vec3(pose.x(),pose.y(),pose.z()));
-	image.fill(Qt::transparent);
-	for (int x =pose.x()-4;x<pose.x()+4;x++)
-		for (int y =pose.y()-4;y<pose.y()+4;y++)
-			image.setPixel(x,y,qRgb(255, 0, 0));
-	V_pixmap_item.push_back(new QGraphicsPixmapItem(QPixmap::fromImage(image)));
-	SpecificWorker::scene.addItem(V_pixmap_item.back());
-	viewer->removeCoordinateSystem("poseobjectR");
-	poseObjR=RTMat(poseObj.rx,poseObj.ry,poseObj.rz,poseObj.tx/1000,poseObj.ty/1000,poseObj.tz/1000);
-	viewer->addCoordinateSystem(poseObjR,"poseobjectR");
-#endif
-	return poseObj;
+	Obj.tz=pose.z();
+	Obj.rx=pose.rx();
+	Obj.ry=pose.ry();
+	Obj.rz=pose.rz();
 }
 
 #ifdef USE_QTGUI
@@ -822,16 +705,18 @@ void SpecificWorker::updatergbd()
 	scene.update();
 }
 
-void SpecificWorker::settexttocloud(string name, pcl::PointCloud< PointT >::Ptr cloud)
+void SpecificWorker::settexttocloud(string name, float minx, float maxx, float miny, float maxy, float minz, float maxz)
 {
 	QGraphicsTextItem *text=new QGraphicsTextItem(QString::fromStdString(name));
-	QFont serifFont("Times", 25, QFont::Bold);
+	QFont serifFont("Times", 15, QFont::Bold);
 	text->setFont(serifFont);
 	InnerModelCamera *camera = innermodel->getCamera(id_camera);
 	int end=cloud->size()-1;
-	QVec xy = camera->project(id_robot, QVec::vec3(cloud->points[end].x*MEDIDA, cloud->points[end].y*MEDIDA, cloud->points[end].z*MEDIDA));
-	QVec xyfrist = camera->project(id_robot, QVec::vec3(cloud->points[0].x*MEDIDA, cloud->points[0].y*MEDIDA, cloud->points[0].z*MEDIDA));
-	text->setPos(xyfrist(0)-30,(int)(xy(1)+xyfrist(1))/2);
+	float m_x = minx + (maxx-minx)/2;
+	float m_y = miny + (maxy-miny)/2;
+	float m_z = minz + (maxz-minz)/2;
+	QVec xy = camera->project(id_robot, QVec::vec3(m_x*MEDIDA, m_y*MEDIDA, m_z*MEDIDA));
+	text->setPos(xy(0)-30,xy(1));
 	scene.addItem(text);
 	V_text_item.push_back(text);
 }
@@ -895,38 +780,57 @@ void SpecificWorker::reloadDESCRIPTORS_Button()
 
 void SpecificWorker::findTheObject_Button()
 {
+	static vector<string> id_objects;
+	while(!id_objects.empty())
+	{
+		viewer->removeCube(id_objects.back());
+		// viewer->removePointCloud(id_objects.back());
+		id_objects.pop_back();
+	}
 	qDebug()<<__FUNCTION__;
 	std::string object = text_object->toPlainText().toStdString();
-	pose6D poseObj;
+	ObjectVector lObjects;
+	StringVector lNameObjects;
 	bool result;
 	try
 	{
 // 		listObject lobject;
 		struct timespec Inicio_, Fin_, resta_;
 		clock_gettime(CLOCK_REALTIME, &Inicio_);
-		result = findTheObject(object, poseObj);
+		result = findObjects(lNameObjects, lObjects);
 		clock_gettime(CLOCK_REALTIME, &Fin_);
 		SUB(&resta_, &Fin_, &Inicio_);
 		qDebug()<<"-----"<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
-// 		result = findObjects(lobject);
-		if(object!="")
+		int i=0;
+		for(auto obj:lObjects)
 		{
-			isObject->setVisible(true);
-			if(result)
-			{
-				isObject->setText("El Objeto SI esta en la mesa.");
-				x_object->setText(QString::number(poseObj.tx));
-				y_object->setText(QString::number(poseObj.ty));
-				z_object->setText(QString::number(poseObj.tz));
-				rx_object->setText(QString::number(poseObj.rx));
-				ry_object->setText(QString::number(poseObj.ry));
-				rz_object->setText(QString::number(poseObj.rz));
-			}
-			else
-				isObject->setText("El Objeto NO esta en la mesa.");
+			std::cout<<"Object: "<<obj.label<<std::endl;
+			std::cout<<"	Pose: "<<obj.tx<<", "<<obj.ty<<", "<<obj.tz<<", "<<obj.rx<<", "<<obj.ry<<", "<<obj.rz<<std::endl;
+			std::cout<<"	  BB: "<<obj.minx<<", "<<obj.miny<<", "<<obj.minz<<", "<<obj.maxx<<", "<<obj.maxy<<", "<<obj.maxz<<std::endl;
+			settexttocloud(obj.label, obj.minx, obj.maxx, obj.miny, obj.maxy, obj.minz, obj.maxz);
+			viewer->addCube(obj.minx, obj.maxx, obj.miny, obj.maxy, obj.minz, obj.maxz, QString::number(i).toStdString());
+			id_objects.push_back(QString::number(i).toStdString());
+			i++;
 		}
-		else
-			isObject->setVisible(false);
+// 		result = findObjects(lobject);
+		// if(object!="")
+		// {
+		// 	isObject->setVisible(true);
+		// 	if(result)
+		// 	{
+		// 		isObject->setText("El Objeto SI esta en la mesa.");
+		// 		x_object->setText(QString::number(poseObj.tx));
+		// 		y_object->setText(QString::number(poseObj.ty));
+		// 		z_object->setText(QString::number(poseObj.tz));
+		// 		rx_object->setText(QString::number(poseObj.rx));
+		// 		ry_object->setText(QString::number(poseObj.ry));
+		// 		rz_object->setText(QString::number(poseObj.rz));
+		// 	}
+		// 	else
+		// 		isObject->setText("El Objeto NO esta en la mesa.");
+		// }
+		// else
+		// 	isObject->setVisible(false);
 	}
 	catch(...)
 	{

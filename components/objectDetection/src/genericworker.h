@@ -71,11 +71,10 @@ public:
 	QMutex *mutex;
 	
 
-	RGBDPrx rgbd_proxy;
 	JointMotorPrx jointmotor_proxy;
+	RGBDPrx rgbd_proxy;
 
-	virtual bool findObjects(listObject &lObjects) = 0;
-	virtual bool findTheObject(const string &objectTofind, pose6D &pose) = 0;
+	virtual bool findObjects(const StringVector &objectsTofind, ObjectVector &objects) = 0;
 	virtual void newAprilTagAndPose(const tagsList &tags, const RoboCompGenericBase::TBaseState &bState, const RoboCompJointMotor::MotorStateMap &hState) = 0;
 	virtual void newAprilTag(const tagsList &tags) = 0;
 

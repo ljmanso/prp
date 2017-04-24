@@ -28,14 +28,9 @@ ObjectDetectionI::~ObjectDetectionI()
 {
 }
 
-bool ObjectDetectionI::findObjects( listObject  &lObjects, const Ice::Current&)
+bool ObjectDetectionI::findObjects(const StringVector  &objectsTofind,  ObjectVector  &objects, const Ice::Current&)
 {
-	return worker->findObjects(lObjects);
-}
-
-bool ObjectDetectionI::findTheObject(const string  &objectTofind,  pose6D  &pose, const Ice::Current&)
-{
-	return worker->findTheObject(objectTofind, pose);
+	return worker->findObjects(objectsTofind, objects);
 }
 
 

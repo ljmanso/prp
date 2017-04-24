@@ -35,16 +35,28 @@
 #include <innermodel/innermodel.h>
 #include "time.h"
 
+#define SUB(dst, src1, src2) \
+  { \
+    if ((src2)->tv_nsec > (src1)->tv_nsec) { \
+      (dst)->tv_sec = (src1)->tv_sec - (src2)->tv_sec - 1; \
+      (dst)->tv_nsec = ((src1)->tv_nsec - (src2)->tv_nsec) + 1000000000; \
+    } \
+    else { \
+      (dst)->tv_sec = (src1)->tv_sec - (src2)->tv_sec; \
+      (dst)->tv_nsec = (src1)->tv_nsec - (src2)->tv_nsec; \
+    } \
+  }
+
 class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
 public:
-	SpecificWorker(MapPrx& mprx);	
+	SpecificWorker(MapPrx& mprx);
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
 public slots:
-	void compute(); 
-// 	void grabThePointCloud();	
+	void compute();
+// 	void grabThePointCloud();
 // 	void ransac();
 // 	void projectInliers();
 // 	void convexHull();
@@ -56,8 +68,7 @@ public slots:
 	void reloadVFH();
 	void fullRun();
 private:
-	
+
 };
 
 #endif
-

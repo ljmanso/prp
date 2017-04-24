@@ -93,10 +93,6 @@ class SpecificWorker : public GenericWorker
 	tagsList tags;
 	QMutex april_mutex;
 	int num_pose;
-
-	int num_object_found;
-	std::string file_view_mathing;
-
 	int num_scene;
 
 	pcl::PCDWriter writer;
@@ -155,8 +151,7 @@ public:
 /*
  * Method of Interface ObjectDetection.ice
  */
-	bool findTheObject(const string &objectTofind, pose6D &pose);
-	bool findObjects(listObject &lObjects);
+	bool findObjects(const StringVector &objectsTofind, ObjectVector &objects);
 
 /*
  * Method of Interface AprilTags.ice
@@ -188,17 +183,17 @@ private:
 
 	void updateinner();
 	void loadTrainedDESCRIPTORS();
-	void descriptors(listType &guesses);
+	void descriptors(StringVector &guesses);
 	bool aprilSeen(QVec &offset);
 
 	void reloadDESCRIPTORS();
-	pose6D getPose();
+	void getPose(ObjectType &Obj, string file_view_mathing, 	pcl::PointCloud<PointT>::Ptr obj_scene);
 #ifdef USE_QTGUI
 	void initSaveObject(const string &label, const int numPoseToSave);
 	QVec saveRegPose(const string &label, const int numPoseToSave);
 
 	void updatergbd();
-	void settexttocloud(std::string name,pcl::PointCloud<PointT>::Ptr cloud);
+	void settexttocloud(string name, float minx, float maxx, float miny, float maxy, float minz, float maxz);
 	void paintcloud(pcl::PointCloud<PointT>::Ptr cloud);
 	void removeAllpixmap();
 #endif
