@@ -97,33 +97,32 @@ void Viewer::update()
 #endif
 }
 
-void Viewer::addCube(pcl::PointCloud< PointT >::Ptr cloud, std::string id)
+void Viewer::addCube(float min_x, float max_x, float min_y, float max_y, float min_z, float max_z, std::string id)
 {
 #ifdef USE_QTGUI
-	Eigen::Vector4f centroid;
-  pcl::compute3DCentroid(*cloud, centroid);
-  Eigen::Matrix3f covariance;
-  computeCovarianceMatrixNormalized(*cloud, centroid, covariance);
-  Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> eigen_solver(covariance, Eigen::ComputeEigenvectors);
-  Eigen::Matrix3f eigDx = eigen_solver.eigenvectors();
-  eigDx.col(2) = eigDx.col(0).cross(eigDx.col(1));
 
-  // move the points to the that reference frame
-  Eigen::Matrix4f p2w(Eigen::Matrix4f::Identity());
-  p2w.block<3,3>(0,0) = eigDx.transpose();
-  p2w.block<3,1>(0,3) = -1.f * (p2w.block<3,3>(0,0) * centroid.head<3>());
-  pcl::PointCloud<PointT> cPoints;
-  pcl::transformPointCloud(*cloud, cPoints, p2w);
+	pcl::PointXYZ pt1 (min_x/1000., min_y/1000., min_z/1000.);
+	pcl::PointXYZ pt2 (min_x/1000., min_y/1000., max_z/1000.);
+	pcl::PointXYZ pt3 (max_x/1000., min_y/1000., max_z/1000.);
+	pcl::PointXYZ pt4 (max_x/1000., min_y/1000., min_z/1000.);
+	pcl::PointXYZ pt5 (min_x/1000., max_y/1000., min_z/1000.);
+	pcl::PointXYZ pt6 (min_x/1000., max_y/1000., max_z/1000.);
+	pcl::PointXYZ pt7 (max_x/1000., max_y/1000., max_z/1000.);
+	pcl::PointXYZ pt8 (max_x/1000., max_y/1000., min_z/1000.);
 
-  PointT min_pt, max_pt;
-  pcl::getMinMax3D(cPoints, min_pt, max_pt);
-  const Eigen::Vector3f mean_diag = 0.5f*(max_pt.getVector3fMap() + min_pt.getVector3fMap());
+	viewer->addLine (pt1, pt2, 1.0, 0.0, 0.0, "1" + id );
+	viewer->addLine (pt1, pt4, 1.0, 0.0, 0.0, "2" + id );
+	viewer->addLine (pt1, pt5, 1.0, 0.0, 0.0, "3" + id );
+	viewer->addLine (pt5, pt6, 1.0, 0.0, 0.0, "4" + id );
+	viewer->addLine (pt5, pt8, 1.0, 0.0, 0.0, "5" + id );
+	viewer->addLine (pt2, pt6, 1.0, 0.0, 0.0, "6" + id );
+	viewer->addLine (pt6, pt7, 1.0, 0.0, 0.0, "7" + id );
+	viewer->addLine (pt7, pt8, 1.0, 0.0, 0.0, "8" + id );
+	viewer->addLine (pt2, pt3, 1.0, 0.0, 0.0, "9" + id );
+	viewer->addLine (pt4, pt8, 1.0, 0.0, 0.0, "10" + id );
+	viewer->addLine (pt3, pt4, 1.0, 0.0, 0.0, "11" + id );
+	viewer->addLine (pt3, pt7, 1.0, 0.0, 0.0, "12" + id );
 
-  // final transform
-  const Eigen::Quaternionf qfinal(eigDx);
-  const Eigen::Vector3f tfinal = eigDx*mean_diag + centroid.head<3>();
-
-  viewer->addCube(tfinal, qfinal, max_pt.x - min_pt.x, max_pt.y - min_pt.y, max_pt.z - min_pt.z, id);
 #endif
 }
 
@@ -134,9 +133,12 @@ void Viewer::removeAllShapes()
 #endif
 }
 
-void Viewer::removeShape(std::string id)
+void Viewer::removeCube(std::string id)
 {
 	#ifdef USE_QTGUI
-		viewer->removeShape(id);
+	for(int i = 1; i<=12; i++)
+	{
+		viewer->removeShape(QString::number(i).toStdString()+id);
+	}
 	#endif
 }

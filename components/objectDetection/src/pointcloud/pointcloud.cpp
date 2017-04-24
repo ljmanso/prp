@@ -212,7 +212,20 @@ pcl::PointCloud< PointT >::Ptr computepointcloud::Filter_in_axis(pcl::PointCloud
 	return output;
 }
 
-// void computepointcloud::recuperateObjects(pcl::PointCloud< PointT >::Ptr scene, std::vector<pcl::PointCloud<PointT>::Ptr> cluster_clouds)
-// {
-//
-// }
+void computepointcloud::getBoundingBox(pcl::PointCloud< PointT >::Ptr cloud, float &min_x, float &max_x, float &min_y, float &max_y, float &min_z, float &max_z)
+{
+	PointT min_point_AABB;
+	PointT max_point_AABB;
+
+	pcl::MomentOfInertiaEstimation <PointT> feature_extractor;
+  feature_extractor.setInputCloud (cloud);
+  feature_extractor.compute ();
+  feature_extractor.getAABB (min_point_AABB, max_point_AABB);
+
+	min_x = min_point_AABB.x;
+	max_x = max_point_AABB.x;
+	min_y = min_point_AABB.y;
+	max_y = max_point_AABB.y;
+	min_z = min_point_AABB.z;
+	max_z = max_point_AABB.z;
+}

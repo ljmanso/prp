@@ -500,8 +500,8 @@ void SpecificWorker::capturePointCloudObjects()
 #ifdef USE_QTGUI
 	while(!id_objects.empty())
 	{
-		// viewer->removeShape(id_objects.back());
-		viewer->removePointCloud(id_objects.back());
+		viewer->removeCube(id_objects.back());
+		// viewer->removePointCloud(id_objects.back());
 		id_objects.pop_back();
 	}
 #endif
@@ -512,10 +512,10 @@ void SpecificWorker::capturePointCloudObjects()
 	cloud = Filter_in_axis(cloud, "y", -100/MEDIDA, 700/MEDIDA, true);
 #ifdef USE_QTGUI
 	viewer->updatePointCloud(cloud,"scene");
+	copy_scene=copy_pointcloud(cloud);
 #endif
 	struct timespec Inicio, Fin, resta;
 	clock_gettime(CLOCK_REALTIME, &Inicio);
-	copy_scene=copy_pointcloud(cloud);
 	cloud = VoxelGrid_filter(cloud, 3/MEDIDA, 3/MEDIDA, 3/MEDIDA);
 	// writer.write<PointT> ("/home/robocomp/robocomp/components/perception/VoxelGrid_filter.pcd", *cloud, false);
 	ransac();					//Calculo del plano de la mesa
@@ -530,8 +530,10 @@ void SpecificWorker::capturePointCloudObjects()
 #ifdef USE_QTGUI
 	for(unsigned int i=0;i<cluster_clouds.size();i++)
 	{
-		// viewer->addCube(cluster_clouds[i], QString::number(i).toStdString());
-		viewer->addPointCloud(cluster_clouds[i],QString::number(i).toStdString(),1,255,0,0);
+		float min_x,max_x,min_y,max_y, min_z,max_z;
+		getBoundingBox(cluster_clouds[i],min_x,max_x,min_y,max_y, min_z,max_z);
+		viewer->addCube(min_x,max_x,min_y,max_y, min_z,max_z, QString::number(i).toStdString());
+		// viewer->addPointCloud(cluster_clouds[i],QString::number(i).toStdString(),1,255,0,0);
 		id_objects.push_back(QString::number(i).toStdString());
 	}
 #endif
@@ -900,11 +902,12 @@ void SpecificWorker::findTheObject_Button()
 	try
 	{
 // 		listObject lobject;
-		struct timespec Inicio, Fin;
-		clock_gettime(CLOCK_REALTIME, &Inicio);
+		struct timespec Inicio_, Fin_, resta_;
+		clock_gettime(CLOCK_REALTIME, &Inicio_);
 		result = findTheObject(object, poseObj);
-		clock_gettime(CLOCK_REALTIME, &Fin);
-		qDebug()<<"-----"<<Fin.tv_sec-Inicio.tv_sec<<"s "<<Fin.tv_nsec-Inicio.tv_nsec<<"ns";
+		clock_gettime(CLOCK_REALTIME, &Fin_);
+		SUB(&resta_, &Fin_, &Inicio_);
+		qDebug()<<"-----"<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
 // 		result = findObjects(lobject);
 		if(object!="")
 		{

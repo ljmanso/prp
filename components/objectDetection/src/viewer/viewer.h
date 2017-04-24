@@ -34,8 +34,8 @@ public:
 	void removePointCloud(std::string id);
 	void removeCoordinateSystem(std::string id);
 	void update();
-	void addCube(pcl::PointCloud< PointT >::Ptr cloud, std::string id);
-	void removeShape(std::string id);
+	void addCube(float min_x, float max_x, float min_y, float max_y, float min_z, float max_z, std::string id);
+	void removeCube(std::string id);
 	void removeAllShapes();
 };
 

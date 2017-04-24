@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>764</width>
-    <height>850</height>
+    <width>663</width>
+    <height>938</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>269</height>
+       <height>255</height>
       </size>
      </property>
      <property name="frameShape">
@@ -56,7 +56,7 @@
         <property name="maximumSize">
          <size>
           <width>480</width>
-          <height>269</height>
+          <height>262</height>
          </size>
         </property>
         <property name="frameShape">
@@ -506,10 +506,7 @@
           </layout>
          </item>
         </layout>
-        <zorder>isObject</zorder>
         <zorder></zorder>
-        <zorder>splitter</zorder>
-        <zorder>ObtainPose</zorder>
        </widget>
       </item>
       <item>

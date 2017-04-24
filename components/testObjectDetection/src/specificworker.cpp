@@ -32,8 +32,8 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	connect(findObject, SIGNAL(clicked()), this, SLOT(findTheObject()));
 // 	connect(pose, SIGNAL(clicked()), this, SLOT(getPose()));
 // 	connect(rotation, SIGNAL(clicked()), this, SLOT(getRotation()));
-	connect(reload, SIGNAL(clicked()), this, SLOT(reloadVFH()));
- 	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
+	// connect(reload, SIGNAL(clicked()), this, SLOT(reloadVFH()));
+ // 	connect(go, SIGNAL(clicked()), this, SLOT(fullRun()));
 }
 
 /**
@@ -41,7 +41,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 */
 SpecificWorker::~SpecificWorker()
 {
-	
+
 }
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
@@ -83,14 +83,14 @@ void SpecificWorker::euclideanExtract()
 
 void SpecificWorker::reloadVFH()
 {
-	try
-	{
-		objectdetection_proxy->reloadVFH();
-	}
-	catch(...)
-	{
-		QMessageBox::warning(this, "something went wrong", "something went wrong");
-	}
+	// try
+	// {
+	// 	objectdetection_proxy->reloadVFH();
+	// }
+	// catch(...)
+	// {
+	// 	QMessageBox::warning(this, "something went wrong", "something went wrong");
+	// }
 }
 
 void SpecificWorker::findTheObject()
@@ -143,7 +143,7 @@ void SpecificWorker::findTheObject()
 // 	ry_object->setText(QString::number(poseObj.ry));
 // 	rz_object->setText(QString::number(poseObj.rz));
 // }
-// 
+//
 // void SpecificWorker::getRotation()
 // {
 // // 	float rx, ry, rz;
@@ -152,43 +152,36 @@ void SpecificWorker::findTheObject()
 // // 	rx_object->setText(QString::number(rx));
 // // 	ry_object->setText(QString::number(ry));
 // // 	rz_object->setText(QString::number(rz));
-// 	
+//
 // }
-// 
+//
 // // void SpecificWorker::getCanonicalPose()
 // // {
-// // 	
+// //
 // // }
 */
 void SpecificWorker::fullRun()
 {
-	string label=label_le->text().toStdString();
-	char *c;
-	pose6D guess;
-	string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
-	c= &s[0u];
-	try
-	{
-		system(c);
-		if(canonPoseRb->isChecked())
-			objectdetection_proxy->initSaveObject(label,ob_to_save->value());
-		if(regularPose->isChecked())
-			objectdetection_proxy->saveRegPose(label,ob_to_save->value());
-	}
-	catch(...)
-	{
-		QMessageBox::warning(this, "something went wrong", "something went wrong");
-	}
+	// string label=label_le->text().toStdString();
+	// char *c;
+	// pose6D guess;
+	// string s="mkdir /home/robocomp/robocomp/components/prp/objects/"+label;
+	// c= &s[0u];
+	// try
+	// {
+	// 	system(c);
+	// 	if(canonPoseRb->isChecked())
+	// 		objectdetection_proxy->initSaveObject(label,ob_to_save->value());
+	// 	if(regularPose->isChecked())
+	// 		objectdetection_proxy->saveRegPose(label,ob_to_save->value());
+	// }
+	// catch(...)
+	// {
+	// 	QMessageBox::warning(this, "something went wrong", "something went wrong");
+	// }
 }
 
 
 void SpecificWorker::compute()
 {
 }
-
-
-
-
-
-
-

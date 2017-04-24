@@ -167,12 +167,12 @@ int ::testObjectDetectionComp::run(int argc, char* argv[])
 
 	if ( !monitor->isRunning() )
 		return status;
-	
+
 	while (!monitor->ready)
 	{
 		usleep(10000);
 	}
-	
+
 	try
 	{
 		// Server adapter creation and publication
@@ -202,8 +202,8 @@ int ::testObjectDetectionComp::run(int argc, char* argv[])
 #endif
 		// Run QT Application Event Loop
 		a.exec();
-		
-		
+
+
 		status = EXIT_SUCCESS;
 	}
 	catch(const Ice::Exception& ex)
@@ -260,4 +260,3 @@ int main(int argc, char* argv[])
 
 	return app.main(argc, argv, configFile.c_str());
 }
-
