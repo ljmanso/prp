@@ -71,6 +71,7 @@ void DESCRIPTORS::computeDESCRIPTORShistogram(pcl::PointCloud<PointT>::Ptr cloud
 	ne.setRadiusSearch(10);
 	//computing normals
 	ne.compute(*cloud_normals);
+
 	pcl::search::KdTree<PointT>::Ptr descriptorstree (new pcl::search::KdTree<PointT> ());
 
 	if(type_feature=="VFH")
@@ -310,16 +311,15 @@ void DESCRIPTORS::nearestKSearch (flann::Index<flann::ChiSquareDistance<float> >
 void DESCRIPTORS::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vector<file_dist_t> &guesses)
 {
 	pcl::PointCloud<pcl::VFHSignature308>::Ptr descriptors(new pcl::PointCloud<pcl::VFHSignature308> ());
+
 	computeDESCRIPTORShistogram(object, descriptors);
+
 	descriptors_model histogram;
-
-	pcl::PointCloud <pcl::VFHSignature308> point;
-
+	// pcl::PointCloud <pcl::VFHSignature308> point;
 	histogram.second.resize (308);
 
 	std::vector <pcl::PCLPointField> fields;
 	int descriptors_idx = pcl::getFieldIndex (*descriptors, "vfh", fields);
-
 	for (size_t i = 0; i < fields[descriptors_idx].count; ++i)
 	{
 		histogram.second[i] = descriptors->points[0].histogram[i];
@@ -328,9 +328,12 @@ void DESCRIPTORS::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vec
 	histogram.first = "cloud_from_object."+ h_extension;
 
 	//let look for the match
-	flann::Index<flann::ChiSquareDistance<float> > index (data, flann::SavedIndexParams ("kdtree.idx"));
+	flann::Matrix<float> data_aux = *(new flann::Matrix<float>(data));
+
+	flann::Index<flann::ChiSquareDistance<float> > index (data_aux, flann::SavedIndexParams ("kdtree.idx"));
 
 	index.buildIndex ();
+
 	nearestKSearch (index, histogram, models.size(), k_indices, k_distances);
 
 	guesses.clear();
@@ -339,19 +342,10 @@ void DESCRIPTORS::doTheGuess(const pcl::PointCloud<PointT>::Ptr object, std::vec
 	for (unsigned int i = 0; i < models.size(); ++i)
 	{
 		file_dist_t dato;
-		Eigen::Vector4f centroid;
-		pcl::compute3DCentroid (*object, centroid);
-// 		std::cerr<<centroid[0]<<centroid[1]<<centroid[2]<<centroid[3]<<std::endl;
-		/*pcl::console::print_info ("    %d - %s (%d) with a distance of: %f\n",
-				i, models.at (k_indices[0][i]).first.c_str (), k_indices[0][i], k_distances[0][i]);
-		*/
-// 		std::string d;
-// 		std::stringstream sd;
-// 		sd<<k_distances[0][i];
 		dato.file=models.at(k_indices[0][i]).first;
 		dato.label =dato.file.substr(0, dato.file.find_last_of("/"));
 		dato.label = dato.label.substr(dato.label.find_last_of("/")+1);
-		dato.dist=k_distances[0][i];
+		dato.dist = k_distances[0][i];
 		guesses.push_back(dato);
 	}
 	std::sort( guesses.begin(), guesses.end(), [](DESCRIPTORS::file_dist_t a, DESCRIPTORS::file_dist_t b){ return (a.dist < b.dist);}) ;

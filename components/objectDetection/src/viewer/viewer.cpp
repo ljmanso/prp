@@ -142,3 +142,20 @@ void Viewer::removeCube(std::string id)
 	}
 	#endif
 }
+
+void Viewer::addText3D(std::string text, float min_x, float max_x, float min_y, float max_y, float min_z, float max_z, std::string id)
+{
+	#ifdef USE_QTGUI
+	PointT position;
+	position.x = (50 + min_x + (max_x-min_x)/2)/1000.;
+	position.y = max_y/1000.;
+	position.z = (min_z + (max_z-min_z)/2)/1000.;
+	viewer->addText3D(text,position,0.02,1.,1.,0.,id);
+	#endif
+}
+void Viewer::removeText(std::string id)
+{
+		#ifdef USE_QTGUI
+		viewer->removeShape(id);
+		#endif
+}

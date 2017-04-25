@@ -12,6 +12,7 @@
 #include <pcl/features/our_cvfh.h>
 #include <pcl/io/pcd_io.h>
 #include <boost/filesystem.hpp>
+#include <QMutex>
 
 #include <flann/flann.h>
 #include <flann/io/hdf5.h>
@@ -32,6 +33,7 @@ class DESCRIPTORS
 	flann::Matrix<int> k_indices;
 	flann::Matrix<float> k_distances;
 	flann::Matrix<float> data;
+	QMutex data_mutex;
 
 public:
 	struct file_dist_t

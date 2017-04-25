@@ -37,6 +37,8 @@ public:
 	void addCube(float min_x, float max_x, float min_y, float max_y, float min_z, float max_z, std::string id);
 	void removeCube(std::string id);
 	void removeAllShapes();
+	void addText3D(std::string text, float min_x, float max_x, float min_y, float max_y, float min_z, float max_z, std::string id);
+	void removeText(std::string id);
 };
 
 

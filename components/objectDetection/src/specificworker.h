@@ -39,6 +39,7 @@
  #include <opencv2/imgproc/imgproc.hpp>
  #include <pcl/surface/convex_hull.h>
  #include <pcl/surface/concave_hull.h>
+ #include <boost/thread/thread.hpp>
 #endif
 
 #include <genericworker.h>
@@ -92,6 +93,7 @@ class SpecificWorker : public GenericWorker
 	InnerModel *poses_inner;
 	tagsList tags;
 	QMutex april_mutex;
+  QMutex matcher_mutex;
 	int num_pose;
 	int num_scene;
 
@@ -151,6 +153,7 @@ public:
 /*
  * Method of Interface ObjectDetection.ice
  */
+  static void computeObjectScene(pcl::PointCloud<PointT>::Ptr obj_scene, ObjectType *Obj, SpecificWorker *s);
 	bool findObjects(const StringVector &objectsTofind, ObjectVector &objects);
 
 /*

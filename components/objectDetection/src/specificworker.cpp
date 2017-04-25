@@ -129,34 +129,57 @@ void SpecificWorker::compute()
 /*
  * Method of interface ObjectDetection.ice
  */
+void SpecificWorker::computeObjectScene(pcl::PointCloud<PointT>::Ptr obj_scene, ObjectType *Obj, SpecificWorker *s)
+{
+	std::vector<DESCRIPTORS::file_dist_t> descriptor_guesses;
+	// s->matcher_mutex.lock();
+	s->descriptor_matcher->doTheGuess(obj_scene, descriptor_guesses);
+	// s->matcher_mutex.unlock();
+	DESCRIPTORS::file_dist_t second;
+	for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
+
+	std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
+
+	Obj->tx = Obj->ty = Obj->tz = Obj->rx = Obj->ry = Obj->rz = 0;
+	getBoundingBox(obj_scene, Obj->minx, Obj->maxx, Obj->miny, Obj->maxy, Obj->minz, Obj->maxz);
+	if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
+	{
+		Obj->label = descriptor_guesses[0].label;
+		ObjectType objaux;
+		s->getPose(objaux, descriptor_guesses[0].file, obj_scene);
+		Obj->tx = objaux.tx;
+		Obj->ty = objaux.ty;
+		Obj->tz = objaux.tz;
+		Obj->rx = objaux.rx;
+		Obj->ry = objaux.ry;
+		Obj->rz = objaux.rz;
+	}
+	else
+	{
+		Obj->label = "unknown";
+	}
+}
+
 
  bool SpecificWorker::findObjects(const StringVector &objectsTofind, ObjectVector &objects)
  {
  	capturePointCloudObjects();
 	struct timespec Inicio_, Fin_, resta_;
 	clock_gettime(CLOCK_REALTIME, &Inicio_);
- 	for(unsigned int i=0; i<cluster_clouds.size();i++)
+	boost::thread_group threads;
+	std::vector<ObjectType*> objectspointer;
+ 	for(auto obj_scene:cluster_clouds)
  	{
- 		descriptor_matcher->doTheGuess(cluster_clouds[i], descriptor_guesses);
-
- 		DESCRIPTORS::file_dist_t second;
- 		for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
- 		std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
-
- 		ObjectType Obj;
- 		Obj.tx = Obj.ty = Obj.tz = Obj.rx = Obj.ry = Obj.rz = 0;
- 		getBoundingBox(cluster_clouds[i], Obj.minx, Obj.maxx, Obj.miny, Obj.maxy, Obj.minz, Obj.maxz);
- 		if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
- 		{
- 			Obj.label = descriptor_guesses[0].label;
- 			getPose(Obj, descriptor_guesses[0].file, copy_pointcloud(cluster_clouds[i]));
- 		}
- 		else
-		{
-			Obj.label = "unknown";
-		}
-		objects.push_back(Obj);
+		qDebug()<<"Creando thread";
+		ObjectType *Obj = new ObjectType;
+		objectspointer.push_back(Obj);
+		threads.add_thread(new boost::thread(SpecificWorker::computeObjectScene, copy_pointcloud(obj_scene), Obj, this));
+		// computeObjectScene(copy_pointcloud(obj_scene), objects, descriptor_matcher);
  	}
+	threads.join_all();
+  std::cout << "Threads Done" << std::endl;
+	for(auto obj_aux:objectspointer)
+		objects.push_back(*obj_aux);
 	clock_gettime(CLOCK_REALTIME, &Fin_);
 	SUB(&resta_, &Fin_, &Inicio_);
 	qDebug()<<"Tiempo Ejecucion findObjects:  "<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
@@ -548,14 +571,14 @@ void  SpecificWorker::getPose(ObjectType &Obj, string file_view_mathing, 	pcl::P
 	static QMat april = RTMat(-M_PI_2, 0, 0,0,0,0);
 
 	//Print centroide
-	Eigen::Vector4f centroid;
-	pcl::compute3DCentroid (*obj_scene, centroid);
-	QVec centroidpose = QVec::vec3(centroid[0]/MEDIDA,centroid[1]/MEDIDA,centroid[2]/MEDIDA);
-	centroidpose.print("centroid vista atual");
+	// Eigen::Vector4f centroid;
+	// pcl::compute3DCentroid (*obj_scene, centroid);
+	// QVec centroidpose = QVec::vec3(centroid[0]/MEDIDA,centroid[1]/MEDIDA,centroid[2]/MEDIDA);
+	// centroidpose.print("centroid vista atual");
 	// Point clouds
-	string guessgan=file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
+	string guessgan = file_view_mathing.substr(0, file_view_mathing.find_last_of("/"));
 	guessgan = guessgan.substr(guessgan.find_last_of("/")+1);
-	string pathxml=pathLoadDescriptors+"/"+guessgan+"/"+guessgan+".xml";
+	string pathxml = pathLoadDescriptors+"/"+guessgan+"/"+guessgan+".xml";
 	pcl::PointCloud<PointT>::Ptr scene (new pcl::PointCloud<PointT>);
 	//change vfh extension to pcd
 	std::string view_to_load = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
@@ -566,8 +589,8 @@ void  SpecificWorker::getPose(ObjectType &Obj, string file_view_mathing, 	pcl::P
 		printf ("Couldn't read file test_pcd.pcd \n");
 	}
 	//convert pointcloud to mm
-	scene=PointCloudfrom_mm_to_Meters(scene);
-	object=PointCloudfrom_mm_to_Meters(object);
+	scene  = PointCloudfrom_mm_to_Meters(scene);
+	object = PointCloudfrom_mm_to_Meters(object);
 #if DEBUG
 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/seen.pcd", *scene, false);
 	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/saved.pcd", *object, false);
@@ -584,8 +607,8 @@ void  SpecificWorker::getPose(ObjectType &Obj, string file_view_mathing, 	pcl::P
  	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/scene.pcd", *scene, false);
  	writer.write<PointT> ("/home/robocomp/robocomp/components/prp/objects/objectaling.pcd", *object_aligned, false);
 #endif
-	string node_name=file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
-	node_name=node_name.substr(node_name.find_last_of("/")+1);
+	string node_name = file_view_mathing.substr(0, file_view_mathing.find_last_of("."));
+	node_name        = node_name.substr(node_name.find_last_of("/")+1);
 	InnerModel inner(pathxml);
 	QMat PoseSavetoRootR = inner.getTransformationMatrix("root",QString::fromStdString(node_name));
 
@@ -711,7 +734,6 @@ void SpecificWorker::settexttocloud(string name, float minx, float maxx, float m
 	QFont serifFont("Times", 15, QFont::Bold);
 	text->setFont(serifFont);
 	InnerModelCamera *camera = innermodel->getCamera(id_camera);
-	int end=cloud->size()-1;
 	float m_x = minx + (maxx-minx)/2;
 	float m_y = miny + (maxy-miny)/2;
 	float m_z = minz + (maxz-minz)/2;
@@ -785,19 +807,19 @@ void SpecificWorker::findTheObject_Button()
 	{
 		viewer->removeCube(id_objects.back());
 		// viewer->removePointCloud(id_objects.back());
+		viewer->removeText(id_objects.back());
 		id_objects.pop_back();
 	}
 	qDebug()<<__FUNCTION__;
 	std::string object = text_object->toPlainText().toStdString();
 	ObjectVector lObjects;
 	StringVector lNameObjects;
-	bool result;
 	try
 	{
 // 		listObject lobject;
 		struct timespec Inicio_, Fin_, resta_;
 		clock_gettime(CLOCK_REALTIME, &Inicio_);
-		result = findObjects(lNameObjects, lObjects);
+		findObjects(lNameObjects, lObjects);
 		clock_gettime(CLOCK_REALTIME, &Fin_);
 		SUB(&resta_, &Fin_, &Inicio_);
 		qDebug()<<"-----"<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
@@ -808,29 +830,11 @@ void SpecificWorker::findTheObject_Button()
 			std::cout<<"	Pose: "<<obj.tx<<", "<<obj.ty<<", "<<obj.tz<<", "<<obj.rx<<", "<<obj.ry<<", "<<obj.rz<<std::endl;
 			std::cout<<"	  BB: "<<obj.minx<<", "<<obj.miny<<", "<<obj.minz<<", "<<obj.maxx<<", "<<obj.maxy<<", "<<obj.maxz<<std::endl;
 			settexttocloud(obj.label, obj.minx, obj.maxx, obj.miny, obj.maxy, obj.minz, obj.maxz);
+			viewer->addText3D(obj.label,obj.minx, obj.maxx, obj.miny, obj.maxy, obj.minz, obj.maxz, QString::number(i).toStdString());
 			viewer->addCube(obj.minx, obj.maxx, obj.miny, obj.maxy, obj.minz, obj.maxz, QString::number(i).toStdString());
 			id_objects.push_back(QString::number(i).toStdString());
 			i++;
 		}
-// 		result = findObjects(lobject);
-		// if(object!="")
-		// {
-		// 	isObject->setVisible(true);
-		// 	if(result)
-		// 	{
-		// 		isObject->setText("El Objeto SI esta en la mesa.");
-		// 		x_object->setText(QString::number(poseObj.tx));
-		// 		y_object->setText(QString::number(poseObj.ty));
-		// 		z_object->setText(QString::number(poseObj.tz));
-		// 		rx_object->setText(QString::number(poseObj.rx));
-		// 		ry_object->setText(QString::number(poseObj.ry));
-		// 		rz_object->setText(QString::number(poseObj.rz));
-		// 	}
-		// 	else
-		// 		isObject->setText("El Objeto NO esta en la mesa.");
-		// }
-		// else
-		// 	isObject->setVisible(false);
 	}
 	catch(...)
 	{
