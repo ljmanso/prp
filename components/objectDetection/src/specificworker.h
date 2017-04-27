@@ -88,6 +88,7 @@ class SpecificWorker : public GenericWorker
 	QString id_robot, id_camera,id_camera_transform;
 	string descriptors_extension, pathLoadDescriptors, type_fitting;
 	InnerModel *innermodel;
+  StringVector lObjectsTofind;
 
 	//for poses calculation respect to the canonical one
 	InnerModel *poses_inner;

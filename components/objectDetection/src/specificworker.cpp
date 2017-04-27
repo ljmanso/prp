@@ -141,51 +141,64 @@ void SpecificWorker::computeObjectScene(pcl::PointCloud<PointT>::Ptr obj_scene, 
 	std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
 
 	Obj->tx = Obj->ty = Obj->tz = Obj->rx = Obj->ry = Obj->rz = 0;
-	getBoundingBox(obj_scene, Obj->minx, Obj->maxx, Obj->miny, Obj->maxy, Obj->minz, Obj->maxz);
-	if(descriptor_guesses[0].dist/second.dist<THRESHOLD)
-	{
-		Obj->label = descriptor_guesses[0].label;
-		ObjectType objaux;
-		s->getPose(objaux, descriptor_guesses[0].file, obj_scene);
-		Obj->tx = objaux.tx;
-		Obj->ty = objaux.ty;
-		Obj->tz = objaux.tz;
-		Obj->rx = objaux.rx;
-		Obj->ry = objaux.ry;
-		Obj->rz = objaux.rz;
-	}
-	else
-	{
-		Obj->label = "unknown";
+	#pragma omp parallel sections // divides the team into sections
+ 	{
+		#pragma omp section
+		{
+			getBoundingBox(obj_scene, Obj->minx, Obj->maxx, Obj->miny, Obj->maxy, Obj->minz, Obj->maxz);
+		}
+		#pragma omp section
+		{
+			if( descriptor_guesses[0].dist/second.dist<THRESHOLD)
+			{
+				Obj->label = descriptor_guesses[0].label;
+				if(s->lObjectsTofind.size()==0 || std::find(s->lObjectsTofind.begin(), s->lObjectsTofind.end(), descriptor_guesses[0].label) != s->lObjectsTofind.end() )
+				{
+					ObjectType objaux;
+					s->getPose(objaux, descriptor_guesses[0].file, obj_scene);
+					Obj->tx = objaux.tx;
+					Obj->ty = objaux.ty;
+					Obj->tz = objaux.tz;
+					Obj->rx = objaux.rx;
+					Obj->ry = objaux.ry;
+					Obj->rz = objaux.rz;
+				}
+			}
+			else
+			{
+				Obj->label = "unknown";
+			}
+		}
 	}
 }
 
 
  bool SpecificWorker::findObjects(const StringVector &objectsTofind, ObjectVector &objects)
  {
- 	capturePointCloudObjects();
-	struct timespec Inicio_, Fin_, resta_;
-	clock_gettime(CLOCK_REALTIME, &Inicio_);
-	boost::thread_group threads;
-	std::vector<ObjectType*> objectspointer;
- 	for(auto obj_scene:cluster_clouds)
- 	{
-		qDebug()<<"Creando thread";
-		ObjectType *Obj = new ObjectType;
-		objectspointer.push_back(Obj);
-		threads.add_thread(new boost::thread(SpecificWorker::computeObjectScene, copy_pointcloud(obj_scene), Obj, this));
-		// computeObjectScene(copy_pointcloud(obj_scene), objects, descriptor_matcher);
- 	}
-	threads.join_all();
-  std::cout << "Threads Done" << std::endl;
-	for(auto obj_aux:objectspointer)
-		objects.push_back(*obj_aux);
-	clock_gettime(CLOCK_REALTIME, &Fin_);
-	SUB(&resta_, &Fin_, &Inicio_);
-	qDebug()<<"Tiempo Ejecucion findObjects:  "<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
- 	if(cluster_clouds.size()==0)
- 		return false;
- 	return true;
+	 	capturePointCloudObjects();
+		lObjectsTofind=objectsTofind;
+		struct timespec Inicio_, Fin_, resta_;
+		clock_gettime(CLOCK_REALTIME, &Inicio_);
+		boost::thread_group threads;
+		std::vector<ObjectType*> objectspointer;
+	 	for(auto obj_scene:cluster_clouds)
+	 	{
+			ObjectType *Obj = new ObjectType;
+			objectspointer.push_back(Obj);
+			threads.add_thread(new boost::thread(SpecificWorker::computeObjectScene, copy_pointcloud(obj_scene), Obj, this));
+			// computeObjectScene(copy_pointcloud(obj_scene), Obj, this);
+	 	}
+		threads.join_all();
+	  // std::cout << "Threads Done" << std::endl;
+		for(auto obj_aux:objectspointer)
+			objects.push_back(*obj_aux);
+		clock_gettime(CLOCK_REALTIME, &Fin_);
+		SUB(&resta_, &Fin_, &Inicio_);
+		qDebug()<<"Tiempo Ejecucion findObjects:  "<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
+	 	if(cluster_clouds.size()==0)
+	 		return false;
+	 	return true;
+
  }
 
 /*
@@ -234,6 +247,7 @@ void SpecificWorker::grabThePointCloud()
 #if DEBUG
 		cout<<"SpecificWorker::grabThePointcloud rgbMatrix.size(): "<<rgbMatrix.size()<<endl;
 #endif
+		#pragma omp parallel for
 		for(unsigned int i=0; i<rgbMatrix.size(); i++)
 		{
 			int row = (i/640), column = i-(row*640);
@@ -242,6 +256,7 @@ void SpecificWorker::grabThePointCloud()
 		viewpoint_transform = innermodel->getTransformationMatrix(id_robot,id_camera_transform);
 		QMat PP = viewpoint_transform;
 		cloud->points.resize(points_kinect.size());
+		#pragma omp parallel for
 		for (unsigned int i=0; i<points_kinect.size(); i++)
 		{
 			QVec p1 = (PP * QVec::vec4(points_kinect[i].x, points_kinect[i].y, points_kinect[i].z, 1)).fromHomogeneousCoordinates();
@@ -366,9 +381,13 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 
 	ec.setInputCloud (this->cloud);
 	ec.extract (cluster_indices);
+	qDebug()<<"Comienza el for";
 	int j = 0;
-	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
+	#pragma omp parallel for
+	for (unsigned int i = 0; i<cluster_indices.size();i++)
+	// for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
 	{
+		std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin ()+i;
 		pcl::PointCloud<PointT>::Ptr cloud_cluster (new pcl::PointCloud<PointT>);
 		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
 			cloud_cluster->points.push_back (this->cloud->points[*pit]); //*
@@ -447,7 +466,6 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 
 void SpecificWorker::capturePointCloudObjects()
 {
-
 	if(test)
 		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
 	else
@@ -455,7 +473,6 @@ void SpecificWorker::capturePointCloudObjects()
 	cloud = Filter_in_axis(cloud, "y", -100/MEDIDA, 700/MEDIDA, true);
 #ifdef USE_QTGUI
 	viewer->updatePointCloud(cloud,"scene");
-	copy_scene=copy_pointcloud(cloud);
 #endif
 	struct timespec Inicio, Fin, resta;
 	clock_gettime(CLOCK_REALTIME, &Inicio);
@@ -808,12 +825,15 @@ void SpecificWorker::findTheObject_Button()
 		viewer->removeCube(id_objects.back());
 		// viewer->removePointCloud(id_objects.back());
 		viewer->removeText(id_objects.back());
+		viewer->removeCoordinateSystem(id_objects.back());
 		id_objects.pop_back();
 	}
 	qDebug()<<__FUNCTION__;
 	std::string object = text_object->toPlainText().toStdString();
 	ObjectVector lObjects;
 	StringVector lNameObjects;
+	if(object!="")
+		lNameObjects.push_back(object);
 	try
 	{
 // 		listObject lobject;
@@ -832,6 +852,8 @@ void SpecificWorker::findTheObject_Button()
 			settexttocloud(obj.label, obj.minx, obj.maxx, obj.miny, obj.maxy, obj.minz, obj.maxz);
 			viewer->addText3D(obj.label,obj.minx, obj.maxx, obj.miny, obj.maxy, obj.minz, obj.maxz, QString::number(i).toStdString());
 			viewer->addCube(obj.minx, obj.maxx, obj.miny, obj.maxy, obj.minz, obj.maxz, QString::number(i).toStdString());
+			if(obj.rx != 0 && obj.ry != 0 && obj.rz)
+				viewer->addCoordinateSystem(RTMat(obj.rx,obj.ry,obj.rz,obj.tx/1000,obj.ty/1000,obj.tz/1000), QString::number(i).toStdString());
 			id_objects.push_back(QString::number(i).toStdString());
 			i++;
 		}

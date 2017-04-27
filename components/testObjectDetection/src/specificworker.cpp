@@ -102,6 +102,9 @@ void SpecificWorker::findTheObject()
 	try
 	{
 // 		listObject lobject;
+		std::string object = text_object->toPlainText().toStdString();
+		if(object!="")
+			lNameObjects.push_back(object);
 		struct timespec Inicio_, Fin_, resta_;
 		clock_gettime(CLOCK_REALTIME, &Inicio_);
 		result = objectdetection_proxy->findObjects(lNameObjects, lObjects);

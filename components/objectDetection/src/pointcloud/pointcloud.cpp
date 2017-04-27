@@ -8,6 +8,7 @@ pcl::PointCloud< PointT >::Ptr computepointcloud::copy_pointcloud(pcl::PointClou
 
 pcl::PointCloud< PointT >::Ptr computepointcloud::PointCloudfrom_Meter_to_mm(pcl::PointCloud< PointT >::Ptr cloud)
 {
+	#pragma omp parallel for
 	for(unsigned int i =0;i<cloud->points.size();i++)
 	{
 		cloud->points[i].x=cloud->points[i].x*1000.;
@@ -19,6 +20,7 @@ pcl::PointCloud< PointT >::Ptr computepointcloud::PointCloudfrom_Meter_to_mm(pcl
 
 pcl::PointCloud< PointT >::Ptr computepointcloud::PointCloudfrom_mm_to_Meters(pcl::PointCloud< PointT >::Ptr cloud)
 {
+	#pragma omp parallel for
 	for(unsigned int i =0;i<cloud->points.size();i++)
 	{
 		cloud->points[i].x=cloud->points[i].x/1000.;
@@ -35,6 +37,7 @@ void computepointcloud::moveToZero(pcl::PointCloud< PointT >::Ptr cloud, double 
 	int acc=0;
 
 // printf("%d\n", __LINE__);
+	#pragma omp parallel for
 	for (size_t i=0; i<cloud->points.size(); ++i)
 	{
 // printf("%d\n", __LINE__);
@@ -75,7 +78,7 @@ QMat computepointcloud::fittingICP(pcl::PointCloud<PointT>::Ptr object, pcl::Poi
 	Eigen::Vector4f centroid_object, centroid_reference;
 	pcl::compute3DCentroid (*object, centroid_object);
 	pcl::compute3DCentroid (*reference_copy, centroid_reference);
-
+	#pragma omp parallel for
 	for(unsigned int i = 0; i< reference_copy->points.size(); i++)
 	{
 		reference_copy->points[i].x+=centroid_object[0] - centroid_reference[0];

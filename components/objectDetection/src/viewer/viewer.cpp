@@ -16,7 +16,7 @@ Viewer::Viewer(float medida)
 void Viewer::addCoordinateSystem(float x,float y, float z, std::string id)
 {
 #ifdef USE_QTGUI
-	viewer->addCoordinateSystem(0.25,x,y,z,id,0);
+	viewer->addCoordinateSystem(0.25,x,y,z,id+"coordinate",0);
 #endif
 }
 
@@ -27,7 +27,7 @@ void Viewer::addCoordinateSystem(RMat::QMat tr, std::string id)
 	for (int c=0; c<4; c++)
 		for (int r=0; r<4; r++)
 			t(r,c) = tr(r,c);
-	viewer->addCoordinateSystem(0.25, t,id,0);
+	viewer->addCoordinateSystem(0.25, t,id+"coordinate",0);
 #endif
 }
 
@@ -72,7 +72,7 @@ void Viewer::updateCoordinateSystemPose(RMat::QMat tr, std::string id)
 	for (int c=0; c<4; c++)
 		for (int r=0; r<4; r++)
 			t(r,c) = tr(r,c);
-	viewer->updateCoordinateSystemPose(id, t);
+	viewer->updateCoordinateSystemPose(id+"coordinate", t);
 #endif
 }
 
@@ -86,7 +86,7 @@ void Viewer::removePointCloud(std::string id)
 void Viewer::removeCoordinateSystem(std::string id)
 {
 #ifdef USE_QTGUI
-	viewer->removeCoordinateSystem(id,0);
+	viewer->removeCoordinateSystem(id+"coordinate",0);
 #endif
 }
 

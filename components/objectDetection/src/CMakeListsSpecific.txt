@@ -34,13 +34,13 @@ INCLUDE ($ENV{ROBOCOMP}/cmake/modules/pcl.cmake )
 INCLUDE ($ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 
 
-SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial -lmpi_cxx )
+SET ( LIBS ${LIBS} -lhdf5_cpp -lhdf5_serial -lmpi_cxx -fopenmp)
 
 include_directories( /usr/include/hdf5/serial/ /usr/local/include/pcl-1.8/ )
 
 SET ( LIBS ${LIBS}  )
 
-ADD_DEFINITIONS( -std=c++11 )
+ADD_DEFINITIONS( -std=c++11 -fopenmp)
 
 #add_executable(createDescriptors createDescriptors.cpp)
 #target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})
