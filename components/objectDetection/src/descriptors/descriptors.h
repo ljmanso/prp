@@ -13,6 +13,7 @@
 #include <pcl/io/pcd_io.h>
 #include <boost/filesystem.hpp>
 #include <QMutex>
+#include "pointcloud/pointcloud.h"
 
 #include <flann/flann.h>
 #include <flann/io/hdf5.h>
@@ -21,7 +22,7 @@
 
 typedef std::pair<std::string, std::vector<float> > descriptors_model;
 typedef pcl::PointXYZRGB PointT;
-
+using namespace computepointcloud;
 class DESCRIPTORS
 {
 	std::string kdtree_idx_file_name;

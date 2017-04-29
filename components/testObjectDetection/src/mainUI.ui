@@ -85,6 +85,9 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QSpinBox" name="nCapturespinBox"/>
+        </item>
        </layout>
       </item>
       <item row="0" column="1">
@@ -362,9 +365,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>isObject</zorder>
-     <zorder></zorder>
-     <zorder>splitter</zorder>
      <zorder>isObject</zorder>
      <zorder></zorder>
      <zorder>splitter</zorder>
