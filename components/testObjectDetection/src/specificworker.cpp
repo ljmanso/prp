@@ -95,10 +95,6 @@ void SpecificWorker::reloadVFH()
 
 void SpecificWorker::findTheObject()
 {
-	for(int i = 1; i<51; i++)
-	{
-		qDebug()<<i;
-	std::cout<<__FUNCTION__<<i<<std::endl;
 	nCapturespinBox->setValue(nCapturespinBox->value()+1);
 	ObjectVector lObjects;
 	StringVector lNameObjects;
@@ -126,8 +122,8 @@ void SpecificWorker::findTheObject()
 	{
 		QMessageBox::warning(this, "something went wrong", "something went wrong");
 	}
-	}
 }
+
 /*
 // void SpecificWorker::getPose()
 // {
