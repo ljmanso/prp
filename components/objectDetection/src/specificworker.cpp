@@ -277,18 +277,18 @@ void SpecificWorker::grabThePointCloud()
 		removeNaNFromPointCloud (*cloud, *cloud, index);
 		cloud->is_dense = false;
 
-#if DEBUG
+// #if DEBUG
 		timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
-		string pcdname =  "/home/robocomp/robocomp/components/prp/objects/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
+		string pcdname =  "/home/robocomp/robocomp/components/prp/scene_prueba/" + QString::number(ts.tv_sec).toStdString() + ".pcd";
 		printf("<%s>\n", pcdname.c_str());
 		writer.write<PointT> ( pcdname, *cloud, false);
-		pcdname = "/home/robocomp/robocomp/components/prp/scene/" + std::to_string(num_scene) + "_scene.pcd";
-		writer.write<PointT> ( pcdname , *cloud, false);
+		// pcdname = "/home/robocomp/robocomp/components/prp/scene_prueba/" + std::to_string(num_scene) + "_scene.pcd";
+		// writer.write<PointT> ( pcdname , *cloud, false);
 
-		string imagename = "/home/robocomp/robocomp/components/prp/objects/" + QString::number(ts.tv_sec).toStdString() + ".png";
+		string imagename = "/home/robocomp/robocomp/components/prp/scene_prueba/" + QString::number(ts.tv_sec).toStdString() + ".png";
 		cv::imwrite( imagename ,rgb_image);
-#endif
+// #endif
 	}
 	catch(Ice::Exception e)
 	{
