@@ -22,21 +22,24 @@ bool DESCRIPTORS::loadHist (const boost::filesystem::path &path, descriptors_mod
     Eigen::Vector4f origin;
     Eigen::Quaternionf orientation;
     pcl::PCDReader r;
-    int type; unsigned int idx;
-	std::cout<<path.string()<<std::endl;
+    int type;
+		unsigned int idx;
+		std::cout<<path.string()<<std::endl;
     r.readHeader (path.string (), cloud, origin, orientation, version, type, idx);
 
     descriptors_idx = pcl::getFieldIndex (cloud, "vfh");
+		std::cout<<((int)cloud.width * cloud.height != 1)<<std::endl;
     if (descriptors_idx == -1)
       return (false);
-    if ((int)cloud.width * cloud.height != 1)
+    if (h_extension != "ourcvfh" && ((int)cloud.width * cloud.height != 1))
       return (false);
+		if (h_extension == "ourcvfh" && ((int)cloud.width * cloud.height == 0 ))
+			return (false);
   }
   catch (pcl::InvalidConversionException e)
   {
     return (false);
   }
-  std::cout<<"Hola"<<std::endl;
   // Treat the DESCRIPTORS signature as a single Point Cloud
   pcl::PointCloud <pcl::VFHSignature308> point;
   pcl::io::loadPCDFile (path.string (), point);
@@ -59,23 +62,29 @@ void DESCRIPTORS::computeDESCRIPTORShistogram(pcl::PointCloud<PointT>::Ptr cloud
 	//---compute normals---
 	pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
 
-	//create normal estimation class, and pass the input cloud
-	pcl::NormalEstimation<PointT, pcl::Normal> ne;
-	ne.setInputCloud (cloud);
 
-	//Create empty kdetree representation, and pass it to the normal estimation object.
-	//its content will be filled inside the object based on the given input.
-	pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT> ());
-	ne.setSearchMethod (tree);
-	//set radious of the neighbors to use (1 cm)
-	ne.setRadiusSearch(10);
-	//computing normals
-	ne.compute(*cloud_normals);
 
 	pcl::search::KdTree<PointT>::Ptr descriptorstree (new pcl::search::KdTree<PointT> ());
 
 	if(type_feature=="VFH")
 	{
+		//---compute normals---
+		pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
+
+		//create normal estimation class, and pass the input cloud
+		pcl::NormalEstimation<PointT, pcl::Normal> ne;
+		ne.setInputCloud (cloud);
+
+		//Create empty kdetree representation, and pass it to the normal estimation object.
+		//its content will be filled inside the object based on the given input.
+		pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT> ());
+		ne.setSearchMethod (tree);
+		//set radious of the neighbors to use (1 cm)
+		ne.setRadiusSearch(10);
+		//computing normals
+		ne.compute(*cloud_normals);
+
+
 		//---proceed to compute VFH---
 		//Create the VFH estimation class and pas the input to it
 		pcl::VFHEstimation<PointT, pcl::Normal, pcl::VFHSignature308> vfh;
@@ -91,6 +100,19 @@ void DESCRIPTORS::computeDESCRIPTORShistogram(pcl::PointCloud<PointT>::Ptr cloud
 	}
 	else if(type_feature=="CVFH")
 	{
+		//create normal estimation class, and pass the input cloud
+		pcl::NormalEstimation<PointT, pcl::Normal> ne;
+		ne.setInputCloud (cloud);
+
+		//Create empty kdetree representation, and pass it to the normal estimation object.
+		//its content will be filled inside the object based on the given input.
+		pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT> ());
+		ne.setSearchMethod (tree);
+		//set radious of the neighbors to use (1 cm)
+		ne.setRadiusSearch(10);
+		//computing normals
+		ne.compute(*cloud_normals);
+
 		// CVFH estimation object.
 		pcl::CVFHEstimation<PointT, pcl::Normal, pcl::VFHSignature308> cvfh;
 		cvfh.setInputCloud(cloud);
@@ -110,9 +132,23 @@ void DESCRIPTORS::computeDESCRIPTORShistogram(pcl::PointCloud<PointT>::Ptr cloud
 	}
 	else if(type_feature== "OUR-CVFH")
 	{
+		pcl::PointCloud<PointT>::Ptr cloud_c=PointCloudfrom_mm_to_Meters(copy_pointcloud(cloud));
+		//create normal estimation class, and pass the input cloud
+		pcl::NormalEstimation<PointT, pcl::Normal> ne;
+		ne.setInputCloud (cloud_c);
+
+		//Create empty kdetree representation, and pass it to the normal estimation object.
+		//its content will be filled inside the object based on the given input.
+		pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT> ());
+		ne.setSearchMethod (tree);
+		//set radious of the neighbors to use (1 cm)
+		ne.setRadiusSearch(0.01);
+		//computing normals
+		ne.compute(*cloud_normals);
+
 		// OUR-CVFH estimation object.
 		pcl::OURCVFHEstimation<PointT, pcl::Normal, pcl::VFHSignature308> ourcvfh;
-		ourcvfh.setInputCloud(cloud);
+		ourcvfh.setInputCloud(cloud_c);
 		ourcvfh.setInputNormals(cloud_normals);
 		ourcvfh.setSearchMethod(descriptorstree);
 		ourcvfh.setEPSAngleThreshold(5.0 / 180.0 * M_PI); // 5 degrees.
@@ -120,7 +156,7 @@ void DESCRIPTORS::computeDESCRIPTORShistogram(pcl::PointCloud<PointT>::Ptr cloud
 		ourcvfh.setNormalizeBins(false);
 		// Set the minimum axis ratio between the SGURF axes. At the disambiguation phase,
 		// this will decide if additional Reference Frames need to be created, if ambiguous.
-		ourcvfh.setAxisRatio(0.8);
+		ourcvfh.setAxisRatio(1);
 		ourcvfh.compute(*descriptors);
 	}
 }
@@ -186,11 +222,6 @@ void DESCRIPTORS::loadFeatureModels (const boost::filesystem::path &base_dir, co
 			pcl::console::print_highlight ("Loading %s (%lu models loaded so far).\n", ss.str ().c_str (), (unsigned long)models.size ());
 			loadFeatureModels (it->path(), original_base_dir, extension, models);
 		}
-
-		if(boost::filesystem::is_regular_file (it->status ()))
-			std::cout<<boost::filesystem::extension (it->path ())<<" "<<extension<<std::endl;
-		if(boost::filesystem::extension (it->path ()) == extension)
-			std::cout<<"YES"<<std::endl;
 		if (original_base_dir!=base_dir and  boost::filesystem::is_regular_file (it->status ()) && boost::filesystem::extension (it->path ()) == extension)
 		{
 			std::cout<<"in"<<std::endl;

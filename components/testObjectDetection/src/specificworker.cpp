@@ -95,7 +95,7 @@ void SpecificWorker::reloadVFH()
 
 void SpecificWorker::findTheObject()
 {
-	qDebug()<<__FUNCTION__;
+	nCapturespinBox->setValue(nCapturespinBox->value()+1);
 	ObjectVector lObjects;
 	StringVector lNameObjects;
 	bool result;
@@ -110,7 +110,7 @@ void SpecificWorker::findTheObject()
 		result = objectdetection_proxy->findObjects(lNameObjects, lObjects);
 		clock_gettime(CLOCK_REALTIME, &Fin_);
 		SUB(&resta_, &Fin_, &Inicio_);
-		qDebug()<<"-----"<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns";
+		std::cout<<"-----"<<resta_.tv_sec<<"s "<<resta_.tv_nsec<<"ns"<<std::endl;
 		for(auto obj:lObjects)
 		{
 			std::cout<<"Object: "<<obj.label<<std::endl;
@@ -123,6 +123,7 @@ void SpecificWorker::findTheObject()
 		QMessageBox::warning(this, "something went wrong", "something went wrong");
 	}
 }
+
 /*
 // void SpecificWorker::getPose()
 // {

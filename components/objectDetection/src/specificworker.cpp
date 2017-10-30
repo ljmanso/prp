@@ -62,6 +62,7 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 #endif
 	boost::filesystem::remove("training_data.h5");
 	boost::filesystem::remove("training_data.list");
+	image_path = "/home/robocomp/robocomp/components/prp/scene/Scene.png";
 }
 
 /**
@@ -96,6 +97,11 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 		test=true;
 	}
 	reloadDESCRIPTORS();
+	if (test)
+	{
+		innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.710744);
+		innermodel->updateJointValue(QString::fromStdString("head_yaw_joint"),0.0102265);
+	}
 	timer.start(10);
 	return true;
 }
@@ -104,7 +110,8 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
-	updateinner();
+	if (!test)
+		updateinner();
 #ifdef USE_QTGUI
 	if(guess != QVec::zeros(6))
 	{
@@ -117,9 +124,9 @@ void SpecificWorker::compute()
 		QMat poseObjR=RTMat(rx/1000., ry/1000., rz/1000., tx, ty, tz);
 		viewer->updateCoordinateSystemPose(poseObjR,"poseobjectR");
 	}
-	updatergbd();
 	try
 	{
+			updatergbd();
 			viewer->update();
 	}
 	catch(...){}
@@ -136,6 +143,7 @@ void SpecificWorker::computeObjectScene(pcl::PointCloud<PointT>::Ptr obj_scene, 
 	s->descriptor_matcher->doTheGuess(obj_scene, descriptor_guesses);
 	// s->matcher_mutex.unlock();
 	DESCRIPTORS::file_dist_t second;
+	second.label="unknown";
 	for(auto dato:descriptor_guesses)if(dato.label!=descriptor_guesses[0].label){ second=dato; break;}
 
 	std::cout<<descriptor_guesses[0].label<<"   ----   "<< second.label<< "   ----   "<< descriptor_guesses[0].dist/second.dist<<std::endl;
@@ -149,7 +157,7 @@ void SpecificWorker::computeObjectScene(pcl::PointCloud<PointT>::Ptr obj_scene, 
 		}
 		#pragma omp section
 		{
-			if( descriptor_guesses[0].dist/second.dist<THRESHOLD)
+			if( second.label=="unknown" || descriptor_guesses[0].dist/second.dist<THRESHOLD)
 			{
 				Obj->label = descriptor_guesses[0].label;
 				if(s->lObjectsTofind.size()==0 || std::find(s->lObjectsTofind.begin(), s->lObjectsTofind.end(), descriptor_guesses[0].label) != s->lObjectsTofind.end() )
@@ -299,6 +307,9 @@ void SpecificWorker::grabThePointCloud()
 
 void SpecificWorker::readThePointCloud(const string &image, const string &pcd)
 {
+		std::cout<<image<<std::endl;
+		std::cout<<pcd<<std::endl;
+
     rgb_image = cv::imread(image);
 
     if(! rgb_image.data )                              // Check for invalid inpute
@@ -466,7 +477,16 @@ void SpecificWorker::euclideanClustering(int &numCluseters)
 
 void SpecificWorker::capturePointCloudObjects()
 {
+	// static boost::filesystem::directory_iterator it (boost::filesystem::path("/home/ivan/robocomp/components/prp/scene_prueba/brick"));
+	// while(boost::filesystem::extension (it->path ()) != ".pcd")
+	// 	it++;
+	// std::cout<<it->path().string()<<std::endl;
+	// boost::filesystem::path filename=*it;
+	// std::stringstream outpath;
+	// outpath << filename.branch_path().string() << "/" << boost::filesystem::basename(filename) <<".";
+	// image_path = outpath.str()+"png";
 	if(test)
+		// readThePointCloud(outpath.str()+"png",outpath.str()+"pcd");
 		readThePointCloud("/home/robocomp/robocomp/components/prp/scene/Scene.png","/home/robocomp/robocomp/components/prp/scene/Scene.pcd");
 	else
 		grabThePointCloud();
@@ -487,6 +507,8 @@ void SpecificWorker::capturePointCloudObjects()
 	clock_gettime(CLOCK_REALTIME, &Fin);
 	SUB(&resta, &Fin, &Inicio);
 	qDebug()<<"Captured: "<<resta.tv_sec<<"s "<<resta.tv_nsec<<"ns";
+	// if (it != boost::filesystem::directory_iterator ())
+	// 	++it;
 }
 
 void SpecificWorker::updateinner()
@@ -505,7 +527,10 @@ void SpecificWorker::updateinner()
 	catch(...)
 	{
 		if (test)
-			innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.8);
+		{
+			innermodel->updateJointValue(QString::fromStdString("head_pitch_joint"),0.710744);
+			innermodel->updateJointValue(QString::fromStdString("head_yaw_joint"),0.0102265);
+		}
 		else
 			qFatal("Can't access motors");
 	}
@@ -721,7 +746,7 @@ void SpecificWorker::updatergbd()
 	cv::Mat rgb_image(480,640, CV_8UC3, cv::Scalar::all(0));
 	if(test)
 	{
-		rgb_image = cv::imread("/home/robocomp/robocomp/components/prp/scene/Scene.png");
+		rgb_image = cv::imread(image_path);
 
 		if(! rgb_image.data )
 		{
@@ -828,6 +853,7 @@ void SpecificWorker::findTheObject_Button()
 		viewer->removeCoordinateSystem(id_objects.back());
 		id_objects.pop_back();
 	}
+	removeAllpixmap();
 	qDebug()<<__FUNCTION__;
 	std::string object = text_object->toPlainText().toStdString();
 	ObjectVector lObjects;

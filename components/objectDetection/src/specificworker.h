@@ -83,6 +83,7 @@ using namespace computepointcloud;
 
 class SpecificWorker : public GenericWorker
 {
+  string image_path;
   float tx, ty, tz, rx, ry, rz;
 	bool test;
 	QString id_robot, id_camera,id_camera_transform;
