@@ -47,7 +47,9 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	table->set_board_size(500/MEDIDA,30/MEDIDA,500/MEDIDA);
 
 	num_scene = 15;
+printf("%s %d\n", __FILE__, __LINE__);
 #ifdef USE_QTGUI
+printf("%s %d\n", __FILE__, __LINE__);
 	graphic->setScene(&scene);
 	graphic->show();
 	item_pixmap=new QGraphicsPixmapItem();
@@ -295,7 +297,7 @@ void SpecificWorker::grabThePointCloud()
 		// writer.write<PointT> ( pcdname , *cloud, false);
 
 		string imagename = "/home/robocomp/robocomp/components/prp/scene_prueba/" + QString::number(ts.tv_sec).toStdString() + ".png";
-		cv::imwrite( imagename ,rgb_image);
+		cv::imwrite( imagename, rgb_image);
 // #endif
 	}
 	catch(Ice::Exception e)
@@ -844,6 +846,7 @@ void SpecificWorker::reloadDESCRIPTORS_Button()
 
 void SpecificWorker::findTheObject_Button()
 {
+	printf("%s %d\n", __FILE__, __LINE__);
 	static vector<string> id_objects;
 	while(!id_objects.empty())
 	{
@@ -862,7 +865,6 @@ void SpecificWorker::findTheObject_Button()
 		lNameObjects.push_back(object);
 	try
 	{
-// 		listObject lobject;
 		struct timespec Inicio_, Fin_, resta_;
 		clock_gettime(CLOCK_REALTIME, &Inicio_);
 		findObjects(lNameObjects, lObjects);

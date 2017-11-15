@@ -297,6 +297,7 @@ void SpecificWorker::compute()
 	{
 		try
 		{
+			printf("Fetching DSR model\n");
 			RoboCompAGMWorldModel::World w = agmexecutive_proxy->getModel();
 			structuralChange(w);
 		}
@@ -306,20 +307,10 @@ void SpecificWorker::compute()
 		}
 	}
 
-	std::map<std::string, AGMModelSymbol::SPtr> symbols;
-	try
-	{
-		symbols = worldModel->getSymbolsMap(params, "robot", "status", "room");
-	}
-	catch(...)
-	{
-		return;
-	}
-
 	try
 	{
 		cout<<"Checking if oracle is used"<<endl;
-		worldModel->getEdge(symbols["robot"], symbols["status"], "usedOracle");
+		worldModel->getEdgeByIdentifiers(1, 1, "usedOracle");
 	}
 	catch(...)
 	{
@@ -327,9 +318,21 @@ void SpecificWorker::compute()
 		//check if need to imaginemostlikelymuginposition
 
 
-		if(plan.find("imagineMostLikelyMugInPosition") != std::string::npos)
+		if (plan.find("imagineMostLikelyObjInPosition__mObj_mug") != std::string::npos)
 		{
-			action_imagineMostLikelyMugInPosition();
+			AGMPlan agmPlan = AGMPlan::fromString(plan);
+			for (auto i : agmPlan.actions)
+			{
+				if (i.name == "imagineMostLikelyObjInPosition__mObj_mug")
+				{
+					printf("FIND MUG!\n");
+					int mObj = std::stoi(i.parameters["mObj"]);
+					int table = std::stoi(i.parameters["table"]);
+					int robot = std::stoi(i.parameters["robot"]);
+					int room = std::stoi(i.parameters["room"]);
+					action_imagineMostLikelyMugInPosition(mObj, table, robot, room);
+				}
+			}
 		}
 	}
 
@@ -1729,7 +1732,7 @@ void SpecificWorker::sendModificationProposal(AGMModel::SPtr &worldModel, AGMMod
 }
 
 
-void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
+void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType, int mObjXX, int tableXX, int robot, int room)
 {
 	world_mutex->lock();
 	printf("inside imagineMostLikelyOBJECTPosition-%s  %d %d\n", objectType.c_str(), modifiedWorld, worldModel->version);
@@ -1743,24 +1746,17 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	world_mutex->unlock();
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	// Create new symbols and the edges which are independent from the container
-	AGMModelSymbol::SPtr objSSt = newModel->newSymbol("objectSt");
+	AGMModelSymbol::SPtr objS   = newModel->newSymbol(objectType);
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	AGMModelSymbol::SPtr objS   = newModel->newSymbol("object");
+	newModel->addEdge(objS, objS, "reachable");
+	newModel->addEdge(objS, objS, "noReach");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	newModel->addEdge(objS, objSSt, objectType);
-	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	newModel->addEdge(objS, objSSt, "reachable");
-	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	newModel->addEdge(objS, objSSt, "noReach");
-	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	newModel->addEdge(objS, objSSt, "hasStatus");
-	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
-	auto symbols = newModel->getSymbolsMap(params, "robot", "status", "table", "room");
+	auto symbols = newModel->getSymbolsMap(params, "robot", "room");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	newModel->addEdge(symbols["robot"], objS, "imagine");
 	printf ("This is line %d of file \"%s\".\n", __LINE__, __FILE__);
 	try{
-	  newModel->addEdge(symbols["robot"], symbols["status"], "usedOracle");
+	  newModel->addEdge(symbols["robot"], symbols["robot"], "usedOracle");
 	}
 	catch (...) {
 	    std::cerr <<"Failed when adding edge"<< std::endl;
@@ -1772,14 +1768,9 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	// std::string table = lookForObject(objectType);
 	std::string table;
 	table = "counterA";
-	table = "counterA";
-	table = "counterA";
-	table = "counterA";
 	table = "counterA"; // WARNING, TABLE HARDCODED
 	table = "counterA";
-	table = "counterA";
-	table = "counterA";
-	table = "counterA";
+
 	cout<<endl<<table<<endl<<endl;
 	int id = -1;
 	int room_id = -1;
@@ -1876,21 +1867,21 @@ void SpecificWorker::imagineMostLikelyOBJECTPosition(string objectType)
 	}
 }
 
-void SpecificWorker::action_imagineMostLikelyMugInPosition()
+void SpecificWorker::action_imagineMostLikelyMugInPosition(int mObj, int table, int robot, int room)
 {
-	imagineMostLikelyOBJECTPosition("mug");
+	imagineMostLikelyOBJECTPosition("mug", mObj, table, robot, room);
 }
 
 
-void SpecificWorker::action_imagineMostLikelyCoffeePotInPosition()
+void SpecificWorker::action_imagineMostLikelyCoffeePotInPosition(int mObj, int table, int robot, int room)
 {
-	imagineMostLikelyOBJECTPosition("coffeepot");
+	imagineMostLikelyOBJECTPosition("coffeepot", mObj, table, robot, room);
 }
 
 
-void SpecificWorker::action_imagineMostLikelyMilkInPosition()
+void SpecificWorker::action_imagineMostLikelyMilkInPosition(int mObj, int table, int robot, int room)
 {
-	imagineMostLikelyOBJECTPosition("milk");
+	imagineMostLikelyOBJECTPosition("milk", mObj, table, robot, room);
 }
 
 

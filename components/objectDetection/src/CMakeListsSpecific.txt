@@ -40,7 +40,7 @@ include_directories( /usr/include/hdf5/serial/ /usr/local/include/pcl-1.8/ )
 
 SET ( LIBS ${LIBS}  )
 
-ADD_DEFINITIONS( -std=c++11 -fopenmp)
+ADD_DEFINITIONS( -std=c++11 -fopenmp -fext-numeric-literals )
 
 #add_executable(createDescriptors createDescriptors.cpp)
 #target_link_libraries (createDescriptors ${PCL_LIBRARIES} ${FLANN_LIBRARIES} ${Boost_LIBRARIES})

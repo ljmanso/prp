@@ -97,8 +97,8 @@
 #ifdef CONVNET
 #ifdef __cplusplus
 extern "C"{
-#endif 
-    
+#endif
+
 #include "ccv/ccv.h"
 
 #ifdef __cplusplus
@@ -127,11 +127,11 @@ private:
 #endif
 	fstream file;
 	bool first;
-	
+
 #include "feature_vectors.h"
 
 public:
-	SpecificWorker(MapPrx& mprx);	
+	SpecificWorker(MapPrx& mprx);
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
 
@@ -145,13 +145,13 @@ public:
 	bool deactivateAgent();
 	StateStruct getAgentState();
 	void semanticDistance(const string &word1, const string &word2, float &result);
-        
+
 	void processDataFromDir(const boost::filesystem::path &base_dir);
 	//given an image and its location it process its objects and save them to the corresponding location
 	void processImage(cv::Mat image, std::string location);
 	void addLabelsToTable(ResultList result, std::string location);
 	void load_tables_info();
-	   
+
 	void segmentObjects3D(pcl::PointCloud<PointT>::Ptr cloud, cv::Mat image, std::vector<cv::Mat> &result);
 	std::string lookForObjectNoW2V(std::string label);
 	std::string lookForObject_random(std::string label);
@@ -174,59 +174,59 @@ public:
 	void processDataFromKinect(cv::Mat matImage, const RoboCompRGBD::PointSeq &points, std::string location);
 	void labelImage(cv::Mat matImage, std::string location);
 	void showTablesOnInterface();
-	
+
 public slots:
 	void compute();
 	void save_tables_info();
 
 private:
-	
+
 	QMutex *inner_mutex, *world_mutex, *agent_mutex;
-	
+
 	//traveling salesman alg distances
 	float table_distances[6][6];
 	std::vector<int> tables_order;
 	int num_saleslman_visited;
 	bool first_salesman;
-	
+
 	//config params
 	bool save_full_data, save_table_data, labeling;
 	InnerModelRGBD *camera;
-	
+
 	std::map<std::string, double>  table1;
 	std::map<std::string, double>  table2;
 	std::map<std::string, double>  table3;
 	std::map<std::string, double>  table4;
 	std::map<std::string, double>  table5;
-	 
+
 	MapModel mapmodel_1;
 	MapModel mapmodel_2;
 	MapModel mapmodel_3;
 	MapModel mapmodel_4;
 	MapModel mapmodel_5;
-	
+
 	QSortFilterProxyModel filtermodel_1;
 	QSortFilterProxyModel filtermodel_2;
 	QSortFilterProxyModel filtermodel_3;
 	QSortFilterProxyModel filtermodel_4;
 	QSortFilterProxyModel filtermodel_5;
-	
+
 	QMap<std::string, double> table1_qmat;
 	QMap<std::string, double> table2_qmat;
 	QMap<std::string, double> table3_qmat;
 	QMap<std::string, double> table4_qmat;
 	QMap<std::string, double> table5_qmat;
-	
+
 	bool visited_table[5];
-	
+
 	bool need_to_imagine;
-	
-    std::vector< std::pair< std::map<std::string, double>, int> > tables; 
+
+    std::vector< std::pair< std::map<std::string, double>, int> > tables;
 #ifdef CAFFE_CLASSIFIER
 	CaffeClassifier *caffe_classifier;
 #endif
 	std::shared_ptr<Labeler> labeler;
-        
+
 	int image_save_counter;
 	int image_segmented_counter;
 	std::string action;
@@ -241,11 +241,11 @@ private:
 	void calculate_salesman();
 
 	int32_t modifiedWorld;
-	void imagineMostLikelyOBJECTPosition(string objectType);
-	void action_imagineMostLikelyMugInPosition();
-	void action_imagineMostLikelyCoffeePotInPosition();
-	void action_imagineMostLikelyMilkInPosition();
-	
+	void imagineMostLikelyOBJECTPosition(string objectType, int mObj, int table, int robot, int room);
+	void action_imagineMostLikelyMugInPosition(int mObj, int table, int robot, int room);
+	void action_imagineMostLikelyCoffeePotInPosition(int mObj, int table, int robot, int room);
+	void action_imagineMostLikelyMilkInPosition(int mObj, int table, int robot, int room);
+
 	RoboCompGenericBase::TBaseState bState;
 	RoboCompJointMotor::MotorStateMap hState;
 	RoboCompRGBD::ColorSeq rgbImage;
@@ -256,17 +256,16 @@ private:
 	pcl::PointCloud<PointT>::Ptr fullCloud;
 	cv::Mat fullImage;
 	int left, right, down, up;
-	
+
 	#ifdef INNER_VIEWER
 	//AGM Model viewer
 	osgGA::TrackballManipulator *manipulator;
-	OsgView *osgView;	
-	InnerModelViewer *innerViewer; 
-	
+	OsgView *osgView;
+	InnerModelViewer *innerViewer;
+
 	void updateViewer();
 	void changeInner ();
 	#endif
 };
 
 #endif
-
